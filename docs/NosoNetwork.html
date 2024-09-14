@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: NosoNetwork</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit NosoNetwork</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section"><a class="section" href="#PasDoc-Constants">Constants</a></div><div class="one_section"><a class="section" href="#PasDoc-Variables">Variables</a></div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>SysUtils</li><li>strutils</li><li>IdContext</li><li>IdGlobal</li><li>IdTCPClient</li><li>IdTCPServer</li><li><a href="nosodebug.html">nosodebug</a></li><li><a href="NosoTime.html">nosotime</a></li><li><a href="nosogeneral.html">nosogeneral</a></li><li><a href="NosoHeaders.html">nosoheaders</a></li><li><a href="nosocrypto.html">nosocrypto</a></li><li><a href="NosoBlock.html">nosoblock</a></li><li><a href="nosoconsensus.html">nosoconsensus</a></li><li><a href="nosounit.html">nosounit</a></li><li><a href="NosoNosoCFG.html">nosonosoCFG</a></li><li><a href="nosogvts.html">nosogvts</a></li><li><a href="nosomasternodes.html">nosomasternodes</a></li><li><a href="nosopsos.html">nosopsos</a></li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="NosoNetwork.TThreadClientRead.html"><code>TThreadClientRead</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="NosoNetwork.TNodeData.html"><code>TNodeData</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="NosoNetwork.Tconectiondata.html"><code>Tconectiondata</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="NosoNetwork.TBotData.html"><code>TBotData</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="NosoNetwork.NodeServerEvents.html"><code>NodeServerEvents</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetPendingCount">GetPendingCount</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#ClearAllPending">ClearAllPending</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#SendPendingsToPeer-Int64-">SendPendingsToPeer</a></strong>(Slot: Int64);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#TranxAlreadyPending-String-">TranxAlreadyPending</a></strong>(TrxHash: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#AddArrayPoolTXs-TOrderData-">AddArrayPoolTXs</a></strong>(order: <a href="nosogeneral.TOrderData.html">TOrderData</a>): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#TrxExistsInLastBlock-String-">TrxExistsInLastBlock</a></strong>(trfrhash: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetPTCEcn">GetPTCEcn</a></strong>(): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#IsValidProtocol-String-">IsValidProtocol</a></strong>(line: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetPingString">GetPingString</a></strong>(): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#ProtocolLine-Integer-">ProtocolLine</a></strong>(LCode: Integer): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#ProcessPing-String-Integer-Boolean-">ProcessPing</a></strong>(LineaDeTexto: String; Slot: Integer; Responder: Boolean);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#ProcessIncomingLine-Integer-String-">ProcessIncomingLine</a></strong>(FSlot: Integer; LLine: String);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#SendMNsListToPeer-Integer-">SendMNsListToPeer</a></strong>(slot: Integer);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#SendMNChecksToPeer-Integer-">SendMNChecksToPeer</a></strong>(Slot: Integer);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetVerificationMNLine-String-">GetVerificationMNLine</a></strong>(ToIp: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#IsAllSynced">IsAllSynced</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetSyncTus">GetSyncTus</a></strong>(): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#ClearOutTextToSlot-Integer-">ClearOutTextToSlot</a></strong>(slot: Integer);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetTextToSlot-Integer-">GetTextToSlot</a></strong>(slot: Integer): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#TextToSlot-Integer-String-">TextToSlot</a></strong>(Slot: Integer; LText: String);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetConexIndex-Integer-">GetConexIndex</a></strong>(Slot: Integer): <a href="NosoNetwork.Tconectiondata.html">Tconectiondata</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#SetConexIndex-Integer-Tconectiondata-">SetConexIndex</a></strong>(Slot: Integer; LData: <a href="NosoNetwork.Tconectiondata.html">Tconectiondata</a>);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#SetConexIndexBusy-Integer-Boolean-">SetConexIndexBusy</a></strong>(LSlot: Integer; Value: Boolean);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#SetConexIndexLastPing-Integer-String-">SetConexIndexLastPing</a></strong>(LSlot: Integer; Value: String);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#SetConexReserved-Integer-Boolean-">SetConexReserved</a></strong>(LSlot: Integer; Reserved: Boolean);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#StartConexThread-Integer-">StartConexThread</a></strong>(LSlot: Integer);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#CloseSlot-Integer-">CloseSlot</a></strong>(Slot: Integer);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetTotalConexiones">GetTotalConexiones</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#IsSlotConnected-Integer-">IsSlotConnected</a></strong>(number: Integer): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#UpdateMyData">UpdateMyData</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#IsValidator-String-">IsValidator</a></strong>(Ip: String): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#ValidateMNCheck-String-">ValidateMNCheck</a></strong>(Linea: String): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#InitNodeServer">InitNodeServer</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#ClientsCount">ClientsCount</a></strong>: Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#TryMessageToClient-TIdContext-String-">TryMessageToClient</a></strong>(AContext: TIdContext; message: String): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetStreamFromClient-TIdContext-TMemoryStream-">GetStreamFromClient</a></strong>(AContext: TIdContext; out LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#TryCloseServerConnection-TIdContext-String-">TryCloseServerConnection</a></strong>(AContext: TIdContext; closemsg: String = '');</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#IncClientReadThreads">IncClientReadThreads</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#DecClientReadThreads">DecClientReadThreads</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetClientReadThreads">GetClientReadThreads</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#AddToIncoming-Integer-String-">AddToIncoming</a></strong>(Index: Integer; texto: String);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#GetIncoming-Integer-">GetIncoming</a></strong>(Index: Integer): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#LengthIncoming-Integer-">LengthIncoming</a></strong>(Index: Integer): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#ClearIncoming-Integer-">ClearIncoming</a></strong>(Index: Integer);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#UpdateBotData-String-">UpdateBotData</a></strong>(IPUser: String);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#DeleteBots">DeleteBots</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#BotExists-String-">BotExists</a></strong>(IPUser: String): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#FillNodeList">FillNodeList</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#NodesListLen">NodesListLen</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="NosoNetwork.html#NodesIndex-Integer-">NodesIndex</a></strong>(lIndex: Integer): <a href="NosoNetwork.TNodeData.html">TNodeData</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#InitializeElements">InitializeElements</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="NosoNetwork.html#ClearElements">ClearElements</a></strong>();</code></td>
+</tr>
+</table>
+<span id="PasDoc-Constants"></span><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a></strong> = 99;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#Protocolo">Protocolo</a></strong> = 2;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#MainnetVersion">MainnetVersion</a></strong> = '0.4.4';</code></td>
+</tr>
+</table>
+<span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#Conexiones">Conexiones</a></strong>: array [1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of <a href="NosoNetwork.Tconectiondata.html">Tconectiondata</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#SlotLines">SlotLines</a></strong>: array [1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of TStringList;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#CanalCliente">CanalCliente</a></strong>: array [1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of TIdTCPClient;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#ArrayOutgoing">ArrayOutgoing</a></strong>: array [1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of array of String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#BotsList">BotsList</a></strong>: array of <a href="NosoNetwork.TBotData.html">TBotData</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#ArrayPoolTXs">ArrayPoolTXs</a></strong>: array of <a href="nosogeneral.TOrderData.html">TOrderData</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#ArrayMultiTXs">ArrayMultiTXs</a></strong>: array of <a href="nosogeneral.TMultiOrder.html">TMultiOrder</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#DownloadHeaders">DownloadHeaders</a></strong>: Boolean = False;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#DownloadSumary">DownloadSumary</a></strong>: Boolean = False;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#DownLoadBlocks">DownLoadBlocks</a></strong>: Boolean = False;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#DownLoadGVTs">DownLoadGVTs</a></strong>: Boolean = False;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#DownloadPSOs">DownloadPSOs</a></strong>: Boolean = False;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastTimeMNHashRequestes">LastTimeMNHashRequestes</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastTimeBestHashRequested">LastTimeBestHashRequested</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastTimeMNsRequested">LastTimeMNsRequested</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastTimeChecksRequested">LastTimeChecksRequested</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastRunMNVerification">LastRunMNVerification</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LasTimeGVTsRequest">LasTimeGVTsRequest</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastTimeRequestSumary">LastTimeRequestSumary</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastTimeRequestBlock">LastTimeRequestBlock</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastTimeRequestResumen">LastTimeRequestResumen</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastTimePendingRequested">LastTimePendingRequested</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LasTimePSOsRequest">LasTimePSOsRequest</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastBotClear">LastBotClear</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#ForceCompleteHeadersDownload">ForceCompleteHeadersDownload</a></strong>: Boolean = False;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#G_MNVerifications">G_MNVerifications</a></strong>: Integer = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#MyLastBlock">MyLastBlock</a></strong>: Integer = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#MyLastBlockHash">MyLastBlockHash</a></strong>: String = '';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#MyPublicIP">MyPublicIP</a></strong>: String = '';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#LastBlockData">LastBlockData</a></strong>: <a href="NosoBlock.BlockHeaderData.html">BlockHeaderData</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#OpenReadClientThreads">OpenReadClientThreads</a></strong>: Integer = 0;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#CSClientReads">CSClientReads</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#CSIncomingArr">CSIncomingArr</a></strong>: array[1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#CSOutGoingArr">CSOutGoingArr</a></strong>: array[1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#CSConexiones">CSConexiones</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#CSBotsList">CSBotsList</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#CSPending">CSPending</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#CS_MultiTRX">CS_MultiTRX</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#NodesList">NodesList</a></strong>: array of <a href="NosoNetwork.TNodeData.html">TNodeData</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#CSNodesList">CSNodesList</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoNetwork.html#NodeServer">NodeServer</a></strong>: TIdTCPServer;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPendingCount"></span><code>function <strong>GetPendingCount</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+To be removed, only due to server dependancy until it is implemented</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearAllPending"></span><code>procedure <strong>ClearAllPending</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Clear the pending transactions array safely</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SendPendingsToPeer-Int64-"></span><code>procedure <strong>SendPendingsToPeer</strong>(Slot: Int64);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Send pending transactions to peer, former PTC_SendPending</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TranxAlreadyPending-String-"></span><code>function <strong>TranxAlreadyPending</strong>(TrxHash: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AddArrayPoolTXs-TOrderData-"></span><code>function <strong>AddArrayPoolTXs</strong>(order: <a href="nosogeneral.TOrderData.html">TOrderData</a>): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Add a new trx to the pending pool</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TrxExistsInLastBlock-String-"></span><code>function <strong>TrxExistsInLastBlock</strong>(trfrhash: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Check if the TRxID exists in the last block</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPTCEcn"></span><code>function <strong>GetPTCEcn</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns <a class="normal" href="NosoNetwork.html#Protocolo">protocolo</a> message header</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsValidProtocol-String-"></span><code>function <strong>IsValidProtocol</strong>(line: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPingString"></span><code>function <strong>GetPingString</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ProtocolLine-Integer-"></span><code>function <strong>ProtocolLine</strong>(LCode: Integer): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ProcessPing-String-Integer-Boolean-"></span><code>procedure <strong>ProcessPing</strong>(LineaDeTexto: String; Slot: Integer; Responder: Boolean);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ProcessIncomingLine-Integer-String-"></span><code>procedure <strong>ProcessIncomingLine</strong>(FSlot: Integer; LLine: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SendMNsListToPeer-Integer-"></span><code>procedure <strong>SendMNsListToPeer</strong>(slot: Integer);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SendMNChecksToPeer-Integer-"></span><code>procedure <strong>SendMNChecksToPeer</strong>(Slot: Integer);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetVerificationMNLine-String-"></span><code>function <strong>GetVerificationMNLine</strong>(ToIp: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsAllSynced"></span><code>function <strong>IsAllSynced</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetSyncTus"></span><code>function <strong>GetSyncTus</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearOutTextToSlot-Integer-"></span><code>procedure <strong>ClearOutTextToSlot</strong>(slot: Integer);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetTextToSlot-Integer-"></span><code>function <strong>GetTextToSlot</strong>(slot: Integer): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TextToSlot-Integer-String-"></span><code>procedure <strong>TextToSlot</strong>(Slot: Integer; LText: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetConexIndex-Integer-"></span><code>function <strong>GetConexIndex</strong>(Slot: Integer): <a href="NosoNetwork.Tconectiondata.html">Tconectiondata</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetConexIndex-Integer-Tconectiondata-"></span><code>procedure <strong>SetConexIndex</strong>(Slot: Integer; LData: <a href="NosoNetwork.Tconectiondata.html">Tconectiondata</a>);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetConexIndexBusy-Integer-Boolean-"></span><code>procedure <strong>SetConexIndexBusy</strong>(LSlot: Integer; Value: Boolean);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetConexIndexLastPing-Integer-String-"></span><code>procedure <strong>SetConexIndexLastPing</strong>(LSlot: Integer; Value: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetConexReserved-Integer-Boolean-"></span><code>procedure <strong>SetConexReserved</strong>(LSlot: Integer; Reserved: Boolean);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="StartConexThread-Integer-"></span><code>procedure <strong>StartConexThread</strong>(LSlot: Integer);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CloseSlot-Integer-"></span><code>procedure <strong>CloseSlot</strong>(Slot: Integer);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetTotalConexiones"></span><code>function <strong>GetTotalConexiones</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsSlotConnected-Integer-"></span><code>function <strong>IsSlotConnected</strong>(number: Integer): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UpdateMyData"></span><code>procedure <strong>UpdateMyData</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Updates local data hashes</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsValidator-String-"></span><code>function <strong>IsValidator</strong>(Ip: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ValidateMNCheck-String-"></span><code>function <strong>ValidateMNCheck</strong>(Linea: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Verify if a validation report is correct</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="InitNodeServer"></span><code>procedure <strong>InitNodeServer</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClientsCount"></span><code>function <strong>ClientsCount</strong>: Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+returns the number of active connections</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TryMessageToClient-TIdContext-String-"></span><code>function <strong>TryMessageToClient</strong>(AContext: TIdContext; message: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Try message to client safely</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetStreamFromClient-TIdContext-TMemoryStream-"></span><code>function <strong>GetStreamFromClient</strong>(AContext: TIdContext; out LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Get stream from client</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TryCloseServerConnection-TIdContext-String-"></span><code>procedure <strong>TryCloseServerConnection</strong>(AContext: TIdContext; closemsg: String = '');</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Trys to close a server connection safely</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IncClientReadThreads"></span><code>procedure <strong>IncClientReadThreads</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Procedure ProcessLine(LLine:String;)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DecClientReadThreads"></span><code>procedure <strong>DecClientReadThreads</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetClientReadThreads"></span><code>function <strong>GetClientReadThreads</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AddToIncoming-Integer-String-"></span><code>procedure <strong>AddToIncoming</strong>(Index: Integer; texto: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetIncoming-Integer-"></span><code>function <strong>GetIncoming</strong>(Index: Integer): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LengthIncoming-Integer-"></span><code>function <strong>LengthIncoming</strong>(Index: Integer): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearIncoming-Integer-"></span><code>procedure <strong>ClearIncoming</strong>(Index: Integer);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UpdateBotData-String-"></span><code>procedure <strong>UpdateBotData</strong>(IPUser: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DeleteBots"></span><code>procedure <strong>DeleteBots</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BotExists-String-"></span><code>function <strong>BotExists</strong>(IPUser: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FillNodeList"></span><code>procedure <strong>FillNodeList</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NodesListLen"></span><code>function <strong>NodesListLen</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NodesIndex-Integer-"></span><code>function <strong>NodesIndex</strong>(lIndex: Integer): <a href="NosoNetwork.TNodeData.html">TNodeData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="InitializeElements"></span><code>procedure <strong>InitializeElements</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearElements"></span><code>procedure <strong>ClearElements</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MaxConecciones"></span><code><strong>MaxConecciones</strong> = 99;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="Protocolo"></span><code><strong>Protocolo</strong> = 2;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MainnetVersion"></span><code><strong>MainnetVersion</strong> = '0.4.4';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="Conexiones"></span><code><strong>Conexiones</strong>: array [1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of <a href="NosoNetwork.Tconectiondata.html">Tconectiondata</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+General</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SlotLines"></span><code><strong>SlotLines</strong>: array [1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of TStringList;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CanalCliente"></span><code><strong>CanalCliente</strong>: array [1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of TIdTCPClient;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ArrayOutgoing"></span><code><strong>ArrayOutgoing</strong>: array [1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of array of String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BotsList"></span><code><strong>BotsList</strong>: array of <a href="NosoNetwork.TBotData.html">TBotData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ArrayPoolTXs"></span><code><strong>ArrayPoolTXs</strong>: array of <a href="nosogeneral.TOrderData.html">TOrderData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ArrayMultiTXs"></span><code><strong>ArrayMultiTXs</strong>: array of <a href="nosogeneral.TMultiOrder.html">TMultiOrder</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DownloadHeaders"></span><code><strong>DownloadHeaders</strong>: Boolean = False;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Donwloading files</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DownloadSumary"></span><code><strong>DownloadSumary</strong>: Boolean = False;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DownLoadBlocks"></span><code><strong>DownLoadBlocks</strong>: Boolean = False;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DownLoadGVTs"></span><code><strong>DownLoadGVTs</strong>: Boolean = False;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DownloadPSOs"></span><code><strong>DownloadPSOs</strong>: Boolean = False;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastTimeMNHashRequestes"></span><code><strong>LastTimeMNHashRequestes</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Last time files request</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastTimeBestHashRequested"></span><code><strong>LastTimeBestHashRequested</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastTimeMNsRequested"></span><code><strong>LastTimeMNsRequested</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastTimeChecksRequested"></span><code><strong>LastTimeChecksRequested</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastRunMNVerification"></span><code><strong>LastRunMNVerification</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LasTimeGVTsRequest"></span><code><strong>LasTimeGVTsRequest</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastTimeRequestSumary"></span><code><strong>LastTimeRequestSumary</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastTimeRequestBlock"></span><code><strong>LastTimeRequestBlock</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastTimeRequestResumen"></span><code><strong>LastTimeRequestResumen</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastTimePendingRequested"></span><code><strong>LastTimePendingRequested</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LasTimePSOsRequest"></span><code><strong>LasTimePSOsRequest</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastBotClear"></span><code><strong>LastBotClear</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ForceCompleteHeadersDownload"></span><code><strong>ForceCompleteHeadersDownload</strong>: Boolean = False;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="G_MNVerifications"></span><code><strong>G_MNVerifications</strong>: Integer = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MyLastBlock"></span><code><strong>MyLastBlock</strong>: Integer = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Local data hashes</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MyLastBlockHash"></span><code><strong>MyLastBlockHash</strong>: String = '';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MyPublicIP"></span><code><strong>MyPublicIP</strong>: String = '';</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+<a class="normal" href="nosogvts.html#MyGVTsHash">MyGVTsHash</a> : string = ''; <a class="normal" href="NosoNosoCFG.html#MyCFGHash">MyCFGHash</a> : string = '';</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastBlockData"></span><code><strong>LastBlockData</strong>: <a href="NosoBlock.BlockHeaderData.html">BlockHeaderData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Local information</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="OpenReadClientThreads"></span><code><strong>OpenReadClientThreads</strong>: Integer = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSClientReads"></span><code><strong>CSClientReads</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Critical sections</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSIncomingArr"></span><code><strong>CSIncomingArr</strong>: array[1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSOutGoingArr"></span><code><strong>CSOutGoingArr</strong>: array[1..<a href="NosoNetwork.html#MaxConecciones">MaxConecciones</a>] of TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSConexiones"></span><code><strong>CSConexiones</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSBotsList"></span><code><strong>CSBotsList</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSPending"></span><code><strong>CSPending</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CS_MultiTRX"></span><code><strong>CS_MultiTRX</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NodesList"></span><code><strong>NodesList</strong>: array of <a href="NosoNetwork.TNodeData.html">TNodeData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+<a class="normal" href="mpProtocol.html#Nodes">nodes</a> list</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSNodesList"></span><code><strong>CSNodesList</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NodeServer"></span><code><strong>NodeServer</strong>: TIdTCPServer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Node server</p>
+</td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

@@ -34,46 +34,46 @@
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosogvts.html#CreateGVTsFile">CreateGVTsFile</a></strong>():boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosogvts.html#CreateGVTsFile">CreateGVTsFile</a></strong>(): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosogvts.html#GetGVTsAsStream-TMemoryStream-">GetGVTsAsStream</a></strong>(out LStream:TMemoryStream):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosogvts.html#GetGVTsAsStream-TMemoryStream-">GetGVTsAsStream</a></strong>(out LStream: TMemoryStream): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosogvts.html#SaveStreamAsGVTs-TMemoryStream-">SaveStreamAsGVTs</a></strong>(Const LStream:TMemoryStream):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosogvts.html#SaveStreamAsGVTs-TMemoryStream-">SaveStreamAsGVTs</a></strong>(const LStream: TMemoryStream): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosogvts.html#GetGVTsFileData">GetGVTsFileData</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosogvts.html#GetGVTsFileData">GetGVTsFileData</a></strong>();</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosogvts.html#SaveGVTs">SaveGVTs</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosogvts.html#SaveGVTs">SaveGVTs</a></strong>();</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosogvts.html#ChangeGVTOwner-integer-String-String-">ChangeGVTOwner</a></strong>(Lnumber:integer;OldOwner,NewOWner:String): integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosogvts.html#ChangeGVTOwner-Integer-String-String-">ChangeGVTOwner</a></strong>(Lnumber: Integer; OldOwner, NewOWner: String): Integer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosogvts.html#GetGVTIndex-Integer-">GetGVTIndex</a></strong>(Index:Integer):<a href="nosogvts.TGVT.html">TGVT</a>;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosogvts.html#GetGVTIndex-Integer-">GetGVTIndex</a></strong>(Index: Integer): <a href="nosogvts.TGVT.html">TGVT</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosogvts.html#GetGVTLength">GetGVTLength</a></strong>:integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosogvts.html#GetGVTLength">GetGVTLength</a></strong>: Integer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosogvts.html#CountAvailableGVTs">CountAvailableGVTs</a></strong>():Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosogvts.html#CountAvailableGVTs">CountAvailableGVTs</a></strong>(): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosogvts.html#GetGVTPrice-integer-boolean-">GetGVTPrice</a></strong>(available:integer;ToSell:boolean = false):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosogvts.html#GetGVTPrice-Integer-Boolean-">GetGVTPrice</a></strong>(available: Integer; ToSell: Boolean = False): Int64;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Constants"></span><h3 class="summary">Constants</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosogvts.html#GVTBaseValue">GVTBaseValue</a></strong>     = 70000000000;</code></td>
+<td class="itemcode"><code><strong><a href="nosogvts.html#GVTBaseValue">GVTBaseValue</a></strong> = 70000000000;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosogvts.html#GVTsFilename">GVTsFilename</a></strong>: string= 'NOSODATA'+DirectorySeparator+'gvts.psk';</code></td>
+<td class="itemcode"><code><strong><a href="nosogvts.html#GVTsFilename">GVTsFilename</a></strong>: String = 'NOSODATA' + DirectorySeparator + 'gvts.psk';</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><strong><a href="nosogvts.html#FileGVTs">FileGVTs</a></strong>: file of <a href="nosogvts.TGVT.html">TGVT</a>;</code></td>
@@ -88,14 +88,14 @@
 <td class="itemcode"><code><strong><a href="nosogvts.html#CSGVTsFile">CSGVTsFile</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosogvts.html#MyGVTsHash">MyGVTsHash</a></strong>: string = '';</code></td>
+<td class="itemcode"><code><strong><a href="nosogvts.html#MyGVTsHash">MyGVTsHash</a></strong>: String = '';</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CreateGVTsFile"></span><code>Function <strong>CreateGVTsFile</strong>():boolean;</code></td>
+<td class="itemcode"><span id="CreateGVTsFile"></span><code>function <strong>CreateGVTsFile</strong>(): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -104,7 +104,7 @@ Creates a GVTs file. If it already exists, rewrite a new empty one.</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetGVTsAsStream-TMemoryStream-"></span><code>Function <strong>GetGVTsAsStream</strong>(out LStream:TMemoryStream):int64;</code></td>
+<td class="itemcode"><span id="GetGVTsAsStream-TMemoryStream-"></span><code>function <strong>GetGVTsAsStream</strong>(out LStream: TMemoryStream): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -113,7 +113,7 @@ Loads the GVTs file into a stream</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SaveStreamAsGVTs-TMemoryStream-"></span><code>Function <strong>SaveStreamAsGVTs</strong>(Const LStream:TMemoryStream):Boolean;</code></td>
+<td class="itemcode"><span id="SaveStreamAsGVTs-TMemoryStream-"></span><code>function <strong>SaveStreamAsGVTs</strong>(const LStream: TMemoryStream): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -122,49 +122,49 @@ Save a stream as the GVT file</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetGVTsFileData"></span><code>Procedure <strong>GetGVTsFileData</strong>();</code></td>
+<td class="itemcode"><span id="GetGVTsFileData"></span><code>procedure <strong>GetGVTsFileData</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SaveGVTs"></span><code>Procedure <strong>SaveGVTs</strong>();</code></td>
+<td class="itemcode"><span id="SaveGVTs"></span><code>procedure <strong>SaveGVTs</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ChangeGVTOwner-integer-String-String-"></span><code>Function <strong>ChangeGVTOwner</strong>(Lnumber:integer;OldOwner,NewOWner:String): integer;</code></td>
+<td class="itemcode"><span id="ChangeGVTOwner-Integer-String-String-"></span><code>function <strong>ChangeGVTOwner</strong>(Lnumber: Integer; OldOwner, NewOWner: String): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetGVTIndex-Integer-"></span><code>Function <strong>GetGVTIndex</strong>(Index:Integer):<a href="nosogvts.TGVT.html">TGVT</a>;</code></td>
+<td class="itemcode"><span id="GetGVTIndex-Integer-"></span><code>function <strong>GetGVTIndex</strong>(Index: Integer): <a href="nosogvts.TGVT.html">TGVT</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetGVTLength"></span><code>Function <strong>GetGVTLength</strong>:integer;</code></td>
+<td class="itemcode"><span id="GetGVTLength"></span><code>function <strong>GetGVTLength</strong>: Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CountAvailableGVTs"></span><code>Function <strong>CountAvailableGVTs</strong>():Integer;</code></td>
+<td class="itemcode"><span id="CountAvailableGVTs"></span><code>function <strong>CountAvailableGVTs</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetGVTPrice-integer-boolean-"></span><code>Function <strong>GetGVTPrice</strong>(available:integer;ToSell:boolean = false):int64;</code></td>
+<td class="itemcode"><span id="GetGVTPrice-Integer-Boolean-"></span><code>function <strong>GetGVTPrice</strong>(available: Integer; ToSell: Boolean = False): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -172,7 +172,7 @@ Save a stream as the GVT file</p>
 <h3 class="detail">Constants</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GVTBaseValue"></span><code><strong>GVTBaseValue</strong>     = 70000000000;</code></td>
+<td class="itemcode"><span id="GVTBaseValue"></span><code><strong>GVTBaseValue</strong> = 70000000000;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -180,7 +180,7 @@ Save a stream as the GVT file</p>
 <h3 class="detail">Variables</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GVTsFilename"></span><code><strong>GVTsFilename</strong>: string= 'NOSODATA'+DirectorySeparator+'gvts.psk';</code></td>
+<td class="itemcode"><span id="GVTsFilename"></span><code><strong>GVTsFilename</strong>: String = 'NOSODATA' + DirectorySeparator + 'gvts.psk';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -215,7 +215,7 @@ Save a stream as the GVT file</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="MyGVTsHash"></span><code><strong>MyGVTsHash</strong>: string = '';</code></td>
+<td class="itemcode"><span id="MyGVTsHash"></span><code><strong>MyGVTsHash</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>

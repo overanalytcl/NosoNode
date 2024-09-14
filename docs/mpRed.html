@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: mpRed</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit mpRed</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section">Classes, Interfaces, Objects and Records</div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section">Constants</div><div class="one_section">Variables</div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>Forms</li><li>SysUtils</li><li><a href="MasterPaskalForm.html">MasterPaskalForm</a></li><li><a href="NosoTime.html">nosotime</a></li><li>IdContext</li><li>IdGlobal</li><li><a href="mpGUI.html">mpGUI</a></li><li><a href="mpdisk.html">mpDisk</a></li><li><a href="mpBlock.html">mpBlock</a></li><li>fileutil</li><li>Graphics</li><li>Dialogs</li><li>strutils</li><li><a href="mpCoin.html">mpcoin</a></li><li>fphttpclient</li><li>opensslsockets</li><li><a href="translation.html">translation</a></li><li>IdHTTP</li><li>IdComponent</li><li>IdSSLOpenSSL</li><li>IdTCPClient</li><li><a href="nosodebug.html">nosodebug</a></li><li><a href="nosogeneral.html">nosogeneral</a></li><li><a href="nosocrypto.html">nosocrypto</a></li><li><a href="nosounit.html">nosounit</a></li><li><a href="nosoconsensus.html">nosoconsensus</a></li><li><a href="nosopsos.html">nosopsos</a></li><li><a href="NosoWallCon.html">nosowallcon</a></li><li><a href="NosoHeaders.html">nosoheaders</a></li><li><a href="NosoBlock.html">nosoblock</a></li><li><a href="NosoNosoCFG.html">nosonosocfg</a></li><li><a href="NosoNetwork.html">nosonetwork</a></li><li><a href="nosogvts.html">nosogvts</a></li><li><a href="nosomasternodes.html">nosomasternodes</a></li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetSlotFromIP-String-">GetSlotFromIP</a></strong>(Ip: String): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetSlotFromContext-TidContext-">GetSlotFromContext</a></strong>(Context: TidContext): Int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#SaveConection-String-String-TIdContext-Integer-">SaveConection</a></strong>(tipo, ipuser: String; contextdata: TIdContext; toSlot: Integer = -1): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="mpRed.html#ForceServer">ForceServer</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="mpRed.html#StartServer">StartServer</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#StopServer">StopServer</a></strong>(): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#IsSlotFree-Integer-">IsSlotFree</a></strong>(number: Integer): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetFreeSlot">GetFreeSlot</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#ReserveSlot">ReserveSlot</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#ConnectClient-String-String-">ConnectClient</a></strong>(Address, Port: String): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetTotalSyncedConnections">GetTotalSyncedConnections</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#CerrarClientes-Boolean-">CerrarClientes</a></strong>(ServerToo: Boolean = True): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="mpRed.html#LeerLineasDeClientes">LeerLineasDeClientes</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="mpRed.html#VerifyConnectionStatus">VerifyConnectionStatus</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="mpRed.html#SyncWithMainnet">SyncWithMainnet</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetOutGoingConnections">GetOutGoingConnections</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetIncomingConnections">GetIncomingConnections</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetSeedConnections">GetSeedConnections</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetValidSlotForSeed-Integer-">GetValidSlotForSeed</a></strong>(out Slot: Integer): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetOrderDetails-String-">GetOrderDetails</a></strong>(orderid: String): <a href="nosounit.TOrderGroup.html">TOrderGroup</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetOrderSources-String-">GetOrderSources</a></strong>(orderid: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetNodeStatusString">GetNodeStatusString</a></strong>(): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#IsSafeIP-String-">IsSafeIP</a></strong>(IP: String): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetLastRelease">GetLastRelease</a></strong>(): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetRepoFile-String-">GetRepoFile</a></strong>(LurL: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetOS">GetOS</a></strong>(): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetLastVerZipFile-String-String-">GetLastVerZipFile</a></strong>(version, LocalOS: String): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#GetMiIP">GetMiIP</a></strong>(): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#NodeServerInfo">NodeServerInfo</a></strong>(): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="mpRed.html#ClearReceivedOrdersIDs">ClearReceivedOrdersIDs</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRed.html#SendOrderToNode-String-">SendOrderToNode</a></strong>(OrderString: String): String;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetSlotFromIP-String-"></span><code>function <strong>GetSlotFromIP</strong>(Ip: String): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+RETURNS THE SLOT OF THE GIVEN IP</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetSlotFromContext-TidContext-"></span><code>function <strong>GetSlotFromContext</strong>(Context: TidContext): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+RETURNS THE SLOT OF THE GIVEN CONTEXT</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SaveConection-String-String-TIdContext-Integer-"></span><code>function <strong>SaveConection</strong>(tipo, ipuser: String; contextdata: TIdContext; toSlot: Integer = -1): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+function <a class="normal" href="NosoNetwork.html#BotExists-String-">BotExists</a>(IPUser:String):Boolean; function NodeExists(IPUser,Port:String):integer;</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ForceServer"></span><code>procedure <strong>ForceServer</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="StartServer"></span><code>procedure <strong>StartServer</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Activa el servidor</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="StopServer"></span><code>function <strong>StopServer</strong>(): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Apaga el servidor</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsSlotFree-Integer-"></span><code>function <strong>IsSlotFree</strong>(number: Integer): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+procedure <a class="normal" href="NosoNetwork.html#CloseSlot-Integer-">CloseSlot</a>(Slot:integer);</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetFreeSlot"></span><code>function <strong>GetFreeSlot</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Function <a class="normal" href="NosoNetwork.html#IsSlotConnected-Integer-">IsSlotConnected</a>(number:integer):Boolean;</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ReserveSlot"></span><code>function <strong>ReserveSlot</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Reserves the first available slot</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ConnectClient-String-String-"></span><code>function <strong>ConnectClient</strong>(Address, Port: String): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Connects a client and returns the slot</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetTotalSyncedConnections"></span><code>function <strong>GetTotalSyncedConnections</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+function <a class="normal" href="NosoNetwork.html#GetTotalConexiones">GetTotalConexiones</a>():integer; function GetTotalVerifiedConnections():Integer;</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CerrarClientes-Boolean-"></span><code>function <strong>CerrarClientes</strong>(ServerToo: Boolean = True): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Close all outgoing connections</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LeerLineasDeClientes"></span><code>procedure <strong>LeerLineasDeClientes</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+This needs to be included on peers threads</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="VerifyConnectionStatus"></span><code>procedure <strong>VerifyConnectionStatus</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Checks the current connection status (0-3)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SyncWithMainnet"></span><code>procedure <strong>SyncWithMainnet</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Function <a class="normal" href="NosoNetwork.html#IsAllSynced">IsAllSynced</a>():integer; Procedure <a class="normal" href="NosoNetwork.html#UpdateMyData">UpdateMyData</a>();</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetOutGoingConnections"></span><code>function <strong>GetOutGoingConnections</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetIncomingConnections"></span><code>function <strong>GetIncomingConnections</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetSeedConnections"></span><code>function <strong>GetSeedConnections</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetValidSlotForSeed-Integer-"></span><code>function <strong>GetValidSlotForSeed</strong>(out Slot: Integer): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetOrderDetails-String-"></span><code>function <strong>GetOrderDetails</strong>(orderid: String): <a href="nosounit.TOrderGroup.html">TOrderGroup</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetOrderSources-String-"></span><code>function <strong>GetOrderSources</strong>(orderid: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetNodeStatusString"></span><code>function <strong>GetNodeStatusString</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsSafeIP-String-"></span><code>function <strong>IsSafeIP</strong>(IP: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetLastRelease"></span><code>function <strong>GetLastRelease</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetRepoFile-String-"></span><code>function <strong>GetRepoFile</strong>(LurL: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetOS"></span><code>function <strong>GetOS</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Retrieves the OS for download the lastest version</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetLastVerZipFile-String-String-"></span><code>function <strong>GetLastVerZipFile</strong>(version, LocalOS: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetMiIP"></span><code>function <strong>GetMiIP</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Function <a class="normal" href="NosoNetwork.html#GetSyncTus">GetSyncTus</a>():String;</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NodeServerInfo"></span><code>function <strong>NodeServerInfo</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearReceivedOrdersIDs"></span><code>procedure <strong>ClearReceivedOrdersIDs</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SendOrderToNode-String-"></span><code>function <strong>SendOrderToNode</strong>(OrderString: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Sends a order to the mainnet</p>
+</td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

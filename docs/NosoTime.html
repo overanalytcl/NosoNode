@@ -34,53 +34,53 @@
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="NosoTime.html#GetNetworkTimestamp-string-">GetNetworkTimestamp</a></strong>(hostname:string):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoTime.html#GetNetworkTimestamp-String-">GetNetworkTimestamp</a></strong>(hostname: String): Int64;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="NosoTime.html#TimestampToDate-int64-">TimestampToDate</a></strong>(timestamp:int64):String;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoTime.html#TimestampToDate-Int64-">TimestampToDate</a></strong>(timestamp: Int64): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="NosoTime.html#GetTimeOffset-String-">GetTimeOffset</a></strong>(NTPServers:String):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoTime.html#GetTimeOffset-String-">GetTimeOffset</a></strong>(NTPServers: String): Int64;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="NosoTime.html#UTCTime">UTCTime</a></strong>:Int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoTime.html#UTCTime">UTCTime</a></strong>: Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="NosoTime.html#UTCTimeStr">UTCTimeStr</a></strong>:String;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoTime.html#UTCTimeStr">UTCTimeStr</a></strong>: String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="NosoTime.html#UpdateOffset-String-">UpdateOffset</a></strong>(NTPServers:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="NosoTime.html#UpdateOffset-String-">UpdateOffset</a></strong>(NTPServers: String);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="NosoTime.html#TimeSinceStamp-int64-">TimeSinceStamp</a></strong>(Lvalue:int64):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoTime.html#TimeSinceStamp-Int64-">TimeSinceStamp</a></strong>(Lvalue: Int64): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="NosoTime.html#BlockAge">BlockAge</a></strong>():integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoTime.html#BlockAge">BlockAge</a></strong>(): Integer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="NosoTime.html#NextBlockTimeStamp">NextBlockTimeStamp</a></strong>():Int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoTime.html#NextBlockTimeStamp">NextBlockTimeStamp</a></strong>(): Int64;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="NosoTime.html#IsBlockOpen">IsBlockOpen</a></strong>():boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoTime.html#IsBlockOpen">IsBlockOpen</a></strong>(): Boolean;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><strong><a href="NosoTime.html#NosoT_TimeOffset">NosoT_TimeOffset</a></strong>: int64 = 0;</code></td>
+<td class="itemcode"><code><strong><a href="NosoTime.html#NosoT_TimeOffset">NosoT_TimeOffset</a></strong>: Int64 = 0;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="NosoTime.html#NosoT_LastServer">NosoT_LastServer</a></strong>: string = '';</code></td>
+<td class="itemcode"><code><strong><a href="NosoTime.html#NosoT_LastServer">NosoT_LastServer</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="NosoTime.html#NosoT_LastUpdate">NosoT_LastUpdate</a></strong>: int64 = 0;</code></td>
+<td class="itemcode"><code><strong><a href="NosoTime.html#NosoT_LastUpdate">NosoT_LastUpdate</a></strong>: Int64 = 0;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetNetworkTimestamp-string-"></span><code>Function <strong>GetNetworkTimestamp</strong>(hostname:string):int64;</code></td>
+<td class="itemcode"><span id="GetNetworkTimestamp-String-"></span><code>function <strong>GetNetworkTimestamp</strong>(hostname: String): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -89,7 +89,7 @@ Returns the data from the specified NTP server [Hostname]</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="TimestampToDate-int64-"></span><code>function <strong>TimestampToDate</strong>(timestamp:int64):String;</code></td>
+<td class="itemcode"><span id="TimestampToDate-Int64-"></span><code>function <strong>TimestampToDate</strong>(timestamp: Int64): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -98,7 +98,7 @@ Returns a UNIX timestamp in a human readeable format</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetTimeOffset-String-"></span><code>Function <strong>GetTimeOffset</strong>(NTPServers:String):int64;</code></td>
+<td class="itemcode"><span id="GetTimeOffset-String-"></span><code>function <strong>GetTimeOffset</strong>(NTPServers: String): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -107,7 +107,7 @@ Uses a random NTP server from the list provided to set the value of the local va
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="UTCTime"></span><code>Function <strong>UTCTime</strong>:Int64;</code></td>
+<td class="itemcode"><span id="UTCTime"></span><code>function <strong>UTCTime</strong>: Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -116,7 +116,7 @@ Returns the UTC UNIX timestamp</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="UTCTimeStr"></span><code>Function <strong>UTCTimeStr</strong>:String;</code></td>
+<td class="itemcode"><span id="UTCTimeStr"></span><code>function <strong>UTCTimeStr</strong>: String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -125,7 +125,7 @@ Implemented for easy compatibility with nosowallet</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="UpdateOffset-String-"></span><code>Procedure <strong>UpdateOffset</strong>(NTPServers:String);</code></td>
+<td class="itemcode"><span id="UpdateOffset-String-"></span><code>procedure <strong>UpdateOffset</strong>(NTPServers: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -134,7 +134,7 @@ Implemented to allow an async update of the offset; can be called every 5 second
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="TimeSinceStamp-int64-"></span><code>function <strong>TimeSinceStamp</strong>(Lvalue:int64):string;</code></td>
+<td class="itemcode"><span id="TimeSinceStamp-Int64-"></span><code>function <strong>TimeSinceStamp</strong>(Lvalue: Int64): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -143,7 +143,7 @@ Tool: returns a simple string with the time elapsed since the provided timestamp
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="BlockAge"></span><code>Function <strong>BlockAge</strong>():integer;</code></td>
+<td class="itemcode"><span id="BlockAge"></span><code>function <strong>BlockAge</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -152,7 +152,7 @@ Return the current block age</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="NextBlockTimeStamp"></span><code>Function <strong>NextBlockTimeStamp</strong>():Int64;</code></td>
+<td class="itemcode"><span id="NextBlockTimeStamp"></span><code>function <strong>NextBlockTimeStamp</strong>(): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -161,7 +161,7 @@ Returns the expected timestamp for next block</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="IsBlockOpen"></span><code>Function <strong>IsBlockOpen</strong>():boolean;</code></td>
+<td class="itemcode"><span id="IsBlockOpen"></span><code>function <strong>IsBlockOpen</strong>(): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -171,21 +171,21 @@ Returns if the current block is in operation period</p>
 <h3 class="detail">Variables</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="NosoT_TimeOffset"></span><code><strong>NosoT_TimeOffset</strong>: int64 = 0;</code></td>
+<td class="itemcode"><span id="NosoT_TimeOffset"></span><code><strong>NosoT_TimeOffset</strong>: Int64 = 0;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="NosoT_LastServer"></span><code><strong>NosoT_LastServer</strong>: string = '';</code></td>
+<td class="itemcode"><span id="NosoT_LastServer"></span><code><strong>NosoT_LastServer</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="NosoT_LastUpdate"></span><code><strong>NosoT_LastUpdate</strong>: int64 = 0;</code></td>
+<td class="itemcode"><span id="NosoT_LastUpdate"></span><code><strong>NosoT_LastUpdate</strong>: Int64 = 0;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>

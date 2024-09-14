@@ -46,52 +46,52 @@
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosodebug.html#BeginPerformance-String-">BeginPerformance</a></strong>(Tag:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosodebug.html#BeginPerformance-String-">BeginPerformance</a></strong>(Tag: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosodebug.html#EndPerformance-String-">EndPerformance</a></strong>(Tag:String):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosodebug.html#EndPerformance-String-">EndPerformance</a></strong>(Tag: String): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosodebug.html#PerformanceToFile-String-">PerformanceToFile</a></strong>(Destination:String):boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosodebug.html#PerformanceToFile-String-">PerformanceToFile</a></strong>(Destination: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosodebug.html#CreateNewLog-string-String-">CreateNewLog</a></strong>(LogName: string; LogFileName:String = '');</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosodebug.html#CreateNewLog-String-String-">CreateNewLog</a></strong>(LogName: String; LogFileName: String = '');</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosodebug.html#ToLog-String-String-">ToLog</a></strong>(LogTag,NewLine : String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosodebug.html#ToLog-String-String-">ToLog</a></strong>(LogTag, NewLine: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosodebug.html#GetLogLine-string-string-">GetLogLine</a></strong>(LogTag:string;out LineContent:string):boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosodebug.html#GetLogLine-String-String-">GetLogLine</a></strong>(LogTag: String; out LineContent: String): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosodebug.html#AddNewOpenThread-String-int64-">AddNewOpenThread</a></strong>(ThName:String;TimeStamp:int64);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosodebug.html#AddNewOpenThread-String-Int64-">AddNewOpenThread</a></strong>(ThName: String; TimeStamp: Int64);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosodebug.html#UpdateOpenThread-String-int64-">UpdateOpenThread</a></strong>(ThName:String;TimeStamp:int64);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosodebug.html#UpdateOpenThread-String-Int64-">UpdateOpenThread</a></strong>(ThName: String; TimeStamp: Int64);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosodebug.html#CloseOpenThread-String-">CloseOpenThread</a></strong>(ThName:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosodebug.html#CloseOpenThread-String-">CloseOpenThread</a></strong>(ThName: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosodebug.html#GetProcessCopy">GetProcessCopy</a></strong>():<a href="nosodebug.html#TProcessCopy">TProcessCopy</a>;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosodebug.html#GetProcessCopy">GetProcessCopy</a></strong>(): <a href="nosodebug.html#TProcessCopy">TProcessCopy</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosodebug.html#AddFileProcess-String-String-String-int64-">AddFileProcess</a></strong>(FiType, FiFile, FiPeer:String;TimeStamp:int64);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosodebug.html#AddFileProcess-String-String-String-Int64-">AddFileProcess</a></strong>(FiType, FiFile, FiPeer: String; TimeStamp: Int64);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosodebug.html#CloseFileProcess-String-String-String-int64-">CloseFileProcess</a></strong>(FiType, FiFile, FiPeer:String;TimeStamp:int64):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosodebug.html#CloseFileProcess-String-String-String-Int64-">CloseFileProcess</a></strong>(FiType, FiFile, FiPeer: String; TimeStamp: Int64): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosodebug.html#GetFileProcessCopy">GetFileProcessCopy</a></strong>():<a href="nosodebug.html#TFileMCopy">TFileMCopy</a>;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosodebug.html#GetFileProcessCopy">GetFileProcessCopy</a></strong>(): <a href="nosodebug.html#TFileMCopy">TFileMCopy</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosodebug.html#InitDeepDeb-String-String-">InitDeepDeb</a></strong>(LFileName:String;SysInfo:String='');</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosodebug.html#InitDeepDeb-String-String-">InitDeepDeb</a></strong>(LFileName: String; SysInfo: String = '');</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosodebug.html#ToDeepDeb-String-">ToDeepDeb</a></strong>(LLine:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosodebug.html#ToDeepDeb-String-">ToDeepDeb</a></strong>(LLine: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosodebug.html#GetDeepDebLine-string-">GetDeepDebLine</a></strong>(out LineContent:string):boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosodebug.html#GetDeepDebLine-String-">GetDeepDebLine</a></strong>(out LineContent: String): Boolean;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
@@ -100,7 +100,7 @@
 <td class="itemcode"><code><strong><a href="nosodebug.html#TProcessCopy">TProcessCopy</a></strong> = array of <a href="nosodebug.TCoreManager.html">TCoreManager</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosodebug.html#TFileMCopy">TFileMCopy</a></strong>   = array of <a href="nosodebug.TFileManager.html">TFileManager</a>;</code></td>
+<td class="itemcode"><code><strong><a href="nosodebug.html#TFileMCopy">TFileMCopy</a></strong> = array of <a href="nosodebug.TFileManager.html">TFileManager</a>;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
@@ -109,10 +109,10 @@
 <td class="itemcode"><code><strong><a href="nosodebug.html#ArrPerformance">ArrPerformance</a></strong>: array of <a href="nosodebug.Tperformance.html">TPerformance</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosodebug.html#NosoDebug_UsePerformance">NosoDebug_UsePerformance</a></strong>: boolean = false;</code></td>
+<td class="itemcode"><code><strong><a href="nosodebug.html#NosoDebug_UsePerformance">NosoDebug_UsePerformance</a></strong>: Boolean = False;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosodebug.html#ArrNDLogs">ArrNDLogs</a></strong>: Array of <a href="nosodebug.TLogND.html">TLogND</a>;</code></td>
+<td class="itemcode"><code><strong><a href="nosodebug.html#ArrNDLogs">ArrNDLogs</a></strong>: array of <a href="nosodebug.TLogND.html">TLogND</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><strong><a href="nosodebug.html#ArrNDCSs">ArrNDCSs</a></strong>: array of TRTLCriticalSection;</code></td>
@@ -121,13 +121,13 @@
 <td class="itemcode"><code><strong><a href="nosodebug.html#ArrNDSLs">ArrNDSLs</a></strong>: array of TStringList;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosodebug.html#ArrProcess">ArrProcess</a></strong>: Array of <a href="nosodebug.TCoreManager.html">TCoreManager</a>;</code></td>
+<td class="itemcode"><code><strong><a href="nosodebug.html#ArrProcess">ArrProcess</a></strong>: array of <a href="nosodebug.TCoreManager.html">TCoreManager</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><strong><a href="nosodebug.html#CS_ThManager">CS_ThManager</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosodebug.html#ArrFileMgr">ArrFileMgr</a></strong>: Array of <a href="nosodebug.TFileManager.html">TFileManager</a>;</code></td>
+<td class="itemcode"><code><strong><a href="nosodebug.html#ArrFileMgr">ArrFileMgr</a></strong>: array of <a href="nosodebug.TFileManager.html">TFileManager</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><strong><a href="nosodebug.html#CS_FileManager">CS_FileManager</a></strong>: TRTLCriticalSection;</code></td>
@@ -146,7 +146,7 @@
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="BeginPerformance-String-"></span><code>Procedure <strong>BeginPerformance</strong>(Tag:String);</code></td>
+<td class="itemcode"><span id="BeginPerformance-String-"></span><code>procedure <strong>BeginPerformance</strong>(Tag: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -155,7 +155,7 @@ Starts a performance measure</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="EndPerformance-String-"></span><code>Function <strong>EndPerformance</strong>(Tag:String):int64;</code></td>
+<td class="itemcode"><span id="EndPerformance-String-"></span><code>function <strong>EndPerformance</strong>(Tag: String): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -164,14 +164,14 @@ Ends a performance</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PerformanceToFile-String-"></span><code>Function <strong>PerformanceToFile</strong>(Destination:String):boolean;</code></td>
+<td class="itemcode"><span id="PerformanceToFile-String-"></span><code>function <strong>PerformanceToFile</strong>(Destination: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CreateNewLog-string-String-"></span><code>Procedure <strong>CreateNewLog</strong>(LogName: string; LogFileName:String = '');</code></td>
+<td class="itemcode"><span id="CreateNewLog-String-String-"></span><code>procedure <strong>CreateNewLog</strong>(LogName: String; LogFileName: String = '');</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -180,7 +180,7 @@ Creates a new log and assigns an optional file to save it</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ToLog-String-String-"></span><code>Procedure <strong>ToLog</strong>(LogTag,NewLine : String);</code></td>
+<td class="itemcode"><span id="ToLog-String-String-"></span><code>procedure <strong>ToLog</strong>(LogTag, NewLine: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -189,7 +189,7 @@ Adds one line to the specified log</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetLogLine-string-string-"></span><code>Function <strong>GetLogLine</strong>(LogTag:string;out LineContent:string):boolean;</code></td>
+<td class="itemcode"><span id="GetLogLine-String-String-"></span><code>function <strong>GetLogLine</strong>(LogTag: String; out LineContent: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -198,70 +198,70 @@ Retireves the oldest line in the specified log, assigning value to LineContent</
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="AddNewOpenThread-String-int64-"></span><code>Procedure <strong>AddNewOpenThread</strong>(ThName:String;TimeStamp:int64);</code></td>
+<td class="itemcode"><span id="AddNewOpenThread-String-Int64-"></span><code>procedure <strong>AddNewOpenThread</strong>(ThName: String; TimeStamp: Int64);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="UpdateOpenThread-String-int64-"></span><code>Procedure <strong>UpdateOpenThread</strong>(ThName:String;TimeStamp:int64);</code></td>
+<td class="itemcode"><span id="UpdateOpenThread-String-Int64-"></span><code>procedure <strong>UpdateOpenThread</strong>(ThName: String; TimeStamp: Int64);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CloseOpenThread-String-"></span><code>Procedure <strong>CloseOpenThread</strong>(ThName:String);</code></td>
+<td class="itemcode"><span id="CloseOpenThread-String-"></span><code>procedure <strong>CloseOpenThread</strong>(ThName: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetProcessCopy"></span><code>Function <strong>GetProcessCopy</strong>():<a href="nosodebug.html#TProcessCopy">TProcessCopy</a>;</code></td>
+<td class="itemcode"><span id="GetProcessCopy"></span><code>function <strong>GetProcessCopy</strong>(): <a href="nosodebug.html#TProcessCopy">TProcessCopy</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="AddFileProcess-String-String-String-int64-"></span><code>Procedure <strong>AddFileProcess</strong>(FiType, FiFile, FiPeer:String;TimeStamp:int64);</code></td>
+<td class="itemcode"><span id="AddFileProcess-String-String-String-Int64-"></span><code>procedure <strong>AddFileProcess</strong>(FiType, FiFile, FiPeer: String; TimeStamp: Int64);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CloseFileProcess-String-String-String-int64-"></span><code>Function <strong>CloseFileProcess</strong>(FiType, FiFile, FiPeer:String;TimeStamp:int64):int64;</code></td>
+<td class="itemcode"><span id="CloseFileProcess-String-String-String-Int64-"></span><code>function <strong>CloseFileProcess</strong>(FiType, FiFile, FiPeer: String; TimeStamp: Int64): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetFileProcessCopy"></span><code>Function <strong>GetFileProcessCopy</strong>():<a href="nosodebug.html#TFileMCopy">TFileMCopy</a>;</code></td>
+<td class="itemcode"><span id="GetFileProcessCopy"></span><code>function <strong>GetFileProcessCopy</strong>(): <a href="nosodebug.html#TFileMCopy">TFileMCopy</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="InitDeepDeb-String-String-"></span><code>Procedure <strong>InitDeepDeb</strong>(LFileName:String;SysInfo:String='');</code></td>
+<td class="itemcode"><span id="InitDeepDeb-String-String-"></span><code>procedure <strong>InitDeepDeb</strong>(LFileName: String; SysInfo: String = '');</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ToDeepDeb-String-"></span><code>Procedure <strong>ToDeepDeb</strong>(LLine:String);</code></td>
+<td class="itemcode"><span id="ToDeepDeb-String-"></span><code>procedure <strong>ToDeepDeb</strong>(LLine: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetDeepDebLine-string-"></span><code>Function <strong>GetDeepDebLine</strong>(out LineContent:string):boolean;</code></td>
+<td class="itemcode"><span id="GetDeepDebLine-String-"></span><code>function <strong>GetDeepDebLine</strong>(out LineContent: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -276,7 +276,7 @@ Retireves the oldest line in the specified log, assigning value to LineContent</
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="TFileMCopy"></span><code><strong>TFileMCopy</strong>   = array of <a href="nosodebug.TFileManager.html">TFileManager</a>;</code></td>
+<td class="itemcode"><span id="TFileMCopy"></span><code><strong>TFileMCopy</strong> = array of <a href="nosodebug.TFileManager.html">TFileManager</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -291,14 +291,14 @@ Retireves the oldest line in the specified log, assigning value to LineContent</
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="NosoDebug_UsePerformance"></span><code><strong>NosoDebug_UsePerformance</strong>: boolean = false;</code></td>
+<td class="itemcode"><span id="NosoDebug_UsePerformance"></span><code><strong>NosoDebug_UsePerformance</strong>: Boolean = False;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ArrNDLogs"></span><code><strong>ArrNDLogs</strong>: Array of <a href="nosodebug.TLogND.html">TLogND</a>;</code></td>
+<td class="itemcode"><span id="ArrNDLogs"></span><code><strong>ArrNDLogs</strong>: array of <a href="nosodebug.TLogND.html">TLogND</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -319,7 +319,7 @@ Retireves the oldest line in the specified log, assigning value to LineContent</
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ArrProcess"></span><code><strong>ArrProcess</strong>: Array of <a href="nosodebug.TCoreManager.html">TCoreManager</a>;</code></td>
+<td class="itemcode"><span id="ArrProcess"></span><code><strong>ArrProcess</strong>: array of <a href="nosodebug.TCoreManager.html">TCoreManager</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -333,7 +333,7 @@ Retireves the oldest line in the specified log, assigning value to LineContent</
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ArrFileMgr"></span><code><strong>ArrFileMgr</strong>: Array of <a href="nosodebug.TFileManager.html">TFileManager</a>;</code></td>
+<td class="itemcode"><span id="ArrFileMgr"></span><code><strong>ArrFileMgr</strong>: array of <a href="nosodebug.TFileManager.html">TFileManager</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>

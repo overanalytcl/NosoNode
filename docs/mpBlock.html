@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: mpBlock</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit mpBlock</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section">Classes, Interfaces, Objects and Records</div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section">Constants</div><div class="one_section">Variables</div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>SysUtils</li><li><a href="MasterPaskalForm.html">MasterPaskalForm</a></li><li>fileutil</li><li><a href="mpCoin.html">mpcoin</a></li><li>Dialogs</li><li>Math</li><li><a href="NosoTime.html">nosotime</a></li><li><a href="nosodebug.html">nosodebug</a></li><li><a href="nosogeneral.html">nosogeneral</a></li><li><a href="nosocrypto.html">nosocrypto</a></li><li><a href="nosounit.html">nosounit</a></li><li>strutils</li><li><a href="nosopsos.html">nosopsos</a></li><li><a href="NosoWallCon.html">nosowallcon</a></li><li><a href="NosoHeaders.html">nosoheaders</a></li><li><a href="NosoBlock.html">nosoblock</a></li><li><a href="NosoNosoCFG.html">nosonosocfg</a></li><li><a href="NosoNetwork.html">nosonetwork</a></li><li><a href="nosogvts.html">nosogvts</a></li><li><a href="nosomasternodes.html">nosomasternodes</a></li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="mpBlock.html#CrearBloqueCero">CrearBloqueCero</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="mpBlock.html#BuildNewBlock-Int64-Int64-String-String-String-">BuildNewBlock</a></strong>(Numero, TimeStamp: Int64; TargetHash, Minero, Solucion: String);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpBlock.html#GetBlockReward-Int64-">GetBlockReward</a></strong>(BlNumber: Int64): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpBlock.html#GuardarBloque-String-BlockHeaderData-arrayofTOrderData-Int64-Integer-arrayofTArrayPos-Int64-Integer-arrayofTArrayPos-">GuardarBloque</a></strong>(NombreArchivo: String; Cabezera: <a href="NosoBlock.BlockHeaderData.html">BlockHeaderData</a>; Ordenes: array of <a href="nosogeneral.TOrderData.html">TOrderData</a>; PosPay: Int64; PoSnumber: Integer; PosAddresses: array of <a href="MasterPaskalForm.TArrayPos.html">TArrayPos</a>; MNsPay: Int64; MNsNumber: Integer; MNsAddresses: array of <a href="MasterPaskalForm.TArrayPos.html">TArrayPos</a>): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="mpBlock.html#UndoneLastBlock">UndoneLastBlock</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpBlock.html#GetBlockPoSes-Integer-">GetBlockPoSes</a></strong>(BlockNumber: Integer): <a href="MasterPaskalForm.html#BlockArraysPos">BlockArraysPos</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpBlock.html#GetBlockMNs-Integer-">GetBlockMNs</a></strong>(BlockNumber: Integer): <a href="MasterPaskalForm.html#BlockArraysPos">BlockArraysPos</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpBlock.html#RemoveBlocks-Int64-">RemoveBlocks</a></strong>(UpToBlock: Int64): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpBlock.html#GEtNSLBlkOrdInfo-String-">GEtNSLBlkOrdInfo</a></strong>(LineText: String): String;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CrearBloqueCero"></span><code>procedure <strong>CrearBloqueCero</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Build the default block 0</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BuildNewBlock-Int64-Int64-String-String-String-"></span><code>procedure <strong>BuildNewBlock</strong>(Numero, TimeStamp: Int64; TargetHash, Minero, Solucion: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Crea un bloque nuevo con la informacion suministrada</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetBlockReward-Int64-"></span><code>function <strong>GetBlockReward</strong>(BlNumber: Int64): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Function GetDiffHashrate(bestdiff:String):integer; Function BestHashReadeable(BestDiff:String):string; function GetDiffForNextBlock(UltimoBloque,Last20Average,lastblocktime,previous:integer):integer; function GetLast20Time(LastBlTime:integer):integer;</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GuardarBloque-String-BlockHeaderData-arrayofTOrderData-Int64-Integer-arrayofTArrayPos-Int64-Integer-arrayofTArrayPos-"></span><code>function <strong>GuardarBloque</strong>(NombreArchivo: String; Cabezera: <a href="NosoBlock.BlockHeaderData.html">BlockHeaderData</a>; Ordenes: array of <a href="nosogeneral.TOrderData.html">TOrderData</a>; PosPay: Int64; PoSnumber: Integer; PosAddresses: array of <a href="MasterPaskalForm.TArrayPos.html">TArrayPos</a>; MNsPay: Int64; MNsNumber: Integer; MNsAddresses: array of <a href="MasterPaskalForm.TArrayPos.html">TArrayPos</a>): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Guarda el archivo de bloque en disco</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UndoneLastBlock"></span><code>procedure <strong>UndoneLastBlock</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+function <a class="normal" href="NosoBlock.html#GetBlockTrxs-Integer-">GetBlockTrxs</a>(BlockNumber:integer):<a class="normal" href="nosogeneral.html#TBlockOrdersArray">TBlockOrdersArray</a>;</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetBlockPoSes-Integer-"></span><code>function <strong>GetBlockPoSes</strong>(BlockNumber: Integer): <a href="MasterPaskalForm.html#BlockArraysPos">BlockArraysPos</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetBlockMNs-Integer-"></span><code>function <strong>GetBlockMNs</strong>(BlockNumber: Integer): <a href="MasterPaskalForm.html#BlockArraysPos">BlockArraysPos</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RemoveBlocks-Int64-"></span><code>function <strong>RemoveBlocks</strong>(UpToBlock: Int64): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GEtNSLBlkOrdInfo-String-"></span><code>function <strong>GEtNSLBlkOrdInfo</strong>(LineText: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

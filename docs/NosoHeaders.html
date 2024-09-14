@@ -34,37 +34,37 @@
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="NosoHeaders.html#SetResumenHash">SetResumenHash</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="NosoHeaders.html#SetResumenHash">SetResumenHash</a></strong>();</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#GetResumenHash">GetResumenHash</a></strong>():String;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#GetResumenHash">GetResumenHash</a></strong>(): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="NosoHeaders.html#SetHeadersFileName-String-">SetHeadersFileName</a></strong>(Filename:String):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#SetHeadersFileName-String-">SetHeadersFileName</a></strong>(Filename: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="NosoHeaders.html#CreateHeadersFile">CreateHeadersFile</a></strong>():boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#CreateHeadersFile">CreateHeadersFile</a></strong>(): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="NosoHeaders.html#AddRecordToHeaders-int64-String-String-">AddRecordToHeaders</a></strong>(BlockNumber:int64;BlockHash,SumHash:String):boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#AddRecordToHeaders-Int64-String-String-">AddRecordToHeaders</a></strong>(BlockNumber: Int64; BlockHash, SumHash: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="NosoHeaders.html#RemoveHeadersLastRecord">RemoveHeadersLastRecord</a></strong>():Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#RemoveHeadersLastRecord">RemoveHeadersLastRecord</a></strong>(): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="NosoHeaders.html#GetHeadersHeigth">GetHeadersHeigth</a></strong>():integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#GetHeadersHeigth">GetHeadersHeigth</a></strong>(): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="NosoHeaders.html#GetHeadersLastBlock">GetHeadersLastBlock</a></strong>():Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#GetHeadersLastBlock">GetHeadersLastBlock</a></strong>(): Integer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="NosoHeaders.html#GetHeadersAsMemStream-TMemoryStream-">GetHeadersAsMemStream</a></strong>(var LMs:TMemoryStream):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#GetHeadersAsMemStream-TMemoryStream-">GetHeadersAsMemStream</a></strong>(var LMs: TMemoryStream): Int64;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="NosoHeaders.html#SaveStreamAsHeaders-TMemoryStream-">SaveStreamAsHeaders</a></strong>(var LStream:TMemoryStream):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#SaveStreamAsHeaders-TMemoryStream-">SaveStreamAsHeaders</a></strong>(var LStream: TMemoryStream): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="NosoHeaders.html#LastHeadersString-integer-">LastHeadersString</a></strong>(FromBlock:integer):String;</code></td>
+<td class="itemcode"><code>function <strong><a href="NosoHeaders.html#LastHeadersString-Integer-">LastHeadersString</a></strong>(FromBlock: Integer): String;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
@@ -76,7 +76,7 @@
 <td class="itemcode"><code><strong><a href="NosoHeaders.html#MyResumenHash">MyResumenHash</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="NosoHeaders.html#ResumenFilename">ResumenFilename</a></strong>: string = 'blchhead.nos';</code></td>
+<td class="itemcode"><code><strong><a href="NosoHeaders.html#ResumenFilename">ResumenFilename</a></strong>: String = 'blchhead.nos';</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><strong><a href="NosoHeaders.html#CS_HeadersFile">CS_HeadersFile</a></strong>: TRTLCriticalSection;</code></td>
@@ -86,7 +86,7 @@
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetResumenHash"></span><code>Procedure <strong>SetResumenHash</strong>();</code></td>
+<td class="itemcode"><span id="SetResumenHash"></span><code>procedure <strong>SetResumenHash</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -95,7 +95,7 @@ Sets the hash value</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetResumenHash"></span><code>function <strong>GetResumenHash</strong>():String;</code></td>
+<td class="itemcode"><span id="GetResumenHash"></span><code>function <strong>GetResumenHash</strong>(): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -104,7 +104,7 @@ Returns the hash of the file</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetHeadersFileName-String-"></span><code>Function <strong>SetHeadersFileName</strong>(Filename:String):Boolean;</code></td>
+<td class="itemcode"><span id="SetHeadersFileName-String-"></span><code>function <strong>SetHeadersFileName</strong>(Filename: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -113,7 +113,7 @@ Sets the headers file path and name</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CreateHeadersFile"></span><code>Function <strong>CreateHeadersFile</strong>():boolean;</code></td>
+<td class="itemcode"><span id="CreateHeadersFile"></span><code>function <strong>CreateHeadersFile</strong>(): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -122,28 +122,28 @@ Creates a headers file. If it already exists, rewrite a new empty one.</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="AddRecordToHeaders-int64-String-String-"></span><code>Function <strong>AddRecordToHeaders</strong>(BlockNumber:int64;BlockHash,SumHash:String):boolean;</code></td>
+<td class="itemcode"><span id="AddRecordToHeaders-Int64-String-String-"></span><code>function <strong>AddRecordToHeaders</strong>(BlockNumber: Int64; BlockHash, SumHash: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RemoveHeadersLastRecord"></span><code>Function <strong>RemoveHeadersLastRecord</strong>():Boolean;</code></td>
+<td class="itemcode"><span id="RemoveHeadersLastRecord"></span><code>function <strong>RemoveHeadersLastRecord</strong>(): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetHeadersHeigth"></span><code>Function <strong>GetHeadersHeigth</strong>():integer;</code></td>
+<td class="itemcode"><span id="GetHeadersHeigth"></span><code>function <strong>GetHeadersHeigth</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetHeadersLastBlock"></span><code>Function <strong>GetHeadersLastBlock</strong>():Integer;</code></td>
+<td class="itemcode"><span id="GetHeadersLastBlock"></span><code>function <strong>GetHeadersLastBlock</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -152,7 +152,7 @@ Returns the block number of the last record on headers</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetHeadersAsMemStream-TMemoryStream-"></span><code>Function <strong>GetHeadersAsMemStream</strong>(var LMs:TMemoryStream):int64;</code></td>
+<td class="itemcode"><span id="GetHeadersAsMemStream-TMemoryStream-"></span><code>function <strong>GetHeadersAsMemStream</strong>(var LMs: TMemoryStream): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -161,7 +161,7 @@ Returns the headers file as a STREAM</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SaveStreamAsHeaders-TMemoryStream-"></span><code>Function <strong>SaveStreamAsHeaders</strong>(var LStream:TMemoryStream):Boolean;</code></td>
+<td class="itemcode"><span id="SaveStreamAsHeaders-TMemoryStream-"></span><code>function <strong>SaveStreamAsHeaders</strong>(var LStream: TMemoryStream): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -170,7 +170,7 @@ Save a provided stream as the headers file</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LastHeadersString-integer-"></span><code>Function <strong>LastHeadersString</strong>(FromBlock:integer):String;</code></td>
+<td class="itemcode"><span id="LastHeadersString-Integer-"></span><code>function <strong>LastHeadersString</strong>(FromBlock: Integer): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -194,7 +194,7 @@ Returns the string for headers updates</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ResumenFilename"></span><code><strong>ResumenFilename</strong>: string = 'blchhead.nos';</code></td>
+<td class="itemcode"><span id="ResumenFilename"></span><code><strong>ResumenFilename</strong>: String = 'blchhead.nos';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>

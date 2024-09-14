@@ -46,133 +46,133 @@
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#SetMasternodesFilename-String-">SetMasternodesFilename</a></strong>(LText:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#SetMasternodesFilename-String-">SetMasternodesFilename</a></strong>(LText: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#SetLocalIP-String-">SetLocalIP</a></strong>(NewValue:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#SetLocalIP-String-">SetLocalIP</a></strong>(NewValue: String);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#SetMN_Sign-String-String-String-">SetMN_Sign</a></strong>(SignAddress,lPublicKey,lPrivateKey:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#SetMN_Sign-String-String-String-">SetMN_Sign</a></strong>(SignAddress, lPublicKey, lPrivateKey: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetMNReportString-integer-">GetMNReportString</a></strong>(block:integer):String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetMNReportString-Integer-">GetMNReportString</a></strong>(block: Integer): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#VerifyThreadsCount">VerifyThreadsCount</a></strong>:integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#VerifyThreadsCount">VerifyThreadsCount</a></strong>: Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#RunMNVerification-integer-String-String-String-String-">RunMNVerification</a></strong>(Block:integer;LocSynctus:String;LocalIP:String;publicK,privateK:String):String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#RunMNVerification-Integer-String-String-String-String-">RunMNVerification</a></strong>(Block: Integer; LocSynctus: String; LocalIP: String; publicK, privateK: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetMNsListLength">GetMNsListLength</a></strong>():Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetMNsListLength">GetMNsListLength</a></strong>(): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#ClearMNsList">ClearMNsList</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#ClearMNsList">ClearMNsList</a></strong>();</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#IsIPMNAlreadyProcessed-string-">IsIPMNAlreadyProcessed</a></strong>(OrderText:string):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#IsIPMNAlreadyProcessed-String-">IsIPMNAlreadyProcessed</a></strong>(OrderText: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#ClearMNIPProcessed">ClearMNIPProcessed</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#ClearMNIPProcessed">ClearMNIPProcessed</a></strong>();</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#IsMyMNListed-String-">IsMyMNListed</a></strong>(LocalIP:String):boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#IsMyMNListed-String-">IsMyMNListed</a></strong>(LocalIP: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#IsLegitNewNode-TMNode-integer-">IsLegitNewNode</a></strong>(ThisNode:<a href="nosomasternodes.TMNode.html">TMNode</a>;block:integer):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#IsLegitNewNode-TMNode-Integer-">IsLegitNewNode</a></strong>(ThisNode: <a href="nosomasternodes.TMNode.html">TMNode</a>; block: Integer): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#CheckMNReport-String-integer-">CheckMNReport</a></strong>(LineText:String;block:integer):String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#CheckMNReport-String-Integer-">CheckMNReport</a></strong>(LineText: String; block: Integer): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetMNodeFromString-String-TMNode-">GetMNodeFromString</a></strong>(const StringData:String; out ToMNode:<a href="nosomasternodes.TMNode.html">TMNode</a>):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetMNodeFromString-String-TMNode-">GetMNodeFromString</a></strong>(const StringData: String; out ToMNode: <a href="nosomasternodes.TMNode.html">TMNode</a>): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetStringFromMN-TMNode-">GetStringFromMN</a></strong>(Node:<a href="nosomasternodes.TMNode.html">TMNode</a>):String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetStringFromMN-TMNode-">GetStringFromMN</a></strong>(Node: <a href="nosomasternodes.TMNode.html">TMNode</a>): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#FillMnsListArray-TStringArray-">FillMnsListArray</a></strong>(out LDataArray:<a href="nosogeneral.html#TStringArray">TStringArray</a>) : Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#FillMnsListArray-TStringArray-">FillMnsListArray</a></strong>(out LDataArray: <a href="nosogeneral.html#TStringArray">TStringArray</a>): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetMNsAddresses-integer-">GetMNsAddresses</a></strong>(Block:integer):String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetMNsAddresses-Integer-">GetMNsAddresses</a></strong>(Block: Integer): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#CreditMNVerifications">CreditMNVerifications</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#CreditMNVerifications">CreditMNVerifications</a></strong>();</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetMNsChecksCount">GetMNsChecksCount</a></strong>():integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetMNsChecksCount">GetMNsChecksCount</a></strong>(): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetValidNodesCountOnCheck-String-">GetValidNodesCountOnCheck</a></strong>(StringNodes:String):integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetValidNodesCountOnCheck-String-">GetValidNodesCountOnCheck</a></strong>(StringNodes: String): Integer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetMNCheckFromString-String-">GetMNCheckFromString</a></strong>(Linea:String):<a href="nosomasternodes.TMNCheck.html">TMNCheck</a>;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetMNCheckFromString-String-">GetMNCheckFromString</a></strong>(Linea: String): <a href="nosomasternodes.TMNCheck.html">TMNCheck</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#ClearMNsChecks">ClearMNsChecks</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#ClearMNsChecks">ClearMNsChecks</a></strong>();</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#MnsCheckExists-String-">MnsCheckExists</a></strong>(Ip:String):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#MnsCheckExists-String-">MnsCheckExists</a></strong>(Ip: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#AddMNCheck-TMNCheck-">AddMNCheck</a></strong>(ThisData:<a href="nosomasternodes.TMNCheck.html">TMNCheck</a>);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#AddMNCheck-TMNCheck-">AddMNCheck</a></strong>(ThisData: <a href="nosomasternodes.TMNCheck.html">TMNCheck</a>);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetStringFromMNCheck-TMNCheck-">GetStringFromMNCheck</a></strong>(Data:<a href="nosomasternodes.TMNCheck.html">TMNCheck</a>): String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetStringFromMNCheck-TMNCheck-">GetStringFromMNCheck</a></strong>(Data: <a href="nosomasternodes.TMNCheck.html">TMNCheck</a>): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#IsMyMNCheckDone">IsMyMNCheckDone</a></strong>():Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#IsMyMNCheckDone">IsMyMNCheckDone</a></strong>(): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#SetMNsHash">SetMNsHash</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#SetMNsHash">SetMNsHash</a></strong>();</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetMNsHash">GetMNsHash</a></strong>():String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetMNsHash">GetMNsHash</a></strong>(): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#LengthReceivedMNs">LengthReceivedMNs</a></strong>():Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#LengthReceivedMNs">LengthReceivedMNs</a></strong>(): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#ClearReceivedMNs">ClearReceivedMNs</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#ClearReceivedMNs">ClearReceivedMNs</a></strong>();</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#IsMNIPReceived-String-">IsMNIPReceived</a></strong>(DataSource:String):boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#IsMNIPReceived-String-">IsMNIPReceived</a></strong>(DataSource: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#LengthWaitingMNs">LengthWaitingMNs</a></strong>():Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#LengthWaitingMNs">LengthWaitingMNs</a></strong>(): Integer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#AddWaitingMNs-String-">AddWaitingMNs</a></strong>(Linea:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#AddWaitingMNs-String-">AddWaitingMNs</a></strong>(Linea: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetWaitingMNs">GetWaitingMNs</a></strong>():String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetWaitingMNs">GetWaitingMNs</a></strong>(): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetMNAgeCount-TMNode-">GetMNAgeCount</a></strong>(TNode:<a href="nosomasternodes.TMNode.html">TMNode</a>):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetMNAgeCount-TMNode-">GetMNAgeCount</a></strong>(TNode: <a href="nosomasternodes.TMNode.html">TMNode</a>): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#LoadMNsFile">LoadMNsFile</a></strong>():String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#LoadMNsFile">LoadMNsFile</a></strong>(): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#SaveMNsFile-string-">SaveMNsFile</a></strong>(GotText:string);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#SaveMNsFile-String-">SaveMNsFile</a></strong>(GotText: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#SetMN_FileText-String-">SetMN_FileText</a></strong>(lvalue:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#SetMN_FileText-String-">SetMN_FileText</a></strong>(lvalue: String);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetMN_FileText">GetMN_FileText</a></strong>():String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetMN_FileText">GetMN_FileText</a></strong>(): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosomasternodes.html#FillMNsArray-String-">FillMNsArray</a></strong>(TValue:String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosomasternodes.html#FillMNsArray-String-">FillMNsArray</a></strong>(TValue: String);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosomasternodes.html#GetVerificatorsText">GetVerificatorsText</a></strong>():string;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosomasternodes.html#GetVerificatorsText">GetVerificatorsText</a></strong>(): String;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#MasterNodesFilename">MasterNodesFilename</a></strong>: string= '';</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#MasterNodesFilename">MasterNodesFilename</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><strong><a href="nosomasternodes.html#MNFileHandler">MNFileHandler</a></strong>: textfile;</code></td>
@@ -184,28 +184,28 @@
 <td class="itemcode"><code><strong><a href="nosomasternodes.html#MNsListCopy">MNsListCopy</a></strong>: array of <a href="nosomasternodes.TMNode.html">TMnode</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#CurrSynctus">CurrSynctus</a></strong>: string;</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#CurrSynctus">CurrSynctus</a></strong>: String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_IP">LocalMN_IP</a></strong>: string = '';</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_IP">LocalMN_IP</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Port">LocalMN_Port</a></strong>: string = '8080';</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Port">LocalMN_Port</a></strong>: String = '8080';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Sign">LocalMN_Sign</a></strong>: string = '';</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Sign">LocalMN_Sign</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Funds">LocalMN_Funds</a></strong>: string = '';</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Funds">LocalMN_Funds</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Public">LocalMN_Public</a></strong>: string = '';</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Public">LocalMN_Public</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Private">LocalMN_Private</a></strong>: string = '';</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#LocalMN_Private">LocalMN_Private</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#UnconfirmedIPs">UnconfirmedIPs</a></strong>: integer;</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#UnconfirmedIPs">UnconfirmedIPs</a></strong>: Integer;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><strong><a href="nosomasternodes.html#MyMNsHash">MyMNsHash</a></strong>: String = '';</code></td>
@@ -220,7 +220,7 @@
 <td class="itemcode"><code><strong><a href="nosomasternodes.html#CSVerNodes">CSVerNodes</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#OpenVerificators">OpenVerificators</a></strong>: integer;</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#OpenVerificators">OpenVerificators</a></strong>: Integer;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><strong><a href="nosomasternodes.html#CSVerifyThread">CSVerifyThread</a></strong>: TRTLCriticalSection;</code></td>
@@ -232,7 +232,7 @@
 <td class="itemcode"><code><strong><a href="nosomasternodes.html#CSMNsList">CSMNsList</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosomasternodes.html#ArrayIPsProcessed">ArrayIPsProcessed</a></strong>: array of string;</code></td>
+<td class="itemcode"><code><strong><a href="nosomasternodes.html#ArrayIPsProcessed">ArrayIPsProcessed</a></strong>: array of String;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code><strong><a href="nosomasternodes.html#CSMNsIPProc">CSMNsIPProc</a></strong>: TRTLCriticalSection;</code></td>
@@ -269,28 +269,28 @@
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetMasternodesFilename-String-"></span><code>Procedure <strong>SetMasternodesFilename</strong>(LText:String);</code></td>
+<td class="itemcode"><span id="SetMasternodesFilename-String-"></span><code>procedure <strong>SetMasternodesFilename</strong>(LText: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetLocalIP-String-"></span><code>Procedure <strong>SetLocalIP</strong>(NewValue:String);</code></td>
+<td class="itemcode"><span id="SetLocalIP-String-"></span><code>procedure <strong>SetLocalIP</strong>(NewValue: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetMN_Sign-String-String-String-"></span><code>Procedure <strong>SetMN_Sign</strong>(SignAddress,lPublicKey,lPrivateKey:String);</code></td>
+<td class="itemcode"><span id="SetMN_Sign-String-String-String-"></span><code>procedure <strong>SetMN_Sign</strong>(SignAddress, lPublicKey, lPrivateKey: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMNReportString-integer-"></span><code>Function <strong>GetMNReportString</strong>(block:integer):String;</code></td>
+<td class="itemcode"><span id="GetMNReportString-Integer-"></span><code>function <strong>GetMNReportString</strong>(block: Integer): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -299,21 +299,21 @@ Returns the string to send the own MN report</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="VerifyThreadsCount"></span><code>Function <strong>VerifyThreadsCount</strong>:integer;</code></td>
+<td class="itemcode"><span id="VerifyThreadsCount"></span><code>function <strong>VerifyThreadsCount</strong>: Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RunMNVerification-integer-String-String-String-String-"></span><code>function <strong>RunMNVerification</strong>(Block:integer;LocSynctus:String;LocalIP:String;publicK,privateK:String):String;</code></td>
+<td class="itemcode"><span id="RunMNVerification-Integer-String-String-String-String-"></span><code>function <strong>RunMNVerification</strong>(Block: Integer; LocSynctus: String; LocalIP: String; publicK, privateK: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMNsListLength"></span><code>Function <strong>GetMNsListLength</strong>():Integer;</code></td>
+<td class="itemcode"><span id="GetMNsListLength"></span><code>function <strong>GetMNsListLength</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -322,14 +322,14 @@ Returns the count of reported MNs</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ClearMNsList"></span><code>Procedure <strong>ClearMNsList</strong>();</code></td>
+<td class="itemcode"><span id="ClearMNsList"></span><code>procedure <strong>ClearMNsList</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="IsIPMNAlreadyProcessed-string-"></span><code>Function <strong>IsIPMNAlreadyProcessed</strong>(OrderText:string):Boolean;</code></td>
+<td class="itemcode"><span id="IsIPMNAlreadyProcessed-String-"></span><code>function <strong>IsIPMNAlreadyProcessed</strong>(OrderText: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -338,35 +338,35 @@ Verify if an IP was already processed</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ClearMNIPProcessed"></span><code>Procedure <strong>ClearMNIPProcessed</strong>();</code></td>
+<td class="itemcode"><span id="ClearMNIPProcessed"></span><code>procedure <strong>ClearMNIPProcessed</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="IsMyMNListed-String-"></span><code>function <strong>IsMyMNListed</strong>(LocalIP:String):boolean;</code></td>
+<td class="itemcode"><span id="IsMyMNListed-String-"></span><code>function <strong>IsMyMNListed</strong>(LocalIP: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="IsLegitNewNode-TMNode-integer-"></span><code>Function <strong>IsLegitNewNode</strong>(ThisNode:<a href="nosomasternodes.TMNode.html">TMNode</a>;block:integer):Boolean;</code></td>
+<td class="itemcode"><span id="IsLegitNewNode-TMNode-Integer-"></span><code>function <strong>IsLegitNewNode</strong>(ThisNode: <a href="nosomasternodes.TMNode.html">TMNode</a>; block: Integer): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CheckMNReport-String-integer-"></span><code>Function <strong>CheckMNReport</strong>(LineText:String;block:integer):String;</code></td>
+<td class="itemcode"><span id="CheckMNReport-String-Integer-"></span><code>function <strong>CheckMNReport</strong>(LineText: String; block: Integer): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMNodeFromString-String-TMNode-"></span><code>Function <strong>GetMNodeFromString</strong>(const StringData:String; out ToMNode:<a href="nosomasternodes.TMNode.html">TMNode</a>):Boolean;</code></td>
+<td class="itemcode"><span id="GetMNodeFromString-String-TMNode-"></span><code>function <strong>GetMNodeFromString</strong>(const StringData: String; out ToMNode: <a href="nosomasternodes.TMNode.html">TMNode</a>): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -375,7 +375,7 @@ Converts a String into a MNNode data</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetStringFromMN-TMNode-"></span><code>Function <strong>GetStringFromMN</strong>(Node:<a href="nosomasternodes.TMNode.html">TMNode</a>):String;</code></td>
+<td class="itemcode"><span id="GetStringFromMN-TMNode-"></span><code>function <strong>GetStringFromMN</strong>(Node: <a href="nosomasternodes.TMNode.html">TMNode</a>): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -384,16 +384,16 @@ Converst a MNNode data into a string</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="FillMnsListArray-TStringArray-"></span><code>Function <strong>FillMnsListArray</strong>(out LDataArray:<a href="nosogeneral.html#TStringArray">TStringArray</a>) : Boolean;</code></td>
+<td class="itemcode"><span id="FillMnsListArray-TStringArray-"></span><code>function <strong>FillMnsListArray</strong>(out LDataArray: <a href="nosogeneral.html#TStringArray">TStringArray</a>): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Fills the given array with the nodes reports to be sent to another peer</p>
+Fills the given array with the <a class="normal" href="mpProtocol.html#Nodes">nodes</a> reports to be sent to another peer</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMNsAddresses-integer-"></span><code>Function <strong>GetMNsAddresses</strong>(Block:integer):String;</code></td>
+<td class="itemcode"><span id="GetMNsAddresses-Integer-"></span><code>function <strong>GetMNsAddresses</strong>(Block: Integer): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -402,14 +402,14 @@ Returns the string to be stored on the masternodes.txt file</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CreditMNVerifications"></span><code>Procedure <strong>CreditMNVerifications</strong>();</code></td>
+<td class="itemcode"><span id="CreditMNVerifications"></span><code>procedure <strong>CreditMNVerifications</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMNsChecksCount"></span><code>Function <strong>GetMNsChecksCount</strong>():integer;</code></td>
+<td class="itemcode"><span id="GetMNsChecksCount"></span><code>function <strong>GetMNsChecksCount</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -418,14 +418,14 @@ Returns the number of MNs checks</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetValidNodesCountOnCheck-String-"></span><code>Function <strong>GetValidNodesCountOnCheck</strong>(StringNodes:String):integer;</code></td>
+<td class="itemcode"><span id="GetValidNodesCountOnCheck-String-"></span><code>function <strong>GetValidNodesCountOnCheck</strong>(StringNodes: String): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMNCheckFromString-String-"></span><code>Function <strong>GetMNCheckFromString</strong>(Linea:String):<a href="nosomasternodes.TMNCheck.html">TMNCheck</a>;</code></td>
+<td class="itemcode"><span id="GetMNCheckFromString-String-"></span><code>function <strong>GetMNCheckFromString</strong>(Linea: String): <a href="nosomasternodes.TMNCheck.html">TMNCheck</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -434,7 +434,7 @@ Converts a string into a TMNChekc data</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ClearMNsChecks"></span><code>Procedure <strong>ClearMNsChecks</strong>();</code></td>
+<td class="itemcode"><span id="ClearMNsChecks"></span><code>procedure <strong>ClearMNsChecks</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -443,7 +443,7 @@ Clears all the MNS checks</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="MnsCheckExists-String-"></span><code>Function <strong>MnsCheckExists</strong>(Ip:String):Boolean;</code></td>
+<td class="itemcode"><span id="MnsCheckExists-String-"></span><code>function <strong>MnsCheckExists</strong>(Ip: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -452,128 +452,128 @@ Verify if an IP already sent a verification</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="AddMNCheck-TMNCheck-"></span><code>Procedure <strong>AddMNCheck</strong>(ThisData:<a href="nosomasternodes.TMNCheck.html">TMNCheck</a>);</code></td>
+<td class="itemcode"><span id="AddMNCheck-TMNCheck-"></span><code>procedure <strong>AddMNCheck</strong>(ThisData: <a href="nosomasternodes.TMNCheck.html">TMNCheck</a>);</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Adds a new MNCheck</p>
+Adds a new <a class="normal" href="mpProtocol.html#MNCheck">MNCheck</a></p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetStringFromMNCheck-TMNCheck-"></span><code>Function <strong>GetStringFromMNCheck</strong>(Data:<a href="nosomasternodes.TMNCheck.html">TMNCheck</a>): String;</code></td>
+<td class="itemcode"><span id="GetStringFromMNCheck-TMNCheck-"></span><code>function <strong>GetStringFromMNCheck</strong>(Data: <a href="nosomasternodes.TMNCheck.html">TMNCheck</a>): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="IsMyMNCheckDone"></span><code>Function <strong>IsMyMNCheckDone</strong>():Boolean;</code></td>
+<td class="itemcode"><span id="IsMyMNCheckDone"></span><code>function <strong>IsMyMNCheckDone</strong>(): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetMNsHash"></span><code>Procedure <strong>SetMNsHash</strong>();</code></td>
+<td class="itemcode"><span id="SetMNsHash"></span><code>procedure <strong>SetMNsHash</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMNsHash"></span><code>Function <strong>GetMNsHash</strong>():String;</code></td>
+<td class="itemcode"><span id="GetMNsHash"></span><code>function <strong>GetMNsHash</strong>(): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LengthReceivedMNs"></span><code>Function <strong>LengthReceivedMNs</strong>():Integer;</code></td>
+<td class="itemcode"><span id="LengthReceivedMNs"></span><code>function <strong>LengthReceivedMNs</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ClearReceivedMNs"></span><code>Procedure <strong>ClearReceivedMNs</strong>();</code></td>
+<td class="itemcode"><span id="ClearReceivedMNs"></span><code>procedure <strong>ClearReceivedMNs</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="IsMNIPReceived-String-"></span><code>Function <strong>IsMNIPReceived</strong>(DataSource:String):boolean;</code></td>
+<td class="itemcode"><span id="IsMNIPReceived-String-"></span><code>function <strong>IsMNIPReceived</strong>(DataSource: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LengthWaitingMNs"></span><code>Function <strong>LengthWaitingMNs</strong>():Integer;</code></td>
+<td class="itemcode"><span id="LengthWaitingMNs"></span><code>function <strong>LengthWaitingMNs</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="AddWaitingMNs-String-"></span><code>Procedure <strong>AddWaitingMNs</strong>(Linea:String);</code></td>
+<td class="itemcode"><span id="AddWaitingMNs-String-"></span><code>procedure <strong>AddWaitingMNs</strong>(Linea: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetWaitingMNs"></span><code>Function <strong>GetWaitingMNs</strong>():String;</code></td>
+<td class="itemcode"><span id="GetWaitingMNs"></span><code>function <strong>GetWaitingMNs</strong>(): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMNAgeCount-TMNode-"></span><code>Function <strong>GetMNAgeCount</strong>(TNode:<a href="nosomasternodes.TMNode.html">TMNode</a>):string;</code></td>
+<td class="itemcode"><span id="GetMNAgeCount-TMNode-"></span><code>function <strong>GetMNAgeCount</strong>(TNode: <a href="nosomasternodes.TMNode.html">TMNode</a>): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LoadMNsFile"></span><code>Function <strong>LoadMNsFile</strong>():String;</code></td>
+<td class="itemcode"><span id="LoadMNsFile"></span><code>function <strong>LoadMNsFile</strong>(): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SaveMNsFile-string-"></span><code>Procedure <strong>SaveMNsFile</strong>(GotText:string);</code></td>
+<td class="itemcode"><span id="SaveMNsFile-String-"></span><code>procedure <strong>SaveMNsFile</strong>(GotText: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetMN_FileText-String-"></span><code>Procedure <strong>SetMN_FileText</strong>(lvalue:String);</code></td>
+<td class="itemcode"><span id="SetMN_FileText-String-"></span><code>procedure <strong>SetMN_FileText</strong>(lvalue: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMN_FileText"></span><code>Function <strong>GetMN_FileText</strong>():String;</code></td>
+<td class="itemcode"><span id="GetMN_FileText"></span><code>function <strong>GetMN_FileText</strong>(): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="FillMNsArray-String-"></span><code>Procedure <strong>FillMNsArray</strong>(TValue:String);</code></td>
+<td class="itemcode"><span id="FillMNsArray-String-"></span><code>procedure <strong>FillMNsArray</strong>(TValue: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetVerificatorsText"></span><code>Function <strong>GetVerificatorsText</strong>():string;</code></td>
+<td class="itemcode"><span id="GetVerificatorsText"></span><code>function <strong>GetVerificatorsText</strong>(): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -581,7 +581,7 @@ Adds a new MNCheck</p>
 <h3 class="detail">Variables</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="MasterNodesFilename"></span><code><strong>MasterNodesFilename</strong>: string= '';</code></td>
+<td class="itemcode"><span id="MasterNodesFilename"></span><code><strong>MasterNodesFilename</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -609,56 +609,56 @@ Adds a new MNCheck</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CurrSynctus"></span><code><strong>CurrSynctus</strong>: string;</code></td>
+<td class="itemcode"><span id="CurrSynctus"></span><code><strong>CurrSynctus</strong>: String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_IP"></span><code><strong>LocalMN_IP</strong>: string = '';</code></td>
+<td class="itemcode"><span id="LocalMN_IP"></span><code><strong>LocalMN_IP</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Port"></span><code><strong>LocalMN_Port</strong>: string = '8080';</code></td>
+<td class="itemcode"><span id="LocalMN_Port"></span><code><strong>LocalMN_Port</strong>: String = '8080';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Sign"></span><code><strong>LocalMN_Sign</strong>: string = '';</code></td>
+<td class="itemcode"><span id="LocalMN_Sign"></span><code><strong>LocalMN_Sign</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Funds"></span><code><strong>LocalMN_Funds</strong>: string = '';</code></td>
+<td class="itemcode"><span id="LocalMN_Funds"></span><code><strong>LocalMN_Funds</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Public"></span><code><strong>LocalMN_Public</strong>: string = '';</code></td>
+<td class="itemcode"><span id="LocalMN_Public"></span><code><strong>LocalMN_Public</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Private"></span><code><strong>LocalMN_Private</strong>: string = '';</code></td>
+<td class="itemcode"><span id="LocalMN_Private"></span><code><strong>LocalMN_Private</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="UnconfirmedIPs"></span><code><strong>UnconfirmedIPs</strong>: integer;</code></td>
+<td class="itemcode"><span id="UnconfirmedIPs"></span><code><strong>UnconfirmedIPs</strong>: Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -693,7 +693,7 @@ Adds a new MNCheck</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="OpenVerificators"></span><code><strong>OpenVerificators</strong>: integer;</code></td>
+<td class="itemcode"><span id="OpenVerificators"></span><code><strong>OpenVerificators</strong>: Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -721,7 +721,7 @@ Adds a new MNCheck</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ArrayIPsProcessed"></span><code><strong>ArrayIPsProcessed</strong>: array of string;</code></td>
+<td class="itemcode"><span id="ArrayIPsProcessed"></span><code><strong>ArrayIPsProcessed</strong>: array of String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>

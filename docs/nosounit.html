@@ -42,101 +42,101 @@
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#CreateProtocolOrder-integer-string-string-string-string-int64-int64-">CreateProtocolOrder</a></strong>(BlockN:integer;OrType,sender,receiver,signature:string;TimeStamp,Amount:int64):<a href="nosogeneral.TOrderData.html">TOrderData</a>;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#CreateProtocolOrder-Integer-String-String-String-String-Int64-Int64-">CreateProtocolOrder</a></strong>(BlockN: Integer; OrType, Sender, receiver, signature: String; TimeStamp, Amount: Int64): <a href="nosogeneral.TOrderData.html">TOrderData</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#CreateNewSummaryFile-Boolean-">CreateNewSummaryFile</a></strong>(AddBlockZero:Boolean);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosounit.html#CreateNewSummaryFile-Boolean-">CreateNewSummaryFile</a></strong>(AddBlockZero: Boolean);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#ZipSumary">ZipSumary</a></strong>():boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#ZipSumary">ZipSumary</a></strong>(): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#CreateSumaryIndex">CreateSumaryIndex</a></strong>():int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#CreateSumaryIndex">CreateSumaryIndex</a></strong>(): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetSummaryAsMemStream-TMemoryStream-">GetSummaryAsMemStream</a></strong>(out LMs:TMemoryStream):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#GetSummaryAsMemStream-TMemoryStream-">GetSummaryAsMemStream</a></strong>(out LMs: TMemoryStream): Int64;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetZIPSummaryAsMemStream-TMemoryStream-">GetZIPSummaryAsMemStream</a></strong>(out LMs:TMemoryStream):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#GetZIPSummaryAsMemStream-TMemoryStream-">GetZIPSummaryAsMemStream</a></strong>(out LMs: TMemoryStream): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#SaveSummaryToFile-TMemoryStream-">SaveSummaryToFile</a></strong>(Const LStream:TMemoryStream):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#SaveSummaryToFile-TMemoryStream-">SaveSummaryToFile</a></strong>(const LStream: TMemoryStream): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#CreateSumaryBackup">CreateSumaryBackup</a></strong>():Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#CreateSumaryBackup">CreateSumaryBackup</a></strong>(): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#RestoreSumaryBackup">RestoreSumaryBackup</a></strong>():Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#RestoreSumaryBackup">RestoreSumaryBackup</a></strong>(): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#SumIndexLength">SumIndexLength</a></strong>():int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#SumIndexLength">SumIndexLength</a></strong>(): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#ResetBlockRecords">ResetBlockRecords</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosounit.html#ResetBlockRecords">ResetBlockRecords</a></strong>();</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetIndexPosition-String-TSummaryData-boolean-">GetIndexPosition</a></strong>(LText:String;out RecordData:<a href="nosounit.TSummaryData.html">TSummaryData</a>; IsAlias:boolean = false):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#GetIndexPosition-String-TSummaryData-Boolean-">GetIndexPosition</a></strong>(LText: String; out RecordData: <a href="nosounit.TSummaryData.html">TSummaryData</a>; IsAlias: Boolean = False): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#SummaryValidPay-string-int64-int64-">SummaryValidPay</a></strong>(Address:string;amount,blocknumber:int64):boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#SummaryValidPay-String-Int64-Int64-">SummaryValidPay</a></strong>(Address: String; amount, blocknumber: Int64): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#SummaryPay-string-int64-int64-">SummaryPay</a></strong>(Address:string;amount,blocknumber:int64);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosounit.html#SummaryPay-String-Int64-Int64-">SummaryPay</a></strong>(Address: String; amount, blocknumber: Int64);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#CreditTo-String-int64-int64-">CreditTo</a></strong>(Address:String;amount,blocknumber:int64);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosounit.html#CreditTo-String-Int64-Int64-">CreditTo</a></strong>(Address: String; amount, blocknumber: Int64);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#IsCustomizacionValid-string-string-int64-boolean-">IsCustomizacionValid</a></strong>(address,custom:string;blocknumber:int64;forceCustom:boolean = false):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#IsCustomizacionValid-String-String-Int64-Boolean-">IsCustomizacionValid</a></strong>(address, custom: String; blocknumber: Int64; forceCustom: Boolean = False): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#UpdateSummaryChanges">UpdateSummaryChanges</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosounit.html#UpdateSummaryChanges">UpdateSummaryChanges</a></strong>();</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetAddressBalanceIndexed-string-">GetAddressBalanceIndexed</a></strong>(Address:string):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#GetAddressBalanceIndexed-String-">GetAddressBalanceIndexed</a></strong>(Address: String): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetAddressAlias-String-">GetAddressAlias</a></strong>(Address:String):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#GetAddressAlias-String-">GetAddressAlias</a></strong>(Address: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetAddressLastOP-String-">GetAddressLastOP</a></strong>(Address:String):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#GetAddressLastOP-String-">GetAddressLastOP</a></strong>(Address: String): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#SetSummaryHash">SetSummaryHash</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosounit.html#SetSummaryHash">SetSummaryHash</a></strong>();</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosounit.html#MySumarioHash">MySumarioHash</a></strong>:String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosounit.html#MySumarioHash">MySumarioHash</a></strong>: String;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosounit.html#TIndexRecord">TIndexRecord</a></strong>      = array of integer;</code></td>
+<td class="itemcode"><code><strong><a href="nosounit.html#TIndexRecord">TIndexRecord</a></strong> = array of Integer;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosounit.html#WorkingPath">WorkingPath</a></strong>: string = '';</code></td>
+<td class="itemcode"><code><strong><a href="nosounit.html#WorkingPath">WorkingPath</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosounit.html#SummaryFileName">SummaryFileName</a></strong>: string = 'NOSODATA'+DirectorySeparator+'sumary.psk';</code></td>
+<td class="itemcode"><code><strong><a href="nosounit.html#SummaryFileName">SummaryFileName</a></strong>: String = 'NOSODATA' + DirectorySeparator + 'sumary.psk';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosounit.html#ZipSumaryFileName">ZipSumaryFileName</a></strong>: string = 'NOSODATA'+DirectorySeparator+'sumary.zip';</code></td>
+<td class="itemcode"><code><strong><a href="nosounit.html#ZipSumaryFileName">ZipSumaryFileName</a></strong>: String = 'NOSODATA' + DirectorySeparator + 'sumary.zip';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosounit.html#SummaryLastop">SummaryLastop</a></strong>: int64;</code></td>
+<td class="itemcode"><code><strong><a href="nosounit.html#SummaryLastop">SummaryLastop</a></strong>: Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosounit.html#SummaryHashValue">SummaryHashValue</a></strong>: string = '';</code></td>
+<td class="itemcode"><code><strong><a href="nosounit.html#SummaryHashValue">SummaryHashValue</a></strong>: String = '';</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CreateProtocolOrder-integer-string-string-string-string-int64-int64-"></span><code>Function <strong>CreateProtocolOrder</strong>(BlockN:integer;OrType,sender,receiver,signature:string;TimeStamp,Amount:int64):<a href="nosogeneral.TOrderData.html">TOrderData</a>;</code></td>
+<td class="itemcode"><span id="CreateProtocolOrder-Integer-String-String-String-String-Int64-Int64-"></span><code>function <strong>CreateProtocolOrder</strong>(BlockN: Integer; OrType, Sender, receiver, signature: String; TimeStamp, Amount: Int64): <a href="nosogeneral.TOrderData.html">TOrderData</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -145,7 +145,7 @@ Protocol utilitys</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CreateNewSummaryFile-Boolean-"></span><code>Procedure <strong>CreateNewSummaryFile</strong>(AddBlockZero:Boolean);</code></td>
+<td class="itemcode"><span id="CreateNewSummaryFile-Boolean-"></span><code>procedure <strong>CreateNewSummaryFile</strong>(AddBlockZero: Boolean);</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -154,7 +154,7 @@ Sumary management</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ZipSumary"></span><code>Function <strong>ZipSumary</strong>():boolean;</code></td>
+<td class="itemcode"><span id="ZipSumary"></span><code>function <strong>ZipSumary</strong>(): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -163,7 +163,7 @@ Must be replaced with new stream compression methods</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CreateSumaryIndex"></span><code>Function <strong>CreateSumaryIndex</strong>():int64;</code></td>
+<td class="itemcode"><span id="CreateSumaryIndex"></span><code>function <strong>CreateSumaryIndex</strong>(): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -172,42 +172,42 @@ Creates the summary index from the disk</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetSummaryAsMemStream-TMemoryStream-"></span><code>Function <strong>GetSummaryAsMemStream</strong>(out LMs:TMemoryStream):int64;</code></td>
+<td class="itemcode"><span id="GetSummaryAsMemStream-TMemoryStream-"></span><code>function <strong>GetSummaryAsMemStream</strong>(out LMs: TMemoryStream): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetZIPSummaryAsMemStream-TMemoryStream-"></span><code>Function <strong>GetZIPSummaryAsMemStream</strong>(out LMs:TMemoryStream):int64;</code></td>
+<td class="itemcode"><span id="GetZIPSummaryAsMemStream-TMemoryStream-"></span><code>function <strong>GetZIPSummaryAsMemStream</strong>(out LMs: TMemoryStream): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SaveSummaryToFile-TMemoryStream-"></span><code>Function <strong>SaveSummaryToFile</strong>(Const LStream:TMemoryStream):Boolean;</code></td>
+<td class="itemcode"><span id="SaveSummaryToFile-TMemoryStream-"></span><code>function <strong>SaveSummaryToFile</strong>(const LStream: TMemoryStream): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CreateSumaryBackup"></span><code>Function <strong>CreateSumaryBackup</strong>():Boolean;</code></td>
+<td class="itemcode"><span id="CreateSumaryBackup"></span><code>function <strong>CreateSumaryBackup</strong>(): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RestoreSumaryBackup"></span><code>Function <strong>RestoreSumaryBackup</strong>():Boolean;</code></td>
+<td class="itemcode"><span id="RestoreSumaryBackup"></span><code>function <strong>RestoreSumaryBackup</strong>(): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SumIndexLength"></span><code>Function <strong>SumIndexLength</strong>():int64;</code></td>
+<td class="itemcode"><span id="SumIndexLength"></span><code>function <strong>SumIndexLength</strong>(): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -216,7 +216,7 @@ Returns the summary index length</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ResetBlockRecords"></span><code>Procedure <strong>ResetBlockRecords</strong>();</code></td>
+<td class="itemcode"><span id="ResetBlockRecords"></span><code>procedure <strong>ResetBlockRecords</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -225,7 +225,7 @@ Reset the block records</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetIndexPosition-String-TSummaryData-boolean-"></span><code>Function <strong>GetIndexPosition</strong>(LText:String;out RecordData:<a href="nosounit.TSummaryData.html">TSummaryData</a>; IsAlias:boolean = false):int64;</code></td>
+<td class="itemcode"><span id="GetIndexPosition-String-TSummaryData-Boolean-"></span><code>function <strong>GetIndexPosition</strong>(LText: String; out RecordData: <a href="nosounit.TSummaryData.html">TSummaryData</a>; IsAlias: Boolean = False): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -234,7 +234,7 @@ If found, returns the record</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SummaryValidPay-string-int64-int64-"></span><code>Function <strong>SummaryValidPay</strong>(Address:string;amount,blocknumber:int64):boolean;</code></td>
+<td class="itemcode"><span id="SummaryValidPay-String-Int64-Int64-"></span><code>function <strong>SummaryValidPay</strong>(Address: String; amount, blocknumber: Int64): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -243,14 +243,14 @@ Verify if a sender address have enough funds</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SummaryPay-string-int64-int64-"></span><code>Procedure <strong>SummaryPay</strong>(Address:string;amount,blocknumber:int64);</code></td>
+<td class="itemcode"><span id="SummaryPay-String-Int64-Int64-"></span><code>procedure <strong>SummaryPay</strong>(Address: String; amount, blocknumber: Int64);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CreditTo-String-int64-int64-"></span><code>Procedure <strong>CreditTo</strong>(Address:String;amount,blocknumber:int64);</code></td>
+<td class="itemcode"><span id="CreditTo-String-Int64-Int64-"></span><code>procedure <strong>CreditTo</strong>(Address: String; amount, blocknumber: Int64);</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -259,7 +259,7 @@ Set an ammount to be credited to an specific address</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="IsCustomizacionValid-string-string-int64-boolean-"></span><code>Function <strong>IsCustomizacionValid</strong>(address,custom:string;blocknumber:int64;forceCustom:boolean = false):Boolean;</code></td>
+<td class="itemcode"><span id="IsCustomizacionValid-String-String-Int64-Boolean-"></span><code>function <strong>IsCustomizacionValid</strong>(address, custom: String; blocknumber: Int64; forceCustom: Boolean = False): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -268,7 +268,7 @@ Process if an address customization is valid</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="UpdateSummaryChanges"></span><code>Procedure <strong>UpdateSummaryChanges</strong>();</code></td>
+<td class="itemcode"><span id="UpdateSummaryChanges"></span><code>procedure <strong>UpdateSummaryChanges</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -277,7 +277,7 @@ Process the changes of the block to the summary on disk</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetAddressBalanceIndexed-string-"></span><code>Function <strong>GetAddressBalanceIndexed</strong>(Address:string):int64;</code></td>
+<td class="itemcode"><span id="GetAddressBalanceIndexed-String-"></span><code>function <strong>GetAddressBalanceIndexed</strong>(Address: String): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -286,7 +286,7 @@ Returns the balance of a specific address</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetAddressAlias-String-"></span><code>Function <strong>GetAddressAlias</strong>(Address:String):string;</code></td>
+<td class="itemcode"><span id="GetAddressAlias-String-"></span><code>function <strong>GetAddressAlias</strong>(Address: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -295,7 +295,7 @@ Returns the address alias name if exists</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetAddressLastOP-String-"></span><code>Function <strong>GetAddressLastOP</strong>(Address:String):int64;</code></td>
+<td class="itemcode"><span id="GetAddressLastOP-String-"></span><code>function <strong>GetAddressLastOP</strong>(Address: String): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -304,7 +304,7 @@ Returns the address last operation block</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetSummaryHash"></span><code>Procedure <strong>SetSummaryHash</strong>();</code></td>
+<td class="itemcode"><span id="SetSummaryHash"></span><code>procedure <strong>SetSummaryHash</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -313,7 +313,7 @@ Summary hash related</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="MySumarioHash"></span><code>Function <strong>MySumarioHash</strong>:String;</code></td>
+<td class="itemcode"><span id="MySumarioHash"></span><code>function <strong>MySumarioHash</strong>: String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -321,7 +321,7 @@ Summary hash related</p>
 <h3 class="detail">Types</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="TIndexRecord"></span><code><strong>TIndexRecord</strong>      = array of integer;</code></td>
+<td class="itemcode"><span id="TIndexRecord"></span><code><strong>TIndexRecord</strong> = array of Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -329,7 +329,7 @@ Summary hash related</p>
 <h3 class="detail">Variables</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="WorkingPath"></span><code><strong>WorkingPath</strong>: string = '';</code></td>
+<td class="itemcode"><span id="WorkingPath"></span><code><strong>WorkingPath</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -338,7 +338,7 @@ Overall variables</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SummaryFileName"></span><code><strong>SummaryFileName</strong>: string = 'NOSODATA'+DirectorySeparator+'sumary.psk';</code></td>
+<td class="itemcode"><span id="SummaryFileName"></span><code><strong>SummaryFileName</strong>: String = 'NOSODATA' + DirectorySeparator + 'sumary.psk';</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -347,21 +347,21 @@ Summary related</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ZipSumaryFileName"></span><code><strong>ZipSumaryFileName</strong>: string = 'NOSODATA'+DirectorySeparator+'sumary.zip';</code></td>
+<td class="itemcode"><span id="ZipSumaryFileName"></span><code><strong>ZipSumaryFileName</strong>: String = 'NOSODATA' + DirectorySeparator + 'sumary.zip';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SummaryLastop"></span><code><strong>SummaryLastop</strong>: int64;</code></td>
+<td class="itemcode"><span id="SummaryLastop"></span><code><strong>SummaryLastop</strong>: Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SummaryHashValue"></span><code><strong>SummaryHashValue</strong>: string = '';</code></td>
+<td class="itemcode"><span id="SummaryHashValue"></span><code><strong>SummaryHashValue</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>

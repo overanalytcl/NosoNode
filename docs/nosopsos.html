@@ -42,106 +42,106 @@
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#GetPSOHeadersFromFile">GetPSOHeadersFromFile</a></strong>:Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#GetPSOHeadersFromFile">GetPSOHeadersFromFile</a></strong>: Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#LoadPSOFileFromDisk">LoadPSOFileFromDisk</a></strong>():boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#LoadPSOFileFromDisk">LoadPSOFileFromDisk</a></strong>(): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#SavePSOFileToDisk-integer-">SavePSOFileToDisk</a></strong>(BlockNumber : integer):boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#SavePSOFileToDisk-Integer-">SavePSOFileToDisk</a></strong>(BlockNumber: Integer): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#GetPSOsAsMemStream-TMemoryStream-">GetPSOsAsMemStream</a></strong>(out LMs:TMemoryStream):int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#GetPSOsAsMemStream-TMemoryStream-">GetPSOsAsMemStream</a></strong>(out LMs: TMemoryStream): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#SavePSOsToFile-TMemoryStream-">SavePSOsToFile</a></strong>(Const LStream:TMemoryStream):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#SavePSOsToFile-TMemoryStream-">SavePSOsToFile</a></strong>(const LStream: TMemoryStream): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#GetLockedMNsCount">GetLockedMNsCount</a></strong>():Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#GetLockedMNsCount">GetLockedMNsCount</a></strong>(): Integer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#GetLockedMNIndex-integer-">GetLockedMNIndex</a></strong>(index:integer):<a href="nosopsos.TMNsLock.html">TMNsLock</a>;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#GetLockedMNIndex-Integer-">GetLockedMNIndex</a></strong>(index: Integer): <a href="nosopsos.TMNsLock.html">TMNsLock</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#AddLockedMM-string-integer-">AddLockedMM</a></strong>(Address:string;block:integer):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#AddLockedMM-String-Integer-">AddLockedMM</a></strong>(Address: String; block: Integer): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#ClearExpiredLockedMNs-integer-">ClearExpiredLockedMNs</a></strong>(BlockNumber:integer):integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#ClearExpiredLockedMNs-Integer-">ClearExpiredLockedMNs</a></strong>(BlockNumber: Integer): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#IsLockedMN-String-">IsLockedMN</a></strong>(Address:String):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#IsLockedMN-String-">IsLockedMN</a></strong>(Address: String): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#LockedMNsRawString">LockedMNsRawString</a></strong>():String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#LockedMNsRawString">LockedMNsRawString</a></strong>(): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#GetPSOHeaders">GetPSOHeaders</a></strong>():<a href="nosopsos.TPSOHeader.html">TPSOHeader</a>;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#GetPSOHeaders">GetPSOHeaders</a></strong>(): <a href="nosopsos.TPSOHeader.html">TPSOHeader</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="nosopsos.html#SetPSOHeaders-TPSOHeader-">SetPSOHeaders</a></strong>(NewData:<a href="nosopsos.TPSOHeader.html">TPSOHeader</a>);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="nosopsos.html#SetPSOHeaders-TPSOHeader-">SetPSOHeaders</a></strong>(NewData: <a href="nosopsos.TPSOHeader.html">TPSOHeader</a>);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#GetPSOValue-string-String-">GetPSOValue</a></strong>(LValue:string;LParams:String):String;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#GetPSOValue-String-String-">GetPSOValue</a></strong>(LValue: String; LParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#AddNewPSO-Integer-String-integer-String-">AddNewPSO</a></strong>(LMode:Integer;LOwner:String;LExpire:integer;LParams:String):Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#AddNewPSO-Integer-String-Integer-String-">AddNewPSO</a></strong>(LMode: Integer; LOwner: String; LExpire: Integer; LParams: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="nosopsos.html#GetPSOsCopy">GetPSOsCopy</a></strong>():<a href="nosopsos.html#TPSOsArray">TPSOsArray</a>;</code></td>
+<td class="itemcode"><code>function <strong><a href="nosopsos.html#GetPSOsCopy">GetPSOsCopy</a></strong>(): <a href="nosopsos.html#TPSOsArray">TPSOsArray</a>;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosopsos.html#TPSOsArray">TPSOsArray</a></strong> = Array of <a href="nosopsos.TPSOData.html">TPSOData</a>;</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#TPSOsArray">TPSOsArray</a></strong> = array of <a href="nosopsos.TPSOData.html">TPSOData</a>;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Constants"></span><h3 class="summary">Constants</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOsFileName">PSOsFileName</a></strong>       : string = 'NOSODATA'+DirectorySeparator+'psos.dat';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOsFileName">PSOsFileName</a></strong>: String = 'NOSODATA' + DirectorySeparator + 'psos.dat';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosopsos.html#MNsLockExpireLapse">MNsLockExpireLapse</a></strong> : integer = 2016;</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#MNsLockExpireLapse">MNsLockExpireLapse</a></strong>: Integer = 2016;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOTimestamp">PSOTimestamp</a></strong>       : string = '1';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOTimestamp">PSOTimestamp</a></strong>: String = '1';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOBlock">PSOBlock</a></strong>           : string = '2';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOBlock">PSOBlock</a></strong>: String = '2';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOAction">PSOAction</a></strong>          : string = '3';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOAction">PSOAction</a></strong>: String = '3';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOFee">PSOFee</a></strong>             : string = '4';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOFee">PSOFee</a></strong>: String = '4';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSODuration">PSODuration</a></strong>        : string = '5';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSODuration">PSODuration</a></strong>: String = '5';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOTarget">PSOTarget</a></strong>          : string = '6';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOTarget">PSOTarget</a></strong>: String = '6';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOMinSize">PSOMinSize</a></strong>         : string = '7';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOMinSize">PSOMinSize</a></strong>: String = '7';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOMaxSize">PSOMaxSize</a></strong>         : string = '8';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOMaxSize">PSOMaxSize</a></strong>: String = '8';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOOverfill">PSOOverfill</a></strong>        : string = '9';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOOverfill">PSOOverfill</a></strong>: String = '9';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOSource">PSOSource</a></strong>          : string = '10';</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOSource">PSOSource</a></strong>: String = '10';</code></td>
 </tr>
 </table>
 <span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code><strong><a href="nosopsos.html#PSOsArray">PSOsArray</a></strong>: Array of <a href="nosopsos.TPSOData.html">TPSOData</a>;</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#PSOsArray">PSOsArray</a></strong>: array of <a href="nosopsos.TPSOData.html">TPSOData</a>;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="nosopsos.html#MNSLockArray">MNSLockArray</a></strong>: Array of <a href="nosopsos.TMNsLock.html">TMNsLock</a>;</code></td>
+<td class="itemcode"><code><strong><a href="nosopsos.html#MNSLockArray">MNSLockArray</a></strong>: array of <a href="nosopsos.TMNsLock.html">TMNsLock</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><strong><a href="nosopsos.html#PSOHeader">PSOHeader</a></strong>: <a href="nosopsos.TPSOHeader.html">TPSOHeader</a>;</code></td>
@@ -166,7 +166,7 @@
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetPSOHeadersFromFile"></span><code>Function <strong>GetPSOHeadersFromFile</strong>:Boolean;</code></td>
+<td class="itemcode"><span id="GetPSOHeadersFromFile"></span><code>function <strong>GetPSOHeadersFromFile</strong>: Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -175,35 +175,35 @@ File access</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LoadPSOFileFromDisk"></span><code>Function <strong>LoadPSOFileFromDisk</strong>():boolean;</code></td>
+<td class="itemcode"><span id="LoadPSOFileFromDisk"></span><code>function <strong>LoadPSOFileFromDisk</strong>(): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SavePSOFileToDisk-integer-"></span><code>Function <strong>SavePSOFileToDisk</strong>(BlockNumber : integer):boolean;</code></td>
+<td class="itemcode"><span id="SavePSOFileToDisk-Integer-"></span><code>function <strong>SavePSOFileToDisk</strong>(BlockNumber: Integer): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetPSOsAsMemStream-TMemoryStream-"></span><code>Function <strong>GetPSOsAsMemStream</strong>(out LMs:TMemoryStream):int64;</code></td>
+<td class="itemcode"><span id="GetPSOsAsMemStream-TMemoryStream-"></span><code>function <strong>GetPSOsAsMemStream</strong>(out LMs: TMemoryStream): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SavePSOsToFile-TMemoryStream-"></span><code>Function <strong>SavePSOsToFile</strong>(Const LStream:TMemoryStream):Boolean;</code></td>
+<td class="itemcode"><span id="SavePSOsToFile-TMemoryStream-"></span><code>function <strong>SavePSOsToFile</strong>(const LStream: TMemoryStream): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetLockedMNsCount"></span><code>Function <strong>GetLockedMNsCount</strong>():Integer;</code></td>
+<td class="itemcode"><span id="GetLockedMNsCount"></span><code>function <strong>GetLockedMNsCount</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -212,42 +212,42 @@ Locked Masternodes control</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetLockedMNIndex-integer-"></span><code>Function <strong>GetLockedMNIndex</strong>(index:integer):<a href="nosopsos.TMNsLock.html">TMNsLock</a>;</code></td>
+<td class="itemcode"><span id="GetLockedMNIndex-Integer-"></span><code>function <strong>GetLockedMNIndex</strong>(index: Integer): <a href="nosopsos.TMNsLock.html">TMNsLock</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="AddLockedMM-string-integer-"></span><code>Function <strong>AddLockedMM</strong>(Address:string;block:integer):Boolean;</code></td>
+<td class="itemcode"><span id="AddLockedMM-String-Integer-"></span><code>function <strong>AddLockedMM</strong>(Address: String; block: Integer): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ClearExpiredLockedMNs-integer-"></span><code>Function <strong>ClearExpiredLockedMNs</strong>(BlockNumber:integer):integer;</code></td>
+<td class="itemcode"><span id="ClearExpiredLockedMNs-Integer-"></span><code>function <strong>ClearExpiredLockedMNs</strong>(BlockNumber: Integer): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="IsLockedMN-String-"></span><code>Function <strong>IsLockedMN</strong>(Address:String):Boolean;</code></td>
+<td class="itemcode"><span id="IsLockedMN-String-"></span><code>function <strong>IsLockedMN</strong>(Address: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LockedMNsRawString"></span><code>Function <strong>LockedMNsRawString</strong>():String;</code></td>
+<td class="itemcode"><span id="LockedMNsRawString"></span><code>function <strong>LockedMNsRawString</strong>(): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetPSOHeaders"></span><code>Function <strong>GetPSOHeaders</strong>():<a href="nosopsos.TPSOHeader.html">TPSOHeader</a>;</code></td>
+<td class="itemcode"><span id="GetPSOHeaders"></span><code>function <strong>GetPSOHeaders</strong>(): <a href="nosopsos.TPSOHeader.html">TPSOHeader</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -256,28 +256,28 @@ PSOHeaders control</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetPSOHeaders-TPSOHeader-"></span><code>Procedure <strong>SetPSOHeaders</strong>(NewData:<a href="nosopsos.TPSOHeader.html">TPSOHeader</a>);</code></td>
+<td class="itemcode"><span id="SetPSOHeaders-TPSOHeader-"></span><code>procedure <strong>SetPSOHeaders</strong>(NewData: <a href="nosopsos.TPSOHeader.html">TPSOHeader</a>);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetPSOValue-string-String-"></span><code>Function <strong>GetPSOValue</strong>(LValue:string;LParams:String):String;</code></td>
+<td class="itemcode"><span id="GetPSOValue-String-String-"></span><code>function <strong>GetPSOValue</strong>(LValue: String; LParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="AddNewPSO-Integer-String-integer-String-"></span><code>Function <strong>AddNewPSO</strong>(LMode:Integer;LOwner:String;LExpire:integer;LParams:String):Boolean;</code></td>
+<td class="itemcode"><span id="AddNewPSO-Integer-String-Integer-String-"></span><code>function <strong>AddNewPSO</strong>(LMode: Integer; LOwner: String; LExpire: Integer; LParams: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetPSOsCopy"></span><code>Function <strong>GetPSOsCopy</strong>():<a href="nosopsos.html#TPSOsArray">TPSOsArray</a>;</code></td>
+<td class="itemcode"><span id="GetPSOsCopy"></span><code>function <strong>GetPSOsCopy</strong>(): <a href="nosopsos.html#TPSOsArray">TPSOsArray</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -285,7 +285,7 @@ PSOHeaders control</p>
 <h3 class="detail">Types</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="TPSOsArray"></span><code><strong>TPSOsArray</strong> = Array of <a href="nosopsos.TPSOData.html">TPSOData</a>;</code></td>
+<td class="itemcode"><span id="TPSOsArray"></span><code><strong>TPSOsArray</strong> = array of <a href="nosopsos.TPSOData.html">TPSOData</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -293,84 +293,84 @@ PSOHeaders control</p>
 <h3 class="detail">Constants</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOsFileName"></span><code><strong>PSOsFileName</strong>       : string = 'NOSODATA'+DirectorySeparator+'psos.dat';</code></td>
+<td class="itemcode"><span id="PSOsFileName"></span><code><strong>PSOsFileName</strong>: String = 'NOSODATA' + DirectorySeparator + 'psos.dat';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="MNsLockExpireLapse"></span><code><strong>MNsLockExpireLapse</strong> : integer = 2016;</code></td>
+<td class="itemcode"><span id="MNsLockExpireLapse"></span><code><strong>MNsLockExpireLapse</strong>: Integer = 2016;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOTimestamp"></span><code><strong>PSOTimestamp</strong>       : string = '1';</code></td>
+<td class="itemcode"><span id="PSOTimestamp"></span><code><strong>PSOTimestamp</strong>: String = '1';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOBlock"></span><code><strong>PSOBlock</strong>           : string = '2';</code></td>
+<td class="itemcode"><span id="PSOBlock"></span><code><strong>PSOBlock</strong>: String = '2';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOAction"></span><code><strong>PSOAction</strong>          : string = '3';</code></td>
+<td class="itemcode"><span id="PSOAction"></span><code><strong>PSOAction</strong>: String = '3';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOFee"></span><code><strong>PSOFee</strong>             : string = '4';</code></td>
+<td class="itemcode"><span id="PSOFee"></span><code><strong>PSOFee</strong>: String = '4';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSODuration"></span><code><strong>PSODuration</strong>        : string = '5';</code></td>
+<td class="itemcode"><span id="PSODuration"></span><code><strong>PSODuration</strong>: String = '5';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOTarget"></span><code><strong>PSOTarget</strong>          : string = '6';</code></td>
+<td class="itemcode"><span id="PSOTarget"></span><code><strong>PSOTarget</strong>: String = '6';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOMinSize"></span><code><strong>PSOMinSize</strong>         : string = '7';</code></td>
+<td class="itemcode"><span id="PSOMinSize"></span><code><strong>PSOMinSize</strong>: String = '7';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOMaxSize"></span><code><strong>PSOMaxSize</strong>         : string = '8';</code></td>
+<td class="itemcode"><span id="PSOMaxSize"></span><code><strong>PSOMaxSize</strong>: String = '8';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOOverfill"></span><code><strong>PSOOverfill</strong>        : string = '9';</code></td>
+<td class="itemcode"><span id="PSOOverfill"></span><code><strong>PSOOverfill</strong>: String = '9';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOSource"></span><code><strong>PSOSource</strong>          : string = '10';</code></td>
+<td class="itemcode"><span id="PSOSource"></span><code><strong>PSOSource</strong>: String = '10';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -378,14 +378,14 @@ PSOHeaders control</p>
 <h3 class="detail">Variables</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="PSOsArray"></span><code><strong>PSOsArray</strong>: Array of <a href="nosopsos.TPSOData.html">TPSOData</a>;</code></td>
+<td class="itemcode"><span id="PSOsArray"></span><code><strong>PSOsArray</strong>: array of <a href="nosopsos.TPSOData.html">TPSOData</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="MNSLockArray"></span><code><strong>MNSLockArray</strong>: Array of <a href="nosopsos.TMNsLock.html">TMNsLock</a>;</code></td>
+<td class="itemcode"><span id="MNSLockArray"></span><code><strong>MNSLockArray</strong>: array of <a href="nosopsos.TMNsLock.html">TMNsLock</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>

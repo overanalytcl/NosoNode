@@ -19,108 +19,108 @@
 <div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section">Classes, Interfaces, Objects and Records</div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section">Constants</div><div class="one_section">Variables</div></div>
 <span id="PasDoc-Description"></span><h2 class="description">Description</h2>
 <p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
-<ul class="useslist"><li>Classes</li><li>SysUtils</li><li><a href="mpGUI.html">mpgui</a></li><li>FPJSON</li><li>jsonparser</li><li>strutils</li><li><a href="mpCoin.html">mpCoin</a></li><li>mpRed</li><li>mpBlock</li><li><a href="nosodebug.html">nosodebug</a></li><li><a href="nosogeneral.html">nosogeneral</a></li><li><a href="nosocrypto.html">nosocrypto</a></li><li><a href="nosounit.html">nosounit</a></li><li><a href="nosoconsensus.html">nosoconsensus</a></li><li><a href="NosoWallCon.html">nosowallcon</a></li><li><a href="nosopsos.html">nosopsos</a></li><li>nosonetwork</li><li><a href="NosoBlock.html">nosoblock</a></li><li><a href="nosogvts.html">nosogvts</a></li><li><a href="nosomasternodes.html">nosomasternodes</a></li></ul><h2 class="overview">Overview</h2>
+<ul class="useslist"><li>Classes</li><li>SysUtils</li><li><a href="mpGUI.html">mpgui</a></li><li>FPJSON</li><li>jsonparser</li><li>strutils</li><li><a href="mpCoin.html">mpCoin</a></li><li><a href="mpRed.html">mpRed</a></li><li><a href="mpBlock.html">mpBlock</a></li><li><a href="nosodebug.html">nosodebug</a></li><li><a href="nosogeneral.html">nosogeneral</a></li><li><a href="nosocrypto.html">nosocrypto</a></li><li><a href="nosounit.html">nosounit</a></li><li><a href="nosoconsensus.html">nosoconsensus</a></li><li><a href="NosoWallCon.html">nosowallcon</a></li><li><a href="nosopsos.html">nosopsos</a></li><li><a href="NosoNetwork.html">nosonetwork</a></li><li><a href="NosoBlock.html">nosoblock</a></li><li><a href="nosogvts.html">nosogvts</a></li><li><a href="nosomasternodes.html">nosomasternodes</a></li></ul><h2 class="overview">Overview</h2>
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="mpRPC.html#SetRPCPort-string-">SetRPCPort</a></strong>(LineText:string);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="mpRPC.html#SetRPCPort-String-">SetRPCPort</a></strong>(LineText: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="mpRPC.html#setRPCpassword-string-">setRPCpassword</a></strong>(newpassword:string);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="mpRPC.html#setRPCpassword-String-">setRPCpassword</a></strong>(newpassword: String);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Procedure <strong><a href="mpRPC.html#SetRPCOn">SetRPCOn</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="mpRPC.html#SetRPCOn">SetRPCOn</a></strong>();</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Procedure <strong><a href="mpRPC.html#SetRPCOff">SetRPCOff</a></strong>();</code></td>
+<td class="itemcode"><code>procedure <strong><a href="mpRPC.html#SetRPCOff">SetRPCOff</a></strong>();</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#IsValidJSON-string-">IsValidJSON</a></strong>(MyJSONstring:string):boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#IsValidJSON-String-">IsValidJSON</a></strong>(MyJSONstring: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="mpRPC.html#GetJSONErrorString-integer-">GetJSONErrorString</a></strong>(ErrorCode:integer):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#GetJSONErrorString-Integer-">GetJSONErrorString</a></strong>(ErrorCode: Integer): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#GetJSONErrorCode-integer-integer-">GetJSONErrorCode</a></strong>(ErrorCode, JSONIdNumber:integer):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#GetJSONErrorCode-Integer-Integer-">GetJSONErrorCode</a></strong>(ErrorCode, JSONIdNumber: Integer): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#GetJSONResponse-string-integer-">GetJSONResponse</a></strong>(ResultToSend:string;JSONIdNumber:integer):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#GetJSONResponse-String-Integer-">GetJSONResponse</a></strong>(ResultToSend: String; JSONIdNumber: Integer): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#ParseRPCJSON-string-">ParseRPCJSON</a></strong>(jsonreceived:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#ParseRPCJSON-String-">ParseRPCJSON</a></strong>(jsonreceived: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#ObjectFromString-string-">ObjectFromString</a></strong>(MyString:string): string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#ObjectFromString-String-">ObjectFromString</a></strong>(MyString: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Restart-string-">RPC_Restart</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Restart-String-">RPC_Restart</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Banned-string-">RPC_Banned</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Banned-String-">RPC_Banned</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_AddressBalance-string-">RPC_AddressBalance</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_AddressBalance-String-">RPC_AddressBalance</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_OrderInfo-string-">RPC_OrderInfo</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_OrderInfo-String-">RPC_OrderInfo</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Blockinfo-string-">RPC_Blockinfo</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Blockinfo-String-">RPC_Blockinfo</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Mainnetinfo-string-">RPC_Mainnetinfo</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Mainnetinfo-String-">RPC_Mainnetinfo</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_PendingOrders-string-">RPC_PendingOrders</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_PendingOrders-String-">RPC_PendingOrders</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_LockedMNs-string-">RPC_LockedMNs</a></strong>(NosoPParams:string):String;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_LockedMNs-String-">RPC_LockedMNs</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_GetPeers-string-">RPC_GetPeers</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_GetPeers-String-">RPC_GetPeers</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_BlockOrders-string-">RPC_BlockOrders</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_BlockOrders-String-">RPC_BlockOrders</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Masternodes-string-">RPC_Masternodes</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Masternodes-String-">RPC_Masternodes</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Blockmns-string-">RPC_Blockmns</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Blockmns-String-">RPC_Blockmns</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_WalletBalance-string-">RPC_WalletBalance</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_WalletBalance-String-">RPC_WalletBalance</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_NewAddress-string-">RPC_NewAddress</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_NewAddress-String-">RPC_NewAddress</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_NewAddressFull-string-">RPC_NewAddressFull</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_NewAddressFull-String-">RPC_NewAddressFull</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_ValidateAddress-string-">RPC_ValidateAddress</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_ValidateAddress-String-">RPC_ValidateAddress</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_SetDefault-string-">RPC_SetDefault</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_SetDefault-String-">RPC_SetDefault</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_GVTInfo-string-">RPC_GVTInfo</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_GVTInfo-String-">RPC_GVTInfo</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_CheckCertificate-string-">RPC_CheckCertificate</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_CheckCertificate-String-">RPC_CheckCertificate</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_SubmitOrder-string-boolean-">RPC_SubmitOrder</a></strong>(NosoPParams:string;waitresponse:boolean=false):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_SubmitOrder-String-Boolean-">RPC_SubmitOrder</a></strong>(NosoPParams: String; waitresponse: Boolean = False): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_SendFunds-string-">RPC_SendFunds</a></strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_SendFunds-String-">RPC_SendFunds</a></strong>(NosoPParams: String): String;</code></td>
 </tr>
 </table>
 <h2 class="description">Description</h2>
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetRPCPort-string-"></span><code>Procedure <strong>SetRPCPort</strong>(LineText:string);</code></td>
+<td class="itemcode"><span id="SetRPCPort-String-"></span><code>procedure <strong>SetRPCPort</strong>(LineText: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -129,14 +129,14 @@ Sets RPC port</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="setRPCpassword-string-"></span><code>Procedure <strong>setRPCpassword</strong>(newpassword:string);</code></td>
+<td class="itemcode"><span id="setRPCpassword-String-"></span><code>procedure <strong>setRPCpassword</strong>(newpassword: String);</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetRPCOn"></span><code>Procedure <strong>SetRPCOn</strong>();</code></td>
+<td class="itemcode"><span id="SetRPCOn"></span><code>procedure <strong>SetRPCOn</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -145,7 +145,7 @@ Turn on RPC server</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetRPCOff"></span><code>Procedure <strong>SetRPCOff</strong>();</code></td>
+<td class="itemcode"><span id="SetRPCOff"></span><code>procedure <strong>SetRPCOff</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -154,7 +154,7 @@ Turns off RPC server</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="IsValidJSON-string-"></span><code>function <strong>IsValidJSON</strong>(MyJSONstring:string):boolean;</code></td>
+<td class="itemcode"><span id="IsValidJSON-String-"></span><code>function <strong>IsValidJSON</strong>(MyJSONstring: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -163,7 +163,7 @@ Turns off RPC server</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetJSONErrorString-integer-"></span><code>Function <strong>GetJSONErrorString</strong>(ErrorCode:integer):string;</code></td>
+<td class="itemcode"><span id="GetJSONErrorString-Integer-"></span><code>function <strong>GetJSONErrorString</strong>(ErrorCode: Integer): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -172,7 +172,7 @@ Returns the string of each error code</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetJSONErrorCode-integer-integer-"></span><code>function <strong>GetJSONErrorCode</strong>(ErrorCode, JSONIdNumber:integer):string;</code></td>
+<td class="itemcode"><span id="GetJSONErrorCode-Integer-Integer-"></span><code>function <strong>GetJSONErrorCode</strong>(ErrorCode, JSONIdNumber: Integer): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -181,7 +181,7 @@ Returns a valid error JSON String</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetJSONResponse-string-integer-"></span><code>function <strong>GetJSONResponse</strong>(ResultToSend:string;JSONIdNumber:integer):string;</code></td>
+<td class="itemcode"><span id="GetJSONResponse-String-Integer-"></span><code>function <strong>GetJSONResponse</strong>(ResultToSend: String; JSONIdNumber: Integer): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -190,7 +190,7 @@ Returns a valid response JSON string</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ParseRPCJSON-string-"></span><code>function <strong>ParseRPCJSON</strong>(jsonreceived:string):string;</code></td>
+<td class="itemcode"><span id="ParseRPCJSON-String-"></span><code>function <strong>ParseRPCJSON</strong>(jsonreceived: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -199,14 +199,14 @@ Parses a incoming JSON string</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ObjectFromString-string-"></span><code>function <strong>ObjectFromString</strong>(MyString:string): string;</code></td>
+<td class="itemcode"><span id="ObjectFromString-String-"></span><code>function <strong>ObjectFromString</strong>(MyString: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_Restart-string-"></span><code>function <strong>RPC_Restart</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_Restart-String-"></span><code>function <strong>RPC_Restart</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
@@ -215,140 +215,140 @@ GET DATA FUNCTIONS</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_Banned-string-"></span><code>function <strong>RPC_Banned</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_Banned-String-"></span><code>function <strong>RPC_Banned</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_AddressBalance-string-"></span><code>function <strong>RPC_AddressBalance</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_AddressBalance-String-"></span><code>function <strong>RPC_AddressBalance</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_OrderInfo-string-"></span><code>function <strong>RPC_OrderInfo</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_OrderInfo-String-"></span><code>function <strong>RPC_OrderInfo</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_Blockinfo-string-"></span><code>function <strong>RPC_Blockinfo</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_Blockinfo-String-"></span><code>function <strong>RPC_Blockinfo</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_Mainnetinfo-string-"></span><code>function <strong>RPC_Mainnetinfo</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_Mainnetinfo-String-"></span><code>function <strong>RPC_Mainnetinfo</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_PendingOrders-string-"></span><code>function <strong>RPC_PendingOrders</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_PendingOrders-String-"></span><code>function <strong>RPC_PendingOrders</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_LockedMNs-string-"></span><code>function <strong>RPC_LockedMNs</strong>(NosoPParams:string):String;</code></td>
+<td class="itemcode"><span id="RPC_LockedMNs-String-"></span><code>function <strong>RPC_LockedMNs</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_GetPeers-string-"></span><code>function <strong>RPC_GetPeers</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_GetPeers-String-"></span><code>function <strong>RPC_GetPeers</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_BlockOrders-string-"></span><code>function <strong>RPC_BlockOrders</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_BlockOrders-String-"></span><code>function <strong>RPC_BlockOrders</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_Masternodes-string-"></span><code>function <strong>RPC_Masternodes</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_Masternodes-String-"></span><code>function <strong>RPC_Masternodes</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_Blockmns-string-"></span><code>function <strong>RPC_Blockmns</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_Blockmns-String-"></span><code>function <strong>RPC_Blockmns</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_WalletBalance-string-"></span><code>Function <strong>RPC_WalletBalance</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_WalletBalance-String-"></span><code>function <strong>RPC_WalletBalance</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_NewAddress-string-"></span><code>function <strong>RPC_NewAddress</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_NewAddress-String-"></span><code>function <strong>RPC_NewAddress</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_NewAddressFull-string-"></span><code>function <strong>RPC_NewAddressFull</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_NewAddressFull-String-"></span><code>function <strong>RPC_NewAddressFull</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_ValidateAddress-string-"></span><code>Function <strong>RPC_ValidateAddress</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_ValidateAddress-String-"></span><code>function <strong>RPC_ValidateAddress</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_SetDefault-string-"></span><code>Function <strong>RPC_SetDefault</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_SetDefault-String-"></span><code>function <strong>RPC_SetDefault</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_GVTInfo-string-"></span><code>Function <strong>RPC_GVTInfo</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_GVTInfo-String-"></span><code>function <strong>RPC_GVTInfo</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_CheckCertificate-string-"></span><code>Function <strong>RPC_CheckCertificate</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_CheckCertificate-String-"></span><code>function <strong>RPC_CheckCertificate</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_SubmitOrder-string-boolean-"></span><code>Function <strong>RPC_SubmitOrder</strong>(NosoPParams:string;waitresponse:boolean=false):string;</code></td>
+<td class="itemcode"><span id="RPC_SubmitOrder-String-Boolean-"></span><code>function <strong>RPC_SubmitOrder</strong>(NosoPParams: String; waitresponse: Boolean = False): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RPC_SendFunds-string-"></span><code>function <strong>RPC_SendFunds</strong>(NosoPParams:string):string;</code></td>
+<td class="itemcode"><span id="RPC_SendFunds-String-"></span><code>function <strong>RPC_SendFunds</strong>(NosoPParams: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
