@@ -1,4 +1,4 @@
-unit nosounit;
+unit Noso.Summary;
 
 {
 Nosounit 1.0
@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, SysUtils, Zipper,
-  nosocrypto, nosodebug, nosogeneral;
+  Noso.Crypto, Noso.Debug, Noso.General;
 
 type
   TSummaryData = packed record

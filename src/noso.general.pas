@@ -1,4 +1,4 @@
-unit nosogeneral;
+unit Noso.General;
 
 {
 nosogeneral 1.2
@@ -13,7 +13,7 @@ interface
 
 uses
   Classes, SysUtils, Process, StrUtils, IdTCPClient, IdGlobal, fphttpclient,
-  opensslsockets, fileutil, nosodebug, Zipper;
+  opensslsockets, fileutil, Noso.Debug, Zipper;
 
 type
   TStreamHelper = class helper for TStream

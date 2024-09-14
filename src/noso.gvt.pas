@@ -1,11 +1,11 @@
-unit nosogvts;
+unit Noso.Gvt;
 
 {$mode ObjFPC}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, nosodebug, nosocrypto;
+  Classes, SysUtils, Noso.Debug, Noso.Crypto;
 
 type
   TGVT = packed record

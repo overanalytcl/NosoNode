@@ -1,4 +1,4 @@
-unit NosoBlock;
+unit Noso.Block;
 
 {
 NosoNosoCFG 1.1
@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, SysUtils, FileUtil, Zipper,
-  NosoDebug, NosoUnit, Nosocrypto, nosogeneral;
+  Noso.Debug, Noso.Summary, Noso.Crypto, Noso.General;
 
 type
   TDBRecord = record

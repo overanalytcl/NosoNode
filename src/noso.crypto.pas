@@ -1,4 +1,4 @@
-unit nosocrypto;
+unit Noso.Crypto;
 
 {
 Unit nosocrypto 1.3
@@ -15,7 +15,7 @@ uses
   Classes, SysUtils, strutils,
   HlpHashFactory, md5,
   ClpConverters, ClpBigInteger, SbpBase58,
-  mpsignerutils, base64, NosoDebug, nosogeneral;
+  MP.Utils.Signing, base64, Noso.Debug, Noso.General;
 
 type
 

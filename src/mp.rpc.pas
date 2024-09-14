@@ -1,15 +1,15 @@
-unit mpRPC;
+unit MP.Rpc;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, mpgui, FPJSON, jsonparser, strutils, mpCoin,
-  mpRed, mpBlock, nosodebug,
-  nosogeneral, nosocrypto, nosounit, nosoconsensus,
-  nosowallcon, nosopsos, nosonetwork, nosoblock,
-  nosogvts, nosomasternodes;
+  Classes, SysUtils, MP.Gui, FPJSON, jsonparser, strutils, MP.Coin,
+  MP.Red, MP.Block, Noso.Debug,
+  Noso.General, Noso.Crypto, Noso.Summary, Noso.Consensus,
+  Noso.WallCon, Noso.Pso, Noso.Network, Noso.Block,
+  Noso.Gvt, Noso.Masternodes;
 
 procedure SetRPCPort(LineText: String);
 procedure setRPCpassword(newpassword: String);
@@ -52,7 +52,7 @@ function RPC_SendFunds(NosoPParams: String): String;
 implementation
 
 uses
-  MPForm, mpparser, mpDisk, mpProtocol;
+  MPForm, MP.Parser, MP.Disk, MP.Protocol;
 
 // Sets RPC port
 procedure SetRPCPort(LineText: String);

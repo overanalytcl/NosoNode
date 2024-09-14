@@ -1,4 +1,4 @@
-unit nosodebug;
+unit Noso.Debug;
 
 {
 Nosodebug 1.3

@@ -1,4 +1,4 @@
-unit NosoNosoCFG;
+unit Noso.Config;
 
 {
 NosoNosoCFG 1.1
@@ -12,7 +12,7 @@ interface
 
 uses
   Classes, SysUtils, strutils,
-  nosodebug, nosogeneral, nosotime, nosocrypto;
+  Noso.Debug, Noso.General, Noso.Time, Noso.Crypto;
 
 procedure SetCFGHash();
 function GetCFGHash(): String;

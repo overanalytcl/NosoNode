@@ -33,6 +33,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
+            <OtherUnitFiles Value="src"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <Parsing>
@@ -76,6 +77,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
+            <OtherUnitFiles Value="src"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -109,6 +111,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
+            <OtherUnitFiles Value="src"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -141,6 +144,7 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir)"/>
+            <OtherUnitFiles Value="src"/>
             <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
           <CodeGeneration>
@@ -189,148 +193,153 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="30">
+    <Units Count="29">
       <Unit0>
         <Filename Value="Noso.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
-        <Filename Value="mpform.pas"/>
+        <Filename Value="src\noso.ip.control.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.IP.Control"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="src\noso.masternodes.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Masternodes"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="src\noso.gvt.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Gvt"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="src\noso.client.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Client"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="src\noso.network.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Network"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="src\noso.block.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Block"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="src\noso.config.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Config"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="src\noso.headers.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Headers"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="src\noso.wallcon.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.WallCon"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="src\noso.pso.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Pso"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="src\noso.consensus.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Consensus"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="src\noso.summary.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Summary"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="src\noso.crypto.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Crypto"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="src\noso.general.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.General"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="src\noso.debug.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Debug"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="src\noso.time.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Time"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="src\mp.syscheck.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.SysCheck"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="src\translation.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="src\mp.rpc.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.Rpc"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="src\mp.utils.signing.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.Utils.Signing"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="src\mp.coin.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.Coin"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="src\mp.block.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.Block"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="src\mp.protocol.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.Protocol"/>
+      </Unit23>
+      <Unit24>
+        <Filename Value="src\mp.red.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.Red"/>
+      </Unit24>
+      <Unit25>
+        <Filename Value="src\mp.parser.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.Parser"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="src\mp.disk.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.Disk"/>
+      </Unit26>
+      <Unit27>
+        <Filename Value="src\mp.gui.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="MP.Gui"/>
+      </Unit27>
+      <Unit28>
+        <Filename Value="src\mpform.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="Form1"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MPForm"/>
-      </Unit1>
-      <Unit2>
-        <Filename Value="mpgui.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mpGUI"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="mpdisk.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit3>
-      <Unit4>
-        <Filename Value="mpparser.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mpParser"/>
-      </Unit4>
-      <Unit5>
-        <Filename Value="mpred.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mpRed"/>
-      </Unit5>
-      <Unit6>
-        <Filename Value="mpprotocol.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mpProtocol"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="mpblock.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mpBlock"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="mpcoin.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mpCoin"/>
-      </Unit8>
-      <Unit9>
-        <Filename Value="mpsignerutils.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mpSignerUtils"/>
-      </Unit9>
-      <Unit10>
-        <Filename Value="mprpc.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mpRPC"/>
-      </Unit10>
-      <Unit11>
-        <Filename Value="translation.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit11>
-      <Unit12>
-        <Filename Value="mpsyscheck.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="mpSysCheck"/>
-      </Unit12>
-      <Unit13>
-        <Filename Value="to_do.txt"/>
-        <IsPartOfProject Value="True"/>
-      </Unit13>
-      <Unit14>
-        <Filename Value="nosotime.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="NosoTime"/>
-      </Unit14>
-      <Unit15>
-        <Filename Value="nosodebug.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit15>
-      <Unit16>
-        <Filename Value="nosogeneral.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit16>
-      <Unit17>
-        <Filename Value="nosocrypto.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit17>
-      <Unit18>
-        <Filename Value="nosounit.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit18>
-      <Unit19>
-        <Filename Value="nosoconsensus.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit19>
-      <Unit20>
-        <Filename Value="nosopsos.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit20>
-      <Unit21>
-        <Filename Value="nosowallcon.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="NosoWallCon"/>
-      </Unit21>
-      <Unit22>
-        <Filename Value="nosoheaders.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="NosoHeaders"/>
-      </Unit22>
-      <Unit23>
-        <Filename Value="nosonosocfg.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="NosoNosoCFG"/>
-      </Unit23>
-      <Unit24>
-        <Filename Value="nosoblock.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="NosoBlock"/>
-      </Unit24>
-      <Unit25>
-        <Filename Value="nosonetwork.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="NosoNetwork"/>
-      </Unit25>
-      <Unit26>
-        <Filename Value="nosoclient.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="NosoClient"/>
-      </Unit26>
-      <Unit27>
-        <Filename Value="nosogvts.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit27>
-      <Unit28>
-        <Filename Value="nosomasternodes.pas"/>
-        <IsPartOfProject Value="True"/>
       </Unit28>
-      <Unit29>
-        <Filename Value="nosoipcontrol.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="NosoIPControl"/>
-      </Unit29>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -341,6 +350,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
+      <OtherUnitFiles Value="src"/>
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <CodeGeneration>

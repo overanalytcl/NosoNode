@@ -1,4 +1,4 @@
-unit nosomasternodes;
+unit Noso.Masternodes;
 
 {$mode ObjFPC}{$H+}
 
@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, IdTCPClient, IdGlobal, strutils,
-  NosoDebug, NosoTime, NosoGeneral, nosocrypto, nosounit;
+  Noso.Debug, Noso.Time, Noso.General, Noso.Crypto, Noso.Summary;
 
 type
 

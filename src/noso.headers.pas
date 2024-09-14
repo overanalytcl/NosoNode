@@ -1,4 +1,4 @@
-unit NosoHeaders;
+unit Noso.Headers;
 
 {
 nosoHeaders 1.1
@@ -11,7 +11,7 @@ Stand alone unit to control headers file.
 interface
 
 uses
-  Classes, SysUtils, Nosodebug, nosocrypto, nosogeneral;
+  Classes, SysUtils, Noso.Debug, Noso.Crypto, Noso.General;
 
 type
 

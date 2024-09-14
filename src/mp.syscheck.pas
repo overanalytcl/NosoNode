@@ -1,12 +1,12 @@
-unit mpSysCheck;
+unit MP.SysCheck;
 
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, fphttpclient{$IFDEF Unix} ,Linux {$ENDIF}, nosodebug,
-  nosocrypto;
+  Classes, SysUtils, fphttpclient{$IFDEF Unix} ,Linux {$ENDIF}, Noso.Debug,
+  Noso.Crypto;
 
 type
   TThreadHashtest = class(TThread)

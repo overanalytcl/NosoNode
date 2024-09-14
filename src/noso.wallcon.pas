@@ -1,4 +1,4 @@
-unit NosoWallCon;
+unit Noso.WallCon;
 
 {
 nosowallcon 1.1
@@ -11,8 +11,8 @@ Stand alone unit to control wallet addresses file and array
 interface
 
 uses
-  Classes, SysUtils, fileutil, nosodebug, nosocrypto, nosogeneral,
-  nosoheaders, nosonetwork;
+  Classes, SysUtils, fileutil, Noso.Debug, Noso.Crypto, Noso.General,
+  Noso.Headers, Noso.Network;
 
 type
 

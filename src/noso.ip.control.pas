@@ -1,11 +1,11 @@
-unit NosoIPControl;
+unit Noso.IP.Control;
 
 {$mode ObjFPC}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, nosotime;
+  Classes, SysUtils, Noso.Time;
 
 type
   IPControl = record

@@ -1,4 +1,4 @@
-unit nosopsos;
+unit Noso.Pso;
 
 {
 nosopsos 1.0
@@ -12,7 +12,7 @@ Required: Nosogeneral
 interface
 
 uses
-  Classes, SysUtils, Nosogeneral, nosocrypto, nosodebug;
+  Classes, SysUtils, Noso.General, Noso.Crypto, Noso.Debug;
 
 type
 

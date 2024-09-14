@@ -7,12 +7,12 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, LCLType,
   Grids, ExtCtrls, Buttons, IdTCPServer, IdContext, IdGlobal, IdTCPClient,
-  fileutil, Clipbrd, Menus, formexplore, lclintf, ComCtrls,
-  strutils, Math, IdHTTPServer, IdCustomHTTPServer,
-  IdHTTP, fpJSON, Types, DefaultTranslator, LCLTranslator, translation, nosodebug,
-  IdComponent, nosogeneral, nosocrypto, nosounit, nosoconsensus, nosopsos, NosoWallCon,
-  nosoheaders, nosoblock, nosonetwork, nosogvts, nosomasternodes,
-  nosonosocfg, nosoIPControl;
+  fileutil, Clipbrd, Menus, ExploreForm, lclintf, ComCtrls,
+  strutils, IdHTTPServer, IdCustomHTTPServer,
+  IdHTTP, fpJSON, Types, DefaultTranslator, LCLTranslator, translation, Noso.Debug,
+  IdComponent, Noso.General, Noso.Crypto, Noso.Summary, Noso.Consensus, Noso.Pso, Noso.WallCon,
+  Noso.Headers, Noso.Block, Noso.Network, Noso.Gvt, Noso.Masternodes,
+  Noso.Config, Noso.IP.Control;
 
 type
 
@@ -775,8 +775,8 @@ var
     DirectorySeparator;
   GVTMarksDirectory: String = 'NOSODATA' + DirectorySeparator +
   'SUMMARKS' + DirectorySeparator + 'GVTS' + DirectorySeparator;
-  UpdatesDirectory: String = 'NOSODATA' + DirectorySeparator + 'UPDATES' +
-    DirectorySeparator;
+  UpdatesDirectory: String = 'NOSODATA' + DirectorySeparator +
+  'UPDATES' + DirectorySeparator;
   LogsDirectory: String = 'NOSODATA' + DirectorySeparator + 'LOGS' + DirectorySeparator;
   ExceptLogFilename: String = 'NOSODATA' + DirectorySeparator + 'LOGS' +
     DirectorySeparator + 'exceptlog.txt';
@@ -798,15 +798,15 @@ var
   {GVTsFilename        : string= 'NOSODATA'+DirectorySeparator+'gvts.psk';}
   ClosedAppFilename: String = 'NOSODATA' + DirectorySeparator + 'LOGS' +
     DirectorySeparator + 'proclo.dat';
-  RPCBakDirectory: String = 'NOSODATA' + DirectorySeparator + 'SUMMARKS' +
-    DirectorySeparator + 'RPC' + DirectorySeparator;
+  RPCBakDirectory: String = 'NOSODATA' + DirectorySeparator +
+  'SUMMARKS' + DirectorySeparator + 'RPC' + DirectorySeparator;
 
 
 implementation
 
 uses
-  mpgui, mpdisk, mpParser, mpRed, nosotime, mpProtocol, mpcoin,
-  mpRPC, mpblock;
+  MP.Gui, MP.Disk, MP.Parser, MP.Red, Noso.Time, MP.Protocol, MP.Coin,
+  MP.Rpc, MP.Block;
 
   {$R *.lfm}
 

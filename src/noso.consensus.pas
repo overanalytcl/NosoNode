@@ -1,4 +1,4 @@
-unit nosoconsensus;
+unit Noso.Consensus;
 
 {
 nosoconsensus 1.0
@@ -13,7 +13,7 @@ interface
 
 uses
   Classes, SysUtils, strutils,
-  nosodebug, nosotime, nosogeneral, nosocrypto;
+  Noso.Debug, Noso.Time, Noso.General, Noso.Crypto;
 
 type
 

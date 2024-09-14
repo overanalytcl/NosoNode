@@ -1,4 +1,4 @@
-unit NosoNetwork;
+unit Noso.Network;
 
 {$mode ObjFPC}{$H+}
 
@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, strutils,
   IdContext, IdGlobal, IdTCPClient, IdTCPServer,
-  nosodebug, nosotime, nosogeneral, nosoheaders, nosocrypto, nosoblock, nosoconsensus,
-  nosounit, nosonosoCFG, nosogvts, nosomasternodes, nosopsos;
+  Noso.Debug, Noso.Time, Noso.General, Noso.Headers, Noso.Crypto, Noso.Block, Noso.Consensus,
+  Noso.Summary, Noso.Config, Noso.Gvt, Noso.Masternodes, Noso.Pso;
 
 type
 

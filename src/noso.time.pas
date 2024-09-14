@@ -1,4 +1,4 @@
-unit NosoTime;
+unit Noso.Time;
 
 {
 Nosotime 1.3
