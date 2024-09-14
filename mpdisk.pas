@@ -557,79 +557,11 @@ begin
   ToLog('console', format('Sumary rebuild time: %d ms', [TimeDuration]));
 end;
 
-{
-// Returns the last downloaded block
-function GetMyLastUpdatedBlock():int64;
-Var
-  BlockFiles : TStringList;
-  contador : int64 = 0;
-  LastBlock : int64 = 0;
-  OnlyNumbers : String;
-Begin
-BlockFiles := TStringList.Create;
-   TRY
-   FindAllFiles(BlockFiles, BlockDirectory, '*.blk', true);
-   while contador < BlockFiles.Count do
-      begin
-      OnlyNumbers := copy(BlockFiles[contador], 17, length(BlockFiles[contador])-20);
-      if StrToInt64Def(OnlyNumbers,0) > Lastblock then
-         LastBlock := StrToInt64Def(OnlyNumbers,0);
-      Inc(contador);
-      end;
-   Result := LastBlock;
-   EXCEPT on E:Exception do
-      ToLog('events',TimeToStr(now)+'Error getting my last updated block');
-   END; {TRY}
-BlockFiles.Free;
-end;
-}
-
-{
-Function CreateProperlyClosedAppFile(filename:String):Boolean;
-var
-  MyStream : TMemoryStream;
-Begin
-  Result := True;
-  MyStream := TMemoryStream.Create;
-  TRY
-    MYStream.SaveToFile(filename);
-  EXCEPT ON E:EXCEPTION DO
-    begin
-    Result := false;
-    ToDeepDeb('MpDisk,CreateProperlyClosedAppFile,'+E.Message);
-    end;
-  END;
-  MyStream.Free;
-End;
-}
 function deleteBlockFiles(fromnumber: Integer): Integer;
 begin
 
 end;
 
-// Unzip a zip file and (optional) delete it
-{
-Function UnzipBlockFile(filename:String;delFile:boolean):boolean;
-var
-  UnZipper: TUnZipper;
-Begin
-Result := true;
-UnZipper := TUnZipper.Create;
-   TRY
-   UnZipper.FileName := filename;
-   UnZipper.OutputPath := '';
-   UnZipper.Examine;
-   UnZipper.UnZipAllFiles;
-   EXCEPT on E:Exception do
-      begin
-      Result := false;
-      ToLog('exceps',FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now)+' -> '+'Error unzipping block file '+filename+': '+E.Message);
-      end;
-   END; {TRY}
-if delfile then Trydeletefile(filename);
-UnZipper.Free;
-End;
-}
 function UnZipUpdateFromRepo(Tver, TArch: String): Boolean;
 var
   UnZipper: TUnZipper;

@@ -18,9 +18,8 @@ procedure BuildNewBlock(Numero, TimeStamp: Int64; TargetHash, Minero, Solucion: 
 //function GetLast20Time(LastBlTime:integer):integer;
 function GetBlockReward(BlNumber: Int64): Int64;
 function GuardarBloque(NombreArchivo: String; Cabezera: BlockHeaderData;
-  Ordenes: array of TOrderData; PosPay: Int64;
-  PoSnumber: Integer; PosAddresses: array of TArrayPos;
-  MNsPay: Int64; MNsNumber: Integer;
+  Ordenes: array of TOrderData; PosPay: Int64; PoSnumber: Integer;
+  PosAddresses: array of TArrayPos; MNsPay: Int64; MNsNumber: Integer;
   MNsAddresses: array of TArrayPos): Boolean;
  {function LoadBlockDataHeader(BlockNumber:integer):BlockHeaderData;}
  {function GetBlockTrxs(BlockNumber:integer):TBlockOrdersArray;}
@@ -81,7 +80,8 @@ end;
 procedure CrearBloqueCero();
 begin
   BuildNewBlock(0, GenesysTimeStamp, '', adminhash, '');
-  if G_Launching then ToLog('console', 'Block GENESYS (0) created.'); //'Block 0 created.'
+  if G_Launching then ToLog('console', 'Block GENESYS (0) created.');
+  //'Block 0 created.'
   if G_Launching then OutText('✓ Block 0 created', False, 1);
 end;
 
@@ -139,14 +139,15 @@ begin
   if ((numero > 0) and (Timestamp < lastblockdata.TimeEnd)) then
   begin
     ToLog('console', 'New block ' + IntToStr(numero) + ' : Invalid timestamp');
-    ToLog('console', 'Blocks can not be added until ' + TimestampToDate(GenesysTimeStamp));
+    ToLog('console', 'Blocks can not be added until ' +
+      TimestampToDate(GenesysTimeStamp));
     errored := True;
   end;
   if TimeStamp > UTCTime + 5 then
   begin
     ToLog('console', 'New block ' + IntToStr(numero) + ' : Invalid timestamp');
-    ToLog('console', 'Timestamp ' + IntToStr(TimeStamp) + ' is ' + IntToStr(
-      TimeStamp - UTCTime) + ' seconds in the future');
+    ToLog('console', 'Timestamp ' + IntToStr(TimeStamp) + ' is ' +
+      IntToStr(TimeStamp - UTCTime) + ' seconds in the future');
     errored := True;
   end;
   if not errored then
@@ -188,7 +189,8 @@ begin
         end;
       end;
       if ExistsInLastBlock then continue;
-      if ((ArrayPoolTXs[contador].TimeStamp + 60 > TimeStamp) or (BlockTrfrs >= 2000)) then
+      if ((ArrayPoolTXs[contador].TimeStamp + 60 > TimeStamp) or
+        (BlockTrfrs >= 2000)) then
       begin
         if ArrayPoolTXs[contador].TimeStamp < TimeStamp + 600 then
           insert(ArrayPoolTXs[contador], IgnoredTrxs, length(IgnoredTrxs));
@@ -271,8 +273,8 @@ begin
     // Project funds payment
     if numero >= PoSBlockEnd then
     begin
-      DevsTotalReward := ((GetBlockReward(Numero) + MinerFee) * GetDevPercentage(Numero)) div
-        10000;
+      DevsTotalReward := ((GetBlockReward(Numero) + MinerFee) *
+        GetDevPercentage(Numero)) div 10000;
       DevORder := CreateDevPaymentOrder(numero, TimeStamp, DevsTotalReward);
       CreditTo('NpryectdevepmentfundsGE', DevsTotalReward, numero);
       insert(DevORder, ListaOrdenes, length(listaordenes));
@@ -346,8 +348,8 @@ begin
       until ThisParam = '';
 
       MNsCount := Length(MNsAddressess);
-      MNsTotalReward := ((GetBlockReward(Numero) + MinerFee) * GetMNsPercentage(
-        Numero, GetCFGDataStr(0))) div 10000;
+      MNsTotalReward := ((GetBlockReward(Numero) + MinerFee) *
+        GetMNsPercentage(Numero, GetCFGDataStr(0))) div 10000;
       if MNsCount > 0 then MNsReward := MNsTotalReward div MNsCount
       else
         MNsReward := 0;
@@ -394,8 +396,9 @@ begin
     BlockHeader.TargetHash := TargetHash;
     //if protocolo = 1 then BlockHeader.Solution:= Solucion
     BlockHeader.Solution := Solucion + ' ' +
-      {GetNMSData.Diff}'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1' + ' ' + PoWTotalReward.ToString +
-      ' ' + MNsTotalReward.ToString + ' ' + PosTotalReward.ToString;
+      {GetNMSData.Diff}'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1' + ' ' +
+      PoWTotalReward.ToString + ' ' + MNsTotalReward.ToString + ' ' +
+      PosTotalReward.ToString;
     if numero = 0 then BlockHeader.Solution := '';
     if numero = 0 then BlockHeader.LastBlockHash := 'NOSO GENESYS BLOCK'
     else
@@ -412,7 +415,8 @@ begin
     if not GuardarBloque(FileName, BlockHeader, ListaOrdenes, PosReward,
       PosCount, PoSAddressess, MNsReward, MNsCount, MNsAddressess) then
       ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
-        ' -> ' + '*****CRITICAL*****' + slinebreak + 'Error building block: ' + numero.ToString);
+        ' -> ' + '*****CRITICAL*****' + slinebreak + 'Error building block: ' +
+        numero.ToString);
 
     BuildNMSBlock := 0;
     ZipSumary;
@@ -518,7 +522,8 @@ var
   NumHalvings: Int64;
 begin
   if BlNumber = 0 then Result := PremineAmount
-  else if ((BlNumber > 0) and (blnumber < BlockHalvingInterval * (HalvingSteps + 1))) then
+  else if ((BlNumber > 0) and (blnumber < BlockHalvingInterval *
+    (HalvingSteps + 1))) then
   begin
     numHalvings := BlNumber div BlockHalvingInterval;
     Result := InitialReward div (2 ** NumHalvings);
@@ -529,40 +534,39 @@ end;
 
 // Guarda el archivo de bloque en disco
 function GuardarBloque(NombreArchivo: String; Cabezera: BlockHeaderData;
-  Ordenes: array of TOrderData;
-  PosPay: Int64; PoSnumber: Integer; PosAddresses: array of TArrayPos;
-  MNsPay: Int64; MNsNumber: Integer;
+  Ordenes: array of TOrderData; PosPay: Int64; PoSnumber: Integer;
+  PosAddresses: array of TArrayPos; MNsPay: Int64; MNsNumber: Integer;
   MNsAddresses: array of TArrayPos): Boolean;
 var
-  MemStr: TMemoryStream;
+  MemStream: TMemoryStream;
   NumeroOrdenes: Int64;
   counter: Integer;
 begin
   Result := True;
   BeginPerformance('GuardarBloque');
   NumeroOrdenes := Cabezera.TrxTotales;
-  MemStr := TMemoryStream.Create;
+  MemStream := TMemoryStream.Create;
   try
-    MemStr.Write(Cabezera, Sizeof(Cabezera));
+    MemStream.Write(Cabezera, Sizeof(Cabezera));
     for counter := 0 to NumeroOrdenes - 1 do
-      MemStr.Write(Ordenes[counter], Sizeof(Ordenes[Counter]));
+      MemStream.Write(Ordenes[counter], Sizeof(Ordenes[Counter]));
     if Cabezera.Number >= PoSBlockStart then
     begin
-      MemStr.Write(PosPay, Sizeof(PosPay));
-      MemStr.Write(PoSnumber, Sizeof(PoSnumber));
+      MemStream.Write(PosPay, Sizeof(PosPay));
+      MemStream.Write(PoSnumber, Sizeof(PoSnumber));
       for counter := 0 to PoSnumber - 1 do
-        MemStr.Write(PosAddresses[counter], Sizeof(PosAddresses[Counter]));
+        MemStream.Write(PosAddresses[counter], Sizeof(PosAddresses[Counter]));
     end;
     if Cabezera.Number >= MNBlockStart then
     begin
-      MemStr.Write(MNsPay, Sizeof(MNsPay));
-      MemStr.Write(MNsnumber, Sizeof(MNsnumber));
+      MemStream.Write(MNsPay, Sizeof(MNsPay));
+      MemStream.Write(MNsnumber, Sizeof(MNsnumber));
       for counter := 0 to MNsNumber - 1 do
       begin
-        MemStr.Write(MNsAddresses[counter], Sizeof(MNsAddresses[Counter]));
+        MemStream.Write(MNsAddresses[counter], Sizeof(MNsAddresses[Counter]));
       end;
     end;
-    MemStr.SaveToFile(NombreArchivo);
+    MemStream.SaveToFile(NombreArchivo);
   except
     On E: Exception do
     begin
@@ -570,64 +574,9 @@ begin
       Result := False;
     end;
   end{Try};
-  MemStr.Free;
+  MemStream.Free;
   EndPerformance('GuardarBloque');
 end;
-
-{
-// Carga la informacion del bloque
-function LoadBlockDataHeader(BlockNumber:integer):BlockHeaderData;
-var
-  MemStr: TMemoryStream;
-  Header : BlockHeaderData;
-  ArchData : String;
-Begin
-Header := Default(BlockHeaderData);
-ArchData := BlockDirectory+IntToStr(BlockNumber)+'.blk';
-MemStr := TMemoryStream.Create;
-   TRY
-   MemStr.LoadFromFile(ArchData);
-   MemStr.Position := 0;
-   MemStr.Read(Header, SizeOf(Header));
-   EXCEPT ON E:Exception do
-      begin
-      ToLog('console','Error loading Header from block '+IntToStr(BlockNumber)+':'+E.Message);
-      end;
-   END{Try};
-MemStr.Free;
-Result := header;
-End;
-}
-
-{
-// Devuelve las transacciones del bloque
-function GetBlockTrxs(BlockNumber:integer):TBlockOrdersArray;
-var
-  ArrTrxs : TBlockOrdersArray;
-  MemStr: TMemoryStream;
-  Header : BlockHeaderData;
-  ArchData : String;
-  counter : integer;
-  TotalTrxs, totalposes : integer;
-  posreward : int64;
-Begin
-Setlength(ArrTrxs,0);
-ArchData := BlockDirectory+IntToStr(BlockNumber)+'.blk';
-MemStr := TMemoryStream.Create;
-   try
-   MemStr.LoadFromFile(ArchData);
-   MemStr.Position := 0;
-   MemStr.Read(Header, SizeOf(Header));
-   TotalTrxs := header.TrxTotales;
-   SetLength(ArrTrxs,TotalTrxs);
-   For Counter := 0 to TotalTrxs-1 do
-      MemStr.Read(ArrTrxs[Counter],Sizeof(ArrTrxs[Counter])); // read each record
-   Except on E: Exception do // nothing, the block is not founded
-   end;
-MemStr.Free;
-Result := ArrTrxs;
-End;
-}
 
 function GetBlockPoSes(BlockNumber: Integer): BlockArraysPos;
 var
@@ -807,7 +756,8 @@ begin
   if paramblock = 'LAST' then BlkNumber := MyLastBlock
   else
     BlkNumber := StrToIntDef(ParamBlock, -1);
-  if ((BlkNumber < 0) or (BlkNumber < MyLastBlock - 4000) or (BlkNumber > MyLastBlock)) then
+  if ((BlkNumber < 0) or (BlkNumber < MyLastBlock - 4000) or
+    (BlkNumber > MyLastBlock)) then
     Result := Result + 'ERROR'
   else
   begin
@@ -821,8 +771,8 @@ begin
         if OrdersArray[cont].OrderType = 'TRFR' then
         begin
           ThisOrder := ThisOrder + OrdersArray[Cont].Sender + ':' +
-            OrdersArray[Cont].Receiver + ':' + OrdersArray[Cont].AmmountTrf.ToString + ':' +
-            OrdersArray[Cont].Reference + ':' + OrdersArray[Cont].OrderID + ' ';
+            OrdersArray[Cont].Receiver + ':' + OrdersArray[Cont].AmmountTrf.ToString +
+            ':' + OrdersArray[Cont].Reference + ':' + OrdersArray[Cont].OrderID + ' ';
         end;
       end;
     end;

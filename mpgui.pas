@@ -458,7 +458,6 @@ begin
     form1.DataPanel.Cells[1, 6] := format('%d / %s', [MyLastBlock, GetConsensus(2)]);
     form1.DataPanel.Cells[1, 7] :=
       format('(%d)  %d/%s', [length(ArrayCriptoOp), GetPendingCount, GetConsensus(3)]);
-    {<-- -->}
     form1.DataPanel.Cells[3, 0] :=
       format('[%d - %d] %s / %s', [GEtPSOHeaders.MNsLock, GetPSOHeaders.Count,
       Copy(PSOFileHash, 0, 5), GetConsensus(20)]);

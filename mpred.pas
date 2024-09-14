@@ -248,46 +248,11 @@ begin
   end{Try};
 end;
 
-{
-// Cierra la conexion del slot especificado
-Procedure CloseSlot(Slot:integer);
-Begin
-  BeginPerformance('CloseSlot');
-  TRY
-  if GetConexIndex(Slot).tipo='CLI' then
-    begin
-    ClearIncoming(slot);
-    GetConexIndex(Slot).context.Connection.Disconnect;
-    Sleep(10);
-    //Conexiones[Slot].Thread.terminate; // free ? WaitFor??
-    end;
-  if GetConexIndex(Slot).tipo='SER' then
-    begin
-    ClearIncoming(slot);
-    CanalCliente[Slot].IOHandler.InputBuffer.Clear;
-    CanalCliente[Slot].Disconnect;
-    end;
-  EXCEPT on E:Exception do
-    ToLog('exceps',FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now)+' -> '+'Error: Closing slot '+IntToStr(Slot)+SLINEBREAK+E.Message);
-  END;{Try}
-  SetConexIndex(Slot,Default(Tconectiondata));
-  EndPerformance('CloseSlot');
-End;
-}
-
 function IsSlotFree(number: Integer): Boolean;
 begin
   Result := True;
   if GetConexIndex(number).tipo <> '' then Result := False;
 end;
-
-{
-Function IsSlotConnected(number:integer):Boolean;
-Begin
-  result := false;
-  if ((GetConexIndex(number).tipo = 'SER') or (GetConexIndex(number).tipo = 'CLI')) then result := true;
-End;
-}
 
 // Returns first available slot
 function GetFreeSlot(): Integer;
@@ -576,36 +541,6 @@ begin
     end;
   end{Try};
 end;
-
-{
-Function IsAllSynced():integer;
-Begin
-result := 0;
-if MyLastBlock     <> StrToIntDef(GetConsensus(cLastBlock),0) then result := 1;
-if MyLastBlockHash <> GetConsensus(cLBHash) then result := 2;
-if Copy(MySumarioHash,0,5)   <> GetConsensus(cSumHash) then result := 3;
-if Copy(GetResumenHash,0,5)   <> GetConsensus(cHeaders) then result := 4;
-{
-if Copy(GetMNsHash,1,5) <>  NetMNsHash.value then result := 5;
-if MyGVTsHash <> NetGVTSHash.Value then result := 6;
-if MyCFGHash <> NETCFGHash.Value then result := 7;
-}
-End;
-}
-{
-// Actualiza mi informacion para compoartirla en la red
-Procedure UpdateMyData();
-Begin
-MySumarioHash := HashMD5File(SummaryFileName);
-MyLastBlockHash := HashMD5File(BlockDirectory+IntToStr(MyLastBlock)+'.blk');
-LastBlockData := LoadBlockDataHeader(MyLastBlock);
-SetResumenHash := HashMD5File(ResumenFilename);
-  if SetResumenHash = GetConsensus(5) then ForceCompleteHeadersDownload := false;
-MyMNsHash     := HashMD5File(MasterNodesFilename);
-MyCFGHash     := Copy(HashMD5String(GetCFGDataStr),1,5);
-End;
-}
-
 
 
 // Request necessary files/info to update
@@ -1132,19 +1067,6 @@ begin
   conector.Free;
 end;
 
-{
-Function GetSyncTus():String;
-Begin
-  result := '';
-  TRY
-    Result := MyLastBlock.ToString+Copy(GetResumenHash,1,3)+Copy(MySumarioHash,1,3)+Copy(MyLastBlockHash,1,3);
-  EXCEPT ON E:EXCEPTION do
-    begin
-    ToLog('console','****************************************'+slinebreak+'GetSyncTus:'+e.Message);
-    end;
-  END; {TRY}
-End;
-}
 function GetMiIP(): String;
 var
   TCPClient: TidTCPClient;
