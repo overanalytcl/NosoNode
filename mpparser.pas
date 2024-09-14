@@ -5,7 +5,7 @@ unit mpParser;
 interface
 
 uses
-  Classes, SysUtils, MasterPaskalForm, mpGUI, mpRed, mpDisk, nosotime, mpblock, mpcoin,
+  Classes, SysUtils, MPForm, mpGUI, mpRed, mpDisk, nosotime, mpblock, mpcoin,
   Dialogs, fileutil, Forms, idglobal, strutils, mpRPC, DateUtils, Clipbrd, translation,
   idContext, Math, MPSysCheck, nosodebug, nosogeneral, nosocrypto, nosounit,
   nosoconsensus, nosopsos, nosowallcon, nosoheaders, nosoblock, nosonosocfg, nosonetwork,

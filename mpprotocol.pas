@@ -5,7 +5,7 @@ unit mpProtocol;
 interface
 
 uses
-  Classes, SysUtils, mpRed, MasterPaskalForm, mpParser, StrUtils,
+  Classes, SysUtils, mpRed, MPForm, mpParser, StrUtils,
   mpDisk, nosotime, mpBlock,
   Zipper, mpcoin, nosodebug, nosogeneral, nosocrypto, nosounit, nosoconsensus, nosopsos,
   nosoheaders, NosoNosoCFG, nosoblock, nosonetwork, nosogvts, nosoMasternodes,

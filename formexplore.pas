@@ -49,7 +49,7 @@ type
 implementation
 
 Uses
-  MasterPaskalForm, MpGUI;
+  MPForm, MpGUI;
 
 var
   explorer: TExplorerForm = Nil;

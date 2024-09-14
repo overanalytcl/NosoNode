@@ -5,7 +5,7 @@ unit mpGUI;
 interface
 
 uses
-  Classes, SysUtils, MasterPaskalForm, nosotime, Graphics, strutils,
+  Classes, SysUtils, MPForm, nosotime, Graphics, strutils,
   Forms, Controls, Grids, StdCtrls,
   ExtCtrls, Buttons, editbtn, Menus, Clipbrd, IdContext, LCLTranslator,
   nosodebug, nosogeneral,

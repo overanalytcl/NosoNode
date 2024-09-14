@@ -5,7 +5,7 @@ unit mpdisk;
 interface
 
 uses
-  Classes, SysUtils, MasterPaskalForm, Dialogs, Forms, nosotime, FileUtil, LCLType,
+  Classes, SysUtils, MPForm, Dialogs, Forms, nosotime, FileUtil, LCLType,
   lclintf, Controls, mpBlock, Zipper, mpcoin, nosodebug,
   translation, strutils, nosogeneral, nosocrypto, nosounit, nosoconsensus, nosopsos,
   nosowallcon, nosoheaders, nosonosocfg, nosoblock, nosonetwork,

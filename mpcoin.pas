@@ -5,7 +5,7 @@ unit mpCoin;
 interface
 
 uses
-  Classes, SysUtils, MasterPaskalForm, mpgui, Clipbrd, strutils, nosodebug, nosogeneral,
+  Classes, SysUtils, MPForm, mpgui, Clipbrd, strutils, nosodebug, nosogeneral,
   nosocrypto, nosounit, nosotime, nosopsos, nosowallcon, nosoblock, nosonetwork;
 
 function GetAddressAvailable(address: String): Int64;

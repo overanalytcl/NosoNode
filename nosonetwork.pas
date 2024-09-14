@@ -194,7 +194,7 @@ var
 implementation
 
 uses
-  MasterPaskalForm;
+  MPForm;
   // To be removed, only due to server dependancy until it is implemented
 
   {$REGION Pending Pool transactions}

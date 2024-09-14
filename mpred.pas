@@ -5,7 +5,7 @@ unit mpRed;
 interface
 
 uses
-  Classes, Forms, SysUtils, MasterPaskalForm, nosotime, IdContext,
+  Classes, Forms, SysUtils, MPForm, nosotime, IdContext,
   IdGlobal, mpGUI, mpDisk,
   mpBlock, fileutil, Graphics, Dialogs, strutils, mpcoin, fphttpclient,
   opensslsockets, translation, IdHTTP, IdComponent, IdSSLOpenSSL, IdTCPClient,

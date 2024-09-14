@@ -52,7 +52,7 @@ function RPC_SendFunds(NosoPParams: String): String;
 implementation
 
 uses
-  MasterPaskalForm, mpparser, mpDisk, mpProtocol;
+  MPForm, mpparser, mpDisk, mpProtocol;
 
 // Sets RPC port
 procedure SetRPCPort(LineText: String);

@@ -5,7 +5,7 @@ unit mpBlock;
 interface
 
 uses
-  Classes, SysUtils, MasterPaskalForm, fileutil, mpcoin, Dialogs, Math,
+  Classes, SysUtils, MPForm, fileutil, mpcoin, Dialogs, Math,
   nosotime, nosodebug, nosogeneral, nosocrypto, nosounit, strutils,
   nosopsos, nosowallcon, nosoheaders, nosoblock, nosonosocfg, nosonetwork, nosogvts,
   nosomasternodes;
