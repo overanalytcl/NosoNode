@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: nosocrypto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit nosocrypto</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section"><a class="section" href="#PasDoc-Constants">Constants</a></div><div class="one_section">Variables</div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>SysUtils</li><li>strutils</li><li>HlpHashFactory</li><li>md5</li><li>ClpConverters</li><li>ClpBigInteger</li><li>SbpBase58</li><li><a href="mpSignerUtils.html">mpsignerutils</a></li><li>base64</li><li><a href="nosodebug.html">NosoDebug</a></li><li><a href="nosogeneral.html">nosogeneral</a></li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="nosocrypto.DivResult.html"><code>DivResult</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#HashSha256String-string-">HashSha256String</a></strong>(StringToHash:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#HashMD160String-string-">HashMD160String</a></strong>(StringToHash:string):String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#HashMD5String-String-">HashMD5String</a></strong>(StringToHash:String):String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#HashMD5File-String-">HashMD5File</a></strong>(FileToHash:String):String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#IsValid58-string-">IsValid58</a></strong>(base58text:string):boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#GetStringSigned-String-String-">GetStringSigned</a></strong>(StringtoSign, PrivateKey:String):String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#VerifySignedString-String-String-String-">VerifySignedString</a></strong>(StringToVerify,B64String,PublicKey:String):boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#GetAddressFromPublicKey-String-integer-">GetAddressFromPublicKey</a></strong>(PubKey:String;AddType : integer = 0):String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#NewGetAddressFromPublicKey-String-">NewGetAddressFromPublicKey</a></strong>(PubKey:String):String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#FutureGetAddressFromPublicKey-String-">FutureGetAddressFromPublicKey</a></strong>(const PubKey: String): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#GenerateNewAddress-String-String-">GenerateNewAddress</a></strong>(out pubkey:String;out privkey:String):String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#IsValidHashAddress-String-">IsValidHashAddress</a></strong>(Address:String):boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#GetTransferHash-string-">GetTransferHash</a></strong>(TextLine:string):String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#GetOrderHash-string-">GetOrderHash</a></strong>(TextLine:string):String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#GetCertificateChecksum-String-">GetCertificateChecksum</a></strong>(certificate:String):String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#GetCertificate-string-string-string-">GetCertificate</a></strong>(Pubkey,privkey,currtime:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#CheckCertificate-string-String-">CheckCertificate</a></strong>(certificate:string;out TimeStamp:String):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#CheckHashDiff-String-String-">CheckHashDiff</a></strong>(Target,ThisHash:String):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#GetMultiSource-String-integer-String-">GetMultiSource</a></strong>(Source: String;AddsTotal:integer;Out OrderedSource:String) : boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#B10ToB16-String-">B10ToB16</a></strong>(const sVal: String): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#B10ToB58-String-">B10ToB58</a></strong>(const sVal: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#B16ToB10-String-">B16ToB10</a></strong>(const sHex: String): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#B16ToB36-String-">B16ToB36</a></strong>(const sHex: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#B16ToB58-String-">B16ToB58</a></strong>(const sHex: String): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#B16ToB58Lite1_60-String-">B16ToB58Lite1_60</a></strong>(const sHex: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#B58ToB10-String-">B58ToB10</a></strong>(const sVal: String): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#B58ToB16-String-">B58ToB16</a></strong>(const sVal: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#ChecksumBase58-String-">ChecksumBase58</a></strong>(const S: String): integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#BMB58resumenNew-string-">BMB58resumenNew</a></strong>(numero58:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#BMB58resumen-string-">BMB58resumen</a></strong>(numero58:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#BMB58resumenInt-string-">BMB58resumenInt</a></strong>(numero58:string):integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#ClearLeadingCeros-string-">ClearLeadingCeros</a></strong>(numero:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#BMAdicion-string-string-">BMAdicion</a></strong>(numero1,numero2:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#PonerCeros-String-integer-">PonerCeros</a></strong>(numero:String;cuantos:integer):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#BMMultiplicar-string-string-">BMMultiplicar</a></strong>(Numero1,Numero2:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#BMDividir-string-string-">BMDividir</a></strong>(Numero1,Numero2:string):<a href="nosocrypto.DivResult.html">DivResult</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#BMExponente-string-string-">BMExponente</a></strong>(Numero1,Numero2:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#BMHexToDec-string-">BMHexToDec</a></strong>(numerohex:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosocrypto.html#BM58ToDec-string-">BM58ToDec</a></strong>(number58:string):String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#BMHexTo58-string-integer-">BMHexTo58</a></strong>(numerohex:string;alphabetnumber:integer):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#BMDecTo58-string-">BMDecTo58</a></strong>(numero:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="nosocrypto.html#BMDecToHex-string-">BMDecToHex</a></strong>(numero:string):string;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Constants"></span><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="nosocrypto.html#HexAlphabet">HexAlphabet</a></strong> : string = '0123456789ABCDEF';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="nosocrypto.html#B36Alphabet">B36Alphabet</a></strong> : string = '0123456789abcdefghijklmnopqrstuvwxyz';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="nosocrypto.html#B58Alphabet">B58Alphabet</a></strong> : string = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="nosocrypto.html#AddtypeReg">AddtypeReg</a></strong>   = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="nosocrypto.html#AddTypeMulti">AddTypeMulti</a></strong> = 1;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="HashSha256String-string-"></span><code>function <strong>HashSha256String</strong>(StringToHash:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Hashing functions</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="HashMD160String-string-"></span><code>function <strong>HashMD160String</strong>(StringToHash:string):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the hash RIPMED-160 of a string</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="HashMD5String-String-"></span><code>Function <strong>HashMD5String</strong>(StringToHash:String):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the hash MD5 of a string</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="HashMD5File-String-"></span><code>Function <strong>HashMD5File</strong>(FileToHash:String):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the hash MD5 of a file on disk</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsValid58-string-"></span><code>Function <strong>IsValid58</strong>(base58text:string):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+General functions</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetStringSigned-String-String-"></span><code>Function <strong>GetStringSigned</strong>(StringtoSign, PrivateKey:String):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Signs a message with the given privatekey</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="VerifySignedString-String-String-String-"></span><code>Function <strong>VerifySignedString</strong>(StringToVerify,B64String,PublicKey:String):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Verify if a signed message is valid</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetAddressFromPublicKey-String-integer-"></span><code>function <strong>GetAddressFromPublicKey</strong>(PubKey:String;AddType : integer = 0):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Generates the public hash from the public key</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NewGetAddressFromPublicKey-String-"></span><code>function <strong>NewGetAddressFromPublicKey</strong>(PubKey:String):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FutureGetAddressFromPublicKey-String-"></span><code>function <strong>FutureGetAddressFromPublicKey</strong>(const PubKey: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GenerateNewAddress-String-String-"></span><code>Function <strong>GenerateNewAddress</strong>(out pubkey:String;out privkey:String):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Generates a new keys pair and returns the hash</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsValidHashAddress-String-"></span><code>Function <strong>IsValidHashAddress</strong>(Address:String):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Checks if a string is a valid address hash</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetTransferHash-string-"></span><code>Function <strong>GetTransferHash</strong>(TextLine:string):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns a transfer hash, base58</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetOrderHash-string-"></span><code>function <strong>GetOrderHash</strong>(TextLine:string):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the Order hash, base36</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetCertificateChecksum-String-"></span><code>Function <strong>GetCertificateChecksum</strong>(certificate:String):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetCertificate-string-string-string-"></span><code>Function <strong>GetCertificate</strong>(Pubkey,privkey,currtime:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the Address certificate for the submitted data</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CheckCertificate-string-String-"></span><code>Function <strong>CheckCertificate</strong>(certificate:string;out TimeStamp:String):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Verify if a given certificate is valid and returns the address and timestamp</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CheckHashDiff-String-String-"></span><code>Function <strong>CheckHashDiff</strong>(Target,ThisHash:String):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Verify the difference between MD5 hashes</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetMultiSource-String-integer-String-"></span><code>Function <strong>GetMultiSource</strong>(Source: String;AddsTotal:integer;Out OrderedSource:String) : boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+getmulti 1,2 N31ThXmSR2gua5tfCFNLEkYK9yNQsDi,N31ThXmSR2gua5tfCFNLEkYK9yNQsDi</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B10ToB16-String-"></span><code>function <strong>B10ToB16</strong>(const sVal: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+New base conversion functions</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B10ToB58-String-"></span><code>Function <strong>B10ToB58</strong>(const sVal: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B16ToB10-String-"></span><code>Function <strong>B16ToB10</strong>(const sHex: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B16ToB36-String-"></span><code>Function <strong>B16ToB36</strong>(const sHex: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B16ToB58-String-"></span><code>Function <strong>B16ToB58</strong>(const sHex: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B16ToB58Lite1_60-String-"></span><code>Function <strong>B16ToB58Lite1_60</strong>(const sHex: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B58ToB10-String-"></span><code>Function <strong>B58ToB10</strong>(const sVal: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B58ToB16-String-"></span><code>Function <strong>B58ToB16</strong>(const sVal: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ChecksumBase58-String-"></span><code>Function <strong>ChecksumBase58</strong>(const S: String): integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMB58resumenNew-string-"></span><code>Function <strong>BMB58resumenNew</strong>(numero58:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+RETURN THE SUMATORY OF A BASE58</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMB58resumen-string-"></span><code>Function <strong>BMB58resumen</strong>(numero58:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+RETURN THE SUMATORY OF A BASE58</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMB58resumenInt-string-"></span><code>Function <strong>BMB58resumenInt</strong>(numero58:string):integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+RETURN THE SUMATORY OF A BASE58</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearLeadingCeros-string-"></span><code>function <strong>ClearLeadingCeros</strong>(numero:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Big Maths</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMAdicion-string-string-"></span><code>function <strong>BMAdicion</strong>(numero1,numero2:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+ADDS 2 NUMBERS</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PonerCeros-String-integer-"></span><code>Function <strong>PonerCeros</strong>(numero:String;cuantos:integer):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+DRAW CEROS FOR MULTIPLICATION</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMMultiplicar-string-string-"></span><code>Function <strong>BMMultiplicar</strong>(Numero1,Numero2:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+MULTIPLIER</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMDividir-string-string-"></span><code>Function <strong>BMDividir</strong>(Numero1,Numero2:string):<a href="nosocrypto.DivResult.html">DivResult</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+DIVIDES TWO NUMBERS</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMExponente-string-string-"></span><code>Function <strong>BMExponente</strong>(Numero1,Numero2:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+CALCULATES A EXPONENTIAL NUMBER</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMHexToDec-string-"></span><code>function <strong>BMHexToDec</strong>(numerohex:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+HEX TO DECIMAL</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BM58ToDec-string-"></span><code>Function <strong>BM58ToDec</strong>(number58:string):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMHexTo58-string-integer-"></span><code>function <strong>BMHexTo58</strong>(numerohex:string;alphabetnumber:integer):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Hex to base 58</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMDecTo58-string-"></span><code>function <strong>BMDecTo58</strong>(numero:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+CONVERTS A DECIMAL VALUE TO A BASE58 STRING</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BMDecToHex-string-"></span><code>function <strong>BMDecToHex</strong>(numero:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+CONVERTS A DECIMAL VALUE TO A HEX STRING</p>
+</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="HexAlphabet"></span><code><strong>HexAlphabet</strong> : string = '0123456789ABCDEF';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B36Alphabet"></span><code><strong>B36Alphabet</strong> : string = '0123456789abcdefghijklmnopqrstuvwxyz';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="B58Alphabet"></span><code><strong>B58Alphabet</strong> : string = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AddtypeReg"></span><code><strong>AddtypeReg</strong>   = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AddTypeMulti"></span><code><strong>AddTypeMulti</strong> = 1;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: mpRPC</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit mpRPC</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section">Classes, Interfaces, Objects and Records</div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section">Constants</div><div class="one_section">Variables</div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>SysUtils</li><li><a href="mpGUI.html">mpgui</a></li><li>FPJSON</li><li>jsonparser</li><li>strutils</li><li><a href="mpCoin.html">mpCoin</a></li><li>mpRed</li><li>mpBlock</li><li><a href="nosodebug.html">nosodebug</a></li><li><a href="nosogeneral.html">nosogeneral</a></li><li><a href="nosocrypto.html">nosocrypto</a></li><li><a href="nosounit.html">nosounit</a></li><li><a href="nosoconsensus.html">nosoconsensus</a></li><li><a href="NosoWallCon.html">nosowallcon</a></li><li><a href="nosopsos.html">nosopsos</a></li><li>nosonetwork</li><li><a href="NosoBlock.html">nosoblock</a></li><li><a href="nosogvts.html">nosogvts</a></li><li><a href="nosomasternodes.html">nosomasternodes</a></li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpRPC.html#SetRPCPort-string-">SetRPCPort</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpRPC.html#setRPCpassword-string-">setRPCpassword</a></strong>(newpassword:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpRPC.html#SetRPCOn">SetRPCOn</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpRPC.html#SetRPCOff">SetRPCOff</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#IsValidJSON-string-">IsValidJSON</a></strong>(MyJSONstring:string):boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="mpRPC.html#GetJSONErrorString-integer-">GetJSONErrorString</a></strong>(ErrorCode:integer):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#GetJSONErrorCode-integer-integer-">GetJSONErrorCode</a></strong>(ErrorCode, JSONIdNumber:integer):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#GetJSONResponse-string-integer-">GetJSONResponse</a></strong>(ResultToSend:string;JSONIdNumber:integer):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#ParseRPCJSON-string-">ParseRPCJSON</a></strong>(jsonreceived:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#ObjectFromString-string-">ObjectFromString</a></strong>(MyString:string): string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Restart-string-">RPC_Restart</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Banned-string-">RPC_Banned</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_AddressBalance-string-">RPC_AddressBalance</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_OrderInfo-string-">RPC_OrderInfo</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Blockinfo-string-">RPC_Blockinfo</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Mainnetinfo-string-">RPC_Mainnetinfo</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_PendingOrders-string-">RPC_PendingOrders</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_LockedMNs-string-">RPC_LockedMNs</a></strong>(NosoPParams:string):String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_GetPeers-string-">RPC_GetPeers</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_BlockOrders-string-">RPC_BlockOrders</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Masternodes-string-">RPC_Masternodes</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_Blockmns-string-">RPC_Blockmns</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_WalletBalance-string-">RPC_WalletBalance</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_NewAddress-string-">RPC_NewAddress</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_NewAddressFull-string-">RPC_NewAddressFull</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_ValidateAddress-string-">RPC_ValidateAddress</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_SetDefault-string-">RPC_SetDefault</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_GVTInfo-string-">RPC_GVTInfo</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_CheckCertificate-string-">RPC_CheckCertificate</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="mpRPC.html#RPC_SubmitOrder-string-boolean-">RPC_SubmitOrder</a></strong>(NosoPParams:string;waitresponse:boolean=false):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpRPC.html#RPC_SendFunds-string-">RPC_SendFunds</a></strong>(NosoPParams:string):string;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetRPCPort-string-"></span><code>Procedure <strong>SetRPCPort</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Sets RPC port</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="setRPCpassword-string-"></span><code>Procedure <strong>setRPCpassword</strong>(newpassword:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetRPCOn"></span><code>Procedure <strong>SetRPCOn</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Turn on RPC server</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetRPCOff"></span><code>Procedure <strong>SetRPCOff</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Turns off RPC server</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsValidJSON-string-"></span><code>function <strong>IsValidJSON</strong>(MyJSONstring:string):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+*** RPC PARSE FUNCTIONS ***</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetJSONErrorString-integer-"></span><code>Function <strong>GetJSONErrorString</strong>(ErrorCode:integer):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the string of each error code</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetJSONErrorCode-integer-integer-"></span><code>function <strong>GetJSONErrorCode</strong>(ErrorCode, JSONIdNumber:integer):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns a valid error JSON String</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetJSONResponse-string-integer-"></span><code>function <strong>GetJSONResponse</strong>(ResultToSend:string;JSONIdNumber:integer):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns a valid response JSON string</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ParseRPCJSON-string-"></span><code>function <strong>ParseRPCJSON</strong>(jsonreceived:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Parses a incoming JSON string</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ObjectFromString-string-"></span><code>function <strong>ObjectFromString</strong>(MyString:string): string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_Restart-string-"></span><code>function <strong>RPC_Restart</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+GET DATA FUNCTIONS</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_Banned-string-"></span><code>function <strong>RPC_Banned</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_AddressBalance-string-"></span><code>function <strong>RPC_AddressBalance</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_OrderInfo-string-"></span><code>function <strong>RPC_OrderInfo</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_Blockinfo-string-"></span><code>function <strong>RPC_Blockinfo</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_Mainnetinfo-string-"></span><code>function <strong>RPC_Mainnetinfo</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_PendingOrders-string-"></span><code>function <strong>RPC_PendingOrders</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_LockedMNs-string-"></span><code>function <strong>RPC_LockedMNs</strong>(NosoPParams:string):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_GetPeers-string-"></span><code>function <strong>RPC_GetPeers</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_BlockOrders-string-"></span><code>function <strong>RPC_BlockOrders</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_Masternodes-string-"></span><code>function <strong>RPC_Masternodes</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_Blockmns-string-"></span><code>function <strong>RPC_Blockmns</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_WalletBalance-string-"></span><code>Function <strong>RPC_WalletBalance</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_NewAddress-string-"></span><code>function <strong>RPC_NewAddress</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_NewAddressFull-string-"></span><code>function <strong>RPC_NewAddressFull</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_ValidateAddress-string-"></span><code>Function <strong>RPC_ValidateAddress</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_SetDefault-string-"></span><code>Function <strong>RPC_SetDefault</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_GVTInfo-string-"></span><code>Function <strong>RPC_GVTInfo</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_CheckCertificate-string-"></span><code>Function <strong>RPC_CheckCertificate</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_SubmitOrder-string-boolean-"></span><code>Function <strong>RPC_SubmitOrder</strong>(NosoPParams:string;waitresponse:boolean=false):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RPC_SendFunds-string-"></span><code>function <strong>RPC_SendFunds</strong>(NosoPParams:string):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

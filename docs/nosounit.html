@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: nosounit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit nosounit</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section"><a class="section" href="#PasDoc-Types">Types</a></div><div class="one_section">Constants</div><div class="one_section"><a class="section" href="#PasDoc-Variables">Variables</a></div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>SysUtils</li><li>Zipper</li><li><a href="nosocrypto.html">nosocrypto</a></li><li><a href="nosodebug.html">nosodebug</a></li><li><a href="nosogeneral.html">nosogeneral</a></li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="nosounit.TSummaryData.html"><code>TSummaryData</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="nosounit.TOrderGroup.html"><code>TOrderGroup</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Record&nbsp;<a class="bold" href="nosounit.TBlockRecords.html"><code>TBlockRecords</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#CreateProtocolOrder-integer-string-string-string-string-int64-int64-">CreateProtocolOrder</a></strong>(BlockN:integer;OrType,sender,receiver,signature:string;TimeStamp,Amount:int64):<a href="nosogeneral.TOrderData.html">TOrderData</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#CreateNewSummaryFile-Boolean-">CreateNewSummaryFile</a></strong>(AddBlockZero:Boolean);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#ZipSumary">ZipSumary</a></strong>():boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#CreateSumaryIndex">CreateSumaryIndex</a></strong>():int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetSummaryAsMemStream-TMemoryStream-">GetSummaryAsMemStream</a></strong>(out LMs:TMemoryStream):int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetZIPSummaryAsMemStream-TMemoryStream-">GetZIPSummaryAsMemStream</a></strong>(out LMs:TMemoryStream):int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#SaveSummaryToFile-TMemoryStream-">SaveSummaryToFile</a></strong>(Const LStream:TMemoryStream):Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#CreateSumaryBackup">CreateSumaryBackup</a></strong>():Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#RestoreSumaryBackup">RestoreSumaryBackup</a></strong>():Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#SumIndexLength">SumIndexLength</a></strong>():int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#ResetBlockRecords">ResetBlockRecords</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetIndexPosition-String-TSummaryData-boolean-">GetIndexPosition</a></strong>(LText:String;out RecordData:<a href="nosounit.TSummaryData.html">TSummaryData</a>; IsAlias:boolean = false):int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#SummaryValidPay-string-int64-int64-">SummaryValidPay</a></strong>(Address:string;amount,blocknumber:int64):boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#SummaryPay-string-int64-int64-">SummaryPay</a></strong>(Address:string;amount,blocknumber:int64);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#CreditTo-String-int64-int64-">CreditTo</a></strong>(Address:String;amount,blocknumber:int64);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#IsCustomizacionValid-string-string-int64-boolean-">IsCustomizacionValid</a></strong>(address,custom:string;blocknumber:int64;forceCustom:boolean = false):Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#UpdateSummaryChanges">UpdateSummaryChanges</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetAddressBalanceIndexed-string-">GetAddressBalanceIndexed</a></strong>(Address:string):int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetAddressAlias-String-">GetAddressAlias</a></strong>(Address:String):string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#GetAddressLastOP-String-">GetAddressLastOP</a></strong>(Address:String):int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="nosounit.html#SetSummaryHash">SetSummaryHash</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="nosounit.html#MySumarioHash">MySumarioHash</a></strong>:String;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="nosounit.html#TIndexRecord">TIndexRecord</a></strong>      = array of integer;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="nosounit.html#WorkingPath">WorkingPath</a></strong>: string = '';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="nosounit.html#SummaryFileName">SummaryFileName</a></strong>: string = 'NOSODATA'+DirectorySeparator+'sumary.psk';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="nosounit.html#ZipSumaryFileName">ZipSumaryFileName</a></strong>: string = 'NOSODATA'+DirectorySeparator+'sumary.zip';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="nosounit.html#SummaryLastop">SummaryLastop</a></strong>: int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="nosounit.html#SummaryHashValue">SummaryHashValue</a></strong>: string = '';</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateProtocolOrder-integer-string-string-string-string-int64-int64-"></span><code>Function <strong>CreateProtocolOrder</strong>(BlockN:integer;OrType,sender,receiver,signature:string;TimeStamp,Amount:int64):<a href="nosogeneral.TOrderData.html">TOrderData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Protocol utilitys</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateNewSummaryFile-Boolean-"></span><code>Procedure <strong>CreateNewSummaryFile</strong>(AddBlockZero:Boolean);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Sumary management</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ZipSumary"></span><code>Function <strong>ZipSumary</strong>():boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Must be replaced with new stream compression methods</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateSumaryIndex"></span><code>Function <strong>CreateSumaryIndex</strong>():int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates the summary index from the disk</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetSummaryAsMemStream-TMemoryStream-"></span><code>Function <strong>GetSummaryAsMemStream</strong>(out LMs:TMemoryStream):int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetZIPSummaryAsMemStream-TMemoryStream-"></span><code>Function <strong>GetZIPSummaryAsMemStream</strong>(out LMs:TMemoryStream):int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SaveSummaryToFile-TMemoryStream-"></span><code>Function <strong>SaveSummaryToFile</strong>(Const LStream:TMemoryStream):Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateSumaryBackup"></span><code>Function <strong>CreateSumaryBackup</strong>():Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RestoreSumaryBackup"></span><code>Function <strong>RestoreSumaryBackup</strong>():Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SumIndexLength"></span><code>Function <strong>SumIndexLength</strong>():int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the summary index length</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ResetBlockRecords"></span><code>Procedure <strong>ResetBlockRecords</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Reset the block records</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetIndexPosition-String-TSummaryData-boolean-"></span><code>Function <strong>GetIndexPosition</strong>(LText:String;out RecordData:<a href="nosounit.TSummaryData.html">TSummaryData</a>; IsAlias:boolean = false):int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+If found, returns the record</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SummaryValidPay-string-int64-int64-"></span><code>Function <strong>SummaryValidPay</strong>(Address:string;amount,blocknumber:int64):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Verify if a sender address have enough funds</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SummaryPay-string-int64-int64-"></span><code>Procedure <strong>SummaryPay</strong>(Address:string;amount,blocknumber:int64);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreditTo-String-int64-int64-"></span><code>Procedure <strong>CreditTo</strong>(Address:String;amount,blocknumber:int64);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Set an ammount to be credited to an specific address</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsCustomizacionValid-string-string-int64-boolean-"></span><code>Function <strong>IsCustomizacionValid</strong>(address,custom:string;blocknumber:int64;forceCustom:boolean = false):Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Process if an address customization is valid</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UpdateSummaryChanges"></span><code>Procedure <strong>UpdateSummaryChanges</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Process the changes of the block to the summary on disk</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetAddressBalanceIndexed-string-"></span><code>Function <strong>GetAddressBalanceIndexed</strong>(Address:string):int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the balance of a specific address</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetAddressAlias-String-"></span><code>Function <strong>GetAddressAlias</strong>(Address:String):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the address alias name if exists</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetAddressLastOP-String-"></span><code>Function <strong>GetAddressLastOP</strong>(Address:String):int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the address last operation block</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetSummaryHash"></span><code>Procedure <strong>SetSummaryHash</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Summary hash related</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MySumarioHash"></span><code>Function <strong>MySumarioHash</strong>:String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TIndexRecord"></span><code><strong>TIndexRecord</strong>      = array of integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="WorkingPath"></span><code><strong>WorkingPath</strong>: string = '';</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Overall variables</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SummaryFileName"></span><code><strong>SummaryFileName</strong>: string = 'NOSODATA'+DirectorySeparator+'sumary.psk';</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Summary related</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ZipSumaryFileName"></span><code><strong>ZipSumaryFileName</strong>: string = 'NOSODATA'+DirectorySeparator+'sumary.zip';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SummaryLastop"></span><code><strong>SummaryLastop</strong>: int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SummaryHashValue"></span><code><strong>SummaryHashValue</strong>: string = '';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

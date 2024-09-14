@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: mpParser</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit mpParser</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section">Classes, Interfaces, Objects and Records</div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section">Constants</div><div class="one_section">Variables</div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>SysUtils</li><li>MasterPaskalForm</li><li><a href="mpGUI.html">mpGUI</a></li><li>mpRed</li><li>mpDisk</li><li><a href="NosoTime.html">nosotime</a></li><li>mpblock</li><li><a href="mpCoin.html">mpcoin</a></li><li>dialogs</li><li>fileutil</li><li>forms</li><li>idglobal</li><li>strutils</li><li><a href="mpRPC.html">mpRPC</a></li><li>DateUtils</li><li>Clipbrd</li><li><a href="translation.html">translation</a></li><li>idContext</li><li>math</li><li><a href="mpSysCheck.html">MPSysCheck</a></li><li><a href="nosodebug.html">nosodebug</a></li><li><a href="nosogeneral.html">nosogeneral</a></li><li><a href="nosocrypto.html">nosocrypto</a></li><li><a href="nosounit.html">nosounit</a></li><li><a href="nosoconsensus.html">nosoconsensus</a></li><li><a href="nosopsos.html">nosopsos</a></li><li><a href="NosoWallCon.html">nosowallcon</a></li><li><a href="NosoHeaders.html">nosoheaders</a></li><li><a href="NosoBlock.html">nosoblock</a></li><li><a href="NosoNosoCFG.html">nosonosocfg</a></li><li>nosonetwork</li><li><a href="nosogvts.html">nosogvts</a></li><li><a href="nosomasternodes.html">nosomasternodes</a></li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="mpParser.html#ProcessLinesAdd-String-">ProcessLinesAdd</a></strong>(const ALine: String);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="mpParser.html#OutgoingMsjsAdd-String-">OutgoingMsjsAdd</a></strong>(const ALine: String);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpParser.html#OutgoingMsjsGet">OutgoingMsjsGet</a></strong>(): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ProcesarLineas">ProcesarLineas</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpParser.html#GetOpData-string-">GetOpData</a></strong>(textLine:string):String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ParseCommandLine-string-">ParseCommandLine</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="mpParser.html#NuevaDireccion-string-">NuevaDireccion</a></strong>(linetext:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowNodes">ShowNodes</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowBots">ShowBots</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowUser_Options">ShowUser_Options</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpParser.html#GetWalletBalance">GetWalletBalance</a></strong>(): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ConnectTo-string-">ConnectTo</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#AutoServerON">AutoServerON</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#AutoServerOFF">AutoServerOFF</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowWallet">ShowWallet</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ImportarWallet-string-">ImportarWallet</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ExportarWallet-string-">ExportarWallet</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowBlchHead-integer-">ShowBlchHead</a></strong>(number:integer);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="mpParser.html#SetDefaultAddress-string-">SetDefaultAddress</a></strong>(linetext:string):boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ParseShowBlockInfo-string-">ParseShowBlockInfo</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowBlockInfo-integer-">ShowBlockInfo</a></strong>(numberblock:integer);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#CustomizeAddress-string-">CustomizeAddress</a></strong>(linetext:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#Parse_SendFunds-string-">Parse_SendFunds</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpParser.html#SendFunds-string-boolean-">SendFunds</a></strong>(LineText:string;showOutput:boolean=true):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#Parse_SendGVT-string-">Parse_SendGVT</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="mpParser.html#SendGVT-string-boolean-">SendGVT</a></strong>(LineText:string;showOutput:boolean=true):string;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowHalvings">ShowHalvings</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#SetServerPort-string-">SetServerPort</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#TestParser-String-">TestParser</a></strong>(LineText:String);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#Parse_RestartNoso">Parse_RestartNoso</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#GetOwnerHash-string-">GetOwnerHash</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#CheckOwnerHash-string-">CheckOwnerHash</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="mpParser.html#AvailableUpdates">AvailableUpdates</a></strong>():string;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#RunUpdate-string-">RunUpdate</a></strong>(linea:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#RunGetBeta-string-">RunGetBeta</a></strong>(linea:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#SendAdminMessage-string-">SendAdminMessage</a></strong>(linetext:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowOrderDetails-string-">ShowOrderDetails</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ExportAddress-string-">ExportAddress</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowAddressInfo-string-">ShowAddressInfo</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowAddressHistory-string-">ShowAddressHistory</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowTotalFees">ShowTotalFees</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="mpParser.html#ShowPrivKey-String-boolean-">ShowPrivKey</a></strong>(linea:String;ToConsole:boolean = false):String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#TestNetwork-string-">TestNetwork</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowPendingTrxs">ShowPendingTrxs</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#WebWallet">WebWallet</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ExportKeys-string-">ExportKeys</a></strong>(linea:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#NewAddressFromKeys-string-">NewAddressFromKeys</a></strong>(inputline:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#TestHashGeneration-string-">TestHashGeneration</a></strong>(inputline:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#CompareHashes-string-">CompareHashes</a></strong>(inputline:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#CreateMultiAddress-String-">CreateMultiAddress</a></strong>(Inputline:String);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ListGVTs">ListGVTs</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowBlockPos-string-">ShowBlockPos</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowBlockMNs-string-">ShowBlockMNs</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#showgmts-string-">showgmts</a></strong>(LineText:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowSystemInfo-string-">ShowSystemInfo</a></strong>(Linetext:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowMNsChecks">ShowMNsChecks</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#PostOffer-String-">PostOffer</a></strong>(LineText:String);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#DebugTest2-string-">DebugTest2</a></strong>(linetext:string);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#OrdInfo-string-">OrdInfo</a></strong>(linetext:string);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#totallocked">totallocked</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowSumary">ShowSumary</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowConsensus">ShowConsensus</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowConsensusStats">ShowConsensusStats</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#TestNewPSO-String-">TestNewPSO</a></strong>(Dataline:String);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#GetPSOs">GetPSOs</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowGVTInfo">ShowGVTInfo</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ClearPSOs">ClearPSOs</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#ShowMNsLocked">ShowMNsLocked</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="mpParser.html#Test_Headers">Test_Headers</a></strong>();</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ProcessLinesAdd-String-"></span><code>procedure <strong>ProcessLinesAdd</strong>(const ALine: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+************************** *** CRITICIAL SECTIONS *** ************************** Adds a line to ProcessLines thread safe</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="OutgoingMsjsAdd-String-"></span><code>procedure <strong>OutgoingMsjsAdd</strong>(const ALine: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Adds a line to OutgoingMsjs thread safe</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="OutgoingMsjsGet"></span><code>function <strong>OutgoingMsjsGet</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Gets a line from OutgoingMsjs thread safe</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ProcesarLineas"></span><code>Procedure <strong>ProcesarLineas</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Procesa las lineas de la linea de comandos</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetOpData-string-"></span><code>function <strong>GetOpData</strong>(textLine:string):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Elimina el encabezado de una linea de protocolo</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ParseCommandLine-string-"></span><code>Procedure <strong>ParseCommandLine</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NuevaDireccion-string-"></span><code>procedure <strong>NuevaDireccion</strong>(linetext:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Add a new address generation to the crypto thread</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowNodes"></span><code>Procedure <strong>ShowNodes</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+muestra los nodos</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowBots"></span><code>Procedure <strong>ShowBots</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+muestra los Bots</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowUser_Options"></span><code>Procedure <strong>ShowUser_Options</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Muestras las opciones del usuario</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetWalletBalance"></span><code>function <strong>GetWalletBalance</strong>(): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the total balance on the wallet</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ConnectTo-string-"></span><code>Procedure <strong>ConnectTo</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Conecta a un server especificado</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AutoServerON"></span><code>Procedure <strong>AutoServerON</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AutoServerOFF"></span><code>Procedure <strong>AutoServerOFF</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowWallet"></span><code>Procedure <strong>ShowWallet</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Shows all the addresses on the wallet</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ImportarWallet-string-"></span><code>Procedure <strong>ImportarWallet</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ExportarWallet-string-"></span><code>Procedure <strong>ExportarWallet</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowBlchHead-integer-"></span><code>Procedure <strong>ShowBlchHead</strong>(number:integer);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetDefaultAddress-string-"></span><code>Function <strong>SetDefaultAddress</strong>(linetext:string):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Cambiar la primera direccion de la wallet</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ParseShowBlockInfo-string-"></span><code>Procedure <strong>ParseShowBlockInfo</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowBlockInfo-integer-"></span><code>Procedure <strong>ShowBlockInfo</strong>(numberblock:integer);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CustomizeAddress-string-"></span><code>Procedure <strong>CustomizeAddress</strong>(linetext:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="Parse_SendFunds-string-"></span><code>Procedure <strong>Parse_SendFunds</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Incluye una solicitud de envio de fondos a la cola de transacciones cripto</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SendFunds-string-boolean-"></span><code>function <strong>SendFunds</strong>(LineText:string;showOutput:boolean=true):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Ejecuta una orden de transferencia</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="Parse_SendGVT-string-"></span><code>Procedure <strong>Parse_SendGVT</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Process a GVT sending</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SendGVT-string-boolean-"></span><code>Function <strong>SendGVT</strong>(LineText:string;showOutput:boolean=true):string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowHalvings"></span><code>Procedure <strong>ShowHalvings</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Muestra la escala de halvings</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetServerPort-string-"></span><code>Procedure <strong>SetServerPort</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+cambia el puerto de escucha</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TestParser-String-"></span><code>Procedure <strong>TestParser</strong>(LineText:String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+prueba la lectura de parametros de la linea de comandos</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="Parse_RestartNoso"></span><code>Procedure <strong>Parse_RestartNoso</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Procedure DeleteBots(LineText:String);</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetOwnerHash-string-"></span><code>Procedure <strong>GetOwnerHash</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CheckOwnerHash-string-"></span><code>Procedure <strong>CheckOwnerHash</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AvailableUpdates"></span><code>function <strong>AvailableUpdates</strong>():string;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+devuelve una cadena con los updates disponibles</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RunUpdate-string-"></span><code>Procedure <strong>RunUpdate</strong>(linea:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Manual update the app</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RunGetBeta-string-"></span><code>Procedure <strong>RunGetBeta</strong>(linea:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Manual update to last beta</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SendAdminMessage-string-"></span><code>Procedure <strong>SendAdminMessage</strong>(linetext:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowOrderDetails-string-"></span><code>Procedure <strong>ShowOrderDetails</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Procedure RequestSumary();</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ExportAddress-string-"></span><code>Procedure <strong>ExportAddress</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Exports a single address credentials of the wallet</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowAddressInfo-string-"></span><code>Procedure <strong>ShowAddressInfo</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Shows all the <a class="normal" href="mpGUI.html#Info-string-">info</a> of a specified address</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowAddressHistory-string-"></span><code>Procedure <strong>ShowAddressHistory</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Shows transaction history of the specified address</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowTotalFees"></span><code>Procedure <strong>ShowTotalFees</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Shows the total fees paid in the whole blockchain</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowPrivKey-String-boolean-"></span><code>function <strong>ShowPrivKey</strong>(linea:String;ToConsole:boolean = false):String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TestNetwork-string-"></span><code>Procedure <strong>TestNetwork</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowPendingTrxs"></span><code>Procedure <strong>ShowPendingTrxs</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="WebWallet"></span><code>Procedure <strong>WebWallet</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ExportKeys-string-"></span><code>Procedure <strong>ExportKeys</strong>(linea:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NewAddressFromKeys-string-"></span><code>Procedure <strong>NewAddressFromKeys</strong>(inputline:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TestHashGeneration-string-"></span><code>Procedure <strong>TestHashGeneration</strong>(inputline:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CompareHashes-string-"></span><code>Procedure <strong>CompareHashes</strong>(inputline:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateMultiAddress-String-"></span><code>Procedure <strong>CreateMultiAddress</strong>(Inputline:String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a multiaddress Example: &gt;getmulti 2,3 Nxxx,Nxxxx,Nxxxx</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ListGVTs"></span><code>Procedure <strong>ListGVTs</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+CONSULTING</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowBlockPos-string-"></span><code>Procedure <strong>ShowBlockPos</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+0.2.1 DEBUG</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowBlockMNs-string-"></span><code>Procedure <strong>ShowBlockMNs</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="showgmts-string-"></span><code>Procedure <strong>showgmts</strong>(LineText:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowSystemInfo-string-"></span><code>Procedure <strong>ShowSystemInfo</strong>(Linetext:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowMNsChecks"></span><code>Procedure <strong>ShowMNsChecks</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PostOffer-String-"></span><code>Procedure <strong>PostOffer</strong>(LineText:String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+EXCHANGE</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DebugTest2-string-"></span><code>Procedure <strong>DebugTest2</strong>(linetext:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="OrdInfo-string-"></span><code>Procedure <strong>OrdInfo</strong>(linetext:string);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="totallocked"></span><code>Procedure <strong>totallocked</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowSumary"></span><code>Procedure <strong>ShowSumary</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+ShowsSummary file <a class="normal" href="mpGUI.html#Info-string-">info</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowConsensus"></span><code>Procedure <strong>ShowConsensus</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+<a class="normal" href="nosoconsensus.html#Consensus">CONSENSUS</a></p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowConsensusStats"></span><code>Procedure <strong>ShowConsensusStats</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TestNewPSO-String-"></span><code>Procedure <strong>TestNewPSO</strong>(Dataline:String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+PSOs testing functions</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPSOs"></span><code>Procedure <strong>GetPSOs</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowGVTInfo"></span><code>Procedure <strong>ShowGVTInfo</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearPSOs"></span><code>Procedure <strong>ClearPSOs</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ShowMNsLocked"></span><code>Procedure <strong>ShowMNsLocked</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="Test_Headers"></span><code>Procedure <strong>Test_Headers</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Specific Tests</p>
+</td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

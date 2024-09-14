@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: NosoWallCon</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit NosoWallCon</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section">Constants</div><div class="one_section"><a class="section" href="#PasDoc-Variables">Variables</a></div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>SysUtils</li><li>fileutil</li><li><a href="nosodebug.html">nosodebug</a></li><li><a href="nosocrypto.html">nosocrypto</a></li><li><a href="nosogeneral.html">nosogeneral</a></li><li><a href="NosoHeaders.html">nosoheaders</a></li><li>nosonetwork</li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="NosoWallCon.WalletData.html"><code>WalletData</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#SetWalletFileName-String-">SetWalletFileName</a></strong>(Fname:String):Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="NosoWallCon.html#ClearWalletArray">ClearWalletArray</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoWallCon.html#InsertToWallArr-WalletData-">InsertToWallArr</a></strong>(LData:<a href="NosoWallCon.WalletData.html">WalletData</a>):boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#GetWallArrIndex-integer-">GetWallArrIndex</a></strong>(Index:integer):<a href="NosoWallCon.WalletData.html">WalletData</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#WallAddIndex-String-">WallAddIndex</a></strong>(Address:String):integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#LenWallArr">LenWallArr</a></strong>():Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#ChangeWallArrPos-integer-integer-">ChangeWallArrPos</a></strong>(PosA,PosB:integer):boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Procedure <strong><a href="NosoWallCon.html#ClearWallPendings">ClearWallPendings</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Procedure <strong><a href="NosoWallCon.html#SetPendingForAddress-integer-int64-">SetPendingForAddress</a></strong>(Index:integer;value:int64);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#GetAddressFromFile-String-WalletData-">GetAddressFromFile</a></strong>(FileLocation:String;out WalletInfo:<a href="NosoWallCon.WalletData.html">WalletData</a>):Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#ImportAddressesFromBackup-String-">ImportAddressesFromBackup</a></strong>(BakFolder:String):integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#SaveAddresstoFile-string-WalletData-">SaveAddresstoFile</a></strong>(FileName:string;LData:<a href="NosoWallCon.WalletData.html">WalletData</a>):boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="NosoWallCon.html#CreateNewWallet">CreateNewWallet</a></strong>():Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#GetWalletAsStream-TMemoryStream-">GetWalletAsStream</a></strong>(out LStream:TMemoryStream):int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#SaveWalletToFile">SaveWalletToFile</a></strong>():boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#LoadWallet-String-">LoadWallet</a></strong>(wallet:String):Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>Function <strong><a href="NosoWallCon.html#VerifyAddressOnDisk-String-">VerifyAddressOnDisk</a></strong>(HashAddress:String):boolean;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoWallCon.html#WalletArray">WalletArray</a></strong>: array of <a href="NosoWallCon.WalletData.html">walletData</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoWallCon.html#FileWallet">FileWallet</a></strong>: file of <a href="NosoWallCon.WalletData.html">WalletData</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoWallCon.html#WalletFilename">WalletFilename</a></strong>: string= 'NOSODATA'+DirectorySeparator+'wallet.pkw';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="NosoWallCon.html#CS_WalletFile">CS_WalletFile</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="NosoWallCon.html#CS_WalletArray">CS_WalletArray</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetWalletFileName-String-"></span><code>Function <strong>SetWalletFileName</strong>(Fname:String):Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Set the wallet filename; if not exists, returns false</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearWalletArray"></span><code>Procedure <strong>ClearWalletArray</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="InsertToWallArr-WalletData-"></span><code>function <strong>InsertToWallArr</strong>(LData:<a href="NosoWallCon.WalletData.html">WalletData</a>):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetWallArrIndex-integer-"></span><code>Function <strong>GetWallArrIndex</strong>(Index:integer):<a href="NosoWallCon.WalletData.html">WalletData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="WallAddIndex-String-"></span><code>Function <strong>WallAddIndex</strong>(Address:String):integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LenWallArr"></span><code>Function <strong>LenWallArr</strong>():Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ChangeWallArrPos-integer-integer-"></span><code>Function <strong>ChangeWallArrPos</strong>(PosA,PosB:integer):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearWallPendings"></span><code>Procedure <strong>ClearWallPendings</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetPendingForAddress-integer-int64-"></span><code>Procedure <strong>SetPendingForAddress</strong>(Index:integer;value:int64);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetAddressFromFile-String-WalletData-"></span><code>Function <strong>GetAddressFromFile</strong>(FileLocation:String;out WalletInfo:<a href="NosoWallCon.WalletData.html">WalletData</a>):Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Import an address data from a file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ImportAddressesFromBackup-String-"></span><code>Function <strong>ImportAddressesFromBackup</strong>(BakFolder:String):integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Verify if all baked up keys are present on active wallet</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SaveAddresstoFile-string-WalletData-"></span><code>Function <strong>SaveAddresstoFile</strong>(FileName:string;LData:<a href="NosoWallCon.WalletData.html">WalletData</a>):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Saves an address <a class="normal" href="mpGUI.html#Info-string-">info</a> to a specific file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateNewWallet"></span><code>function <strong>CreateNewWallet</strong>():Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a new wallet file with a new generated address</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetWalletAsStream-TMemoryStream-"></span><code>Function <strong>GetWalletAsStream</strong>(out LStream:TMemoryStream):int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Load the wallet file into a memory stream</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SaveWalletToFile"></span><code>Function <strong>SaveWalletToFile</strong>():boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Save the wallet array to the file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LoadWallet-String-"></span><code>Function <strong>LoadWallet</strong>(wallet:String):Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="VerifyAddressOnDisk-String-"></span><code>Function <strong>VerifyAddressOnDisk</strong>(HashAddress:String):boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="WalletArray"></span><code><strong>WalletArray</strong>: array of <a href="NosoWallCon.WalletData.html">walletData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FileWallet"></span><code><strong>FileWallet</strong>: file of <a href="NosoWallCon.WalletData.html">WalletData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Wallet addresses</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="WalletFilename"></span><code><strong>WalletFilename</strong>: string= 'NOSODATA'+DirectorySeparator+'wallet.pkw';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CS_WalletFile"></span><code><strong>CS_WalletFile</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CS_WalletArray"></span><code><strong>CS_WalletArray</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>
