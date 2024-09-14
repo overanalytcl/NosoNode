@@ -11,356 +11,372 @@ Stand alone unit to control wallet addresses file and array
 interface
 
 uses
-  Classes, SysUtils, fileutil, nosodebug,nosocrypto,nosogeneral,nosoheaders,nosonetwork;
+  Classes, SysUtils, fileutil, nosodebug, nosocrypto, nosogeneral,
+  nosoheaders, nosonetwork;
 
-TYPE
+type
 
-  WalletData = Packed Record
-    Hash : String[40];        // El hash publico o direccion
-    Custom : String[40];      // En caso de que la direccion este personalizada
-    PublicKey : String[255];  // clave publica
-    PrivateKey : String[255]; // clave privada
-    Balance : int64;          // el ultimo saldo conocido de la direccion
-    Pending : int64;          // el ultimo saldo de pagos pendientes
-    Score : int64;            // estado del registro de la direccion.
-    LastOP : int64;           // tiempo de la ultima operacion en UnixTime.
-    end;
+  WalletData = packed record
+    Hash: String[40];        // El hash publico o direccion
+    Custom: String[40];      // En caso de que la direccion este personalizada
+    PublicKey: String[255];  // clave publica
+    PrivateKey: String[255]; // clave privada
+    Balance: Int64;          // el ultimo saldo conocido de la direccion
+    Pending: Int64;          // el ultimo saldo de pagos pendientes
+    Score: Int64;            // estado del registro de la direccion.
+    LastOP: Int64;           // tiempo de la ultima operacion en UnixTime.
+  end;
 
-Function SetWalletFileName(Fname:String):Boolean;
-Procedure ClearWalletArray();
-function InsertToWallArr(LData:WalletData):boolean;
-Function GetWallArrIndex(Index:integer):WalletData;
-Function WallAddIndex(Address:String):integer;
-Function LenWallArr():Integer;
-Function ChangeWallArrPos(PosA,PosB:integer):boolean;
-Procedure ClearWallPendings();
-Procedure SetPendingForAddress(Index:integer;value:int64);
-Function GetAddressFromFile(FileLocation:String;out WalletInfo:WalletData):Boolean;
-Function ImportAddressesFromBackup(BakFolder:String):integer;
-Function SaveAddresstoFile(FileName:string;LData:WalletData):boolean;
+function SetWalletFileName(Fname: String): Boolean;
+procedure ClearWalletArray();
+function InsertToWallArr(LData: WalletData): Boolean;
+function GetWallArrIndex(Index: Integer): WalletData;
+function WallAddIndex(Address: String): Integer;
+function LenWallArr(): Integer;
+function ChangeWallArrPos(PosA, PosB: Integer): Boolean;
+procedure ClearWallPendings();
+procedure SetPendingForAddress(Index: Integer; Value: Int64);
+function GetAddressFromFile(FileLocation: String; out WalletInfo: WalletData): Boolean;
+function ImportAddressesFromBackup(BakFolder: String): Integer;
+function SaveAddresstoFile(FileName: String; LData: WalletData): Boolean;
 
-function CreateNewWallet():Boolean;
-Function GetWalletAsStream(out LStream:TMemoryStream):int64;
-Function SaveWalletToFile():boolean;
-Function LoadWallet(wallet:String):Boolean;
-Function VerifyAddressOnDisk(HashAddress:String):boolean;
+function CreateNewWallet(): Boolean;
+function GetWalletAsStream(out LStream: TMemoryStream): Int64;
+function SaveWalletToFile(): Boolean;
+function LoadWallet(wallet: String): Boolean;
+function VerifyAddressOnDisk(HashAddress: String): Boolean;
 
 
 
 var
-  WalletArray     : array of walletData; // Wallet addresses
-  FileWallet      : file of WalletData;
-  WalletFilename  : string= 'NOSODATA'+DirectorySeparator+'wallet.pkw';
-  CS_WalletFile   : TRTLCriticalSection;
-  CS_WalletArray  : TRTLCriticalSection;
+  WalletArray: array of walletData; // Wallet addresses
+  FileWallet: file of WalletData;
+  WalletFilename: String = 'NOSODATA' + DirectorySeparator + 'wallet.pkw';
+  CS_WalletFile: TRTLCriticalSection;
+  CS_WalletArray: TRTLCriticalSection;
 
-IMPLEMENTATION
+implementation
 
 // Set the wallet filename; if not exists, returns false
-Function SetWalletFileName(Fname:String):Boolean;
-Begin
-  Result := true;
+function SetWalletFileName(Fname: String): Boolean;
+begin
+  Result := True;
   WalletFilename := Fname;//'NOSODATA'+DirectorySeparator+'wallet.pkw';
   if not FileExists(WalletFilename) then
-    begin
+  begin
     CreateNewWallet;
-    result := false;
-    end
-  else LoadWallet(WalletFilename);
-End;
+    Result := False;
+  end
+  else
+    LoadWallet(WalletFilename);
+end;
 
-Procedure ClearWalletArray();
-Begin
+procedure ClearWalletArray();
+begin
   EnterCriticalSection(CS_WalletArray);
-  setlength(WalletArray,0);
+  setlength(WalletArray, 0);
   LeaveCriticalSection(CS_WalletArray);
-End;
+end;
 
-function InsertToWallArr(LData:WalletData):boolean;
-Begin
-  result := false;
-  if WallAddIndex(LData.Hash)<0 then
-    begin
+function InsertToWallArr(LData: WalletData): Boolean;
+begin
+  Result := False;
+  if WallAddIndex(LData.Hash) < 0 then
+  begin
     EnterCriticalSection(CS_WalletArray);
-    Insert(LData,WalletArray,length(WalletArray));
+    Insert(LData, WalletArray, length(WalletArray));
     LeaveCriticalSection(CS_WalletArray);
-    Result := true;
-    end;
-End;
+    Result := True;
+  end;
+end;
 
-Function GetWallArrIndex(Index:integer):WalletData;
-Begin
+function GetWallArrIndex(Index: Integer): WalletData;
+begin
   EnterCriticalSection(CS_WalletArray);
-  if Index <= Length(WalletArray)-1 then
+  if Index <= Length(WalletArray) - 1 then
     Result := WalletArray[Index]
-  else result := Default(WalletData);
+  else
+    Result := Default(WalletData);
   LeaveCriticalSection(CS_WalletArray);
-End;
+end;
 
-Function WallAddIndex(Address:String):integer;
+function WallAddIndex(Address: String): Integer;
 var
-  counter : integer;
-Begin
+  counter: Integer;
+begin
   Result := -1;
-  if ((Address ='') or (length(Address)<5)) then exit;
+  if ((Address = '') or (length(Address) < 5)) then exit;
   EnterCriticalSection(CS_WalletArray);
   for counter := 0 to high(WalletArray) do
-    if ((WalletArray[counter].Hash = Address) or (WalletArray[counter].Custom = Address )) then
-      Begin
+    if ((WalletArray[counter].Hash = Address) or
+      (WalletArray[counter].Custom = Address)) then
+    begin
       Result := counter;
       break;
-      end;
+    end;
   LeaveCriticalSection(CS_WalletArray);
-End;
+end;
 
-Function LenWallArr():Integer;
-Begin
+function LenWallArr(): Integer;
+begin
   EnterCriticalSection(CS_WalletArray);
   Result := Length(WalletArray);
   LeaveCriticalSection(CS_WalletArray);
-End;
+end;
 
-Function ChangeWallArrPos(PosA,PosB:integer):boolean;
+function ChangeWallArrPos(PosA, PosB: Integer): Boolean;
 var
-  oldData,NewData : WalletData;
-Begin
-  Result := false;
-  if posA>LenWallArr-1 then exit;
-  if posB>LenWallArr-1 then exit;
-  if posA=posB then Exit;
+  oldData, NewData: WalletData;
+begin
+  Result := False;
+  if posA > LenWallArr - 1 then exit;
+  if posB > LenWallArr - 1 then exit;
+  if posA = posB then Exit;
   OldData := GetWallArrIndex(posA);
   NewData := GetWallArrIndex(posB);
   EnterCriticalSection(CS_WalletArray);
   WalletArray[posA] := NewData;
   WalletArray[posB] := OldData;
   LeaveCriticalSection(CS_WalletArray);
-  Result := true;
-End;
+  Result := True;
+end;
 
-Procedure ClearWallPendings();
+procedure ClearWallPendings();
 var
-  counter : integer;
-Begin
+  counter: Integer;
+begin
   EnterCriticalSection(CS_WalletArray);
-  for counter := 0 to length(WalletArray)-1 do
+  for counter := 0 to length(WalletArray) - 1 do
     WalletArray[counter].pending := 0;
   LeaveCriticalSection(CS_WalletArray);
-End;
+end;
 
-Procedure SetPendingForAddress(Index:integer;value:int64);
-Begin
-  if Index > LenWallArr-1 then exit;
+procedure SetPendingForAddress(Index: Integer; Value: Int64);
+begin
+  if Index > LenWallArr - 1 then exit;
   EnterCriticalSection(CS_WalletArray);
-  WalletArray[Index].pending := value;
+  WalletArray[Index].pending := Value;
   LeaveCriticalSection(CS_WalletArray);
-End;
+end;
 
 // Import an address data from a file
-Function GetAddressFromFile(FileLocation:String;out WalletInfo:WalletData):Boolean;
+function GetAddressFromFile(FileLocation: String; out WalletInfo: WalletData): Boolean;
 var
-  TempFile : File of WalletData;
-  Opened   : boolean = false;
-  Closed   : boolean = false;
-Begin
-  result := true;
-  AssignFile(TempFile,FileLocation);
-  TRY
+  TempFile: file of WalletData;
+  Opened: Boolean = False;
+  Closed: Boolean = False;
+begin
+  Result := True;
+  AssignFile(TempFile, FileLocation);
+  try
     Reset(TempFile);
-    Opened := true;
-    Read(TempFile,WalletInfo);
+    Opened := True;
+    Read(TempFile, WalletInfo);
     CloseFile(TempFile);
-    Closed := true;
-  EXCEPT on E:Exception do
+    Closed := True;
+  except
+    on E: Exception do
     begin
-    Result := false;
-    ToDeepDeb('NosoWallcon,GetAddressFromFile,'+E.Message);
+      Result := False;
+      ToDeepDeb('NosoWallcon,GetAddressFromFile,' + E.Message);
     end;
-  END;
-  If ( (opened) and (not Closed) ) then CloseFile(TempFile);
-End;
+  end;
+  if ((opened) and (not Closed)) then CloseFile(TempFile);
+end;
 
 // Verify if all baked up keys are present on active wallet
-Function ImportAddressesFromBackup(BakFolder:String):integer;
-Var
-  BakFiles    : TStringList;
-  Counter     : integer = 0;
-  ThisData    : WalletData;
-Begin
+function ImportAddressesFromBackup(BakFolder: String): Integer;
+var
+  BakFiles: TStringList;
+  Counter: Integer = 0;
+  ThisData: WalletData;
+begin
   Result := 0;
   BeginPerformance('ImportAddressesFromBackup');
   BakFiles := TStringList.Create;
-  TRY
-    FindAllFiles(BakFiles, BakFolder, '*.pkw', true);
+  try
+    FindAllFiles(BakFiles, BakFolder, '*.pkw', True);
     while Counter < BakFiles.Count do
-        begin
-        if GetAddressFromFile(BakFiles[Counter],ThisData) then
-          begin
-          if InsertToWallArr(ThisData) then inc(result);
-          end;
-        Inc(Counter);
-        end;
-    if result > 0 then ToDeepDeb(format('Imported %d addresses from backup files',[result]));
-  EXCEPT on E:Exception do
     begin
-    ToDeepDeb('NosoWallcon,ImportAddressesFromBackup,'+E.Message);
+      if GetAddressFromFile(BakFiles[Counter], ThisData) then
+      begin
+        if InsertToWallArr(ThisData) then Inc(Result);
+      end;
+      Inc(Counter);
     end;
-  END;
-  BakFiles.free;
+    if Result > 0 then ToDeepDeb(
+        format('Imported %d addresses from backup files', [Result]));
+  except
+    on E: Exception do
+    begin
+      ToDeepDeb('NosoWallcon,ImportAddressesFromBackup,' + E.Message);
+    end;
+  end;
+  BakFiles.Free;
   EndPerformance('ImportAddressesFromBackup');
-End;
+end;
 
 // Saves an address info to a specific file
-Function SaveAddresstoFile(FileName:string;LData:WalletData):boolean;
+function SaveAddresstoFile(FileName: String; LData: WalletData): Boolean;
 var
-  TempFile : File of WalletData;
-  opened   : boolean = false;
-  Closed   : boolean = false;
-Begin
-  Result := true;
-  AssignFile(TempFile,FileName);
-  TRY
+  TempFile: file of WalletData;
+  opened: Boolean = False;
+  Closed: Boolean = False;
+begin
+  Result := True;
+  AssignFile(TempFile, FileName);
+  try
     rewrite(TempFile);
-    opened := true;
-    write(TempFile,Ldata);
+    opened := True;
+    Write(TempFile, Ldata);
     CloseFile(TempFile);
-    Closed := true;
-  EXCEPT on E:Exception do
+    Closed := True;
+  except
+    on E: Exception do
     begin
-    Result := false;
-    ToDeepDeb('NosoWallcon,SaveAddresstoFile,'+E.Message);
+      Result := False;
+      ToDeepDeb('NosoWallcon,SaveAddresstoFile,' + E.Message);
     end;
-  END;
-  If ( (opened) and (not Closed) ) then CloseFile(TempFile);
-End;
+  end;
+  if ((opened) and (not Closed)) then CloseFile(TempFile);
+end;
 
 // Creates a new wallet file with a new generated address
-function CreateNewWallet():Boolean;
+function CreateNewWallet(): Boolean;
 var
-  NewAddress : WalletData;
-  PubKey,PriKey : string;
-Begin
-  TRY
-  if not fileexists (WalletFilename) then // Check to avoid delete an existing file
+  NewAddress: WalletData;
+  PubKey, PriKey: String;
+begin
+  try
+    if not fileexists(WalletFilename) then // Check to avoid delete an existing file
     begin
-    ClearWalletArray;
-    NewAddress := Default(WalletData);
-    NewAddress.Hash:=GenerateNewAddress(PubKey,PriKey);
-    NewAddress.PublicKey:=pubkey;
-    NewAddress.PrivateKey:=PriKey;
-    InsertToWallArr(NewAddress);
-    SaveWalletToFile;
+      ClearWalletArray;
+      NewAddress := Default(WalletData);
+      NewAddress.Hash := GenerateNewAddress(PubKey, PriKey);
+      NewAddress.PublicKey := pubkey;
+      NewAddress.PrivateKey := PriKey;
+      InsertToWallArr(NewAddress);
+      SaveWalletToFile;
     end;
-   EXCEPT on E:Exception do
-     begin
-     ToDeepDeb('NosoWallcon,CreateNewWallet,'+E.Message);
-     end;
-   END; {TRY}
-End;
+  except
+    on E: Exception do
+    begin
+      ToDeepDeb('NosoWallcon,CreateNewWallet,' + E.Message);
+    end;
+  end; {TRY}
+end;
 
 // Load the wallet file into a memory stream
-Function GetWalletAsStream(out LStream:TMemoryStream):int64;
-Begin
+function GetWalletAsStream(out LStream: TMemoryStream): Int64;
+begin
   Result := 0;
   EnterCriticalSection(CS_WalletFile);
-    TRY
+  try
     LStream.LoadFromFile(WalletFilename);
-    result:= LStream.Size;
-    LStream.Position:=0;
-    EXCEPT ON E:Exception do
-      begin
-      ToDeepDeb('NosoWallcon,GetWalletAsStream,'+E.Message);
-      end;
-    END{Try};
+    Result := LStream.Size;
+    LStream.Position := 0;
+  except
+    ON E: Exception do
+    begin
+      ToDeepDeb('NosoWallcon,GetWalletAsStream,' + E.Message);
+    end;
+  end{Try};
   LeaveCriticalSection(CS_WalletFile);
-End;
+end;
 
 // Save the wallet array to the file
-Function SaveWalletToFile():boolean;
+function SaveWalletToFile(): Boolean;
 var
-  MyStream : TMemoryStream;
-  Counter  : integer;
-Begin
-  Result := true;
-  TryCopyFile(WalletFilename,WalletFilename+'.bak');
-  MyStream:= TMemoryStream.Create;
-  MyStream.Position:=0;
+  MyStream: TMemoryStream;
+  Counter: Integer;
+begin
+  Result := True;
+  TryCopyFile(WalletFilename, WalletFilename + '.bak');
+  MyStream := TMemoryStream.Create;
+  MyStream.Position := 0;
   EnterCriticalSection(CS_WalletFile);
   EnterCriticalSection(CS_WalletArray);
-  for Counter := 0 to length(WalletArray)-1 do
-    begin
-    MyStream.Write(WalletArray[counter],SizeOf(WalletData));
-    end;
-    TRY
+  for Counter := 0 to length(WalletArray) - 1 do
+  begin
+    MyStream.Write(WalletArray[counter], SizeOf(WalletData));
+  end;
+  try
     MyStream.SaveToFile(WalletFilename);
-    EXCEPT ON E:EXCEPTION DO
-      begin
-      ToDeepDeb('NosoWallcon,SaveWalletToFile,'+E.Message);
-      Result := false;
-      end;
-    END;
+  except
+    ON E: Exception do
+    begin
+      ToDeepDeb('NosoWallcon,SaveWalletToFile,' + E.Message);
+      Result := False;
+    end;
+  end;
   LeaveCriticalSection(CS_WalletArray);
   LeaveCriticalSection(CS_WalletFile);
   MyStream.Free;
-  If result = true then TryCopyFile(WalletFilename,WalletFilename+'.bak')
-  else TryCopyFile(WalletFilename+'.bak',WalletFilename);
-End;
+  if Result = True then TryCopyFile(WalletFilename, WalletFilename + '.bak')
+  else
+    TryCopyFile(WalletFilename + '.bak', WalletFilename);
+end;
 
-Function LoadWallet(wallet:String):Boolean;
+function LoadWallet(wallet: String): Boolean;
 var
-  MyStream    : TMemoryStream;
-  ThisAddress : WalletData;
-  Counter     : integer;
-  Records     : integer;
-Begin
-  Result := true;
+  MyStream: TMemoryStream;
+  ThisAddress: WalletData;
+  Counter: Integer;
+  Records: Integer;
+begin
+  Result := True;
   MyStream := TMemoryStream.Create;
   if fileExists(wallet) then
-    begin
+  begin
     Records := GetWalletAsStream(MyStream) div sizeof(WalletData);
     if Records > 0 then
-      begin
+    begin
       ClearWalletArray;
-      For counter := 0 to records-1 do
-        begin
-        MyStream.Read(ThisAddress,Sizeof(WalletData));
+      for counter := 0 to records - 1 do
+      begin
+        MyStream.Read(ThisAddress, Sizeof(WalletData));
         InsertToWallArr(ThisAddress);
-        end;
-      end
-    else result := false;
+      end;
     end
-  else result := false;
+    else
+      Result := False;
+  end
+  else
+    Result := False;
   MyStream.Free;
-End;
+end;
 
-Function VerifyAddressOnDisk(HashAddress:String):boolean;
+function VerifyAddressOnDisk(HashAddress: String): Boolean;
 var
-  MyStream    : TMemoryStream;
-  ThisAddress : WalletData;
-  Counter     : integer;
-  Records     : integer;
-Begin
-  Result := false;
+  MyStream: TMemoryStream;
+  ThisAddress: WalletData;
+  Counter: Integer;
+  Records: Integer;
+begin
+  Result := False;
   MyStream := TMemoryStream.Create;
   if fileExists(WalletFilename) then
-    begin
+  begin
     Records := GetWalletAsStream(MyStream) div sizeof(WalletData);
     if Records > 0 then
+    begin
+      for counter := 0 to records - 1 do
       begin
-      For counter := 0 to records-1 do
+        MyStream.Read(ThisAddress, Sizeof(WalletData));
+        if ThisAddress.Hash = HashAddress then
         begin
-        MyStream.Read(ThisAddress,Sizeof(WalletData));
-        if ThisAddress.Hash=HashAddress then
-          begin
-          result := true;
+          Result := True;
           break;
-          end;
         end;
-      end
-    else result := false;
+      end;
     end
-  else result := false;
+    else
+      Result := False;
+  end
+  else
+    Result := False;
   MyStream.Free;
-End;
+end;
 
 {$REGION Summary related}
 
@@ -368,16 +384,12 @@ End;
 
 {$ENDREGION Summary related}
 
-INITIALIZATION
-InitCriticalSection(CS_WalletArray);
-InitCriticalSection(CS_WalletFile);
-SetLength(WalletArray,0);
+initialization
+  InitCriticalSection(CS_WalletArray);
+  InitCriticalSection(CS_WalletFile);
+  SetLength(WalletArray, 0);
 
-FINALIZATION
-DoneCriticalSection(CS_WalletArray);
-DoneCriticalSection(CS_WalletFile);
-END.
-
-
-
-
+finalization
+  DoneCriticalSection(CS_WalletArray);
+  DoneCriticalSection(CS_WalletFile);
+end.

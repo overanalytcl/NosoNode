@@ -2,210 +2,214 @@ unit nosogvts;
 
 {$mode ObjFPC}{$H+}
 
-INTERFACE
+interface
 
 uses
   Classes, SysUtils, nosodebug, nosocrypto;
 
 type
   TGVT = packed record
-    number   : string[2];
-    owner    : string[32];
-    Hash     : string[64];
-    control  : integer;
-    end;
+    number: String[2];
+    owner: String[32];
+    Hash: String[64];
+    control: Integer;
+  end;
 
-  Function CreateGVTsFile():boolean;
-  Function GetGVTsAsStream(out LStream:TMemoryStream):int64;
-  Function SaveStreamAsGVTs(Const LStream:TMemoryStream):Boolean;
-  Procedure GetGVTsFileData();
-  Procedure SaveGVTs();
-  Function ChangeGVTOwner(Lnumber:integer;OldOwner,NewOWner:String): integer;
-  Function GetGVTIndex(Index:Integer):TGVT;
-  Function GetGVTLength:integer;
-  Function CountAvailableGVTs():Integer;
-  Function GetGVTPrice(available:integer;ToSell:boolean = false):int64;
+function CreateGVTsFile(): Boolean;
+function GetGVTsAsStream(out LStream: TMemoryStream): Int64;
+function SaveStreamAsGVTs(const LStream: TMemoryStream): Boolean;
+procedure GetGVTsFileData();
+procedure SaveGVTs();
+function ChangeGVTOwner(Lnumber: Integer; OldOwner, NewOWner: String): Integer;
+function GetGVTIndex(Index: Integer): TGVT;
+function GetGVTLength: Integer;
+function CountAvailableGVTs(): Integer;
+function GetGVTPrice(available: Integer; ToSell: Boolean = False): Int64;
 
-CONST
-  GVTBaseValue     = 70000000000;
+const
+  GVTBaseValue = 70000000000;
 
 var
-  GVTsFilename        : string= 'NOSODATA'+DirectorySeparator+'gvts.psk';
-  FileGVTs            : file of TGVT;
-  ArrGVTs             : array of TGVT;
-  CSGVTsArray         : TRTLCriticalSection;
-  CSGVTsFile          : TRTLCriticalSection;
-  MyGVTsHash          : string = '';
+  GVTsFilename: String = 'NOSODATA' + DirectorySeparator + 'gvts.psk';
+  FileGVTs: file of TGVT;
+  ArrGVTs: array of TGVT;
+  CSGVTsArray: TRTLCriticalSection;
+  CSGVTsFile: TRTLCriticalSection;
+  MyGVTsHash: String = '';
 
-IMPLEMENTATION
+implementation
 
 // Creates a GVTs file. If it already exists, rewrite a new empty one.
-Function CreateGVTsFile():boolean;
+function CreateGVTsFile(): Boolean;
 var
-  MyStream : TMemoryStream;
-Begin
+  MyStream: TMemoryStream;
+begin
   Result := True;
   MyStream := TMemoryStream.Create;
   EnterCriticalSection(CSGVTsFile);
-  TRY
+  try
     MYStream.SaveToFile(GVTsFilename);
-  EXCEPT ON E:EXCEPTION DO
+  except
+    ON E: Exception do
     begin
-    Result := false;
-    ToDeepDeb('NosoGVTs,CreateGVTsFile,'+E.Message);
+      Result := False;
+      ToDeepDeb('NosoGVTs,CreateGVTsFile,' + E.Message);
     end;
-  END;
+  end;
   LeaveCriticalSection(CSGVTsFile);
   MyStream.Free;
-End;
+end;
 
 // Loads the GVTs file into a stream
-Function GetGVTsAsStream(out LStream:TMemoryStream):int64;
-Begin
+function GetGVTsAsStream(out LStream: TMemoryStream): Int64;
+begin
   Result := 0;
   EnterCriticalSection(CSGVTsFile);
-    TRY
+  try
     LStream.LoadFromFile(GVTsFilename);
-    result:= LStream.Size;
-    LStream.Position:=0;
-    EXCEPT ON E:Exception do
-      begin
-      ToDeepDeb('NosoGVTs,GetGVTsAsStream,'+E.Message);
-      end;
-    END{Try};
+    Result := LStream.Size;
+    LStream.Position := 0;
+  except
+    ON E: Exception do
+    begin
+      ToDeepDeb('NosoGVTs,GetGVTsAsStream,' + E.Message);
+    end;
+  end{Try};
   LeaveCriticalSection(CSGVTsFile);
-End;
+end;
 
 // Save a stream as the GVT file
-Function SaveStreamAsGVTs(Const LStream:TMemoryStream):Boolean;
-Begin
-  result := false;
+function SaveStreamAsGVTs(const LStream: TMemoryStream): Boolean;
+begin
+  Result := False;
   EnterCriticalSection(CSGVTsFile);
-    TRY
+  try
     LStream.SaveToFile(GVTsFilename);
-    Result := true;
-    EXCEPT ON E:Exception do
-      begin
-      ToDeepDeb('NosoGVTs,SaveStreamAsGVTs,'+E.Message);
-      end;
-    END{Try};
+    Result := True;
+  except
+    ON E: Exception do
+    begin
+      ToDeepDeb('NosoGVTs,SaveStreamAsGVTs,' + E.Message);
+    end;
+  end{Try};
   LeaveCriticalSection(CSGVTsFile);
   MyGVTsHash := HashMD5File(GVTsFilename);
-End;
+end;
 
-Procedure GetGVTsFileData();
+procedure GetGVTsFileData();
 var
-  counter : integer;
-Begin
+  counter: Integer;
+begin
   EnterCriticalSection(CSGVTsFile);
   EnterCriticalSection(CSGVTsArray);
   Assignfile(FileGVTs, GVTsFilename);
-  TRY
-  reset(FileGVTs);
-  Setlength(ArrGVTs,filesize(FileGVTs));
-  For counter := 0 to filesize(FileGVTs)-1 do
+  try
+    reset(FileGVTs);
+    Setlength(ArrGVTs, filesize(FileGVTs));
+    for counter := 0 to filesize(FileGVTs) - 1 do
     begin
-    seek(FileGVTs,counter);
-    read(FileGVTs,ArrGVTs[counter]);
+      seek(FileGVTs, counter);
+      Read(FileGVTs, ArrGVTs[counter]);
     end;
-  Closefile(FileGVTs);
-  EXCEPT ON E:Exception do
+    Closefile(FileGVTs);
+  except
+    ON E: Exception do
     begin
-    ToDeepDeb('NosoGVTs,GetGVTsFileData,'+E.Message);
+      ToDeepDeb('NosoGVTs,GetGVTsFileData,' + E.Message);
     end;
-  END;
+  end;
   LeaveCriticalSection(CSGVTsArray);
   LeaveCriticalSection(CSGVTsFile);
   MyGVTsHash := HashMD5File(GVTsFilename);
-End;
+end;
 
-Procedure SaveGVTs();
+procedure SaveGVTs();
 var
-  counter : integer;
-Begin
+  counter: Integer;
+begin
   EnterCriticalSection(CSGVTsFile);
   EnterCriticalSection(CSGVTsArray);
-  TRY
-  rewrite(FileGVTs);
-  For counter := 0 to length(ArrGVTs)-1 do
+  try
+    rewrite(FileGVTs);
+    for counter := 0 to length(ArrGVTs) - 1 do
     begin
-    seek(FileGVTs,counter);
-    write(FileGVTs,ArrGVTs[counter]);
+      seek(FileGVTs, counter);
+      Write(FileGVTs, ArrGVTs[counter]);
     end;
-  Closefile(FileGVTs);
-  EXCEPT ON E:Exception do
-    ToDeepDeb('NosoGVTs,SaveGVTs,'+E.Message);
-  END;
+    Closefile(FileGVTs);
+  except
+    ON E: Exception do
+      ToDeepDeb('NosoGVTs,SaveGVTs,' + E.Message);
+  end;
   LeaveCriticalSection(CSGVTsArray);
   LeaveCriticalSection(CSGVTsFile);
   MyGVTsHash := HashMD5File(GVTsFilename);
-End;
+end;
 
-Function GetGVTIndex(Index:Integer):TGVT;
-Begin
-  result := Default(TGVT);
-  if index > GetGVTLength-1 then exit;
+function GetGVTIndex(Index: Integer): TGVT;
+begin
+  Result := Default(TGVT);
+  if index > GetGVTLength - 1 then exit;
   EnterCriticalSection(CSGVTsArray);
   Result := ArrGVTs[index];
   LeaveCriticalSection(CSGVTsArray);
-End;
+end;
 
-Function GetGVTLength:integer;
-Begin
+function GetGVTLength: Integer;
+begin
   EnterCriticalSection(CSGVTsArray);
   Result := length(ArrGVTs);
   LeaveCriticalSection(CSGVTsArray);
-End;
+end;
 
-Function ChangeGVTOwner(Lnumber:integer;OldOwner,NewOWner:String): integer;
+function ChangeGVTOwner(Lnumber: Integer; OldOwner, NewOWner: String): Integer;
 var
-  LData : TGVT;
-Begin
-  result := 0;
-  if LNumber > 99 then result := 1;
+  LData: TGVT;
+begin
+  Result := 0;
+  if LNumber > 99 then Result := 1;
   LData := GetGVTIndex(Lnumber);
-  if LData.owner <> OldOwner then result := 2;
-  if not IsValidHashAddress(NewOWner) then result := 3;
-  if result = 0 then
-    begin
+  if LData.owner <> OldOwner then Result := 2;
+  if not IsValidHashAddress(NewOWner) then Result := 3;
+  if Result = 0 then
+  begin
     EnterCriticalSection(CSGVTsArray);
     ArrGVTs[Lnumber].owner := NewOWner;
     LeaveCriticalSection(CSGVTsArray);
-    end;
-End;
+  end;
+end;
 
-Function CountAvailableGVTs():Integer;
+function CountAvailableGVTs(): Integer;
 var
-  counter : integer;
-Begin
+  counter: Integer;
+begin
   Result := 0;
   EnterCriticalSection(CSGVTsArray);
-  for counter := 0 to length(ArrGVTs)-1 do
-     if ArrGVTs[counter].owner = 'NpryectdevepmentfundsGE' then Inc(Result);
+  for counter := 0 to length(ArrGVTs) - 1 do
+    if ArrGVTs[counter].owner = 'NpryectdevepmentfundsGE' then Inc(Result);
   LeaveCriticalSection(CSGVTsArray);
-End;
+end;
 
-Function GetGVTPrice(available:integer;ToSell:boolean = false):int64;
+function GetGVTPrice(available: Integer; ToSell: Boolean = False): Int64;
 var
-  counter   : integer;
-Begin
-  result   := GVTBaseValue;
-  available:= 40-available;
+  counter: Integer;
+begin
+  Result := GVTBaseValue;
+  available := 40 - available;
   for counter := 1 to available do
-     result := (result *110) div 100;
-  if result < GVTBaseValue then result := GVTBaseValue;
-  if ToSell then Result := (result *85) div 100;
-End;
+    Result := (Result * 110) div 100;
+  if Result < GVTBaseValue then Result := GVTBaseValue;
+  if ToSell then Result := (Result * 85) div 100;
+end;
 
-INITIALIZATION
-InitCriticalSection(CSGVTsArray);
-InitCriticalSection(CSGVTsFile);
-SetLength(ArrGVTs,0);
-Assignfile(FileGVTs,GVTsFilename);
+initialization
+  InitCriticalSection(CSGVTsArray);
+  InitCriticalSection(CSGVTsFile);
+  SetLength(ArrGVTs, 0);
+  Assignfile(FileGVTs, GVTsFilename);
 
-FINALIZATION
-DoneCriticalSection(CSGVTsArray);
-DoneCriticalSection(CSGVTsFile);
+finalization
+  DoneCriticalSection(CSGVTsArray);
+  DoneCriticalSection(CSGVTsFile);
 
-END. // End unit
-
+end. // End unit

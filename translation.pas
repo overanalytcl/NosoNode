@@ -122,10 +122,10 @@ resourcestring
   rs0517 = '(%d)  %d/%s';
   //mpDisk
   rs1000 = 'Processing block %d (%d %%)';
-  rs1001 = '----- ERROR ----'+Slinebreak+'Block: %d';
-  rs1002 = 'Wrong block hash'+SlineBreak+'File: %s'+Slinebreak+'Headers: %s';
+  rs1001 = '----- ERROR ----' + Slinebreak + 'Block: %d';
+  rs1002 = 'Wrong block hash' + SlineBreak + 'File: %s' + Slinebreak + 'Headers: %s';
   rs1003 = 'File not found: %s';
-  rs1004 = 'Wrong summary hash'+SlineBreak+'Summary: %s'+Slinebreak+'Headers: %s';
+  rs1004 = 'Wrong summary hash' + SlineBreak + 'Summary: %s' + Slinebreak + 'Headers: %s';
   //mpParser
   rs1501 = 'Invalid address';
   rs1502 = 'You can not do it while pool is active.';
@@ -135,18 +135,23 @@ resourcestring
   //mpred
   rs2000 = 'Sign address not valid';
   rs2001 = 'Wallet not updated';
-  rs2002 = '*****CRITICAL*****'+Slinebreak+'Error inside VerifyConnectionStatus'+Slinebreak+'%s'+'*****CRITICAL*****';
+  rs2002 = '*****CRITICAL*****' + Slinebreak + 'Error inside VerifyConnectionStatus' +
+    Slinebreak + '%s' + '*****CRITICAL*****';
   rs2003 = 'Sumary file requested';
   //mpcrypto
-  rs2501 = '*****CRITICAL*****'+Slinebreak+'Error type 3 on crypto thread: %s'+Slinebreak+'*****CRITICAL*****';
-  rs2502 = '*****CRITICAL*****'+Slinebreak+'Error type 4 on crypto thread: %s'+Slinebreak+'*****CRITICAL*****';
-  rs2503 = '*****CRITICAL*****'+Slinebreak+'Error type 5 on crypto thread: %s'+Slinebreak+'*****CRITICAL*****';
-  rs2504 = '*****CRITICAL*****'+Slinebreak+'Error type 6 on crypto thread: %s'+Slinebreak+'*****CRITICAL*****';
-  rs2505 = '*****CRITICAL*****'+Slinebreak+'Error type 7 on crypto thread: %s'+Slinebreak+'*****CRITICAL*****';
+  rs2501 = '*****CRITICAL*****' + Slinebreak + 'Error type 3 on crypto thread: %s' +
+    Slinebreak + '*****CRITICAL*****';
+  rs2502 = '*****CRITICAL*****' + Slinebreak + 'Error type 4 on crypto thread: %s' +
+    Slinebreak + '*****CRITICAL*****';
+  rs2503 = '*****CRITICAL*****' + Slinebreak + 'Error type 5 on crypto thread: %s' +
+    Slinebreak + '*****CRITICAL*****';
+  rs2504 = '*****CRITICAL*****' + Slinebreak + 'Error type 6 on crypto thread: %s' +
+    Slinebreak + '*****CRITICAL*****';
+  rs2505 = '*****CRITICAL*****' + Slinebreak + 'Error type 7 on crypto thread: %s' +
+    Slinebreak + '*****CRITICAL*****';
 {
 ConsoleLinesadd(format(rs,[]));
 }
 implementation
 
-END.
-
+end.

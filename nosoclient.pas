@@ -2,13 +2,12 @@ unit NosoClient;
 
 {$mode ObjFPC}{$H+}
 
-INTERFACE
+interface
 
 uses
   Classes, SysUtils,
   IdContext, IdGlobal, IdTCPClient;
 
-IMPLEMENTATION
+implementation
 
-END. // End unit
-
+end. // End unit

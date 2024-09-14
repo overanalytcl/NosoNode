@@ -8,440 +8,450 @@ Unit to implement debug functionalities on noso project apps.
 
 {$mode ObjFPC}{$H+}
 
-INTERFACE
+interface
 
 uses
   Classes, SysUtils;
 
 type
-  Tperformance = Record
-    tag      : string;
-    Start    : int64;
-    Average  : int64;
-    Max      : int64;
-    Min      : int64;
-    Count    : int64;
-    Total    : int64;
-    end;
+  Tperformance = record
+    tag: String;
+    Start: Int64;
+    Average: Int64;
+    Max: Int64;
+    Min: Int64;
+    Count: Int64;
+    Total: Int64;
+  end;
 
   TLogND = record
-    tag      : string;
-    Count    : integer;
-    ToDisk   : boolean;
-    Filename : string;
-    end;
+    tag: String;
+    Count: Integer;
+    ToDisk: Boolean;
+    Filename: String;
+  end;
 
   TCoreManager = record
-    ThName   : string;
-    ThStart  : int64;
-    ThLast   : int64;
-    end;
+    ThName: String;
+    ThStart: Int64;
+    ThLast: Int64;
+  end;
 
-  TFileManager = Record
-    FiType   : string;
-    FiFile   : string;
-    FiPeer   : string;
-    FiLast   : int64;
+  TFileManager = record
+    FiType: String;
+    FiFile: String;
+    FiPeer: String;
+    FiLast: Int64;
   end;
 
   TProcessCopy = array of TCoreManager;
-  TFileMCopy   = array of TFileManager;
+  TFileMCopy = array of TFileManager;
 
-Procedure BeginPerformance(Tag:String);
-Function EndPerformance(Tag:String):int64;
-Function PerformanceToFile(Destination:String):boolean;
+procedure BeginPerformance(Tag: String);
+function EndPerformance(Tag: String): Int64;
+function PerformanceToFile(Destination: String): Boolean;
 
-Procedure CreateNewLog(LogName: string; LogFileName:String = '');
-Procedure ToLog(LogTag,NewLine : String);
-Function GetLogLine(LogTag:string;out LineContent:string):boolean;
+procedure CreateNewLog(LogName: String; LogFileName: String = '');
+procedure ToLog(LogTag, NewLine: String);
+function GetLogLine(LogTag: String; out LineContent: String): Boolean;
 
-Procedure AddNewOpenThread(ThName:String;TimeStamp:int64);
-Procedure UpdateOpenThread(ThName:String;TimeStamp:int64);
-Procedure CloseOpenThread(ThName:String);
-Function GetProcessCopy():TProcessCopy;
+procedure AddNewOpenThread(ThName: String; TimeStamp: Int64);
+procedure UpdateOpenThread(ThName: String; TimeStamp: Int64);
+procedure CloseOpenThread(ThName: String);
+function GetProcessCopy(): TProcessCopy;
 
-Procedure AddFileProcess(FiType, FiFile, FiPeer:String;TimeStamp:int64);
-Function CloseFileProcess(FiType, FiFile, FiPeer:String;TimeStamp:int64):int64;
-Function GetFileProcessCopy():TFileMCopy;
+procedure AddFileProcess(FiType, FiFile, FiPeer: String; TimeStamp: Int64);
+function CloseFileProcess(FiType, FiFile, FiPeer: String; TimeStamp: Int64): Int64;
+function GetFileProcessCopy(): TFileMCopy;
 
-Procedure InitDeepDeb(LFileName:String;SysInfo:String='');
-Procedure ToDeepDeb(LLine:String);
-Function GetDeepDebLine(out LineContent:string):boolean;
+procedure InitDeepDeb(LFileName: String; SysInfo: String = '');
+procedure ToDeepDeb(LLine: String);
+function GetDeepDebLine(out LineContent: String): Boolean;
 
 var
-  ArrPerformance : array of TPerformance;
-  NosoDebug_UsePerformance : boolean = false;
-  ArrNDLogs      : Array of TLogND;
-  ArrNDCSs       : array of TRTLCriticalSection;
-  ArrNDSLs       : array of TStringList;
-  ArrProcess     : Array of TCoreManager;
-  CS_ThManager   : TRTLCriticalSection;
+  ArrPerformance: array of TPerformance;
+  NosoDebug_UsePerformance: Boolean = False;
+  ArrNDLogs: array of TLogND;
+  ArrNDCSs: array of TRTLCriticalSection;
+  ArrNDSLs: array of TStringList;
+  ArrProcess: array of TCoreManager;
+  CS_ThManager: TRTLCriticalSection;
 
-  ArrFileMgr     : Array of TFileManager;
-  CS_FileManager : TRTLCriticalSection;
+  ArrFileMgr: array of TFileManager;
+  CS_FileManager: TRTLCriticalSection;
 
-  SLDeepDebLog   : TStringList;
-  CS_DeepDeb     : TRTLCriticalSection;
+  SLDeepDebLog: TStringList;
+  CS_DeepDeb: TRTLCriticalSection;
   DeepDebFilename: String = '';
 
-IMPLEMENTATION
+implementation
 
 {$REGION Performance}
 
 {Starts a performance measure}
-Procedure BeginPerformance(Tag:String);
+procedure BeginPerformance(Tag: String);
 var
-  counter : integer;
-  NewData : TPerformance;
-Begin
+  counter: Integer;
+  NewData: TPerformance;
+begin
   if not NosoDebug_UsePerformance then exit;
   for counter := 0 to high(ArrPerformance) do
-    begin
+  begin
     if Tag = ArrPerformance[counter].tag then
-      begin
-      ArrPerformance[counter].Start:=GetTickCount64;
+    begin
+      ArrPerformance[counter].Start := GetTickCount64;
       Inc(ArrPerformance[counter].Count);
       exit;
-      end;
     end;
+  end;
   NewData := default(TPerformance);
-  NewData.tag   :=tag;
-  NewData.Min    :=99999;
-  NewData.Start  :=GetTickCount64;
-  NewData.Count  :=1;
-  Insert(NewData,ArrPerformance,length(ArrPerformance));
-End;
+  NewData.tag := tag;
+  NewData.Min := 99999;
+  NewData.Start := GetTickCount64;
+  NewData.Count := 1;
+  Insert(NewData, ArrPerformance, length(ArrPerformance));
+end;
 
 {Ends a performance}
-Function EndPerformance(Tag:String):int64;
+function EndPerformance(Tag: String): Int64;
 var
-  counter  : integer;
-  duration : int64 = 0;
-Begin
-  result := 0;
+  counter: Integer;
+  duration: Int64 = 0;
+begin
+  Result := 0;
   if not NosoDebug_UsePerformance then exit;
   for counter := 0 to high(ArrPerformance) do
-    begin
+  begin
     if tag = ArrPerformance[counter].tag then
-      begin
-      duration :=GetTickCount64-ArrPerformance[counter].Start;
-      ArrPerformance[counter].Total  := ArrPerformance[counter].Total+Duration;
-      ArrPerformance[counter].Average:=ArrPerformance[counter].Total div ArrPerformance[counter].Count;
-      if duration>ArrPerformance[counter].Max then
+    begin
+      duration := GetTickCount64 - ArrPerformance[counter].Start;
+      ArrPerformance[counter].Total := ArrPerformance[counter].Total + Duration;
+      ArrPerformance[counter].Average := ArrPerformance[counter].Total div
+        ArrPerformance[counter].Count;
+      if duration > ArrPerformance[counter].Max then
         ArrPerformance[counter].Max := duration;
       if duration < ArrPerformance[counter].Min then
         ArrPerformance[counter].Min := duration;
       break;
-      end;
     end;
+  end;
   Result := duration;
-End;
+end;
 
-Function PerformanceToFile(Destination:String):boolean;
+function PerformanceToFile(Destination: String): Boolean;
 var
-  counter  : integer;
-  Lines    : TStringList;
-  ThisLine : String;
-  Tag,count,max,average : string;
-Begin
-  Result := true;
-  Lines := TStringlist.Create;
+  counter: Integer;
+  Lines: TStringList;
+  ThisLine: String;
+  Tag, Count, max, average: String;
+begin
+  Result := True;
+  Lines := TStringList.Create;
   Lines.Add('TAG                                           Count        Max    Average');
   for counter := 0 to high(ArrPerformance) do
-    begin
-    Tag := Format('%0:-40s',[ArrPerformance[counter].tag]);
-    Count   := Format('%0:10s',[IntToStr(ArrPerformance[counter].Count)]);
-    Max     := Format('%0:10s',[IntToStr(ArrPerformance[counter].Max)]);
-    Average := Format('%0:10s',[IntToStr(ArrPerformance[counter].Average)]);
-    ThisLine := Format('%s %s %s %s',[Tag,count,max,average]);
+  begin
+    Tag := Format('%0:-40s', [ArrPerformance[counter].tag]);
+    Count := Format('%0:10s', [IntToStr(ArrPerformance[counter].Count)]);
+    Max := Format('%0:10s', [IntToStr(ArrPerformance[counter].Max)]);
+    Average := Format('%0:10s', [IntToStr(ArrPerformance[counter].Average)]);
+    ThisLine := Format('%s %s %s %s', [Tag, Count, max, average]);
     Lines.Add(ThisLine);
-    end;
+  end;
   Lines.SaveToFile(Destination);
   Lines.Free;
-End;
+end;
 
 {$ENDREGION}
 
 {$REGION Logs}
 
 {private: verify that the file for the log exists}
-Function InitializeLogFile(Filename:String;OptionText:string = ''):boolean;
+function InitializeLogFile(Filename: String; OptionText: String = ''): Boolean;
 var
-  LFile : textfile;
-Begin
-  Result := true;
+  LFile: textfile;
+begin
+  Result := True;
   if not fileexists(Filename) then
-    begin
-      TRY
+  begin
+    try
       Assignfile(LFile, Filename);
       rewrite(LFile);
       if OptionText <> '' then
-        Writeln(LFile,OptionText);
+        Writeln(LFile, OptionText);
       Closefile(LFile);
-      EXCEPT on E:Exception do
-        begin
-        ToDeepDeb('Nosodebug,InitializeLogFile,'+E.Message);
-        Result := false;
-        end;
-      END; {Try}
-    end;
-End;
+    except
+      on E: Exception do
+      begin
+        ToDeepDeb('Nosodebug,InitializeLogFile,' + E.Message);
+        Result := False;
+      end;
+    end; {Try}
+  end;
+end;
 
 {private: if enabled, saves the line to the log file}
-Procedure SaveTextToDisk(TextLine, Filename:String);
+procedure SaveTextToDisk(TextLine, Filename: String);
 var
-  LFile  : textfile;
-  IOCode : integer;
-Begin
+  LFile: textfile;
+  IOCode: Integer;
+begin
   Assignfile(LFile, Filename);
-  {$I-}Append(LFile){$I+};
+  {$I-}
+  Append(LFile)
+  {$I+}
+  ;
   IOCode := IOResult;
-  If IOCode = 0 then
-    begin
-      TRY
-        Writeln(LFile, TextLine);
-      Except on E:Exception do
-        ToDeepDeb('Nosodebug,SaveTextToDisk,'+E.Message);
-      END; {Try}
+  if IOCode = 0 then
+  begin
+    try
+      Writeln(LFile, TextLine);
+    except
+      on E: Exception do
+        ToDeepDeb('Nosodebug,SaveTextToDisk,' + E.Message);
+    end; {Try}
     Closefile(LFile);
-    end
+  end
   else if IOCode = 5 then
-   {$I-}Closefile(LFile){$I+};
-End;
+    {$I-}
+    Closefile(LFile)
+  {$I+}
+  ;
+end;
 
 {Creates a new log and assigns an optional file to save it}
-Procedure CreateNewLog(LogName: string; LogFileName:String = '');
+procedure CreateNewLog(LogName: String; LogFileName: String = '');
 var
-  NewData : TLogND;
-Begin
+  NewData: TLogND;
+begin
   NewData := Default(TLogND);
-  NewData.tag:=Uppercase(Logname);
-  NewData.Filename:=LogFileName;
-  SetLength(ArrNDCSs,length(ArrNDCSs)+1);
-  InitCriticalSection(ArrNDCSs[length(ArrNDCSs)-1]);
-  SetLEngth(ArrNDSLs,length(ArrNDSLs)+1);
-  ArrNDSLs[length(ArrNDSLs)-1] := TStringlist.Create;
+  NewData.tag := Uppercase(Logname);
+  NewData.Filename := LogFileName;
+  SetLength(ArrNDCSs, length(ArrNDCSs) + 1);
+  InitCriticalSection(ArrNDCSs[length(ArrNDCSs) - 1]);
+  SetLEngth(ArrNDSLs, length(ArrNDSLs) + 1);
+  ArrNDSLs[length(ArrNDSLs) - 1] := TStringList.Create;
   if LogFileName <> '' then
-    begin
+  begin
     InitializeLogFile(LogFileName);
-    NewData.ToDisk:=true;
-    end;
-  Insert(NewData,ArrNDLogs,length(ArrNDLogs));
-End;
+    NewData.ToDisk := True;
+  end;
+  Insert(NewData, ArrNDLogs, length(ArrNDLogs));
+end;
 
 {Adds one line to the specified log}
-Procedure ToLog(LogTag,NewLine : String);
+procedure ToLog(LogTag, NewLine: String);
 var
-  counter : integer;
-Begin
-  for counter := 0 to length(ArrNDLogs)-1 do
-    begin
+  counter: Integer;
+begin
+  for counter := 0 to length(ArrNDLogs) - 1 do
+  begin
     if ArrNDLogs[counter].tag = Uppercase(LogTag) then
-      begin
+    begin
       EnterCriticalSection(ArrNDCSs[counter]);
       ArrNDSLs[counter].Add(NewLine);
       Inc(ArrNDLogs[counter].Count);
       LeaveCriticalSection(ArrNDCSs[counter]);
-      end;
     end;
-End;
+  end;
+end;
 
 {Retireves the oldest line in the specified log, assigning value to LineContent}
-Function GetLogLine(LogTag:string;out LineContent:string):boolean;
+function GetLogLine(LogTag: String; out LineContent: String): Boolean;
 var
-  counter : integer;
-Begin
-  Result:= False;
-  For counter := 0 to length(ArrNDLogs)-1 do
-    begin
+  counter: Integer;
+begin
+  Result := False;
+  for counter := 0 to length(ArrNDLogs) - 1 do
+  begin
     if ArrNDLogs[counter].tag = Uppercase(LogTag) then
+    begin
+      if ArrNDSLs[counter].Count > 0 then
       begin
-      if ArrNDSLs[counter].Count>0 then
-        begin
         EnterCriticalSection(ArrNDCSs[counter]);
         LineContent := ArrNDSLs[counter][0];
-        Result := true;
+        Result := True;
         ArrNDSLs[counter].Delete(0);
-        if ArrNDLogs[counter].ToDisk then SaveTextToDisk(LineContent,ArrNDLogs[counter].Filename);
+        if ArrNDLogs[counter].ToDisk then
+          SaveTextToDisk(LineContent, ArrNDLogs[counter].Filename);
         LeaveCriticalSection(ArrNDCSs[counter]);
         break;
-        end;
       end;
     end;
-End;
+  end;
+end;
 
 {Private: Free all data at close}
-Procedure FreeAllLogs;
+procedure FreeAllLogs;
 var
-  counter : integer;
-Begin
-  for counter := 0 to length(ArrNDLogs)-1 do
-    begin
+  counter: Integer;
+begin
+  for counter := 0 to length(ArrNDLogs) - 1 do
+  begin
     ArrNDSLs[counter].Free;
     DoneCriticalsection(ArrNDCSs[counter]);
-    end;
-End;
+  end;
+end;
 
 {$ENDREGION}
 
 {$REGION Thread manager}
 
-Procedure AddNewOpenThread(ThName:String;TimeStamp:int64);
+procedure AddNewOpenThread(ThName: String; TimeStamp: Int64);
 var
-  NewValue : TCoreManager;
-Begin
+  NewValue: TCoreManager;
+begin
   NewValue := Default(TCoreManager);
-  NewValue.ThName  := ThName;
+  NewValue.ThName := ThName;
   NewValue.ThStart := TimeStamp;
-  NewValue.ThLast  := TimeStamp;
+  NewValue.ThLast := TimeStamp;
   EnterCriticalSection(CS_ThManager);
-  Insert(NewValue,ArrProcess,Length(ArrProcess));
+  Insert(NewValue, ArrProcess, Length(ArrProcess));
   LeaveCriticalSection(CS_ThManager);
-End;
+end;
 
-Procedure UpdateOpenThread(ThName:String;TimeStamp:int64);
+procedure UpdateOpenThread(ThName: String; TimeStamp: Int64);
 var
-  counter : integer;
-Begin
+  counter: Integer;
+begin
   EnterCriticalSection(CS_ThManager);
   for counter := 0 to High(ArrProcess) do
-    begin
+  begin
     if UpperCase(ArrProcess[counter].ThName) = UpperCase(ThName) then
-      begin
-      ArrProcess[counter].ThLast:=TimeStamp;
+    begin
+      ArrProcess[counter].ThLast := TimeStamp;
       Break;
-      end;
     end;
+  end;
   LeaveCriticalSection(CS_ThManager);
-End;
+end;
 
-Procedure CloseOpenThread(ThName:String);
+procedure CloseOpenThread(ThName: String);
 var
-  counter : integer;
-Begin
+  counter: Integer;
+begin
   EnterCriticalSection(CS_ThManager);
   for counter := 0 to High(ArrProcess) do
-    begin
+  begin
     if UpperCase(ArrProcess[counter].ThName) = UpperCase(ThName) then
-      begin
-      Delete(ArrProcess,Counter,1);
+    begin
+      Delete(ArrProcess, Counter, 1);
       Break;
-      end;
     end;
+  end;
   LeaveCriticalSection(CS_ThManager);
-End;
+end;
 
-Function GetProcessCopy():TProcessCopy;
-Begin
-  Setlength(Result,0);
+function GetProcessCopy(): TProcessCopy;
+begin
+  Setlength(Result, 0);
   EnterCriticalSection(CS_ThManager);
-  Result := copy(ArrProcess,0,length(ArrProcess));
+  Result := copy(ArrProcess, 0, length(ArrProcess));
   LeaveCriticalSection(CS_ThManager);
-End;
+end;
 
 {$ENDREGION}
 
 {$REGION Files manager}
 
-Procedure AddFileProcess(FiType, FiFile, FiPeer:String;TimeStamp:int64);
+procedure AddFileProcess(FiType, FiFile, FiPeer: String; TimeStamp: Int64);
 var
-  NewValue : TFileManager;
-Begin
+  NewValue: TFileManager;
+begin
   NewValue := Default(TFileManager);
-  NewValue.FiType  := FiType;
-  NewValue.FiFile  := FiFile;
-  NewValue.FiPeer  := FiPeer;
-  NewValue.FiLast  := TimeStamp;
+  NewValue.FiType := FiType;
+  NewValue.FiFile := FiFile;
+  NewValue.FiPeer := FiPeer;
+  NewValue.FiLast := TimeStamp;
   EnterCriticalSection(CS_FileManager);
-  Insert(NewValue,ArrFileMgr,Length(ArrFileMgr));
+  Insert(NewValue, ArrFileMgr, Length(ArrFileMgr));
   LeaveCriticalSection(CS_FileManager);
-End;
+end;
 
-Function CloseFileProcess(FiType, FiFile, FiPeer:String;TimeStamp:int64):int64;
+function CloseFileProcess(FiType, FiFile, FiPeer: String; TimeStamp: Int64): Int64;
 var
-  counter : integer;
-Begin
+  counter: Integer;
+begin
   Result := 0;
   EnterCriticalSection(CS_FileManager);
   for counter := 0 to High(ArrFileMgr) do
+  begin
+    if ((UpperCase(ArrFileMgr[counter].FiType) = UpperCase(FiType)) and
+      (UpperCase(ArrFileMgr[counter].FiFile) = UpperCase(FiFile)) and
+      (UpperCase(ArrFileMgr[counter].FiPeer) = UpperCase(FiPeer))) then
     begin
-    if ( (UpperCase(ArrFileMgr[counter].FiType) = UpperCase(FiType)) and
-         (UpperCase(ArrFileMgr[counter].FiFile) = UpperCase(FiFile)) and
-         (UpperCase(ArrFileMgr[counter].FiPeer) = UpperCase(FiPeer)) ) then
-      begin
       Result := TimeStamp - ArrFileMgr[counter].FiLast;
-      Delete(ArrFileMgr,Counter,1);
+      Delete(ArrFileMgr, Counter, 1);
       Break;
-      end;
     end;
+  end;
   LeaveCriticalSection(CS_FileManager);
-End;
+end;
 
-Function GetFileProcessCopy():TFileMCopy;
-Begin
-  Setlength(Result,0);
+function GetFileProcessCopy(): TFileMCopy;
+begin
+  Setlength(Result, 0);
   EnterCriticalSection(CS_FileManager);
-  Result := copy(ArrFileMgr,0,length(ArrFileMgr));
+  Result := copy(ArrFileMgr, 0, length(ArrFileMgr));
   LeaveCriticalSection(CS_FileManager);
-End;
+end;
 
 {$ENDREGION}
 
 {$REGION Deep debug control}
 
-Procedure InitDeepDeb(LFileName:String;SysInfo:String='');
-Begin
-  if DeepDebFilename<>'' then Exit;
-  if InitializeLogFile(LFileName,SysInfo) then
-    begin
+procedure InitDeepDeb(LFileName: String; SysInfo: String = '');
+begin
+  if DeepDebFilename <> '' then Exit;
+  if InitializeLogFile(LFileName, SysInfo) then
+  begin
     DeepDebFilename := LFileName;
     //ToDeepDeb(SysInfo);
-    end;
-End;
+  end;
+end;
 
 
-Procedure ToDeepDeb(LLine:String);
-Begin
+procedure ToDeepDeb(LLine: String);
+begin
   EnterCriticalSection(CS_DeepDeb);
   SLDeepDebLog.Add(LLine);
   LeaveCriticalSection(CS_DeepDeb);
-End;
+end;
 
-Function GetDeepDebLine(out LineContent:string):boolean;
-Begin
-  result := false;
-  if SLDeepDebLog.Count>0 then
-    begin
+function GetDeepDebLine(out LineContent: String): Boolean;
+begin
+  Result := False;
+  if SLDeepDebLog.Count > 0 then
+  begin
     EnterCriticalSection(CS_DeepDeb);
     LineContent := SLDeepDebLog[0];
     SLDeepDebLog.Delete(0);
-    Result := true;
-    if DeepDebFilename<>'' then SaveTextToDisk(DateTimeToStr(Now)+' '+LineContent,DeepDebFilename);
+    Result := True;
+    if DeepDebFilename <> '' then
+      SaveTextToDisk(DateTimeToStr(Now) + ' ' + LineContent, DeepDebFilename);
     LeaveCriticalSection(CS_DeepDeb);
-    end;
-End;
+  end;
+end;
 
 {$ENDREGION}
 
-INITIALIZATION
+initialization
   SLDeepDebLog := TStringList.Create;
-  Setlength(ArrPerformance,0);
-  Setlength(ArrNDLogs,0);
-  Setlength(ArrNDCSs,0);
-  Setlength(ArrNDSLs,0);
-  Setlength(ArrProcess,0);
-  Setlength(ArrFileMgr,0);
+  Setlength(ArrPerformance, 0);
+  Setlength(ArrNDLogs, 0);
+  Setlength(ArrNDCSs, 0);
+  Setlength(ArrNDSLs, 0);
+  Setlength(ArrProcess, 0);
+  Setlength(ArrFileMgr, 0);
   InitCriticalSection(CS_ThManager);
   InitCriticalSection(CS_FileManager);
   InitCriticalSection(CS_DeepDeb);
 
 
-FINALIZATION
+finalization
   DoneCriticalSection(CS_ThManager);
   DoneCriticalSection(CS_FileManager);
   DoneCriticalSection(CS_DeepDeb);
   FreeAllLogs;
   SLDeepDebLog.Free;
 
-END. {END UNIT}
-
+end. {END UNIT}

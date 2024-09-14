@@ -8,439 +8,457 @@ All block related controls
 
 {$mode ObjFPC}{$H+}
 
-INTERFACE
+interface
 
 uses
   Classes, SysUtils, FileUtil, Zipper,
-  NosoDebug, NosoUnit, Nosocrypto,nosogeneral;
+  NosoDebug, NosoUnit, Nosocrypto, nosogeneral;
 
-Type
+type
   TDBRecord = record
-    block    : integer;
-    orderID  : integer;
-    Source   : integer;
-    Target   : integer;
-    end;
+    block: Integer;
+    orderID: Integer;
+    Source: Integer;
+    Target: Integer;
+  end;
 
-  BlockHeaderData = Packed Record
-    Number         : Int64;
-    TimeStart      : Int64;
-    TimeEnd        : Int64;
-    TimeTotal      : integer;
-    TimeLast20     : integer;
-    TrxTotales     : integer;
-    Difficult      : integer;
-    TargetHash     : String[32];
-    Solution       : String[200]; // 180 necessary
-    LastBlockHash  : String[32];
-    NxtBlkDiff     : integer;
-    AccountMiner   : String[40];
-    MinerFee       : Int64;
-    Reward         : Int64;
-    end;
+  BlockHeaderData = packed record
+    Number: Int64;
+    TimeStart: Int64;
+    TimeEnd: Int64;
+    TimeTotal: Integer;
+    TimeLast20: Integer;
+    TrxTotales: Integer;
+    Difficult: Integer;
+    TargetHash: String[32];
+    Solution: String[200]; // 180 necessary
+    LastBlockHash: String[32];
+    NxtBlkDiff: Integer;
+    AccountMiner: String[40];
+    MinerFee: Int64;
+    Reward: Int64;
+  end;
 
-  IntArray = array of integer;
+  IntArray = array of Integer;
 
-Procedure SetBlockDirectory(NewFolder:String);
+procedure SetBlockDirectory(NewFolder: String);
 
-Procedure CreateDBFile();
-Function GetDBRecords():Integer;
-Function AddRecordToDBFile(block,order,source,target:integer):boolean;
-Function GetDBLastBlock():Integer;
-Function UpdateBlockDatabase():Boolean;
-Function InsertToIndex(LData:TDBRecord):boolean;
-Function CreateOrderIDIndex():Boolean;
-Function GetBlockFromOrder(OrderID:string):integer;
-Function GetOrderFromDB(OrderID:String; out OrderInfo:TOrderData):boolean;
+procedure CreateDBFile();
+function GetDBRecords(): Integer;
+function AddRecordToDBFile(block, order, Source, target: Integer): Boolean;
+function GetDBLastBlock(): Integer;
+function UpdateBlockDatabase(): Boolean;
+function InsertToIndex(LData: TDBRecord): Boolean;
+function CreateOrderIDIndex(): Boolean;
+function GetBlockFromOrder(OrderID: String): Integer;
+function GetOrderFromDB(OrderID: String; out OrderInfo: TOrderData): Boolean;
 
-function GetMyLastUpdatedBlock():int64;
-function GetBlockTrxs(BlockNumber:integer):TBlockOrdersArray;
-function LoadBlockDataHeader(BlockNumber:integer):BlockHeaderData;
+function GetMyLastUpdatedBlock(): Int64;
+function GetBlockTrxs(BlockNumber: Integer): TBlockOrdersArray;
+function LoadBlockDataHeader(BlockNumber: Integer): BlockHeaderData;
 
-Function SaveStreamAsZipBlocks(Const LStream:TMemoryStream):boolean;
-function GetBlocksAsStream(out LMs:TMemoryStream;firstblock, CurrentLastblock:integer):Int64;
+function SaveStreamAsZipBlocks(const LStream: TMemoryStream): Boolean;
+function GetBlocksAsStream(out LMs: TMemoryStream;
+  firstblock, CurrentLastblock: Integer): Int64;
 
 var
-  BlockDirectory      : string = 'NOSODATA'+DirectorySeparator+'BLOCKS'+DirectorySeparator;
-  BlocksZipFile       : string = 'blocks.zip';
-  DBDirectory         : string = 'DB'+DirectorySeparator;
-  DataBaseFilename    : string = 'blocks_db.nos';
-  DBFile              : file of TDBRecord;
-  CSDBFile            : TRTLCriticalSection;
-  CSDBIndex           : TRTLCriticalSection;
-  OrderIDIndex        : Array of TindexRecord;
+  BlockDirectory: String = 'NOSODATA' + DirectorySeparator + 'BLOCKS' +
+    DirectorySeparator;
+  BlocksZipFile: String = 'blocks.zip';
+  DBDirectory: String = 'DB' + DirectorySeparator;
+  DataBaseFilename: String = 'blocks_db.nos';
+  DBFile: file of TDBRecord;
+  CSDBFile: TRTLCriticalSection;
+  CSDBIndex: TRTLCriticalSection;
+  OrderIDIndex: array of TindexRecord;
 
-IMPLEMENTATION
+implementation
 
-Procedure SetBlockDirectory(NewFolder:String);
-Begin
+procedure SetBlockDirectory(NewFolder: String);
+begin
   BlockDirectory := NewFolder;
-  Assignfile(DBFile,BlockDirectory+DBDirectory+DataBaseFilename);
-End;
+  Assignfile(DBFile, BlockDirectory + DBDirectory + DataBaseFilename);
+end;
 
 {$REGION blocks database}
 
 // Creates an empty DB file
-Procedure CreateDBFile();
-Begin
-  TRY
-  Rewrite(DBFile);
-  Closefile(DBFile);
-  EXCEPT ON E:EXCEPTION do
+procedure CreateDBFile();
+begin
+  try
+    Rewrite(DBFile);
+    Closefile(DBFile);
+  except
+    ON E: Exception do
     begin
-    TodeepDeb('NosoBlock,CreateDBFile,'+E.Message);
+      TodeepDeb('NosoBlock,CreateDBFile,' + E.Message);
     end;
-  END;
-End;
+  end;
+end;
 
 // Returns the records count on file
-Function GetDBRecords():Integer;
+function GetDBRecords(): Integer;
 var
-  opened : boolean = false;
-  Closed : boolean = false;
-Begin
+  opened: Boolean = False;
+  Closed: Boolean = False;
+begin
   Result := 0;
   EnterCriticalSection(CSDBFile);
-    TRY
+  try
     Reset(DBFile);
-    opened := true;
+    opened := True;
     Result := Filesize(DBFile);
     Closefile(DBFile);
-    Closed := true;
-    EXCEPT ON E:EXCEPTION do
-      begin
-      end;
-    END;
-  if ( (opened) and (not closed) ) then Closefile(DBfile);
+    Closed := True;
+  except
+    ON E: Exception do
+    begin
+    end;
+  end;
+  if ((opened) and (not closed)) then Closefile(DBfile);
   LeaveCriticalSection(CSDBFile);
-End;
+end;
 
 // Add a new record to the File and also to the index
-Function AddRecordToDBFile(block,order,source,target:integer):boolean;
+function AddRecordToDBFile(block, order, Source, target: Integer): Boolean;
 var
-  NewData : TDBRecord;
-  opened : boolean = false;
-  Closed : boolean = false;
-Begin
-  Result := true;
+  NewData: TDBRecord;
+  opened: Boolean = False;
+  Closed: Boolean = False;
+begin
+  Result := True;
   NewData := Default(TDBRecord);
-  NewData.block:=Block;
-  NewData.orderID:=order;
-  NewData.Source:=source;
-  NewData.Target:=target;
+  NewData.block := Block;
+  NewData.orderID := order;
+  NewData.Source := Source;
+  NewData.Target := target;
   EnterCriticalSection(CSDBFile);
-    TRY
+  try
     Reset(DBFile);
-    opened := true;
-    Seek(DBFile,Filesize(DBFile));
-    Write(DBFile,NewData);
+    opened := True;
+    Seek(DBFile, Filesize(DBFile));
+    Write(DBFile, NewData);
     Closefile(DBFile);
-    Closed := true;
-    EXCEPT ON E:EXCEPTION do
-      begin
-      Result := false;
-      end;
-    END;
-  if ( (opened) and (not closed) ) then Closefile(DBfile);
+    Closed := True;
+  except
+    ON E: Exception do
+    begin
+      Result := False;
+    end;
+  end;
+  if ((opened) and (not closed)) then Closefile(DBfile);
   LeaveCriticalSection(CSDBFile);
   InsertToIndex(NewData);
-End;
+end;
 
 // Returns the last block on file
-Function GetDBLastBlock():Integer;
+function GetDBLastBlock(): Integer;
 var
-  NewData : TDBRecord;
-  opened : boolean = false;
-  Closed : boolean = false;
-Begin
+  NewData: TDBRecord;
+  opened: Boolean = False;
+  Closed: Boolean = False;
+begin
   Result := -1;
   EnterCriticalSection(CSDBFile);
-    TRY
+  try
     Reset(DBFile);
-    opened := true;
+    opened := True;
     Result := 0;
-    if Filesize(DBFile)>0 then
-      begin
-      Seek(DBFile,Filesize(DBFile)-1);
-      Read(DBFile,NewData);
+    if Filesize(DBFile) > 0 then
+    begin
+      Seek(DBFile, Filesize(DBFile) - 1);
+      Read(DBFile, NewData);
       Result := NewData.Block;
-      end;
+    end;
     Closefile(DBFile);
-    Closed := true;
-    EXCEPT ON E:EXCEPTION do
-      begin
+    Closed := True;
+  except
+    ON E: Exception do
+    begin
 
-      end;
-    END;
-  if ( (opened) and (not closed) ) then Closefile(DBfile);
+    end;
+  end;
+  if ((opened) and (not closed)) then Closefile(DBfile);
   LeaveCriticalSection(CSDBFile);
-End;
+end;
 
 // Calculates the integer for the value
-Function DBIndex(Text:string):integer;
+function DBIndex(Text: String): Integer;
 var
-  SubStr : string;
-Begin
+  SubStr: String;
+begin
   Text := Hashmd5String(Text);
   Text := B16toB58(Text);
-  SubStr := copy(Text,2,6);
-  result := StrToInt64(b58toB10(SubStr)) mod 100000;
-End;
+  SubStr := copy(Text, 2, 6);
+  Result := StrToInt64(b58toB10(SubStr)) mod 100000;
+end;
 
 // updates file and database to most recent block on disk
-Function UpdateBlockDatabase():Boolean;
+function UpdateBlockDatabase(): Boolean;
 var
-  LastUpdated : integer;
-  UntilBlock  : integer;
-  counter, counter2     : integer;
-  ArrayOrders : TBlockOrdersArray;
-  ThisOrder   : TOrderData;
-Begin
-  Result := true;
+  LastUpdated: Integer;
+  UntilBlock: Integer;
+  counter, counter2: Integer;
+  ArrayOrders: TBlockOrdersArray;
+  ThisOrder: TOrderData;
+begin
+  Result := True;
   LastUpdated := GetDBLastBlock;
-  UntilBlock  := LastUpdated+1000;
-  if untilblock >  GetMyLastUpdatedBlock then untilblock := GetMyLastUpdatedBlock;
-  for counter := LastUpdated+1 to untilblock do
-    begin
+  UntilBlock := LastUpdated + 1000;
+  if untilblock > GetMyLastUpdatedBlock then untilblock := GetMyLastUpdatedBlock;
+  for counter := LastUpdated + 1 to untilblock do
+  begin
     ArrayOrders := Default(TBlockOrdersArray);
     ArrayOrders := GetBlockTrxs(counter);
-    for counter2 := 0 to length(ArrayOrders)-1 do
-      begin
+    for counter2 := 0 to length(ArrayOrders) - 1 do
+    begin
       ThisOrder := ArrayOrders[counter2];
-      if ThisOrder.OrderType<> '' then
-        begin
-        AddRecordToDBFile(Counter,DBIndex(ThisOrder.OrderID),DBIndex(ThisOrder.Address),DBIndex(ThisOrder.Receiver));
-        end;
+      if ThisOrder.OrderType <> '' then
+      begin
+        AddRecordToDBFile(Counter, DBIndex(ThisOrder.OrderID), DBIndex(
+          ThisOrder.Address), DBIndex(ThisOrder.Receiver));
       end;
     end;
-End;
+  end;
+end;
 
 // Insert a value on index
-Function InsertToIndex(LData:TDBRecord):boolean;
-Begin
-  Result := true;
+function InsertToIndex(LData: TDBRecord): Boolean;
+begin
+  Result := True;
   EnterCriticalSEction(CSDBIndex);
-  Insert(LData.block,OrderIDIndex[LData.orderID],length(OrderIDIndex[LData.orderID]));
+  Insert(LData.block, OrderIDIndex[LData.orderID], length(OrderIDIndex[LData.orderID]));
   LeaveCriticalSEction(CSDBIndex);
-End;
+end;
 
 // Creates the INDEX from the file
-Function CreateOrderIDIndex():Boolean;
+function CreateOrderIDIndex(): Boolean;
 var
-  ThisData : TDBRecord;
-Begin
+  ThisData: TDBRecord;
+begin
   BeginPerformance('CreateOrderIDIndex');
-  SetLength(OrderIDIndex,0,0);
-  SetLength(OrderIDIndex,100000);
-    TRY
+  SetLength(OrderIDIndex, 0, 0);
+  SetLength(OrderIDIndex, 100000);
+  try
     Reset(DBFile);
-    While not eof(DBFile) do
-      begin
+    while not EOF(DBFile) do
+    begin
       ThisData := Default(TDBRecord);
-      Read(DBFile,ThisData);
-      Insert(ThisData.block,OrderIDIndex[ThisData.orderID],length(OrderIDIndex[ThisData.orderID]));
-      end;
-    EXCEPT ON E:EXCEPTION do
-      begin
+      Read(DBFile, ThisData);
+      Insert(ThisData.block, OrderIDIndex[ThisData.orderID], length(
+        OrderIDIndex[ThisData.orderID]));
+    end;
+  except
+    ON E: Exception do
+    begin
 
-      end;
-    END;
+    end;
+  end;
   EndPerformance('CreateOrderIDIndex');
-End;
+end;
 
 // Returns the array of integer of the specified index value
-Function GetDBArray(value:integer;out LArray: IntArray):Boolean;
-Begin
-  result := false;
-  SetLength(LArray,0);
+function GetDBArray(Value: Integer; out LArray: IntArray): Boolean;
+begin
+  Result := False;
+  SetLength(LArray, 0);
   EnterCriticalSection(CSDBIndex);
-  if length(OrderIDIndex[value]) > 0 then
-    begin
-    LArray := copy(OrderIDIndex[value],0,length(OrderIDIndex[value]));
-    Result := true;
-    end;
+  if length(OrderIDIndex[Value]) > 0 then
+  begin
+    LArray := copy(OrderIDIndex[Value], 0, length(OrderIDIndex[Value]));
+    Result := True;
+  end;
   LeaveCriticalSection(CSDBIndex);
-End;
+end;
 
 // Returns the block number where the order is found, or -1 if none
-Function GetBlockFromOrder(OrderID:string):integer;
+function GetBlockFromOrder(OrderID: String): Integer;
 var
-  LValue      : integer;
-  ThisArray   : IntArray;
-  counter     : integer;
-  counter2    : integer;
-  ArrayOrders : TBlockOrdersArray;
-Begin
+  LValue: Integer;
+  ThisArray: IntArray;
+  counter: Integer;
+  counter2: Integer;
+  ArrayOrders: TBlockOrdersArray;
+begin
   Result := -1;
   LValue := DBIndex(OrderID);
-  if GetDBArray(LValue,ThisArray) then
+  if GetDBArray(LValue, ThisArray) then
+  begin
+    for counter := 0 to length(ThisArray) - 1 do
     begin
-    for counter := 0 to length(ThisArray)-1 do
-      begin
       ArrayOrders := Default(TBlockOrdersArray);
       ArrayOrders := GetBlockTrxs(ThisArray[counter]);
-      for counter2 := 0 to length(ArrayOrders)-1 do
-        begin
+      for counter2 := 0 to length(ArrayOrders) - 1 do
+      begin
         if Arrayorders[counter2].OrderID = OrderID then
-          begin
+        begin
           Exit(Arrayorders[counter2].Block);
-          end;
         end;
       end;
     end;
-End;
+  end;
+end;
 
 // Returns the order data from its orderID
-Function GetOrderFromDB(OrderID:String; out OrderInfo:TOrderData):boolean;
+function GetOrderFromDB(OrderID: String; out OrderInfo: TOrderData): Boolean;
 var
-  IndexValue        : integer;
-  Counter, counter2 : integer;
-  ThisArray         : IntArray;
-  ArrayOrders       : TBlockOrdersArray;
-Begin
+  IndexValue: Integer;
+  Counter, counter2: Integer;
+  ThisArray: IntArray;
+  ArrayOrders: TBlockOrdersArray;
+begin
   Result := False;
   OrderInfo := Default(TOrderData);
   IndexValue := DBIndex(OrderID);
-  if GetDBArray(IndexValue,ThisArray) then
-  //if length(OrderIDIndex[IndexValue]) > 0 then
+  if GetDBArray(IndexValue, ThisArray) then
+    //if length(OrderIDIndex[IndexValue]) > 0 then
+  begin
+    for counter := 0 to length(ThisArray) - 1 do
     begin
-    for counter := 0 to length(ThisArray)-1 do
-      begin
       ArrayOrders := Default(TBlockOrdersArray);
       ArrayOrders := GetBlockTrxs(ThisArray[counter]);
-      for counter2 := 0 to length(ArrayOrders)-1 do
-        begin
+      for counter2 := 0 to length(ArrayOrders) - 1 do
+      begin
         if Arrayorders[counter2].OrderID = OrderID then
-          begin
+        begin
           OrderInfo := Arrayorders[counter2];
           Exit(True);
-          end;
         end;
       end;
     end;
-End;
+  end;
+end;
 
 {$ENDREGION blocks database}
 
 {$REGION Blocks Information}
 
 // Returns the last downloaded block
-function GetMyLastUpdatedBlock():int64;
-Var
-  BlockFiles   : TStringList;
-  contador     : int64 = 0;
-  LastBlock    : int64 = 0;
-  OnlyNumbers  : String;
-  IgnoredChars : integer;
-Begin
-  IgNoredChars := Length(BlockDirectory)+1;
+function GetMyLastUpdatedBlock(): Int64;
+var
+  BlockFiles: TStringList;
+  contador: Int64 = 0;
+  LastBlock: Int64 = 0;
+  OnlyNumbers: String;
+  IgnoredChars: Integer;
+begin
+  IgNoredChars := Length(BlockDirectory) + 1;
   BlockFiles := TStringList.Create;
-    TRY
-    FindAllFiles(BlockFiles, BlockDirectory, '*.blk', true);
+  try
+    FindAllFiles(BlockFiles, BlockDirectory, '*.blk', True);
     while contador < BlockFiles.Count do
-      begin
-      OnlyNumbers := copy(BlockFiles[contador], IgNoredChars, length(BlockFiles[contador])-(ignoredchars+3));
-      if StrToInt64Def(OnlyNumbers,0) > Lastblock then
-         LastBlock := StrToInt64Def(OnlyNumbers,0);
+    begin
+      OnlyNumbers := copy(BlockFiles[contador], IgNoredChars,
+        length(BlockFiles[contador]) - (ignoredchars + 3));
+      if StrToInt64Def(OnlyNumbers, 0) > Lastblock then
+        LastBlock := StrToInt64Def(OnlyNumbers, 0);
       Inc(contador);
-      end;
+    end;
     Result := LastBlock;
-    EXCEPT on E:Exception do
-      begin
-      //
-      end;
-    END; {TRY}
+  except
+    on E: Exception do
+    begin
+
+    end;
+  end; {TRY}
   BlockFiles.Free;
-End;
+end;
 
 // Return the array containing orders in the specified block
-function GetBlockTrxs(BlockNumber:integer):TBlockOrdersArray;
+function GetBlockTrxs(BlockNumber: Integer): TBlockOrdersArray;
 var
-  ArrTrxs : TBlockOrdersArray;
+  ArrTrxs: TBlockOrdersArray;
   MemStr: TMemoryStream;
-  Header : BlockHeaderData;
-  ArchData : String;
-  counter : integer;
-  TotalTrxs, totalposes : integer;
-  posreward : int64;
-Begin
-  Setlength(ArrTrxs,0);
-  ArchData := BlockDirectory+IntToStr(BlockNumber)+'.blk';
+  Header: BlockHeaderData;
+  ArchData: String;
+  counter: Integer;
+  TotalTrxs, totalposes: Integer;
+  posreward: Int64;
+begin
+  Setlength(ArrTrxs, 0);
+  ArchData := BlockDirectory + IntToStr(BlockNumber) + '.blk';
   MemStr := TMemoryStream.Create;
-    TRY
-     MemStr.LoadFromFile(ArchData);
-     MemStr.Position := 0;
-     MemStr.Read(Header, SizeOf(Header));
-     TotalTrxs := header.TrxTotales;
-     SetLength(ArrTrxs,TotalTrxs);
-     For Counter := 0 to TotalTrxs-1 do
-       MemStr.Read(ArrTrxs[Counter],Sizeof(ArrTrxs[Counter])); // read each record
-     Except on E: Exception do
-       begin
-       ToDeepDeb('Nosoblock,GetBlockTrxs,'+E.Message);
-       end;
-     END;
+  try
+    MemStr.LoadFromFile(ArchData);
+    MemStr.Position := 0;
+    MemStr.Read(Header, SizeOf(Header));
+    TotalTrxs := header.TrxTotales;
+    SetLength(ArrTrxs, TotalTrxs);
+    for Counter := 0 to TotalTrxs - 1 do
+      MemStr.Read(ArrTrxs[Counter], Sizeof(ArrTrxs[Counter])); // read each record
+  except
+    on E: Exception do
+    begin
+      ToDeepDeb('Nosoblock,GetBlockTrxs,' + E.Message);
+    end;
+  end;
   MemStr.Free;
   Result := ArrTrxs;
-End;
+end;
 
-function LoadBlockDataHeader(BlockNumber:integer):BlockHeaderData;
+function LoadBlockDataHeader(BlockNumber: Integer): BlockHeaderData;
 var
   MemStr: TMemoryStream;
-  Header : BlockHeaderData;
-  ArchData : String;
-Begin
-Header := Default(BlockHeaderData);
-ArchData := BlockDirectory+IntToStr(BlockNumber)+'.blk';
-MemStr := TMemoryStream.Create;
-   TRY
-   MemStr.LoadFromFile(ArchData);
-   MemStr.Position := 0;
-   MemStr.Read(Header, SizeOf(Header));
-   EXCEPT ON E:Exception do
-      begin
-      ToLog('console','Error loading Header from block '+IntToStr(BlockNumber)+':'+E.Message);
-      end;
-   END{Try};
-MemStr.Free;
-Result := header;
-End;
+  Header: BlockHeaderData;
+  ArchData: String;
+begin
+  Header := Default(BlockHeaderData);
+  ArchData := BlockDirectory + IntToStr(BlockNumber) + '.blk';
+  MemStr := TMemoryStream.Create;
+  try
+    MemStr.LoadFromFile(ArchData);
+    MemStr.Position := 0;
+    MemStr.Read(Header, SizeOf(Header));
+  except
+    ON E: Exception do
+    begin
+      ToLog('console', 'Error loading Header from block ' + IntToStr(
+        BlockNumber) + ':' + E.Message);
+    end;
+  end{Try};
+  MemStr.Free;
+  Result := header;
+end;
 
 {$ENDREGION Blocks Information}
 
 {$REGION Blocks Files management}
 
-Function SaveStreamAsZipBlocks(Const LStream:TMemoryStream):boolean;
-Begin
-  result := false;
-  TRY
-    LStream.SaveToFile(BlockDirectory+BlocksZipFile);
-    Result := true;
-  EXCEPT ON E:Exception do
+function SaveStreamAsZipBlocks(const LStream: TMemoryStream): Boolean;
+begin
+  Result := False;
+  try
+    LStream.SaveToFile(BlockDirectory + BlocksZipFile);
+    Result := True;
+  except
+    ON E: Exception do
     begin
-    ToDeepDeb('NosoBlock,SaveStreamAsZipBlocks,'+E.Message);
+      ToDeepDeb('NosoBlock,SaveStreamAsZipBlocks,' + E.Message);
     end;
-  END{Try};
-End;
+  end{Try};
+end;
 
 // Creates the zip block file
-function GetBlocksAsStream(out LMs:TMemoryStream;firstblock, CurrentLastblock:integer):Int64;
+function GetBlocksAsStream(out LMs: TMemoryStream;
+  firstblock, CurrentLastblock: Integer): Int64;
 var
   MyZipFile: TZipper;
-  ZipFileName:String;
-  LastBlock : integer;
-  contador : integer;
+  ZipFileName: String;
+  LastBlock: Integer;
+  contador: Integer;
   filename, archivename: String;
-Begin
-  result := 0;
-  LastBlock := FirstBlock + 100; if LastBlock>CurrentLastblock then LastBlock := CurrentLastblock;
+begin
+  Result := 0;
+  LastBlock := FirstBlock + 100;
+  if LastBlock > CurrentLastblock then LastBlock := CurrentLastblock;
   MyZipFile := TZipper.Create;
-  ZipFileName := BlockDirectory+'Blocks_'+IntToStr(FirstBlock)+'_'+IntToStr(LastBlock)+'.zip';
+  ZipFileName := BlockDirectory + 'Blocks_' + IntToStr(FirstBlock) +
+    '_' + IntToStr(LastBlock) + '.zip';
   MyZipFile.FileName := ZipFileName;
-    TRY
+  try
     for contador := FirstBlock to LastBlock do
-      begin
-      filename := BlockDirectory+IntToStr(contador)+'.blk';
+    begin
+      filename := BlockDirectory + IntToStr(contador) + '.blk';
       {$IFDEF WINDOWS}
       archivename:= StringReplace(filename,'\','/',[rfReplaceAll]);
       {$ENDIF}
@@ -448,36 +466,38 @@ Begin
       archivename:= filename;
       {$ENDIF}
       MyZipFile.Entries.AddFileEntry(filename, archivename);
-      end;
+    end;
     MyZipFile.ZipAllFiles;
     //result := ZipFileName;
-    EXCEPT ON E:Exception do
-      begin
-      ToLog('exceps',FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now)+' -> '+'Error zipping block files: '+E.Message);
-      end;
-    END;
+  except
+    ON E: Exception do
+    begin
+      ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
+        ' -> ' + 'Error zipping block files: ' + E.Message);
+    end;
+  end;
   MyZipFile.Free;
-    TRY
+  try
     LMs.LoadFromFile(ZipFileName);
-    result:= LMs.Size;
-    LMs.Position:=0;
-    EXCEPT ON E:Exception do
-    END{Try};
+    Result := LMs.Size;
+    LMs.Position := 0;
+  except
+    ON E: Exception do
+  end{Try};
   Trydeletefile(ZipFileName);
-End;
+end;
 
 {$ENDREGION Blocks Files management}
 
-INITIALIZATION
-Assignfile(DBFile,BlockDirectory+DBDirectory+DataBaseFilename);
-InitCriticalSection(CSDBFile);
-InitCriticalSection(CSDBIndex);
-SetLength(OrderIDIndex,0,0);
-SetLength(OrderIDIndex,100000);
+initialization
+  Assignfile(DBFile, BlockDirectory + DBDirectory + DataBaseFilename);
+  InitCriticalSection(CSDBFile);
+  InitCriticalSection(CSDBIndex);
+  SetLength(OrderIDIndex, 0, 0);
+  SetLength(OrderIDIndex, 100000);
 
-FINALIZATION
-DoneCriticalSection(CSDBFile);
-DoneCriticalSection(CSDBIndex);
+finalization
+  DoneCriticalSection(CSDBFile);
+  DoneCriticalSection(CSDBIndex);
 
-END.
-
+end.

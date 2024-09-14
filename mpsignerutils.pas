@@ -1,6 +1,6 @@
-//
+
 //  Thanks to Xor-el for this library!
-//
+
 
 unit mpSignerUtils;
 
@@ -35,14 +35,14 @@ uses
 
 type
   TKeyPair = record
-    PublicKey: string;
-    PrivateKey: string;
+    PublicKey: String;
+    PrivateKey: String;
   end;
 
 type
-{$SCOPEDENUMS ON}
+  {$SCOPEDENUMS ON}
   TKeyType = (SECP256K1, SECP384R1, SECP521R1, SECT283K1);
-{$SCOPEDENUMS OFF}
+  {$SCOPEDENUMS OFF}
 
 type
   TSignerUtils = class sealed(TObject)
@@ -53,7 +53,7 @@ type
 
     SigningAlgorithm = 'SHA-1withECDSA';
 
-    class var FSecureRandom: ISecureRandom;
+  class var FSecureRandom: ISecureRandom;
 
     class function GetCurveFromKeyType(AKeyType: TKeyType): IX9ECParameters;
       static; inline;
@@ -63,8 +63,7 @@ type
   private
     class function GetSigner(): ISigner; static;
     class function GetCurve(keyType: TKeyType): IX9ECParameters; static;
-    class function GetDomain(curve: IX9ECParameters)
-      : IECDomainParameters; static;
+    class function GetDomain(curve: IX9ECParameters): IECDomainParameters; static;
   public
     class function GenerateECKeyPair(AKeyType: TKeyType): TKeyPair; static;
 
@@ -72,19 +71,18 @@ type
       AKeyType: TKeyType): TBytes; static;
 
     class function VerifySignature(const signature: TBytes;
-      const &message: TBytes; const PublicKey: TBytes; AKeyType: TKeyType)
-      : Boolean; static;
+      const &message: TBytes; const PublicKey: TBytes;
+      AKeyType: TKeyType): Boolean; static;
   end;
 
-  function ByteToString(const Value: TBytes): String;
-  function StrToByte(const Value: String): TBytes;
+function ByteToString(const Value: TBytes): String;
+function StrToByte(const Value: String): TBytes;
 
 implementation
 
-class function TSignerUtils.GetCurveFromKeyType(AKeyType: TKeyType)
-  : IX9ECParameters;
+class function TSignerUtils.GetCurveFromKeyType(AKeyType: TKeyType): IX9ECParameters;
 var
-  CurveName: string;
+  CurveName: String;
 begin
   CurveName := GetEnumName(TypeInfo(TKeyType), Ord(AKeyType));
   Result := TCustomNamedCurves.GetByName(CurveName);
@@ -95,18 +93,17 @@ begin
   Result := GetCurveFromKeyType(keyType);
 end;
 
-class function TSignerUtils.GetDomain(curve: IX9ECParameters)
-  : IECDomainParameters;
+class function TSignerUtils.GetDomain(curve: IX9ECParameters): IECDomainParameters;
 begin
-  Result := TECDomainParameters.Create(curve.curve, curve.G, curve.N, curve.H,
-    curve.GetSeed);
+  Result := TECDomainParameters.Create(curve.curve, curve.G, curve.N,
+    curve.H, curve.GetSeed);
 end;
 
 class function TSignerUtils.GetSecureRandom: ISecureRandom;
 begin
-  if FSecureRandom <> Nil then
+  if FSecureRandom <> nil then
   begin
-    Result := FSecureRandom
+    Result := FSecureRandom;
   end
   else
   begin
@@ -162,8 +159,8 @@ var
   domain: IECDomainParameters;
   KeyPairGeneratorInstance: IAsymmetricCipherKeyPairGenerator;
   askp: IAsymmetricCipherKeyPair;
-  Publickey : TBytes;
-  PrivateKey : TBytes;
+  Publickey: TBytes;
+  PrivateKey: TBytes;
 begin
   LCurve := GetCurve(AKeyType);
   domain := GetDomain(LCurve);
@@ -171,7 +168,7 @@ begin
   KeyPairGeneratorInstance.Init(TECKeyGenerationParameters.Create(domain,
     SecureRandom) as IECKeyGenerationParameters);
   askp := KeyPairGeneratorInstance.GenerateKeyPair();
-  Publickey:= (askp.Public as IECPublicKeyParameters).Q.GetEncoded();
+  Publickey := (askp.Public as IECPublicKeyParameters).Q.GetEncoded();
   Result.PublicKey := EncodeStringBase64(ByteToString(PublicKey));
   PrivateKey := (askp.Private as IECPrivateKeyParameters).D.ToByteArrayUnsigned;
   Result.PrivateKey := EncodeStringBase64(ByteToString(PrivateKey));
@@ -179,26 +176,26 @@ end;
 
 function ByteToString(const Value: TBytes): String;
 var
-  I: integer;
-  S : String;
-  Letra: char;
+  I: Integer;
+  S: String;
+  Letra: Char;
 begin
-S := '';
-for I := Length(Value)-1 Downto 0 do
-   begin
-   letra := Chr(Value[I]);
-   S := letra + S;
-   end;
-Result := S;
+  S := '';
+  for I := Length(Value) - 1 downto 0 do
+  begin
+    letra := Chr(Value[I]);
+    S := letra + S;
+  end;
+  Result := S;
 end;
 
 function StrToByte(const Value: String): TBytes;
 var
-  I: integer;
+  I: Integer;
 begin
-SetLength(Result, Length(Value));
-   for I := 0 to Length(Value) - 1 do
-      Result[I] := ord(Value[I + 1]);
+  SetLength(Result, Length(Value));
+  for I := 0 to Length(Value) - 1 do
+    Result[I] := Ord(Value[I + 1]);
 end;
 
 end.

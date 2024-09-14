@@ -14,263 +14,268 @@ uses
   Classes, SysUtils, strutils,
   nosodebug, nosogeneral, nosotime, nosocrypto;
 
-Procedure SetCFGHash();
-Function GetCFGHash():String;
+procedure SetCFGHash();
+function GetCFGHash(): String;
 
-Procedure SetCFGFilename(Fname:String);
-Function SaveCFGToFile(Content:String):Boolean;
-Procedure GetCFGFromFile();
-Procedure SetCFGDataStr(Content:String);
-Function GetCFGDataStr(LParam:integer=-1):String;
-Procedure AddCFGData(DataToAdd:String;CFGIndex:Integer);
-Procedure RemoveCFGData(DataToRemove:String;CFGIndex:Integer);
-Procedure SetCFGData(DataToSet:String;CFGIndex:Integer);
-Procedure RestoreCFGData();
-Procedure ClearCFGData(Index:string);
-Function IsSeedNode(IP:String):boolean;
+procedure SetCFGFilename(Fname: String);
+function SaveCFGToFile(Content: String): Boolean;
+procedure GetCFGFromFile();
+procedure SetCFGDataStr(Content: String);
+function GetCFGDataStr(LParam: Integer = -1): String;
+procedure AddCFGData(DataToAdd: String; CFGIndex: Integer);
+procedure RemoveCFGData(DataToRemove: String; CFGIndex: Integer);
+procedure SetCFGData(DataToSet: String; CFGIndex: Integer);
+procedure RestoreCFGData();
+procedure ClearCFGData(Index: String);
+function IsSeedNode(IP: String): Boolean;
 
 var
-  CFGFilename       : string= 'nosocfg.psk';
-  CFGFile           : Textfile;
-  MyCFGHash         : string = '';
-  CS_CFGFile        : TRTLCriticalSection;
-  CS_CFGData        : TRTLCriticalSection;
-  CS_CFGHash        : TRTLCriticalSection;
-  NosoCFGString     : string = '';
-  LasTimeCFGRequest : int64 = 0;
-  DefaultNosoCFG    : String = // CFG parameters
-                            {0 Mainnet mode}'NORMAL '+
-                            {1 Seed nodes  }'204.10.194.22;8080:204.10.194.29;8080:204.10.194.32;8080:204.10.194.36;8080:204.10.194.33;8080: '+
-                            {2 NTP servers }'ts2.aco.net:hora.roa.es:time.esa.int:time.stdtime.gov.tw:stratum-1.sjc02.svwh.net:ntp1.sp.se:1.de.pool.ntp.org:ntps1.pads.ufrj.br:utcnist2.colorado.edu:tick.usask.ca:ntp1.st.keio.ac.jp: ' +
-                            {3 DEPRECATED  }'null: '+
-                            {4 DEPRECATED  }'null: '+
-                            {5 FREZZED     }'NpryectdevepmentfundsGE:';
+  CFGFilename: String = 'nosocfg.psk';
+  CFGFile: Textfile;
+  MyCFGHash: String = '';
+  CS_CFGFile: TRTLCriticalSection;
+  CS_CFGData: TRTLCriticalSection;
+  CS_CFGHash: TRTLCriticalSection;
+  NosoCFGString: String = '';
+  LasTimeCFGRequest: Int64 = 0;
+  DefaultNosoCFG: String = // CFG parameters
+  {0 Mainnet mode}'NORMAL ' +
+    {1 Seed nodes  }
+    '204.10.194.22;8080:204.10.194.29;8080:204.10.194.32;8080:204.10.194.36;8080:204.10.194.33;8080: '
+    +
+    {2 NTP servers }
+    'ts2.aco.net:hora.roa.es:time.esa.int:time.stdtime.gov.tw:stratum-1.sjc02.svwh.net:ntp1.sp.se:1.de.pool.ntp.org:ntps1.pads.ufrj.br:utcnist2.colorado.edu:tick.usask.ca:ntp1.st.keio.ac.jp: ' +
+    {3 DEPRECATED  }'null: ' +
+    {4 DEPRECATED  }'null: ' +
+    {5 FREZZED     }'NpryectdevepmentfundsGE:';
 
 
-IMPLEMENTATION
+implementation
 
 {$REGION CFG hash}
 
-Procedure SetCFGHash();
-Begin
+procedure SetCFGHash();
+begin
   EnterCriticalSection(CS_CFGHash);
   MyCFGHash := HashMD5String(GetCFGDataStr);
   LeaveCriticalSection(CS_CFGHash);
-End;
+end;
 
-Function GetCFGHash():String;
-Begin
+function GetCFGHash(): String;
+begin
   EnterCriticalSection(CS_CFGHash);
   Result := MyCFGHash;
   LeaveCriticalSection(CS_CFGHash);
-End;
+end;
 
 {$ENDREGION CFG hash}
 
 {$REGION File access}
 
-Procedure SetCFGFilename(Fname:String);
+procedure SetCFGFilename(Fname: String);
 var
-  defseeds : string = '';
-Begin
+  defseeds: String = '';
+begin
   CFGFilename := Fname;
   AssignFile(CFGFile, CFGFilename);
   if not fileexists(CFGFilename) then
-    begin
+  begin
     SaveCFGToFile(DefaultNosoCFG);
     GetCFGFromFile;
-    Defseeds := SendApiRequest('https://raw.githubusercontent.com/nosocoin/NosoNode/main/defseeds.nos');
+    Defseeds := SendApiRequest(
+      'https://raw.githubusercontent.com/nosocoin/NosoNode/main/defseeds.nos');
     if defseeds <> '' then
-      begin
-      SetCFGData(Defseeds,1);
-      Tolog('console','Defaults seeds downloaded from trustable source');
-      end
+    begin
+      SetCFGData(Defseeds, 1);
+      Tolog('console', 'Defaults seeds downloaded from trustable source');
+    end
     else
-      begin
-      ToLog('console','Unable to download default seeds. Please, use a fallback');
-      end;
+    begin
+      ToLog('console', 'Unable to download default seeds. Please, use a fallback');
     end;
+  end;
   GetCFGFromFile;
   SetCFGHash();
-End;
+end;
 
-Function SaveCFGToFile(Content:String):Boolean;
-Begin
+function SaveCFGToFile(Content: String): Boolean;
+begin
   EnterCriticalSection(CS_CFGFile);
-  Result := SaveTextToDisk(CFGFilename,Content);
+  Result := SaveTextToDisk(CFGFilename, Content);
   SetCFGDataStr(Content);
   LeaveCriticalSection(CS_CFGFile);
-End;
+end;
 
-Procedure GetCFGFromFile();
-Begin
+procedure GetCFGFromFile();
+begin
   EnterCriticalSection(CS_CFGFile);
   SetCFGDataStr(LoadTextFromDisk(CFGFilename));
   LeaveCriticalSection(CS_CFGFile);
-End;
+end;
 
 {$ENDREGION File access}
 
 {$REGION Data access}
 
-Procedure SetCFGDataStr(Content:String);
-Begin
+procedure SetCFGDataStr(Content: String);
+begin
   EnterCriticalSection(CS_CFGData);
   NosoCFGString := Content;
   LeaveCriticalSection(CS_CFGData);
   SetCFGHash;
-End;
+end;
 
-Function GetCFGDataStr(LParam:integer=-1):String;
-Begin
+function GetCFGDataStr(LParam: Integer = -1): String;
+begin
   EnterCriticalSection(CS_CFGData);
-  if LParam<0 then Result := NosoCFGString
-  else Result := Parameter(NosoCFGString,LParam);
+  if LParam < 0 then Result := NosoCFGString
+  else
+    Result := Parameter(NosoCFGString, LParam);
   LeaveCriticalSection(CS_CFGData);
-End;
+end;
 
 {$ENDREGION Data access}
 
 {$REGION Management}
 
-Procedure AddCFGData(DataToAdd:String;CFGIndex:Integer);
+procedure AddCFGData(DataToAdd: String; CFGIndex: Integer);
 var
-  LCFGstr    : String;
-  LArrString : Array of string;
-  DataStr    : String;
-  thisData   : string;
-  Counter    : integer = 0;
-  FinalStr   : string = '';
-Begin
+  LCFGstr: String;
+  LArrString: array of String;
+  DataStr: String;
+  thisData: String;
+  Counter: Integer = 0;
+  FinalStr: String = '';
+begin
   if DataToAdd[Length(DataToAdd)] <> ':' then
-    DataToAdd := DataToAdd+':';
+    DataToAdd := DataToAdd + ':';
   LCFGStr := GetCFGDataStr();
-  SetLength(LArrString,0);
-  Repeat
-    ThisData := Parameter(LCFGStr,counter);
+  SetLength(LArrString, 0);
+  repeat
+    ThisData := Parameter(LCFGStr, counter);
     if ThisData <> '' then
-      Insert(ThisData,LArrString,LEngth(LArrString));
+      Insert(ThisData, LArrString, LEngth(LArrString));
     Inc(Counter);
   until thisData = '';
-  if CFGIndex+1 > LEngth(LArrString) then
-    begin
+  if CFGIndex + 1 > LEngth(LArrString) then
+  begin
     repeat
-      Insert('',LArrString,LEngth(LArrString));
-    until CFGIndex+1 = LEngth(LArrString);
-    end;
+      Insert('', LArrString, LEngth(LArrString));
+    until CFGIndex + 1 = LEngth(LArrString);
+  end;
   DataStr := LArrString[CFGIndex];
-  DataStr := DataStr+DataToAdd;
+  DataStr := DataStr + DataToAdd;
   LArrString[CFGIndex] := DataStr;
-  For counter := 0 to length(LArrString)-1 do
-    FinalStr := FinalStr+' '+LArrString[counter];
-  If FinalStr[1] = ' ' then delete(FinalStr,1,1);
+  for counter := 0 to length(LArrString) - 1 do
+    FinalStr := FinalStr + ' ' + LArrString[counter];
+  if FinalStr[1] = ' ' then Delete(FinalStr, 1, 1);
   SaveCFGToFile(FinalStr);
-  LasTimeCFGRequest:= UTCTime+5;
-End;
+  LasTimeCFGRequest := UTCTime + 5;
+end;
 
-Procedure RemoveCFGData(DataToRemove:String;CFGIndex:Integer);
+procedure RemoveCFGData(DataToRemove: String; CFGIndex: Integer);
 var
-  LCFGstr    : String;
-  LArrString : Array of string;
-  DataStr    : String;
-  thisData   : string;
-  Counter    : integer = 0;
-  FinalStr   : string = '';
-Begin
-  if ( (Length(DataToRemove)>0) and (DataToRemove[Length(DataToRemove)] <> ':') ) then
-    DataToRemove := DataToRemove+':';
+  LCFGstr: String;
+  LArrString: array of String;
+  DataStr: String;
+  thisData: String;
+  Counter: Integer = 0;
+  FinalStr: String = '';
+begin
+  if ((Length(DataToRemove) > 0) and (DataToRemove[Length(DataToRemove)] <> ':')) then
+    DataToRemove := DataToRemove + ':';
   LCFGStr := GetCFGDataStr();
-  SetLength(LArrString,0);
-  Repeat
-    ThisData := Parameter(LCFGStr,counter);
+  SetLength(LArrString, 0);
+  repeat
+    ThisData := Parameter(LCFGStr, counter);
     if ThisData <> '' then
-      begin
-      Insert(ThisData,LArrString,LEngth(LArrString));
-      end;
+    begin
+      Insert(ThisData, LArrString, LEngth(LArrString));
+    end;
     Inc(Counter);
   until thisData = '';
   DataStr := LArrString[CFGIndex];
-  DataStr := StringReplace(DataStr,DataToRemove,'',[rfReplaceAll, rfIgnoreCase]);
+  DataStr := StringReplace(DataStr, DataToRemove, '', [rfReplaceAll, rfIgnoreCase]);
   LArrString[CFGIndex] := DataStr;
-  For counter := 0 to length(LArrString)-1 do
-    FinalStr := FinalStr+' '+LArrString[counter];
+  for counter := 0 to length(LArrString) - 1 do
+    FinalStr := FinalStr + ' ' + LArrString[counter];
   FinalStr := Trim(FinalStr);
-  If FinalStr[1] = ' ' then delete(FinalStr,1,1);
-  LasTimeCFGRequest:= UTCTime+5;
+  if FinalStr[1] = ' ' then Delete(FinalStr, 1, 1);
+  LasTimeCFGRequest := UTCTime + 5;
   SaveCFGToFile(FinalStr);
-End;
+end;
 
-Procedure SetCFGData(DataToSet:String;CFGIndex:Integer);
+procedure SetCFGData(DataToSet: String; CFGIndex: Integer);
 var
-  LCFGstr    : String;
-  LArrString : Array of string;
-  DataStr    : String;
-  thisData   : string;
-  Counter    : integer = 0;
-  FinalStr   : string = '';
-Begin
-  if ( (Length(DataToSet)>0) and (DataToSet[Length(DataToSet)] <> ':') and (CFGIndex>0) ) then
-     DataToSet := DataToSet+':';
-  if ((CFGIndex = 0) and (DatatoSet = '') ) then exit;
+  LCFGstr: String;
+  LArrString: array of String;
+  DataStr: String;
+  thisData: String;
+  Counter: Integer = 0;
+  FinalStr: String = '';
+begin
+  if ((Length(DataToSet) > 0) and (DataToSet[Length(DataToSet)] <> ':') and
+    (CFGIndex > 0)) then
+    DataToSet := DataToSet + ':';
+  if ((CFGIndex = 0) and (DatatoSet = '')) then exit;
   LCFGStr := GetCFGDataStr();
-  SetLength(LArrString,0);
-  Repeat
-    ThisData := Parameter(LCFGStr,counter);
+  SetLength(LArrString, 0);
+  repeat
+    ThisData := Parameter(LCFGStr, counter);
     if ThisData <> '' then
-      begin
-      Insert(ThisData,LArrString,LEngth(LArrString));
-      end;
+    begin
+      Insert(ThisData, LArrString, LEngth(LArrString));
+    end;
     Inc(Counter);
   until thisData = '';
   LArrString[CFGIndex] := DataToSet;
-  For counter := 0 to length(LArrString)-1 do
-    FinalStr := FinalStr+' '+LArrString[counter];
+  for counter := 0 to length(LArrString) - 1 do
+    FinalStr := FinalStr + ' ' + LArrString[counter];
   FinalStr := Trim(FinalStr);
-  LasTimeCFGRequest:= UTCTime+5;
+  LasTimeCFGRequest := UTCTime + 5;
   SaveCFGToFile(FinalStr);
-End;
+end;
 
-Procedure RestoreCFGData();
-Begin
-  LasTimeCFGRequest:= UTCTime+5;
+procedure RestoreCFGData();
+begin
+  LasTimeCFGRequest := UTCTime + 5;
   SaveCFGToFile(DefaultNosoCFG);
-End;
+end;
 
-Procedure ClearCFGData(Index:string);
+procedure ClearCFGData(Index: String);
 var
-  LIndex : integer;
-Begin
-  LIndex := StrToIntDef(Index,-1);
-  If LIndex <= 0 then exit;
-  SetCFGData('null:',LIndex);
-End;
+  LIndex: Integer;
+begin
+  LIndex := StrToIntDef(Index, -1);
+  if LIndex <= 0 then exit;
+  SetCFGData('null:', LIndex);
+end;
 
 {$ENDREGION Management}
 
 {$REGION Information}
 
 // If the specified IP a seed node
-Function IsSeedNode(IP:String):boolean;
+function IsSeedNode(IP: String): Boolean;
 var
-  SeedNodesStr : string;
-Begin
-  Result := false;
-  SeedNodesStr := ':'+GetCFGDataStr(1);
-  if AnsiContainsStr(SeedNodesStr,':'+ip+';') then result := true;
-End;
+  SeedNodesStr: String;
+begin
+  Result := False;
+  SeedNodesStr := ':' + GetCFGDataStr(1);
+  if AnsiContainsStr(SeedNodesStr, ':' + ip + ';') then Result := True;
+end;
 
 {$REGION Information}
 
-INITIALIZATION
-InitCriticalSection(CS_CFGFile);
-InitCriticalSection(CS_CFGData);
-InitCriticalSection(CS_CFGHash);
+initialization
+  InitCriticalSection(CS_CFGFile);
+  InitCriticalSection(CS_CFGData);
+  InitCriticalSection(CS_CFGHash);
 
 
-FINALIZATION
-DoneCriticalSection(CS_CFGFile);
-DoneCriticalSection(CS_CFGData);
-DoneCriticalSection(CS_CFGHash);
+finalization
+  DoneCriticalSection(CS_CFGFile);
+  DoneCriticalSection(CS_CFGData);
+  DoneCriticalSection(CS_CFGHash);
 
-END.
-
+end.

@@ -8,606 +8,619 @@ Noso project unit to handle summary
 
 {$mode ObjFPC}{$H+}
 
-INTERFACE
+interface
 
 uses
   Classes, SysUtils, Zipper,
   nosocrypto, nosodebug, nosogeneral;
 
-Type
-  TSummaryData = Packed Record
-    Hash    : String[40];  {Public hash}
-    Custom  : String[40];  {Custom alias}
-    Balance : int64;       {Noso balance}
-    Score   : int64;       {token balance}
-    LastOP  : int64;       {Last operation block}
-    end;
+type
+  TSummaryData = packed record
+    Hash: String[40];     {Public hash}
+    Custom: String[40];   {Custom alias}
+    Balance: Int64;       {Noso balance}
+    Score: Int64;         {token balance}
+    LastOP: Int64;        {Last operation block}
+  end;
 
-  TOrderGroup = Packed Record
-    Block      : integer;
-    TimeStamp  : Int64;
-    OrderID    : string[64];
-    OrderType  : String[6];
-    OrderLines : Integer;
-    Reference  : String[64];
-    sender     : string;
-    Receiver   : String[40];
-    AmmountFee : Int64;
-    AmmountTrf : Int64;
-    end;
+  TOrderGroup = packed record
+    Block: Integer;
+    TimeStamp: Int64;
+    OrderID: String[64];
+    OrderType: String[6];
+    OrderLines: Integer;
+    Reference: String[64];
+    Sender: String;
+    Receiver: String[40];
+    AmmountFee: Int64;
+    AmmountTrf: Int64;
+  end;
 
-  TIndexRecord      = array of integer;
+  TIndexRecord = array of Integer;
 
   TBlockRecords = record
-    DiskSlot : int64;
-    VRecord  : TSummaryData;
-    end;
+    DiskSlot: Int64;
+    VRecord: TSummaryData;
+  end;
 
 {Protocol utilitys}
-Function CreateProtocolOrder(BlockN:integer;OrType,sender,receiver,signature:string;TimeStamp,Amount:int64):TOrderData;
+function CreateProtocolOrder(BlockN: Integer;
+  OrType, Sender, receiver, signature: String; TimeStamp, Amount: Int64): TOrderData;
 
 {Sumary management}
-Procedure CreateNewSummaryFile(AddBlockZero:Boolean);
-Function ZipSumary():boolean;
-Function CreateSumaryIndex():int64;
-Function GetSummaryAsMemStream(out LMs:TMemoryStream):int64;
-Function GetZIPSummaryAsMemStream(out LMs:TMemoryStream):int64;
-Function SaveSummaryToFile(Const LStream:TMemoryStream):Boolean;
-Function CreateSumaryBackup():Boolean;
-Function RestoreSumaryBackup():Boolean;
-Function SumIndexLength():int64;
-Procedure ResetBlockRecords();
-Function GetIndexPosition(LText:String;out RecordData:TSummaryData; IsAlias:boolean = false):int64;
-Function SummaryValidPay(Address:string;amount,blocknumber:int64):boolean;
-Procedure SummaryPay(Address:string;amount,blocknumber:int64);
-Procedure CreditTo(Address:String;amount,blocknumber:int64);
-Function IsCustomizacionValid(address,custom:string;blocknumber:int64;forceCustom:boolean = false):Boolean;
-Procedure UpdateSummaryChanges();
-Function GetAddressBalanceIndexed(Address:string):int64;
-Function GetAddressAlias(Address:String):string;
-Function GetAddressLastOP(Address:String):int64;
+procedure CreateNewSummaryFile(AddBlockZero: Boolean);
+function ZipSumary(): Boolean;
+function CreateSumaryIndex(): Int64;
+function GetSummaryAsMemStream(out LMs: TMemoryStream): Int64;
+function GetZIPSummaryAsMemStream(out LMs: TMemoryStream): Int64;
+function SaveSummaryToFile(const LStream: TMemoryStream): Boolean;
+function CreateSumaryBackup(): Boolean;
+function RestoreSumaryBackup(): Boolean;
+function SumIndexLength(): Int64;
+procedure ResetBlockRecords();
+function GetIndexPosition(LText: String; out RecordData: TSummaryData;
+  IsAlias: Boolean = False): Int64;
+function SummaryValidPay(Address: String; amount, blocknumber: Int64): Boolean;
+procedure SummaryPay(Address: String; amount, blocknumber: Int64);
+procedure CreditTo(Address: String; amount, blocknumber: Int64);
+function IsCustomizacionValid(address, custom: String; blocknumber: Int64;
+  forceCustom: Boolean = False): Boolean;
+procedure UpdateSummaryChanges();
+function GetAddressBalanceIndexed(Address: String): Int64;
+function GetAddressAlias(Address: String): String;
+function GetAddressLastOP(Address: String): Int64;
 
 // Summary hash related
-Procedure SetSummaryHash();
-Function MySumarioHash:String;
-
-Var
-  {Overall variables}
-  WorkingPath     : string = '';
-
-  {Summary related}
-  SummaryFileName     : string = 'NOSODATA'+DirectorySeparator+'sumary.psk';
-  ZipSumaryFileName   : string = 'NOSODATA'+DirectorySeparator+'sumary.zip';
-  SummaryLastop       : int64;
-  SummaryHashValue    : string = '';
-
-IMPLEMENTATION
+procedure SetSummaryHash();
+function MySumarioHash: String;
 
 var
-  IndexLength     : int64 = 10;
-  SumaryIndex     : Array of TindexRecord;
-  CS_SummaryDisk  : TRTLCriticalSection;    {Disk access to summary}
-  CS_SumIndex     : TRTLCriticalSection;    {Access to index}
-  BlockRecords    : array of TBlockRecords;
-  CS_BlockRecs    : TRTLCriticalSection;
-  CS_SummaryHashV : TRTLCriticalSection;
+  {Overall variables}
+  WorkingPath: String = '';
 
-{$REGION Protocol utilitys}
+  {Summary related}
+  SummaryFileName: String = 'NOSODATA' + DirectorySeparator + 'sumary.psk';
+  ZipSumaryFileName: String = 'NOSODATA' + DirectorySeparator + 'sumary.zip';
+  SummaryLastop: Int64;
+  SummaryHashValue: String = '';
 
-Function CreateProtocolOrder(BlockN:integer;OrType,sender,receiver,signature:string;TimeStamp,Amount:int64):TOrderData;
-Begin
+implementation
+
+var
+  IndexLength: Int64 = 10;
+  SumaryIndex: array of TindexRecord;
+  CS_SummaryDisk: TRTLCriticalSection;    {Disk access to summary}
+  CS_SumIndex: TRTLCriticalSection;       {Access to index}
+  BlockRecords: array of TBlockRecords;
+  CS_BlockRecs: TRTLCriticalSection;
+  CS_SummaryHashV: TRTLCriticalSection;
+
+  {$REGION Protocol utilitys}
+
+function CreateProtocolOrder(BlockN: Integer;
+  OrType, Sender, receiver, signature: String; TimeStamp, Amount: Int64): TOrderData;
+begin
   Result := Default(TOrderData);
-  Result.Block      := BlockN;
+  Result.Block := BlockN;
   Result.OrderLines := 1;
-  Result.OrderType  := OrType;
-  Result.TimeStamp  := TimeStamp;
-  Result.Reference  := 'null';
-  Result.TrxLine    := 1;
-  Result.sender     := sender;
-  Result.Address    := sender;
-  Result.Receiver   := receiver;
+  Result.OrderType := OrType;
+  Result.TimeStamp := TimeStamp;
+  Result.Reference := 'null';
+  Result.TrxLine := 1;
+  Result.Sender := Sender;
+  Result.Address := Sender;
+  Result.Receiver := receiver;
   Result.AmmountFee := 0;
   Result.AmmountTrf := amount;
-  Result.Signature  := Signature;
-  Result.TrfrID     := GetTransferHash(Result.TimeStamp.ToString+Sender+Receiver+IntToStr(amount)+IntToStr(BlockN-1));
-  Result.OrderID    := GetOrderHash('1'+Result.TrfrID);
-End;
+  Result.Signature := Signature;
+  Result.TrfrID := GetTransferHash(Result.TimeStamp.ToString +
+    Sender + Receiver + IntToStr(amount) + IntToStr(BlockN - 1));
+  Result.OrderID := GetOrderHash('1' + Result.TrfrID);
+end;
 
 {$ENDREGION}
 
 {$REGION Sumary management}
 
 {Creates a new summary file}
-Procedure CreateNewSummaryFile(AddBlockZero:Boolean);
+procedure CreateNewSummaryFile(AddBlockZero: Boolean);
 var
-  lFile : file;
-Begin
-  TRY
-  assignfile(lFile,SummaryFileName);
-  Rewrite(lFile);
-  CloseFile(lFile);
-  CreateSumaryIndex;
-  if AddBlockZero then
+  lFile: file;
+begin
+  try
+    assignfile(lFile, SummaryFileName);
+    Rewrite(lFile);
+    CloseFile(lFile);
+    CreateSumaryIndex;
+    if AddBlockZero then
     begin
-    CreditTo('N4PeJyqj8diSXnfhxSQdLpo8ddXTaGd',1030390730000,0);
-    UpdateSummaryChanges;
-    ResetBlockRecords;
-    SummaryLastop := 0;
+      CreditTo('N4PeJyqj8diSXnfhxSQdLpo8ddXTaGd', 1030390730000, 0);
+      UpdateSummaryChanges;
+      ResetBlockRecords;
+      SummaryLastop := 0;
     end;
-  EXCEPT on E:Exception do
+  except
+    on E: Exception do
 
-  END; {TRY}
+  end; {TRY}
   SetSummaryHash;
-End;
+end;
 
-{Create the zipped summary file}
-{Must be replaced with new stream compression methods}
-Function ZipSumary():boolean;
+ {Create the zipped summary file}
+ {Must be replaced with new stream compression methods}
+function ZipSumary(): Boolean;
 var
   MyZipFile: TZipper;
   archivename: String;
-Begin
-result := false;
-MyZipFile := TZipper.Create;
-MyZipFile.FileName := ZipSumaryFileName;
-EnterCriticalSection(CS_SummaryDisk);
-   TRY
-   {$IFDEF WINDOWS}
+begin
+  Result := False;
+  MyZipFile := TZipper.Create;
+  MyZipFile.FileName := ZipSumaryFileName;
+  EnterCriticalSection(CS_SummaryDisk);
+  try
+    {$IFDEF WINDOWS}
    archivename:= StringReplace(SummaryFileName,'\','/',[rfReplaceAll]);
-   {$ENDIF}
-   {$IFDEF UNIX}
+    {$ENDIF}
+    {$IFDEF UNIX}
    archivename:= SummaryFileName;
-   {$ENDIF}
-   archivename:= StringReplace(archivename,'NOSODATA','data',[rfReplaceAll]);
-   MyZipFile.Entries.AddFileEntry(SummaryFileName, archivename);
-   MyZipFile.ZipAllFiles;
-   result := true;
-   EXCEPT ON E:Exception do
-   END{Try};
-MyZipFile.Free;
-LeaveCriticalSection(CS_SummaryDisk);
-End;
+    {$ENDIF}
+    archivename := StringReplace(archivename, 'NOSODATA', 'data', [rfReplaceAll]);
+    MyZipFile.Entries.AddFileEntry(SummaryFileName, archivename);
+    MyZipFile.ZipAllFiles;
+    Result := True;
+  except
+    ON E: Exception do
+  end{Try};
+  MyZipFile.Free;
+  LeaveCriticalSection(CS_SummaryDisk);
+end;
 
-Function GetSummaryAsMemStream(out LMs:TMemoryStream):int64;
-Begin
+function GetSummaryAsMemStream(out LMs: TMemoryStream): Int64;
+begin
   Result := 0;
   EnterCriticalSection(CS_SummaryDisk);
-    TRY
+  try
     LMs.LoadFromFile(SummaryFileName);
-    result:= LMs.Size;
-    LMs.Position:=0;
-    EXCEPT ON E:Exception do
-    END{Try};
+    Result := LMs.Size;
+    LMs.Position := 0;
+  except
+    ON E: Exception do
+  end{Try};
   LeaveCriticalSection(CS_SummaryDisk);
-End;
+end;
 
-Function GetZIPSummaryAsMemStream(out LMs:TMemoryStream):int64;
-Begin
+function GetZIPSummaryAsMemStream(out LMs: TMemoryStream): Int64;
+begin
   Result := 0;
   EnterCriticalSection(CS_SummaryDisk);
-    TRY
+  try
     LMs.LoadFromFile(ZipSumaryFileName);
-    result:= LMs.Size;
-    LMs.Position:=0;
-    EXCEPT ON E:Exception do
-    END{Try};
+    Result := LMs.Size;
+    LMs.Position := 0;
+  except
+    ON E: Exception do
+  end{Try};
   LeaveCriticalSection(CS_SummaryDisk);
-End;
+end;
 
-Function SaveSummaryToFile(Const LStream:TMemoryStream):Boolean;
-Begin
-  result := false;
+function SaveSummaryToFile(const LStream: TMemoryStream): Boolean;
+begin
+  Result := False;
   EnterCriticalSection(CS_SummaryDisk);
-    TRY
+  try
     LStream.SaveToFile(SummaryFileName);
-    Result := true;
-    EXCEPT ON E:Exception do
-    END{Try};
+    Result := True;
+  except
+    ON E: Exception do
+  end{Try};
   LeaveCriticalSection(CS_SummaryDisk);
   SetSummaryHash;
-End;
+end;
 
-Function CreateSumaryBackup():Boolean;
-Begin
+function CreateSumaryBackup(): Boolean;
+begin
   EnterCriticalSection(CS_SummaryDisk);
-  Result:= TryCopyFile(SummaryFileName,SummaryFileName+'.bak');
+  Result := TryCopyFile(SummaryFileName, SummaryFileName + '.bak');
   LeaveCriticalSection(CS_SummaryDisk);
-End;
+end;
 
-Function RestoreSumaryBackup():Boolean;
-Begin
+function RestoreSumaryBackup(): Boolean;
+begin
   EnterCriticalSection(CS_SummaryDisk);
-  Result := Trycopyfile(SummaryFileName+'.bak',SummaryFileName);
+  Result := Trycopyfile(SummaryFileName + '.bak', SummaryFileName);
   LeaveCriticalSection(CS_SummaryDisk);
-End;
+end;
 
-Function GetIndexSize(LRecords:integer):integer;
-Begin
-result := 10;
-Repeat
-  Result := Result*10;
-until result > Lrecords;
-Result := result div 10;
-End;
+function GetIndexSize(LRecords: Integer): Integer;
+begin
+  Result := 10;
+  repeat
+    Result := Result * 10;
+  until Result > Lrecords;
+  Result := Result div 10;
+end;
 
-Function IndexFunction(LAddressHash:string; indexsize:int64):int64;
+function IndexFunction(LAddressHash: String; indexsize: Int64): Int64;
 var
-  SubStr : string;
-Begin
+  SubStr: String;
+begin
   LAddressHash := Hashmd5String(LAddressHash);
   LAddressHash := B16toB58(LAddressHash);
-  SubStr := copy(LAddressHash,2,6);
-  result := StrToInt64(b58toB10(SubStr)) mod indexsize;
-End;
+  SubStr := copy(LAddressHash, 2, 6);
+  Result := StrToInt64(b58toB10(SubStr)) mod indexsize;
+end;
 
 {Reads a specific summary record position from disk}
-function ReadSumaryRecordFromDisk(index:integer):TSummaryData;
+function ReadSumaryRecordFromDisk(index: Integer): TSummaryData;
 var
-  SumFile : File;
-Begin
+  SumFile: file;
+begin
   Result := Default(TSummaryData);
-  AssignFile(SumFile,SummaryFileName);
+  AssignFile(SumFile, SummaryFileName);
   EnterCriticalSection(CS_SummaryDisk);
-    TRY
-    Reset(SumFile,1);
-      TRY
-      seek(Sumfile,index*(sizeof(result)));
-      blockread(sumfile,result,sizeof(result));
-      EXCEPT
-      END;{Try}
+  try
+    Reset(SumFile, 1);
+    try
+      seek(Sumfile, index * (sizeof(Result)));
+      blockread(sumfile, Result, sizeof(Result));
+    except
+    end;{Try}
     CloseFile(SumFile);
-    EXCEPT
-    END;{Try}
+  except
+  end;{Try}
   LeaveCriticalSection(CS_SummaryDisk);
-End;
+end;
 
 {Add a pointer to the summary index}
-Procedure InsertIndexData(LRecord:TSummaryData;DiskPos:int64);
+procedure InsertIndexData(LRecord: TSummaryData; DiskPos: Int64);
 var
-  IndexValue : int64;
-Begin
-  IndexValue := IndexFunction(LRecord.Hash,IndexLength);
-  Insert(DiskPos,SumaryIndex[IndexValue],length(SumaryIndex[IndexValue]));
-  if LRecord.Custom  <> '' then
-    begin
-    IndexValue := IndexFunction(LRecord.custom,IndexLength);
-    Insert(DiskPos,SumaryIndex[IndexValue],length(SumaryIndex[IndexValue]));
-    end;
-End;
+  IndexValue: Int64;
+begin
+  IndexValue := IndexFunction(LRecord.Hash, IndexLength);
+  Insert(DiskPos, SumaryIndex[IndexValue], length(SumaryIndex[IndexValue]));
+  if LRecord.Custom <> '' then
+  begin
+    IndexValue := IndexFunction(LRecord.custom, IndexLength);
+    Insert(DiskPos, SumaryIndex[IndexValue], length(SumaryIndex[IndexValue]));
+  end;
+end;
 
 {Creates the summary index from the disk}
-Function CreateSumaryIndex():int64;
+function CreateSumaryIndex(): Int64;
 var
-  SumFile    : File;
-  ThisRecord : TSummaryData;
-  CurrPos    : int64 = 0;
-  Opened     : boolean = false;
-  Closed     : boolean = false;
-Begin
+  SumFile: file;
+  ThisRecord: TSummaryData;
+  CurrPos: Int64 = 0;
+  Opened: Boolean = False;
+  Closed: Boolean = False;
+begin
   beginperformance('CreateSumaryIndex');
-  AssignFile(SumFile,SummaryFileName);
+  AssignFile(SumFile, SummaryFileName);
   EnterCriticalSection(CS_SumIndex);
-  SetLength(SumaryIndex,0,0);
+  SetLength(SumaryIndex, 0, 0);
   EnterCriticalSection(CS_SummaryDisk);
-    TRY
-    Reset(SumFile,1);
-    Opened := true;
+  try
+    Reset(SumFile, 1);
+    Opened := True;
     IndexLength := GetIndexSize(FileSize(SumFile) div Sizeof(TSummaryData));
-    SetLength(SumaryIndex,IndexLength);
-    While not eof(SumFile) do
-      begin
-      blockread(sumfile,ThisRecord,sizeof(ThisRecord));
-      InsertIndexData(ThisRecord,CurrPos);
+    SetLength(SumaryIndex, IndexLength);
+    while not EOF(SumFile) do
+    begin
+      blockread(sumfile, ThisRecord, sizeof(ThisRecord));
+      InsertIndexData(ThisRecord, CurrPos);
       Inc(currpos);
-      end;
+    end;
     CloseFile(SumFile);
-    Closed := true;
-    EXCEPT
-    END;{Try}
+    Closed := True;
+  except
+  end;{Try}
   LeaveCriticalSection(CS_SummaryDisk);
   LeaveCriticalSection(CS_SumIndex);
   Result := EndPerformance('CreateSumaryIndex');
   SummaryLastop := ReadSumaryRecordFromDisk(0).LastOp;
   SetSummaryHash;
-End;
+end;
 
 {Returns the summary index length}
-Function SumIndexLength():int64;
-Begin
+function SumIndexLength(): Int64;
+begin
   EnterCriticalSection(CS_SumIndex);
-  result := IndexLength;
+  Result := IndexLength;
   LeaveCriticalSection(CS_SumIndex);
-End;
+end;
 
 {If found, returns the record}
-Function GetIndexPosition(LText:String;out RecordData:TSummaryData; IsAlias:boolean = false):int64;
+function GetIndexPosition(LText: String; out RecordData: TSummaryData;
+  IsAlias: Boolean = False): Int64;
 var
-  IndexPos : int64;
-  counter  : integer = 0;
-  ThisRecord : TSummaryData;
-Begin
-  result := -1;
+  IndexPos: Int64;
+  counter: Integer = 0;
+  ThisRecord: TSummaryData;
+begin
+  Result := -1;
   RecordData := Default(TSummaryData);
-  IndexPos := IndexFunction(LText,IndexLength);
-  if length(SumaryIndex[IndexPos])>0 then
-    begin
+  IndexPos := IndexFunction(LText, IndexLength);
+  if length(SumaryIndex[IndexPos]) > 0 then
+  begin
     EnterCriticalSection(CS_SumIndex);
     for counter := 0 to high(SumaryIndex[IndexPos]) do
-      begin
+    begin
       ThisRecord := ReadSumaryRecordFromDisk(SumaryIndex[IndexPos][counter]);
-      if (((Thisrecord.Hash = LText) and (not isAlias)) or ((ThisRecord.Custom = LText)and (IsAlias)))then
-        begin
+      if (((Thisrecord.Hash = LText) and (not isAlias)) or
+        ((ThisRecord.Custom = LText) and (IsAlias))) then
+      begin
         RecordData := ThisRecord;
         Result := SumaryIndex[IndexPos][counter];
         break;
-        end;
       end;
-    LeaveCriticalSection(CS_SumIndex);
     end;
-End;
+    LeaveCriticalSection(CS_SumIndex);
+  end;
+end;
 
 {Returns the balance of a specific address}
-Function GetAddressBalanceIndexed(Address:string):int64;
+function GetAddressBalanceIndexed(Address: String): Int64;
 var
-  IndexPos : integer;
-  counter  : integer = 0;
-  ThisRecord : TSummaryData;
-Begin
-result := 0;
-IndexPos := IndexFunction(address,length(SumaryIndex));
-If IndexPos > Length(SumaryIndex) then Exit;
-if length(SumaryIndex[IndexPos])>0 then
-   begin
-   EnterCriticalSection(CS_SumIndex);
-   for counter := 0 to high(SumaryIndex[IndexPos]) do
-     begin
-     ThisRecord := ReadSumaryRecordFromDisk(SumaryIndex[IndexPos][counter]);
-     if Thisrecord.Hash = address then
-       begin
-       result := ThisRecord.Balance;
-       break;
-       end;
-     end;
-   LeaveCriticalSection(CS_SumIndex);
-   end;
-End;
+  IndexPos: Integer;
+  counter: Integer = 0;
+  ThisRecord: TSummaryData;
+begin
+  Result := 0;
+  IndexPos := IndexFunction(address, length(SumaryIndex));
+  if IndexPos > Length(SumaryIndex) then Exit;
+  if length(SumaryIndex[IndexPos]) > 0 then
+  begin
+    EnterCriticalSection(CS_SumIndex);
+    for counter := 0 to high(SumaryIndex[IndexPos]) do
+    begin
+      ThisRecord := ReadSumaryRecordFromDisk(SumaryIndex[IndexPos][counter]);
+      if Thisrecord.Hash = address then
+      begin
+        Result := ThisRecord.Balance;
+        break;
+      end;
+    end;
+    LeaveCriticalSection(CS_SumIndex);
+  end;
+end;
 
 {Reset the block records}
-Procedure ResetBlockRecords();
-Begin
+procedure ResetBlockRecords();
+begin
   EnterCriticalSection(CS_BlockRecs);
-  SetLength(BlockRecords,0);
+  SetLength(BlockRecords, 0);
   LeaveCriticalSection(CS_BlockRecs);
-End;
+end;
 
 {Insert a block record}
-Procedure InsBlockRecord(LRecord:TSummaryData;SLot:int64);
-Begin
+procedure InsBlockRecord(LRecord: TSummaryData; SLot: Int64);
+begin
   EnterCriticalSection(CS_BlockRecs);
-  SetLength(BlockRecords,Length(BlockRecords)+1);
-  BlockRecords[Length(BlockRecords)-1].DiskSlot := SLot;
-  BlockRecords[Length(BlockRecords)-1].VRecord  := LRecord;
+  SetLength(BlockRecords, Length(BlockRecords) + 1);
+  BlockRecords[Length(BlockRecords) - 1].DiskSlot := SLot;
+  BlockRecords[Length(BlockRecords) - 1].VRecord := LRecord;
   LeaveCriticalSection(CS_BlockRecs);
-End;
+end;
 
 {Verify if a sender address have enough funds}
-Function SummaryValidPay(Address:string;amount,blocknumber:int64):boolean;
+function SummaryValidPay(Address: String; amount, blocknumber: Int64): Boolean;
 var
-  counter     : integer;
-  SendPos     : int64;
-  ThisRecord  : TSummaryData;
-Begin
+  counter: Integer;
+  SendPos: Int64;
+  ThisRecord: TSummaryData;
+begin
   Result := False;
   EnterCriticalSection(CS_BlockRecs);
   try
-    For counter := 0 to high(BlockRecords) do
+    for counter := 0 to high(BlockRecords) do
     begin
-    if BlockRecords[counter].VRecord.Hash = Address then
+      if BlockRecords[counter].VRecord.Hash = Address then
       begin
-      if BlockRecords[counter].VRecord.Balance<amount then Exit(false)
-      else
+        if BlockRecords[counter].VRecord.Balance < amount then Exit(False)
+        else
         begin
-        Dec(BlockRecords[counter].VRecord.Balance,amount);
-        BlockRecords[counter].VRecord.LastOP:=BlockNumber;
-        Exit(true);
+          Dec(BlockRecords[counter].VRecord.Balance, amount);
+          BlockRecords[counter].VRecord.LastOP := BlockNumber;
+          Exit(True);
         end;
       end;
     end;
   finally
     LeaveCriticalSection(CS_BlockRecs);
   end;
-  SendPos := GetIndexPosition(Address,ThisRecord);
-  If SendPos < 0 then exit(false)
+  SendPos := GetIndexPosition(Address, ThisRecord);
+  if SendPos < 0 then exit(False)
   else
-    begin
-    if ThisRecord.Balance<amount then Exit(false)
+  begin
+    if ThisRecord.Balance < amount then Exit(False)
     else
-      begin
-      Dec(ThisRecord.Balance,amount);
-      ThisRecord.LastOP:=Blocknumber;
-      InsBlockRecord(ThisRecord,sendpos);
-      Exit(true);
-      end;
+    begin
+      Dec(ThisRecord.Balance, amount);
+      ThisRecord.LastOP := Blocknumber;
+      InsBlockRecord(ThisRecord, sendpos);
+      Exit(True);
     end;
-End;
+  end;
+end;
 
-Procedure SummaryPay(Address:string;amount,blocknumber:int64);
+procedure SummaryPay(Address: String; amount, blocknumber: Int64);
 var
-  counter     : integer;
-  SendPos     : int64;
-  ThisRecord  : TSummaryData;
-Begin
+  counter: Integer;
+  SendPos: Int64;
+  ThisRecord: TSummaryData;
+begin
   EnterCriticalSection(CS_BlockRecs);
   try
-    For counter := 0 to high(BlockRecords) do
+    for counter := 0 to high(BlockRecords) do
     begin
-    if BlockRecords[counter].VRecord.Hash = Address then
+      if BlockRecords[counter].VRecord.Hash = Address then
       begin
-      Dec(BlockRecords[counter].VRecord.Balance,amount);
-      BlockRecords[counter].VRecord.LastOP:=BlockNumber;
-      Exit;
+        Dec(BlockRecords[counter].VRecord.Balance, amount);
+        BlockRecords[counter].VRecord.LastOP := BlockNumber;
+        Exit;
       end;
     end;
   finally
     LeaveCriticalSection(CS_BlockRecs);
   end;
-  SendPos := GetIndexPosition(Address,ThisRecord);
-  If SendPos < 0 then ThisRecord.Hash := address
+  SendPos := GetIndexPosition(Address, ThisRecord);
+  if SendPos < 0 then ThisRecord.Hash := address
   else
-    begin
-    Dec(ThisRecord.Balance,amount);
-    ThisRecord.LastOP:=Blocknumber;
-    InsBlockRecord(ThisRecord,sendpos);
+  begin
+    Dec(ThisRecord.Balance, amount);
+    ThisRecord.LastOP := Blocknumber;
+    InsBlockRecord(ThisRecord, sendpos);
     Exit;
-    end;
-End;
+  end;
+end;
 
 {Set an ammount to be credited to an specific address}
-Procedure CreditTo(Address:String;amount,blocknumber:int64);
+procedure CreditTo(Address: String; amount, blocknumber: Int64);
 var
-  counter     : integer;
-  SummPos     : int64;
-  ThisRecord  : TSummaryData;
-Begin
+  counter: Integer;
+  SummPos: Int64;
+  ThisRecord: TSummaryData;
+begin
   EnterCriticalSection(CS_BlockRecs);
   try
-    For counter := 0 to high(BlockRecords) do
-      begin
+    for counter := 0 to high(BlockRecords) do
+    begin
       if BlockRecords[counter].VRecord.Hash = Address then
-        begin
-        Inc(BlockRecords[counter].VRecord.Balance,amount);
-        BlockRecords[counter].VRecord.LastOP:=BlockNumber;
+      begin
+        Inc(BlockRecords[counter].VRecord.Balance, amount);
+        BlockRecords[counter].VRecord.LastOP := BlockNumber;
         Exit;
-        end;
       end;
+    end;
   finally
     LeaveCriticalSection(CS_BlockRecs);
   end;
-  SummPos := GetIndexPosition(Address,ThisRecord);
-  Inc(ThisRecord.Balance,amount);
-  ThisRecord.LastOP :=BlockNumber;
+  SummPos := GetIndexPosition(Address, ThisRecord);
+  Inc(ThisRecord.Balance, amount);
+  ThisRecord.LastOP := BlockNumber;
   if SummPos < 0 then ThisRecord.Hash := Address;
-  InsBlockRecord(ThisRecord,SummPos);
-End;
+  InsBlockRecord(ThisRecord, SummPos);
+end;
 
 {Process if an address customization is valid}
-Function IsCustomizacionValid(address,custom:string;blocknumber:int64;forceCustom:boolean = false):Boolean;
+function IsCustomizacionValid(address, custom: String; blocknumber: Int64;
+  forceCustom: Boolean = False): Boolean;
 var
-  counter     : integer;
-  SumPos     : int64;
-  ThisRecord  : TSummaryData;
-Begin
+  counter: Integer;
+  SumPos: Int64;
+  ThisRecord: TSummaryData;
+begin
   Result := False;
   EnterCriticalSection(CS_BlockRecs);
   try
-    For counter := 0 to high(BlockRecords) do
+    for counter := 0 to high(BlockRecords) do
+    begin
+      if BlockRecords[counter].VRecord.Hash = Address then
       begin
-      if BlockRecords[counter].VRecord.Hash=Address then
-        begin
-        if ((BlockRecords[counter].VRecord.Custom<> '') and (not forceCustom)) then exit(false);
-        if ((BlockRecords[counter].VRecord.Balance<25000) and (not forceCustom)) then Exit(false);
+        if ((BlockRecords[counter].VRecord.Custom <> '') and (not forceCustom)) then
+          exit(False);
+        if ((BlockRecords[counter].VRecord.Balance < 25000) and (not forceCustom)) then
+          Exit(False);
         BlockRecords[counter].VRecord.Custom := custom;
-        Dec(BlockRecords[counter].VRecord.Balance,25000);
-        exit(true);
-        end;
+        Dec(BlockRecords[counter].VRecord.Balance, 25000);
+        exit(True);
       end;
+    end;
   finally
     LeaveCriticalSection(CS_BlockRecs);
   end;
-  SumPos := GetIndexPosition(Address,ThisRecord);
+  SumPos := GetIndexPosition(Address, ThisRecord);
   if SumPos < 0 then Exit(False);
-  if ((ThisRecord.Balance<25000) and (not forceCustom)) then Exit(false);
-  if ((thisRecord.Custom<> '') and (not forceCustom)) then Exit(false);
-  ThisRecord.Custom:=custom;
-  Dec(ThisRecord.Balance,25000);
-  ThisRecord.LastOP:=BlockNumber;
-  InsBlockRecord(ThisRecord,SumPos);
-  Result := true;
-End;
+  if ((ThisRecord.Balance < 25000) and (not forceCustom)) then Exit(False);
+  if ((thisRecord.Custom <> '') and (not forceCustom)) then Exit(False);
+  ThisRecord.Custom := custom;
+  Dec(ThisRecord.Balance, 25000);
+  ThisRecord.LastOP := BlockNumber;
+  InsBlockRecord(ThisRecord, SumPos);
+  Result := True;
+end;
 
 {Process the changes of the block to the summary on disk}
-Procedure UpdateSummaryChanges();
+procedure UpdateSummaryChanges();
 var
-  counter     : integer;
-  SumFile     : file;
-Begin
-  AssignFile(SumFile,SummaryFileName);
+  counter: Integer;
+  SumFile: file;
+begin
+  AssignFile(SumFile, SummaryFileName);
   EnterCriticalSection(CS_SummaryDisk);
-    TRY
-    Reset(SumFile,1);
-      TRY
-      For counter := 0 to high(BlockRecords) do
+  try
+    Reset(SumFile, 1);
+    try
+      for counter := 0 to high(BlockRecords) do
+      begin
+        if BlockRecords[counter].DiskSlot < 0 then
         begin
-        if BlockRecords[counter].DiskSlot <0 then
-          begin
           BlockRecords[counter].DiskSlot := FileSize(SumFile) div Sizeof(TSummaryData);
-          InsertIndexData(BlockRecords[counter].VRecord,BlockRecords[counter].DiskSlot);
-          end;
-        seek(Sumfile,BlockRecords[counter].DiskSlot*(sizeof(TSummaryData)));
-        blockwrite(sumfile,BlockRecords[counter].VRecord,sizeof(TSummaryData));
+          InsertIndexData(BlockRecords[counter].VRecord, BlockRecords[counter].DiskSlot);
         end;
-      EXCEPT
-      END;{Try}
+        seek(Sumfile, BlockRecords[counter].DiskSlot * (sizeof(TSummaryData)));
+        blockwrite(sumfile, BlockRecords[counter].VRecord, sizeof(TSummaryData));
+      end;
+    except
+    end;{Try}
     CloseFile(SumFile);
-    EXCEPT
-    END;{Try}
+  except
+  end;{Try}
   LeaveCriticalSection(CS_SummaryDisk);
   SummaryLastop := ReadSumaryRecordFromDisk(0).LastOp;
   SetSummaryHash;
-End;
+end;
 
 {Returns the address alias name if exists}
-Function GetAddressAlias(Address:String):string;
+function GetAddressAlias(Address: String): String;
 var
-  sumpos  : int64;
-  LRecord : TSummaryData;
-Begin
+  sumpos: Int64;
+  LRecord: TSummaryData;
+begin
   Result := '';
-  sumpos := GetIndexPosition(Address,LRecord);
-  if ((sumpos>=0) and (LRecord.Custom <> '')) then result := LRecord.Custom;
-End;
+  sumpos := GetIndexPosition(Address, LRecord);
+  if ((sumpos >= 0) and (LRecord.Custom <> '')) then Result := LRecord.Custom;
+end;
 
 {Returns the address last operation block}
-Function GetAddressLastOP(Address:String):int64;
+function GetAddressLastOP(Address: String): Int64;
 var
-  sumpos  : int64;
-  LRecord : TSummaryData;
-Begin
+  sumpos: Int64;
+  LRecord: TSummaryData;
+begin
   Result := 0;
-  sumpos := GetIndexPosition(Address,LRecord);
-  if (sumpos>=0) then result := LRecord.LastOP;
-End;
+  sumpos := GetIndexPosition(Address, LRecord);
+  if (sumpos >= 0) then Result := LRecord.LastOP;
+end;
 
 {$ENDREGION}
 
-Procedure SetSummaryHash();
-Begin
+procedure SetSummaryHash();
+begin
   EnterCriticalSection(CS_SummaryHashV);
   SummaryHashValue := HashMD5File(SummaryFileName);
   LeaveCriticalSection(CS_SummaryHashV);
-End;
+end;
 
-Function MySumarioHash:String;
-Begin
+function MySumarioHash: String;
+begin
   EnterCriticalSection(CS_SummaryHashV);
   Result := SummaryHashValue;
   LeaveCriticalSection(CS_SummaryHashV);
-End;
+end;
 
-INITIALIZATION
-SetLength(SumaryIndex,0,0);
-SetLength(BlockRecords,0);
-InitCriticalSection(CS_SummaryDisk);
-InitCriticalSection(CS_BlockRecs);
-InitCriticalSection(CS_SummaryHashV);
-InitCriticalSection(CS_SumIndex);
+initialization
+  SetLength(SumaryIndex, 0, 0);
+  SetLength(BlockRecords, 0);
+  InitCriticalSection(CS_SummaryDisk);
+  InitCriticalSection(CS_BlockRecs);
+  InitCriticalSection(CS_SummaryHashV);
+  InitCriticalSection(CS_SumIndex);
 
-FINALIZATION
-DoneCriticalSection(CS_SummaryDisk);
-DoneCriticalSection(CS_BlockRecs);
-DoneCriticalSection(CS_SummaryHashV);
-DoneCriticalSection(CS_SumIndex);
+finalization
+  DoneCriticalSection(CS_SummaryDisk);
+  DoneCriticalSection(CS_BlockRecs);
+  DoneCriticalSection(CS_SummaryHashV);
+  DoneCriticalSection(CS_SumIndex);
 
-
-END. {End unit}
-
+end. {End unit}

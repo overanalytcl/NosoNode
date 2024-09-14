@@ -11,268 +11,276 @@ Stand alone unit to control headers file.
 interface
 
 uses
-  Classes, SysUtils, Nosodebug,nosocrypto, nosogeneral;
+  Classes, SysUtils, Nosodebug, nosocrypto, nosogeneral;
 
-Type
+type
 
-  ResumenData = Packed Record
-    block : integer;
-    blockhash : string[32];
-    SumHash : String[32];
+  ResumenData = packed record
+    block: Integer;
+    blockhash: String[32];
+    SumHash: String[32];
   end;
 
-Procedure SetResumenHash();
-function GetResumenHash():String;
-Function SetHeadersFileName(Filename:String):Boolean;
-Function CreateHeadersFile():boolean;
-Function AddRecordToHeaders(BlockNumber:int64;BlockHash,SumHash:String):boolean;
-Function RemoveHeadersLastRecord():Boolean;
-Function GetHeadersHeigth():integer;
-Function GetHeadersLastBlock():Integer;
-Function GetHeadersAsMemStream(var LMs:TMemoryStream):int64;
-Function SaveStreamAsHeaders(var LStream:TMemoryStream):Boolean;
-Function LastHeadersString(FromBlock:integer):String;
+procedure SetResumenHash();
+function GetResumenHash(): String;
+function SetHeadersFileName(Filename: String): Boolean;
+function CreateHeadersFile(): Boolean;
+function AddRecordToHeaders(BlockNumber: Int64; BlockHash, SumHash: String): Boolean;
+function RemoveHeadersLastRecord(): Boolean;
+function GetHeadersHeigth(): Integer;
+function GetHeadersLastBlock(): Integer;
+function GetHeadersAsMemStream(var LMs: TMemoryStream): Int64;
+function SaveStreamAsHeaders(var LStream: TMemoryStream): Boolean;
+function LastHeadersString(FromBlock: Integer): String;
 
 
 
 var
-  FileResumen     : file of ResumenData;
-  MyResumenHash   : String = '';
-  ResumenFilename : string = {'NOSODATA'+DirectorySeparator+}'blchhead.nos';
-  CS_HeadersFile  : TRTLCriticalSection;
+  FileResumen: file of ResumenData;
+  MyResumenHash: String = '';
+  ResumenFilename: String = {'NOSODATA'+DirectorySeparator+}'blchhead.nos';
+  CS_HeadersFile: TRTLCriticalSection;
 
-IMPLEMENTATION
+implementation
 
 {$REGION Headers file access}
 
 // Sets the hash value
-Procedure SetResumenHash();
-Begin
+procedure SetResumenHash();
+begin
   EnterCriticalSection(CS_HeadersFile);
   MyResumenHash := HashMD5File(ResumenFilename);
   LeaveCriticalSection(CS_HeadersFile);
-End;
+end;
 
 // Returns the hash of the file
-function GetResumenHash():String;
-Begin
+function GetResumenHash(): String;
+begin
   EnterCriticalSection(CS_HeadersFile);
-  result := MyResumenHash;
+  Result := MyResumenHash;
   LeaveCriticalSection(CS_HeadersFile);
-End;
+end;
 
 // Sets the headers file path and name
-Function SetHeadersFileName(Filename:String):Boolean;
-Begin
-  Result := true;
+function SetHeadersFileName(Filename: String): Boolean;
+begin
+  Result := True;
   ResumenFilename := Filename;
-  assignfile(FileResumen,ResumenFilename);
+  assignfile(FileResumen, ResumenFilename);
   if not Fileexists(ResumenFilename) then CreateEmptyFile(ResumenFilename);
   SetResumenHash();
-End;
+end;
 
 // Creates a headers file. If it already exists, rewrite a new empty one.
-Function CreateHeadersFile():boolean;
+function CreateHeadersFile(): Boolean;
 var
-  MyStream : TMemoryStream;
-Begin
+  MyStream: TMemoryStream;
+begin
   Result := True;
   MyStream := TMemoryStream.Create;
   EnterCriticalSection(CS_HeadersFile);
-  TRY
+  try
     MYStream.SaveToFile(ResumenFilename);
-  EXCEPT ON E:EXCEPTION DO
+  except
+    ON E: Exception do
     begin
-    Result := false;
-    ToDeepDeb('NosoHeaders,CreateHeadersFile,'+E.Message);
+      Result := False;
+      ToDeepDeb('NosoHeaders,CreateHeadersFile,' + E.Message);
     end;
-  END;
+  end;
   LeaveCriticalSection(CS_HeadersFile);
   MyStream.Free;
-End;
+end;
 
-Function AddRecordToHeaders(BlockNumber:int64;BlockHash,SumHash:String):boolean;
+function AddRecordToHeaders(BlockNumber: Int64; BlockHash, SumHash: String): Boolean;
 var
-  NewData        : ResumenData;
-  Opened         : boolean = false;
-  PorperlyClosed : boolean = false;
-Begin
-  Result := true;
-  NewData           := Default(ResumenData);
-  NewData.block     := BlockNumber;
+  NewData: ResumenData;
+  Opened: Boolean = False;
+  PorperlyClosed: Boolean = False;
+begin
+  Result := True;
+  NewData := Default(ResumenData);
+  NewData.block := BlockNumber;
   NewData.blockhash := BlockHash;
-  NewData.SumHash   := SumHash;
+  NewData.SumHash := SumHash;
   filemode := 2;
   EnterCriticalSection(CS_HeadersFile);
-  TRY
+  try
     reset(FileResumen);
-    Opened := true;
-    seek(fileResumen,filesize(fileResumen));
-    write(fileResumen,NewData);
+    Opened := True;
+    seek(fileResumen, filesize(fileResumen));
+    Write(fileResumen, NewData);
     closefile(FileResumen);
-    PorperlyClosed := true;
-  EXCEPT ON E:EXCEPTION DO
+    PorperlyClosed := True;
+  except
+    ON E: Exception do
     begin
-    ToDeepDeb('NosoHeaders,AddRecordToHeaders,'+E.Message);
-    Result := false;
+      ToDeepDeb('NosoHeaders,AddRecordToHeaders,' + E.Message);
+      Result := False;
     end;
-  END;
-  if ( (opened) and (not PorperlyClosed) ) then closefile(FileResumen);
+  end;
+  if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
   LeaveCriticalSection(CS_HeadersFile);
-End;
+end;
 
-Function RemoveHeadersLastRecord():Boolean;
+function RemoveHeadersLastRecord(): Boolean;
 var
-  Opened         : boolean = false;
-  PorperlyClosed : boolean = false;
-Begin
-  Result := true;
+  Opened: Boolean = False;
+  PorperlyClosed: Boolean = False;
+begin
+  Result := True;
   filemode := 2;
   EnterCriticalSection(CS_HeadersFile);
-  TRY
+  try
     reset(FileResumen);
-    Opened := true;
-    seek(fileResumen,filesize(fileResumen)-1);
+    Opened := True;
+    seek(fileResumen, filesize(fileResumen) - 1);
     truncate(fileResumen);
     closefile(FileResumen);
-    PorperlyClosed := true;
-  EXCEPT ON E:EXCEPTION DO
+    PorperlyClosed := True;
+  except
+    ON E: Exception do
     begin
-    ToDeepDeb('NosoHeaders,RemoveHeadersLastRecord,'+E.Message);
-    Result := false;
+      ToDeepDeb('NosoHeaders,RemoveHeadersLastRecord,' + E.Message);
+      Result := False;
     end;
-  END;
-  if ( (opened) and (not PorperlyClosed) ) then closefile(FileResumen);
+  end;
+  if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
   LeaveCriticalSection(CS_HeadersFile);
-End;
+end;
 
-Function GetHeadersHeigth():integer;
+function GetHeadersHeigth(): Integer;
 var
-  Opened         : boolean = false;
-  PorperlyClosed : boolean = false;
-Begin
+  Opened: Boolean = False;
+  PorperlyClosed: Boolean = False;
+begin
   Result := -1;
   EnterCriticalSection(CS_HeadersFile);
-  TRY
+  try
     reset(FileResumen);
-    Opened := true;
-    Result := filesize(fileResumen)-1;
+    Opened := True;
+    Result := filesize(fileResumen) - 1;
     closefile(FileResumen);
-    PorperlyClosed := true;
-  EXCEPT on E:Exception do
+    PorperlyClosed := True;
+  except
+    on E: Exception do
     begin
-    ToDeepDeb('NosoHeaders,GetHeadersHeigth,'+E.Message);
+      ToDeepDeb('NosoHeaders,GetHeadersHeigth,' + E.Message);
     end;
-  END;
-  if ( (opened) and (not PorperlyClosed) ) then closefile(FileResumen);
+  end;
+  if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
   LeaveCriticalSection(CS_HeadersFile);
-End;
+end;
 
 // Returns the block number of the last record on headers
-Function GetHeadersLastBlock():Integer;
+function GetHeadersLastBlock(): Integer;
 var
-  ThisData : ResumenData;
-  Opened         : boolean = false;
-  PorperlyClosed : boolean = false;
-Begin
+  ThisData: ResumenData;
+  Opened: Boolean = False;
+  PorperlyClosed: Boolean = False;
+begin
   Result := 0;
   ThisData := Default(ResumenData);
   EnterCriticalSection(CS_HeadersFile);
-  TRY
+  try
     reset(FileResumen);
-    Opened := true;
-    if filesize(FileResumen)>0 then
-      begin
-      seek(fileResumen,filesize(FileResumen)-1);
-      Read(fileResumen,ThisData);
-      result := ThisData.block;
-      end;
-    CloseFile(FileResumen);
-    PorperlyClosed := true;
-  EXCEPT on E:Exception do
+    Opened := True;
+    if filesize(FileResumen) > 0 then
     begin
-    ToDeepDeb('NosoHeaders,GetHeadersLastBlock,'+E.Message);
+      seek(fileResumen, filesize(FileResumen) - 1);
+      Read(fileResumen, ThisData);
+      Result := ThisData.block;
     end;
-  END;
-  if ( (opened) and (not PorperlyClosed) ) then closefile(FileResumen);
+    CloseFile(FileResumen);
+    PorperlyClosed := True;
+  except
+    on E: Exception do
+    begin
+      ToDeepDeb('NosoHeaders,GetHeadersLastBlock,' + E.Message);
+    end;
+  end;
+  if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
   LeaveCriticalSection(CS_HeadersFile);
-End;
+end;
 
 // Returns the headers file as a STREAM
-Function GetHeadersAsMemStream(var LMs:TMemoryStream):int64;
-Begin
+function GetHeadersAsMemStream(var LMs: TMemoryStream): Int64;
+begin
   Result := 0;
   BeginPerformance('GetHeadersAsMemStream');
   EnterCriticalSection(CS_HeadersFile);
-    TRY
-      LMs.LoadFromFile(ResumenFilename);
-      result:= LMs.Size;
-      LMs.Position:=0;
-    EXCEPT ON E:Exception do
-      begin
-      ToDeepDeb('NosoHeaders,GetHeadersAsMemStream,'+E.Message);
-      end;
-    END;
+  try
+    LMs.LoadFromFile(ResumenFilename);
+    Result := LMs.Size;
+    LMs.Position := 0;
+  except
+    ON E: Exception do
+    begin
+      ToDeepDeb('NosoHeaders,GetHeadersAsMemStream,' + E.Message);
+    end;
+  end;
   LeaveCriticalSection(CS_HeadersFile);
   EndPerformance('GetHeadersAsMemStream');
-End;
+end;
 
 // Save a provided stream as the headers file
-Function SaveStreamAsHeaders(var LStream:TMemoryStream):Boolean;
-Begin
-  result := false;
+function SaveStreamAsHeaders(var LStream: TMemoryStream): Boolean;
+begin
+  Result := False;
   EnterCriticalSection(CS_HeadersFile);
-    TRY
+  try
     LStream.SaveToFile(ResumenFilename);
-    Result := true;
-    EXCEPT ON E:Exception do
-      begin
-      ToDeepDeb('NosoHeaders,SaveStreamAsHeaders,'+E.Message);
-      end;
-    END{Try};
+    Result := True;
+  except
+    ON E: Exception do
+    begin
+      ToDeepDeb('NosoHeaders,SaveStreamAsHeaders,' + E.Message);
+    end;
+  end{Try};
   LeaveCriticalSection(CS_HeadersFile);
-End;
+end;
 
 // Returns the string for headers updates
-Function LastHeadersString(FromBlock:integer):String;
+function LastHeadersString(FromBlock: Integer): String;
 var
-  ThisData : ResumenData;
-  Opened         : boolean = false;
-  PorperlyClosed : boolean = false;
-Begin
-  result := '';
-  if FromBlock<GetHeadersLastBlock-1008 then exit;
+  ThisData: ResumenData;
+  Opened: Boolean = False;
+  PorperlyClosed: Boolean = False;
+begin
+  Result := '';
+  if FromBlock < GetHeadersLastBlock - 1008 then exit;
   EnterCriticalSection(CS_HeadersFile);
-  TRY
+  try
     reset(FileResumen);
-    Opened := true;
+    Opened := True;
     ThisData := Default(ResumenData);
-    seek(fileResumen,FromBlock-100);
-    While not Eof(fileResumen) do
-      begin
-      Read(fileResumen,ThisData);
-      Result := Result+ThisData.block.ToString+':'+ThisData.blockhash+':'+ThisData.SumHash+' ';
-      end;
-    closefile(FileResumen);
-    PorperlyClosed := true;
-  EXCEPT on E:Exception do
+    seek(fileResumen, FromBlock - 100);
+    while not EOF(fileResumen) do
     begin
-    ToDeepDeb('NosoHeaders,LastHeadersString,'+E.Message);
+      Read(fileResumen, ThisData);
+      Result := Result + ThisData.block.ToString + ':' + ThisData.blockhash +
+        ':' + ThisData.SumHash + ' ';
     end;
-  END;
+    closefile(FileResumen);
+    PorperlyClosed := True;
+  except
+    on E: Exception do
+    begin
+      ToDeepDeb('NosoHeaders,LastHeadersString,' + E.Message);
+    end;
+  end;
   //if ( (opened) and (not PorperlyClosed) ) then closefile(FileResumen);
   LeaveCriticalSection(CS_HeadersFile);
   Result := Trim(Result);
-End;
+end;
 
 {$ENDREGION}
 
-INITIALIZATION
-InitCriticalSection(CS_HeadersFile);
-assignfile(FileResumen,ResumenFilename);
+initialization
+  InitCriticalSection(CS_HeadersFile);
+  assignfile(FileResumen, ResumenFilename);
 
-FINALIZATION
-DoneCriticalSection(CS_HeadersFile);
+finalization
+  DoneCriticalSection(CS_HeadersFile);
 
-END.
-
+end.

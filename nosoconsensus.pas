@@ -9,434 +9,444 @@ Requires: nosodebug, nosotime, nosogeneral
 
 {$mode ObjFPC}{$H+}
 
-INTERFACE
+interface
 
 uses
   Classes, SysUtils, strutils,
   nosodebug, nosotime, nosogeneral, nosocrypto;
 
-Type
+type
 
   TThreadNodeStatus = class(TThread)
-    private
-      Slot: Integer;
-    protected
-      procedure Execute; override;
-    public
-      constructor Create(const CreatePaused: Boolean;TSlot:Integer);
-    end;
+  private
+    Slot: Integer;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(const CreatePaused: Boolean; TSlot: Integer);
+  end;
 
   TThreadAutoConsensus = class(TThread)
-    protected
-      Procedure Execute; override;
-    public
-      Constructor Create(CreateSuspended : boolean);
-    end;
+  protected
+    procedure Execute; override;
+  public
+    constructor Create(CreateSuspended: Boolean);
+  end;
 
-  TConsensus = array of string[32];
+  TConsensus = array of String[32];
 
   TNodeConsensus = record
-    host    : string;
-    port    : integer;
-    Data    : string;
-    ConStr  : string[32];
-    Block   : integer;
-    Peers   : integer;
-    end;
+    host: String;
+    port: Integer;
+    Data: String;
+    ConStr: String[32];
+    Block: Integer;
+    Peers: Integer;
+  end;
 
   TConsensusData = record
-    Value : string;
-    count : integer;
-    end;
+    Value: String;
+    Count: Integer;
+  end;
 
-Function OpenThreadsValue():integer;
+function OpenThreadsValue(): Integer;
 
-Function CalculateConsensus(NodesList:string = ''):TConsensus;
-Function GetConsensus(LData : integer = 0): string;
-Function GetRandonNode():String;
-Function GetConHash(ILine:String):String;
-Procedure SetNodesArray(NodesList:string);
-Function GetNodesArrayIndex(LIndex:integer):TNodeConsensus;
-Function GetNodesArrayCount():Integer;
+function CalculateConsensus(NodesList: String = ''): TConsensus;
+function GetConsensus(LData: Integer = 0): String;
+function GetRandonNode(): String;
+function GetConHash(ILine: String): String;
+procedure SetNodesArray(NodesList: String);
+function GetNodesArrayIndex(LIndex: Integer): TNodeConsensus;
+function GetNodesArrayCount(): Integer;
 
-Procedure StartAutoConsensus();
-Procedure StopAutoConsensus();
+procedure StartAutoConsensus();
+procedure StopAutoConsensus();
 
-Const
+const
   cLastBlock = 2;
-  cHeaders   = 5;
-  cMNsHash   = 8;
-  cMNsCount  = 9;
-  cLBHash    = 10;
+  cHeaders = 5;
+  cMNsHash = 8;
+  cMNsCount = 9;
+  cLBHash = 10;
   cLBTimeEnd = 12;
-  cSumHash   = 17;
-  cGVTsHash  = 18;
-  cCFGHash   = 19;
+  cSumHash = 17;
+  cGVTsHash = 18;
+  cCFGHash = 19;
 
 var
-  Consensus : TConsensus;
-  NConsensus : array[0..20] of string = ({0}'Resume','Peers','LBlock','Pending','Delta',
-                                         {5}'Headers','Version','UTCTime','MNsHash','MNsCount',
-                                         {10}'LBHash','BestDiff','LBTimeEnd','LBMiner','ChecksCount',
-                                         {15}'LBPoW','LBDiff','Summary','GVTs','NosoCFG',
-                                         {20}'PSOHash');
-  Css_TotalNodes    : integer = 0;
-  Css_ReachedNodes  : integer = 0;
-  Css_ValidNodes    : Integer = 0;
-  Css_Percentage    : Integer = 0;
-  Css_Completed     : boolean = false;
-  LastConsensusTime : int64 = 0;
+  Consensus: TConsensus;
+  NConsensus: array[0..20] of
+  String = ({0}'Resume', 'Peers', 'LBlock', 'Pending', 'Delta',
+    {5}'Headers', 'Version', 'UTCTime', 'MNsHash', 'MNsCount',
+    {10}'LBHash', 'BestDiff', 'LBTimeEnd', 'LBMiner', 'ChecksCount',
+    {15}'LBPoW', 'LBDiff', 'Summary', 'GVTs', 'NosoCFG',
+    {20}'PSOHash');
+  Css_TotalNodes: Integer = 0;
+  Css_ReachedNodes: Integer = 0;
+  Css_ValidNodes: Integer = 0;
+  Css_Percentage: Integer = 0;
+  Css_Completed: Boolean = False;
+  LastConsensusTime: Int64 = 0;
 
-IMPLEMENTATION
+implementation
 
 var
-  NodesArray        : array of TNodeConsensus;
-  CSNodesArray      : TRTLCriticalSection;
-  OpenThreads       : integer;
-  ReachedNodes      : integer;
-  CSOpenThreads     : TRTLCriticalSection;
-  CSConsensus       : TRTLCriticalSection;
-  KeepAutoCon       : Boolean = false;
-  RunningConsensus  : boolean = false;
-  ActiveRound       : int64 = 0;
+  NodesArray: array of TNodeConsensus;
+  CSNodesArray: TRTLCriticalSection;
+  OpenThreads: Integer;
+  ReachedNodes: Integer;
+  CSOpenThreads: TRTLCriticalSection;
+  CSConsensus: TRTLCriticalSection;
+  KeepAutoCon: Boolean = False;
+  RunningConsensus: Boolean = False;
+  ActiveRound: Int64 = 0;
 
-{$REGION Thread auto update}
+  {$REGION Thread auto update}
 
-Procedure StartAutoConsensus();
+procedure StartAutoConsensus();
 var
-  AutoThread : TThreadAutoConsensus;
-Begin
+  AutoThread: TThreadAutoConsensus;
+begin
   if KeepAutoCon then exit;
-  Keepautocon := true;
-  AutoThread := TThreadAutoConsensus.Create(true);
-  AutoThread.FreeOnTerminate:=true;
+  Keepautocon := True;
+  AutoThread := TThreadAutoConsensus.Create(True);
+  AutoThread.FreeOnTerminate := True;
   AutoThread.Start;
-End;
+end;
 
-Procedure StopAutoConsensus();
-Begin
-  Keepautocon := false;
-End;
+procedure StopAutoConsensus();
+begin
+  Keepautocon := False;
+end;
 
-Constructor TThreadAutoConsensus.Create(CreateSuspended : boolean);
-Begin
+constructor TThreadAutoConsensus.Create(CreateSuspended: Boolean);
+begin
   inherited Create(CreateSuspended);
-End;
+end;
 
-Procedure TThreadAutoConsensus.Execute;
-Begin
-  Repeat
-    if ((BlockAge>=0) and (BlockAge<5)) then LastConsensusTime := 0;
-    if ( ((BlockAge>=5) and (BlockAge<585)) and (LastConsensusTime+60<UTCTime) )then
-      begin
+procedure TThreadAutoConsensus.Execute;
+begin
+  repeat
+    if ((BlockAge >= 0) and (BlockAge < 5)) then LastConsensusTime := 0;
+    if (((BlockAge >= 5) and (BlockAge < 585)) and
+      (LastConsensusTime + 60 < UTCTime)) then
+    begin
       LastConsensusTime := UTCTime;
       CalculateConsensus();
-      end;
+    end;
     Sleep(100);
-  until ((terminated) or (Not KeepAutoCon));
-End;
+  until ((terminated) or (not KeepAutoCon));
+end;
 
 {$ENDREGION}
 
 {$REGION Open threads}
 
-Procedure DecOpenThreads(Reached : boolean);
-Begin
+procedure DecOpenThreads(Reached: Boolean);
+begin
   EnterCriticalSection(CSOpenThreads);
   Dec(OpenThreads);
   if reached then Inc(ReachedNodes);
   LeaveCriticalSection(CSOpenThreads);
-End;
+end;
 
-Function OpenThreadsValue():integer;
-Begin
+function OpenThreadsValue(): Integer;
+begin
   EnterCriticalSection(CSOpenThreads);
   Result := OpenThreads;
   LeaveCriticalSection(CSOpenThreads);
-End;
+end;
 
-Function GetNodeIndex(index:integer):TNodeConsensus;
-Begin
+function GetNodeIndex(index: Integer): TNodeConsensus;
+begin
   EnterCriticalSection(CSNodesArray);
   Result := NodesArray[index];
   LeaveCriticalSection(CSNodesArray);
-End;
+end;
 
 {$ENDREGION}
 
 {$REGION Thread consulting node}
 
-Constructor TThreadNodeStatus.Create(const CreatePaused: Boolean; TSlot:Integer);
-Begin
+constructor TThreadNodeStatus.Create(const CreatePaused: Boolean; TSlot: Integer);
+begin
   inherited Create(CreatePaused);
   Slot := TSlot;
   FreeOnTerminate := True;
-End;
+end;
 
-Procedure TThreadNodeStatus.Execute;
+procedure TThreadNodeStatus.Execute;
 var
-  ThisNode   : TNodeConsensus;
-  ReadedLine : string;
-  Reached    : boolean = false;
-  ConHash    : string = '';
-  MyRound    : int64;
-Begin
+  ThisNode: TNodeConsensus;
+  ReadedLine: String;
+  Reached: Boolean = False;
+  ConHash: String = '';
+  MyRound: Int64;
+begin
   MyRound := ActiveRound;
   ThisNode := GetNodeIndex(slot);
-  ReadedLine := RequestLineToPeer(ThisNode.host,ThisNode.port,'NODESTATUS');
-  if copy(ReadedLine,1,10) = 'NODESTATUS' then
-    begin
+  ReadedLine := RequestLineToPeer(ThisNode.host, ThisNode.port, 'NODESTATUS');
+  if copy(ReadedLine, 1, 10) = 'NODESTATUS' then
+  begin
     ConHash := GetConHash(ReadedLine);
-    ReadedLine := StringReplace(ReadedLine,'NODESTATUS',ConHash,[rfReplaceAll, rfIgnoreCase]);
-    ThisNode.Data:= ReadedLine;
-    ThisNode.ConStr:=ConHash;
-    ThisNode.Peers:=StrToIntDef(Parameter(ReadedLine,1),0);
-    ThisNode.Block:=StrToIntDef(Parameter(ReadedLine,2),0);
-    reached := true;
-    end
+    ReadedLine := StringReplace(ReadedLine, 'NODESTATUS', ConHash,
+      [rfReplaceAll, rfIgnoreCase]);
+    ThisNode.Data := ReadedLine;
+    ThisNode.ConStr := ConHash;
+    ThisNode.Peers := StrToIntDef(Parameter(ReadedLine, 1), 0);
+    ThisNode.Block := StrToIntDef(Parameter(ReadedLine, 2), 0);
+    reached := True;
+  end
   else
-    begin
-    ThisNode.Data:= '';
-    ThisNode.ConStr:='';
-    ThisNode.Peers:= 0;
-    ThisNode.Block:= 0;
-    end;
+  begin
+    ThisNode.Data := '';
+    ThisNode.ConStr := '';
+    ThisNode.Peers := 0;
+    ThisNode.Block := 0;
+  end;
   if MyRound = ActiveRound then
-    begin
+  begin
     EnterCriticalSection(CSNodesArray);
     NodesArray[slot] := ThisNode;
     LeaveCriticalSection(CSNodesArray);
     DecOpenThreads(Reached);
-    end;
-End;
+  end;
+end;
 
 {$ENDREGION}
 
-Function GetConHash(ILine:String):String;
-Begin
+function GetConHash(ILine: String): String;
+begin
   Result := '';
-  Result := HashMD5String(Parameter(ILine,2)+copy(Parameter(ILine,5),0,5)+copy(Parameter(ILine,8),0,5)+
-                          copy(Parameter(ILine,10),0,5)+copy(Parameter(ILine,17),0,5)+
-                          copy(Parameter(ILine,18),0,5)+copy(Parameter(ILine,19),0,5));
-End;
+  Result := HashMD5String(Parameter(ILine, 2) + copy(Parameter(ILine, 5), 0, 5) +
+    copy(Parameter(ILine, 8), 0, 5) + copy(Parameter(ILine, 10), 0, 5) +
+    copy(Parameter(ILine, 17), 0, 5) + copy(Parameter(ILine, 18), 0, 5) +
+    copy(Parameter(ILine, 19), 0, 5));
+end;
 
 {Gets a random ip and port node}
-Function GetRandonNode():String;
+function GetRandonNode(): String;
 var
-  LNumber : integer;
-Begin
-  result := '';
+  LNumber: Integer;
+begin
+  Result := '';
   EnterCriticalSection(CSNodesArray);
   LNumber := random(length(NodesArray));
-  Result := Format('%s %d',[NodesArray[LNumber].host,NodesArray[LNumber].port]);
+  Result := Format('%s %d', [NodesArray[LNumber].host, NodesArray[LNumber].port]);
   LeaveCriticalSection(CSNodesArray);
-End;
+end;
 
 {Set the values for the array of nodes}
-Procedure SetNodesArray(NodesList:string);
+procedure SetNodesArray(NodesList: String);
 var
-  counter : integer;
-  MyArray : array of string;
-Begin
-  Repeat
+  counter: Integer;
+  MyArray: array of String;
+begin
+  repeat
     sleep(5);
   until not RunningConsensus;
-  setlength(NodesArray,0);
-  NodesList := Trim(StringReplace(NodesList,':',' ',[rfReplaceAll, rfIgnoreCase]));
-  MyArray := SplitString(NodesList,' ');
+  setlength(NodesArray, 0);
+  NodesList := Trim(StringReplace(NodesList, ':', ' ', [rfReplaceAll, rfIgnoreCase]));
+  MyArray := SplitString(NodesList, ' ');
   EnterCriticalSection(CSNodesArray);
   for counter := 0 to high(MyArray) do
-    begin
-    MyArray[counter] := StringReplace(MyArray[counter],';',' ',[rfReplaceAll, rfIgnoreCase]);
-    Setlength(NodesArray,length(NodesArray)+1);
-    NodesArray[length(NodesArray)-1].host   := Parameter(MyArray[counter],0) ;
-    NodesArray[length(NodesArray)-1].port   := StrToIntDef(Parameter(MyArray[counter],1),8080);
-    NodesArray[length(NodesArray)-1].data   := '';
-    NodesArray[length(NodesArray)-1].ConStr := '';
-    NodesArray[length(NodesArray)-1].Block  := 0;
-    NodesArray[length(NodesArray)-1].peers  := 0;
-    end;
+  begin
+    MyArray[counter] := StringReplace(MyArray[counter], ';', ' ',
+      [rfReplaceAll, rfIgnoreCase]);
+    Setlength(NodesArray, length(NodesArray) + 1);
+    NodesArray[length(NodesArray) - 1].host := Parameter(MyArray[counter], 0);
+    NodesArray[length(NodesArray) - 1].port :=
+      StrToIntDef(Parameter(MyArray[counter], 1), 8080);
+    NodesArray[length(NodesArray) - 1].Data := '';
+    NodesArray[length(NodesArray) - 1].ConStr := '';
+    NodesArray[length(NodesArray) - 1].Block := 0;
+    NodesArray[length(NodesArray) - 1].peers := 0;
+  end;
   LeaveCriticalSection(CSNodesArray);
   LastConsensusTime := 0;
-End;
+end;
 
-Function GetNodesArrayIndex(LIndex:integer):TNodeConsensus;
-Begin
-  result := default(TNodeConsensus);
+function GetNodesArrayIndex(LIndex: Integer): TNodeConsensus;
+begin
+  Result := default(TNodeConsensus);
   EnterCriticalSection(CSNodesArray);
   if LIndex < length(NodesArray) then
-    result := NodesArray[LIndex];
+    Result := NodesArray[LIndex];
   LeaveCriticalSection(CSNodesArray);
-End;
+end;
 
-Function GetNodesArrayCount():Integer;
-Begin
+function GetNodesArrayCount(): Integer;
+begin
   EnterCriticalSection(CSNodesArray);
   Result := length(NodesArray);
   LeaveCriticalSection(CSNodesArray);
-End;
+end;
 
-Function CalculateConsensus(NodesList:string = ''):TConsensus;
+function CalculateConsensus(NodesList: String = ''): TConsensus;
 var
-  counter     : integer;
-  count2      : integer;
-  ParamNumber : integer = 1;
-  ThisThread  : TThreadNodeStatus;
-  isFinished  : boolean = false;
-  ArrayCon    : array of TConsensusData;
-  ThisHigh    : string;
-  ConHash     : string;
-  ValidNodes  : integer = 0;
-  EndTime   : int64;
+  counter: Integer;
+  count2: Integer;
+  ParamNumber: Integer = 1;
+  ThisThread: TThreadNodeStatus;
+  isFinished: Boolean = False;
+  ArrayCon: array of TConsensusData;
+  ThisHigh: String;
+  ConHash: String;
+  ValidNodes: Integer = 0;
+  EndTime: Int64;
 
-  Procedure AddValue(Tvalue:String);
+  procedure AddValue(Tvalue: String);
   var
-    counter   : integer;
-    ThisItem  : TConsensusData;
-  Begin
-    for counter := 0 to length(ArrayCon)-1 do
-      begin
+    counter: Integer;
+    ThisItem: TConsensusData;
+  begin
+    for counter := 0 to length(ArrayCon) - 1 do
+    begin
       if Tvalue = ArrayCon[counter].Value then
-        begin
-        ArrayCon[counter].count+=1;
-        Exit;
-        end;
-      end;
-  ThisItem.Value:=Tvalue;
-  ThisItem.count:=1;
-  Insert(ThisITem,ArrayCon,length(ArrayCon));
-  End;
-
-  Function GetHighest():string;
-  var
-    maximum : integer = 0;
-    counter : integer;
-    MaxIndex : integer = 0;
-  Begin
-    result := '';
-    if length(ArrayCon) > 0 then
       begin
-      for counter := 0 to high(ArrayCon) do
-        begin
-        if ArrayCon[counter].count> maximum then
-          begin
-          maximum := ArrayCon[counter].count;
-          MaxIndex := counter;
-          end;
-        end;
-      result := ArrayCon[MaxIndex].Value;
+        ArrayCon[counter].Count += 1;
+        Exit;
       end;
-  End;
-Begin
+    end;
+    ThisItem.Value := Tvalue;
+    ThisItem.Count := 1;
+    Insert(ThisITem, ArrayCon, length(ArrayCon));
+  end;
+
+  function GetHighest(): String;
+  var
+    maximum: Integer = 0;
+    counter: Integer;
+    MaxIndex: Integer = 0;
+  begin
+    Result := '';
+    if length(ArrayCon) > 0 then
+    begin
+      for counter := 0 to high(ArrayCon) do
+      begin
+        if ArrayCon[counter].Count > maximum then
+        begin
+          maximum := ArrayCon[counter].Count;
+          MaxIndex := counter;
+        end;
+      end;
+      Result := ArrayCon[MaxIndex].Value;
+    end;
+  end;
+
+begin
   BeginPerformance('CalculateConsensus');
-  RunningConsensus := true;
-  SetLength(Result,0);
+  RunningConsensus := True;
+  SetLength(Result, 0);
   if NodesList <> '' then SetNodesArray(NodesList);
   OpenThreads := length(NodesArray);
   ReachedNodes := 0;
   ActiveRound := UTCTime;
   for counter := 0 to high(NodesArray) do
-    begin
-    ThisThread := TThreadNodeStatus.Create(True,counter);
-    ThisThread.FreeOnTerminate:=true;
+  begin
+    ThisThread := TThreadNodeStatus.Create(True, counter);
+    ThisThread.FreeOnTerminate := True;
     ThisThread.Start;
     Sleep(5);
-    end;
-  EndTime := UTCTime+5;
-  Repeat
+  end;
+  EndTime := UTCTime + 5;
+  repeat
     sleep(5);
-  until ( (OpenThreadsValue<= 0) or (UTCTime >= EndTime) );
+  until ((OpenThreadsValue <= 0) or (UTCTime >= EndTime));
   ActiveRound := 0;
   // Get the consensus hash
-  SetLength(ArrayCon,0);
+  SetLength(ArrayCon, 0);
   for counter := 0 to high(NodesArray) do
-    begin
-    if Parameter(NodesArray[counter].Data,0) <> '' then
-      AddValue(Parameter(NodesArray[counter].Data,0));
-    end;
+  begin
+    if Parameter(NodesArray[counter].Data, 0) <> '' then
+      AddValue(Parameter(NodesArray[counter].Data, 0));
+  end;
   ConHash := GetHighest;
   if conhash = '' then
+  begin
+    for count2 := 0 to length(NConsensus) - 1 do
     begin
-    for count2 := 0 to length(NConsensus)-1 do
-      begin
-      insert('',result,0);
-      end;
+      insert('', Result, 0);
+    end;
     Css_TotalNodes := length(NodesArray);
     Css_ReachedNodes := Reachednodes;
     Css_ValidNodes := ValidNodes;
-    if ReachedNodes >0 then Css_Percentage := (ValidNodes * 100) div ReachedNodes
-    else Css_Percentage := 0;
+    if ReachedNodes > 0 then Css_Percentage := (ValidNodes * 100) div ReachedNodes
+    else
+      Css_Percentage := 0;
     EnterCriticalSection(CSConsensus);
-    setlength(consensus,0);
-    Consensus := copy(result,0,length(result));
+    setlength(consensus, 0);
+    Consensus := copy(Result, 0, length(Result));
     LeaveCriticalSection(CSConsensus);
-    Css_Completed := false;
-    RunningConsensus := false;
-    Dec(LastConsensusTime,50);
+    Css_Completed := False;
+    RunningConsensus := False;
+    Dec(LastConsensusTime, 50);
     EndPerformance('CalculateConsensus');
     exit;
-    end;
-  insert(ConHash,result,0);
+  end;
+  insert(ConHash, Result, 0);
   // Fill the consensus
-  Repeat
-    SetLength(ArrayCon,0);
+  repeat
+    SetLength(ArrayCon, 0);
     for counter := 0 to high(NodesArray) do
+    begin
+      if Parameter(NodesArray[counter].Data, 0) = ConHash then
       begin
-      if Parameter(NodesArray[counter].Data,0) = ConHash then
-        begin
-        AddValue(Parameter(NodesArray[counter].Data,paramnumber));
+        AddValue(Parameter(NodesArray[counter].Data, paramnumber));
         if ParamNumber = 1 then Inc(ValidNodes);
-        end;
       end;
+    end;
     ThisHigh := GetHighest;
-    if thishigh = '' then isFinished := true
-    else insert(ThisHigh,result,length(Result));
+    if thishigh = '' then isFinished := True
+    else
+      insert(ThisHigh, Result, length(Result));
     Inc(ParamNumber);
   until isFinished;
   Css_TotalNodes := length(NodesArray);
   Css_ReachedNodes := Reachednodes;
   Css_ValidNodes := ValidNodes;
-  if ReachedNodes >0 then Css_Percentage := (ValidNodes * 100) div ReachedNodes
-  else Css_Percentage := 0;
+  if ReachedNodes > 0 then Css_Percentage := (ValidNodes * 100) div ReachedNodes
+  else
+    Css_Percentage := 0;
   //if StrToIntDef(result[cLastBlock],0) >= StrToIntDef(Consensus[cLastBlock],0) then
-    //begin
-    EnterCriticalSection(CSConsensus);
-    setlength(consensus,0);
-    Consensus := copy(result,0,length(result));
-    LeaveCriticalSection(CSConsensus);
-    //end;
+  //begin
+  EnterCriticalSection(CSConsensus);
+  setlength(consensus, 0);
+  Consensus := copy(Result, 0, length(Result));
+  LeaveCriticalSection(CSConsensus);
+  //end;
 
-  Css_Completed := true;
-  RunningConsensus := false;
+  Css_Completed := True;
+  RunningConsensus := False;
   EndPerformance('CalculateConsensus');
-End;
+end;
 
-Function GetConsensus(LData : integer = 0): string;
-Begin
+function GetConsensus(LData: Integer = 0): String;
+begin
   Result := '';
   EnterCriticalSection(CSConsensus);
-  TRY
+  try
     Result := Consensus[LData];
-  EXCEPT on E:Exception do
+  except
+    on E: Exception do
     begin
 
     end;
-  END;
+  end;
   LeaveCriticalSection(CSConsensus);
-End;
+end;
 
-INITIALIZATION
+initialization
   Randomize;
-  setlength(NodesArray,0);
+  setlength(NodesArray, 0);
   InitCriticalSection(CSNodesArray);
   InitCriticalSection(CSOpenThreads);
   InitCriticalSection(CSConsensus);
 
 
-FINALIZATION
+finalization
   DoneCriticalSection(CSNodesArray);
   DoneCriticalSection(CSOpenThreads);
   DoneCriticalSection(CSConsensus);
 
-END. {END UNIT}
-
+end. {END UNIT}

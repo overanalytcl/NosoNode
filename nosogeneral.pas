@@ -1,4 +1,4 @@
-UNIT nosogeneral;
+unit nosogeneral;
 
 {
 nosogeneral 1.2
@@ -9,7 +9,7 @@ Requires: Not dependencyes
 
 {$mode ObjFPC}{$H+}
 
-INTERFACE
+interface
 
 uses
   Classes, SysUtils, Process, StrUtils, IdTCPClient, IdGlobal, fphttpclient,
@@ -17,87 +17,88 @@ uses
 
 type
   TStreamHelper = class helper for TStream
-    procedure SetString(const S: string);
-    function  GetString: String;
+    procedure SetString(const S: String);
+    function GetString: String;
   end;
 
-  TStringArray = Array of String;
+  TStringArray = array of String;
 
-  TOrderData = Packed Record
-    Block      : integer;
-    OrderID    : String[64];
-    OrderLines : Integer;
-    OrderType  : String[6];
-    TimeStamp  : Int64;
-    Reference  : String[64];
-      TrxLine    : integer;
-      sender     : String[120];
-      Address    : String[40];
-      Receiver   : String[40];
-      AmmountFee : Int64;
-      AmmountTrf : Int64;
-      Signature  : String[120];
-      TrfrID     : String[64];
-    end;
+  TOrderData = packed record
+    Block: Integer;
+    OrderID: String[64];
+    OrderLines: Integer;
+    OrderType: String[6];
+    TimeStamp: Int64;
+    Reference: String[64];
+    TrxLine: Integer;
+    Sender: String[120];
+    Address: String[40];
+    Receiver: String[40];
+    AmmountFee: Int64;
+    AmmountTrf: Int64;
+    Signature: String[120];
+    TrfrID: String[64];
+  end;
 
 
   TMultiOrder = record
-    Block      : integer;
-    TimeStamp  : Int64;
-    OrderID    : string[64];
-    OrderType  : String[6];
-    Reference  : String[64];
-    sender     : String[40];
-    PubKey     : String[255];
-    Receiver   : String[40];
-    Signer     : string[120];
-    Signature  : string[120];
-    AmmountFee : Int64;
-    AmmountTrf : Int64;
-    end;
+    Block: Integer;
+    TimeStamp: Int64;
+    OrderID: String[64];
+    OrderType: String[6];
+    Reference: String[64];
+    Sender: String[40];
+    PubKey: String[255];
+    Receiver: String[40];
+    Signer: String[120];
+    Signature: String[120];
+    AmmountFee: Int64;
+    AmmountTrf: Int64;
+  end;
 
-  TBlockOrdersArray = Array of TOrderData;
+  TBlockOrdersArray = array of TOrderData;
 
 {Generic}
-Function Parameter(LineText:String;ParamNumber:int64;de_limit:string=' '):String;
-Function GetCommand(LineText:String):String;
-Function ProCommand(LineText:String):String;
-Function IsValidIP(IpString:String):boolean;
-Function GetSupply(block:integer):int64;
-Function Restar(number:int64):int64;
-Function HashrateToShow(speed:int64):String;
-Function Int2Curr(LValue: int64): string;
-Procedure RunExternalProgram(ProgramToRun:String);
-Function GetCustFee(Block:integer):int64;
-Function GetStackRequired(block:integer):int64;
-Function GetMNsPercentage(block:integer;MainnetMode:String='NORMAL'):integer;
-Function GetPoSPercentage(block:integer):integer;
-Function GetDevPercentage(block:integer):integer;
-Function GetMinimumFee(amount:int64):Int64;
-Function GetMaximunToSend(amount:int64):int64;
-function OSVersion: string;
+function Parameter(LineText: String; ParamNumber: Int64; de_limit: String = ' '): String;
+function GetCommand(LineText: String): String;
+function ProCommand(LineText: String): String;
+function IsValidIP(IpString: String): Boolean;
+function GetSupply(block: Integer): Int64;
+function Restar(number: Int64): Int64;
+function HashrateToShow(speed: Int64): String;
+function Int2Curr(LValue: Int64): String;
+procedure RunExternalProgram(ProgramToRun: String);
+function GetCustFee(Block: Integer): Int64;
+function GetStackRequired(block: Integer): Int64;
+function GetMNsPercentage(block: Integer; MainnetMode: String = 'NORMAL'): Integer;
+function GetPoSPercentage(block: Integer): Integer;
+function GetDevPercentage(block: Integer): Integer;
+function GetMinimumFee(amount: Int64): Int64;
+function GetMaximunToSend(amount: Int64): Int64;
+function OSVersion: String;
 
 {Network}
-Function RequestLineToPeer(host:String;port:integer;command:string):string;
-Function RequestToPeer(hostandPort,command:string):string;
-Function SendApiRequest(urltocheck:string):String;
+function RequestLineToPeer(host: String; port: Integer; command: String): String;
+function RequestToPeer(hostandPort, command: String): String;
+function SendApiRequest(urltocheck: String): String;
 
 {File handling}
 function SaveTextToDisk(const aFileName: TFileName; const aText: String): Boolean;
-Function LoadTextFromDisk(const aFileName: TFileName): string;
-function TryCopyFile(Source, destination:string):boolean;
-function TryDeleteFile(filename:string):boolean;
-function AppFileName():string;
-Function MixTxtFiles(ListFiles : array of string;Destination:String;DeleteSources:boolean=true):boolean ;
-Function SendFileViaTCP(filename,message,host:String;Port:integer):Boolean;
-Function UnzipFile(filename:String;delFile:boolean):boolean;
-Function CreateEmptyFile(lFilename:String):Boolean;
+function LoadTextFromDisk(const aFileName: TFileName): String;
+function TryCopyFile(Source, destination: String): Boolean;
+function TryDeleteFile(filename: String): Boolean;
+function AppFileName(): String;
+function MixTxtFiles(ListFiles: array of String; Destination: String;
+  DeleteSources: Boolean = True): Boolean;
+function SendFileViaTCP(filename, message, host: String; Port: Integer): Boolean;
+function UnzipFile(filename: String; delFile: Boolean): Boolean;
+function CreateEmptyFile(lFilename: String): Boolean;
 
 {Protocol specific}
-function GetStringFromOrder(order:Torderdata):String;
-function ExtractMNsText(lText:String):String;
+function GetStringFromOrder(order: Torderdata): String;
+function ExtractMNsText(lText: String): String;
 
-IMPLEMENTATION
+implementation
 
 {$REGION Stream helper}
 
@@ -113,7 +114,7 @@ end;
 function TStreamHelper.GetString: String;
 var
   LSize: Word = 0;
-  P: PByte;
+  P: Pbyte;
 begin
   ReadBuffer(LSize, SizeOf(LSize));
   SetLength(Result, LSize);
@@ -130,131 +131,133 @@ end;
 {$REGION Generic}
 
 {Returns a specific parameter number of text}
-Function Parameter(LineText:String;ParamNumber:int64;de_limit:string=' '):String;
+function Parameter(LineText: String; ParamNumber: Int64; de_limit: String = ' '): String;
 var
-  Temp : String = '';
-  ThisChar : Char;
-  Contador : int64 = 1;
-  WhiteSpaces : int64 = 0;
-  parentesis : boolean = false;
-Begin
+  Temp: String = '';
+  ThisChar: Char;
+  Contador: Int64 = 1;
+  WhiteSpaces: Int64 = 0;
+  parentesis: Boolean = False;
+begin
   while contador <= Length(LineText) do
-    begin
+  begin
     ThisChar := Linetext[contador];
-    if ((thischar = '(') and (not parentesis)) then parentesis := true
+    if ((thischar = '(') and (not parentesis)) then parentesis := True
     else if ((thischar = '(') and (parentesis)) then
-      begin
-      result := '';
+    begin
+      Result := '';
       exit;
-      end
+    end
     else if ((ThisChar = ')') and (parentesis)) then
-      begin
+    begin
       if WhiteSpaces = ParamNumber then
-        begin
-        result := temp;
-        exit;
-        end
-    else
       begin
-      parentesis := false;
-      temp := '';
+        Result := temp;
+        exit;
+      end
+      else
+      begin
+        parentesis := False;
+        temp := '';
       end;
     end
     else if ((ThisChar = de_limit) and (not parentesis)) then
-      begin
-      WhiteSpaces := WhiteSpaces +1;
+    begin
+      WhiteSpaces := WhiteSpaces + 1;
       if WhiteSpaces > Paramnumber then
-        begin
-        result := temp;
-        exit;
-        end;
-      end
-    else if ((ThisChar = de_limit) and (parentesis) and (WhiteSpaces = ParamNumber)) then
       begin
-      temp := temp+ ThisChar;
-      end
-    else if WhiteSpaces = ParamNumber then temp := temp+ ThisChar;
-    contador := contador+1;
-    end;
+        Result := temp;
+        exit;
+      end;
+    end
+    else if ((ThisChar = de_limit) and (parentesis) and (WhiteSpaces = ParamNumber)) then
+    begin
+      temp := temp + ThisChar;
+    end
+    else if WhiteSpaces = ParamNumber then temp := temp + ThisChar;
+    contador := contador + 1;
+  end;
   if temp = de_limit then temp := '';
   Result := Temp;
-End;
+end;
 
-Function GetCommand(LineText:String):String;
-Begin
-  result := uppercase(parameter(linetext,0));
-End;
+function GetCommand(LineText: String): String;
+begin
+  Result := uppercase(parameter(linetext, 0));
+end;
 
-Function ProCommand(LineText:String):String;
-Begin
-  result := uppercase(parameter(linetext,4));
-End;
+function ProCommand(LineText: String): String;
+begin
+  Result := uppercase(parameter(linetext, 4));
+end;
 
 {Verify if a string is valid IPv4 address}
-Function IsValidIP(IpString:String):boolean;
+function IsValidIP(IpString: String): Boolean;
 var
-  valor1,valor2,valor3,valor4: integer;
-Begin
-  result := true;
+  valor1, valor2, valor3, valor4: Integer;
+begin
+  Result := True;
   //IPString := StringReplace(IPString,'.',' ',[rfReplaceAll, rfIgnoreCase]);
-  valor1 := StrToIntDef(Parameter(IPString,0,'.'),-1);
-  valor2 := StrToIntDef(Parameter(IPString,1,'.'),-1);
-  valor3 := StrToIntDef(Parameter(IPString,2,'.'),-1);
-  valor4 := StrToIntDef(Parameter(IPString,3,'.'),-1);
-  if ((valor1 <0) or (valor1>255)) then result := false;
-  if ((valor2 <0) or (valor2>255)) then result := false;
-  if ((valor3 <0) or (valor3>255)) then result := false;
-  if ((valor4 <0) or (valor4>255)) then result := false;
-  if ((valor1=192) and (valor2=168)) then result := false;
-  if ((valor1=127) and (valor2=0)) then result := false;
-End;
+  valor1 := StrToIntDef(Parameter(IPString, 0, '.'), -1);
+  valor2 := StrToIntDef(Parameter(IPString, 1, '.'), -1);
+  valor3 := StrToIntDef(Parameter(IPString, 2, '.'), -1);
+  valor4 := StrToIntDef(Parameter(IPString, 3, '.'), -1);
+  if ((valor1 < 0) or (valor1 > 255)) then Result := False;
+  if ((valor2 < 0) or (valor2 > 255)) then Result := False;
+  if ((valor3 < 0) or (valor3 > 255)) then Result := False;
+  if ((valor4 < 0) or (valor4 > 255)) then Result := False;
+  if ((valor1 = 192) and (valor2 = 168)) then Result := False;
+  if ((valor1 = 127) and (valor2 = 0)) then Result := False;
+end;
 
 {Returns the circulating supply on the specified block}
-Function GetSupply(block:integer):int64;
-Begin
+function GetSupply(block: Integer): Int64;
+begin
   Result := 0;
   if block < 210000 then
-    result := (block*5000000000)+1030390730000
+    Result := (block * 5000000000) + 1030390730000
   else if ((block >= 210000) and (block < 420000)) then
-    begin
-    Inc(result,(209999*5000000000)+1030390730000);
-    Inc(result,(block-209999)*5000000000);
-    end;
-End;
+  begin
+    Inc(Result, (209999 * 5000000000) + 1030390730000);
+    Inc(Result, (block - 209999) * 5000000000);
+  end;
+end;
 
 {Convert any positive integer in negative}
-Function Restar(number:int64):int64;
-Begin
-  if number > 0 then Result := number-(Number*2)
-  else Result := number;
-End;
+function Restar(number: Int64): Int64;
+begin
+  if number > 0 then Result := number - (Number * 2)
+  else
+    Result := number;
+end;
 
 {Converts a integer in a human readeaeble format for hashrate}
-Function HashrateToShow(speed:int64):String;
-Begin
-  if speed>1000000000 then result := FormatFloat('0.00',speed/1000000000)+' Gh/s'
-  else if speed>1000000 then result := FormatFloat('0.00',speed/1000000)+' Mh/s'
-  else if speed>1000 then result := FormatFloat('0.00',speed/1000)+' Kh/s'
-  else result := speed.ToString+' h/s'
-End;
+function HashrateToShow(speed: Int64): String;
+begin
+  if speed > 1000000000 then Result := FormatFloat('0.00', speed / 1000000000) + ' Gh/s'
+  else if speed > 1000000 then Result := FormatFloat('0.00', speed / 1000000) + ' Mh/s'
+  else if speed > 1000 then Result := FormatFloat('0.00', speed / 1000) + ' Kh/s'
+  else
+    Result := speed.ToString + ' h/s';
+end;
 
 {Converts a integer in a human readeaeble format for currency}
-Function Int2Curr(LValue: int64): string;
-Begin
-  Result := IntTostr(Abs(LValue));
-  result :=  AddChar('0',Result, 9);
-  Insert('.',Result, Length(Result)-7);
-  If LValue <0 THen Result := '-'+Result;
-End;
+function Int2Curr(LValue: Int64): String;
+begin
+  Result := IntToStr(Abs(LValue));
+  Result := AddChar('0', Result, 9);
+  Insert('.', Result, Length(Result) - 7);
+  if LValue < 0 then Result := '-' + Result;
+end;
 
 {Runs an external program}
-Procedure RunExternalProgram(ProgramToRun:String);
+procedure RunExternalProgram(ProgramToRun: String);
 var
   Process: TProcess;
   I: Integer;
-Begin
+begin
   Process := TProcess.Create(nil);
-    TRY
+  try
     Process.InheritHandles := False;
     Process.Options := [];
     Process.ShowWindow := swoShow;
@@ -268,88 +271,89 @@ Begin
     Process.Executable := ProgramToRun;
     {$ENDIF}
     Process.Execute;
-    EXCEPT ON E:Exception do
+  except
+    ON E: Exception do
 
-    END; {TRY}
+  end; {TRY}
   Process.Free;
-End;
+end;
 
 {Returns the custom fee amount}
-Function GetCustFee(Block:integer):int64;
-Begin
-  result := 1000000;
-  if block < 162000 then result := 25000;
-End;
+function GetCustFee(Block: Integer): Int64;
+begin
+  Result := 1000000;
+  if block < 162000 then Result := 25000;
+end;
 
 {Returns the required noso stack size}
-Function GetStackRequired(block:integer):int64;
-Begin
-  result := (GetSupply(block)*20) div 10000;
-  if result > 1100000000000 then result := 1100000000000;
-  if block > 110000 then result := 1050000000000;
-End;
+function GetStackRequired(block: Integer): Int64;
+begin
+  Result := (GetSupply(block) * 20) div 10000;
+  if Result > 1100000000000 then Result := 1100000000000;
+  if block > 110000 then Result := 1050000000000;
+end;
 
 {Returns the MNs percentage for the specified block (0 to 10000)}
-Function GetMNsPercentage(block:integer;MainnetMode:String='NORMAL'):integer;
-Begin
-  result := 0;
+function GetMNsPercentage(block: Integer; MainnetMode: String = 'NORMAL'): Integer;
+begin
+  Result := 0;
   if block >= 48010{MNBlockStart} then
-    begin
-    result := 2000{MNsPercentage} + (((block-48010{MNBlockStart}) div 4000) * 100);
-    if block >= 88400{PoSBlockEnd} then Inc(Result,1000);
-    if result > 6000 then result := 6000;
-    if AnsiContainsStr(MainnetMode,'MNSONLY') then result := 9000;
-    end;
-End;
+  begin
+    Result := 2000{MNsPercentage} + (((block - 48010{MNBlockStart}) div 4000) * 100);
+    if block >= 88400{PoSBlockEnd} then Inc(Result, 1000);
+    if Result > 6000 then Result := 6000;
+    if AnsiContainsStr(MainnetMode, 'MNSONLY') then Result := 9000;
+  end;
+end;
 
 {Returns the PoS percentage for the specified block (0 to 10000)}
-Function GetPoSPercentage(block:integer):integer;
-Begin
-  result := 0;
-  if ((block > 8424) and (block < 40000)) then result := 1000{PoSPercentage};
+function GetPoSPercentage(block: Integer): Integer;
+begin
+  Result := 0;
+  if ((block > 8424) and (block < 40000)) then Result := 1000{PoSPercentage};
   if block >= 40000 then
-    begin
-    result := 1000{PoSPercentage} + (((block-39000) div 1000) * 100);
-    if result > 2000 then result := 2000;
-    end;
-  if block >= 88400{PoSBlockEnd} then result := 0;
-End;
+  begin
+    Result := 1000{PoSPercentage} + (((block - 39000) div 1000) * 100);
+    if Result > 2000 then Result := 2000;
+  end;
+  if block >= 88400{PoSBlockEnd} then Result := 0;
+end;
 
 {Returns the Project percentage for the specified block}
-Function GetDevPercentage(block:integer):integer;
-Begin
-  result := 0;
-  if block >= 88400{PoSBlockEnd} then result := 1000;
-End;
+function GetDevPercentage(block: Integer): Integer;
+begin
+  Result := 0;
+  if block >= 88400{PoSBlockEnd} then Result := 1000;
+end;
 
 {Returns the minimum fee to be paid for the specified amount}
-Function GetMinimumFee(amount:int64):Int64;
-Begin
+function GetMinimumFee(amount: Int64): Int64;
+begin
   Result := amount div 10000{Comisiontrfr};
-  if result < 1000000{MinimunFee} then result := 1000000{MinimunFee};
-End;
+  if Result < 1000000{MinimunFee} then Result := 1000000{MinimunFee};
+end;
 
 {Returns the maximum that can be sent from the specified amount}
-Function GetMaximunToSend(amount:int64):int64;
+function GetMaximunToSend(amount: Int64): Int64;
 var
-  maximo     : int64;
-  comision   : int64;
-  Envio      : int64;
-  Diferencia : int64;
-Begin
+  maximo: Int64;
+  comision: Int64;
+  Envio: Int64;
+  Diferencia: Int64;
+begin
   if amount < 1000000{MinimunFee} then
     exit(0);
-  maximo     := (amount * 10000{Comisiontrfr}) div (10000{Comisiontrfr}+1);
-  comision   := maximo div 10000{Comisiontrfr};
+  maximo := (amount * 10000{Comisiontrfr}) div (10000{Comisiontrfr} + 1);
+  comision := maximo div 10000{Comisiontrfr};
   if Comision < 1000000{MinimunFee} then Comision := 1000000{MinimunFee};
-  Envio      := maximo + comision;
-  Diferencia := amount-envio;
-  result     := maximo+diferencia;
-End;
+  Envio := maximo + comision;
+  Diferencia := amount - envio;
+  Result := maximo + diferencia;
+end;
 
 // Gets OS version
-function OSVersion: string;
-Begin
+function OSVersion: String;
+begin
   {$IFDEF LCLcarbon}
   OSVersion := 'Mac OS X 10.';
   {$ELSE}
@@ -365,277 +369,278 @@ Begin
   {$ENDIF}
   {$ENDIF}
   {$ENDIF}
-End;
+end;
 
 {$ENDREGION}
 
 {$REGION Network}
 
-Function RequestLineToPeer(host:String;port:integer;command:string):string;
+function RequestLineToPeer(host: String; port: Integer; command: String): String;
 var
-  Client   : TidTCPClient;
-Begin
+  Client: TidTCPClient;
+begin
   Result := '';
   Client := TidTCPClient.Create(nil);
-  Client.Host:=host;
-  Client.Port:=Port;
-  Client.ConnectTimeout:= 1000;
-  Client.ReadTimeout:=1000;
-  TRY
-  Client.Connect;
-  Client.IOHandler.WriteLn(Command);
-  client.IOHandler.MaxLineLength:=Maxint;
-  Result := Client.IOHandler.ReadLn();
-  EXCEPT on E:Exception do
+  Client.Host := host;
+  Client.Port := Port;
+  Client.ConnectTimeout := 1000;
+  Client.ReadTimeout := 1000;
+  try
+    Client.Connect;
+    Client.IOHandler.WriteLn(Command);
+    client.IOHandler.MaxLineLength := Maxint;
+    Result := Client.IOHandler.ReadLn();
+  except
+    on E: Exception do
 
-  END;{Try}
+  end;{Try}
   if client.Connected then Client.Disconnect();
   client.Free;
-End;
+end;
 
-Function RequestToPeer(hostandPort,command:string):string;
+function RequestToPeer(hostandPort, command: String): String;
 var
-  Client   : TidTCPClient;
-Begin
+  Client: TidTCPClient;
+begin
   Result := '';
   Client := TidTCPClient.Create(nil);
-  Client.Host:=Parameter(hostandPort,0);
-  Client.Port:=StrToIntDef(Parameter(hostandPort,1),8080);
-  Client.ConnectTimeout:= 1000;
-  Client.ReadTimeout:=1000;
-  TRY
-  Client.Connect;
-  Client.IOHandler.WriteLn(Command);
-  client.IOHandler.MaxLineLength:=Maxint;
-  Result := Client.IOHandler.ReadLn();
-  EXCEPT on E:Exception do
+  Client.Host := Parameter(hostandPort, 0);
+  Client.Port := StrToIntDef(Parameter(hostandPort, 1), 8080);
+  Client.ConnectTimeout := 1000;
+  Client.ReadTimeout := 1000;
+  try
+    Client.Connect;
+    Client.IOHandler.WriteLn(Command);
+    client.IOHandler.MaxLineLength := Maxint;
+    Result := Client.IOHandler.ReadLn();
+  except
+    on E: Exception do
 
-  END;{Try}
+  end;{Try}
   if client.Connected then Client.Disconnect();
   client.Free;
-End;
+end;
 
-Function SendApiRequest(urltocheck:string):String;
+function SendApiRequest(urltocheck: String): String;
 var
-  Conector : TFPHttpClient;
-Begin
+  Conector: TFPHttpClient;
+begin
   Result := '';
   Conector := TFPHttpClient.Create(nil);
-  conector.ConnectTimeout:=3000;
-  conector.IOTimeout:=3000;
-    TRY
-    result := Trim(Conector.SimpleGet(urltocheck));
-    EXCEPT on E: Exception do
+  conector.ConnectTimeout := 3000;
+  conector.IOTimeout := 3000;
+  try
+    Result := Trim(Conector.SimpleGet(urltocheck));
+  except
+    on E: Exception do
 
-    END;//TRY
+  end;//TRY
   Conector.Free;
-End;
+end;
 
 {$ENDREGION}
 
 {$REGION File handling}
 
-Function SaveTextToDisk(const aFileName: TFileName; const aText: String): Boolean;
+function SaveTextToDisk(const aFileName: TFileName; const aText: String): Boolean;
 var
   LStream: TStringStream;
-Begin
-  Result := true;
+begin
+  Result := True;
   LStream := TStringStream.Create(aText);
-    TRY
+  try
     LStream.SaveToFile(aFileName);
-    EXCEPT On E:Exception do
-      begin
-      result := false;
-      ToDeepDeb('NosoGeneral,SaveTextToDisk,'+E.Message);
-      end;
-    END;{Try}
+  except
+    On E: Exception do
+    begin
+      Result := False;
+      ToDeepDeb('NosoGeneral,SaveTextToDisk,' + E.Message);
+    end;
+  end;{Try}
   LStream.Free;
-End;
+end;
 
-Function LoadTextFromDisk(const aFileName: TFileName): string;
+function LoadTextFromDisk(const aFileName: TFileName): String;
 var
   LStream: TStringStream;
-Begin
+begin
   Result := '';
   LStream := TStringStream.Create;
-    TRY
+  try
     LStream.LoadFromFile(aFileName);
     Result := LStream.DataString;
-    EXCEPT On E:Exception do
-      begin
-      result := '';
-      ToDeepDeb('NosoGeneral,LoadTextFromDisk,'+E.Message);
-      end;
-    END;{Try}
+  except
+    On E: Exception do
+    begin
+      Result := '';
+      ToDeepDeb('NosoGeneral,LoadTextFromDisk,' + E.Message);
+    end;
+  end;{Try}
   LStream.Free;
-End;
+end;
 
-function TryCopyFile(Source, destination:string):boolean;
-Begin
-  result := true;
-    TRY
-    copyfile (source,destination,[cffOverwriteFile],true);
-    EXCEPT on E:Exception do
-      begin
-      result := false;
-      ToDeepDeb('NosoGeneral,TryCopyFile,'+E.Message);
-      end;
-    END; {TRY}
-End;
+function TryCopyFile(Source, destination: String): Boolean;
+begin
+  Result := True;
+  try
+    copyfile(Source, destination, [cffOverwriteFile], True);
+  except
+    on E: Exception do
+    begin
+      Result := False;
+      ToDeepDeb('NosoGeneral,TryCopyFile,' + E.Message);
+    end;
+  end; {TRY}
+end;
 
 {Try to delete a file safely}
-function TryDeleteFile(filename:string):boolean;
-Begin
-  result := deletefile(filename);
-End;
+function TryDeleteFile(filename: String): Boolean;
+begin
+  Result := deletefile(filename);
+end;
 
 // Returns the name of the app file without path
-function AppFileName():string;
-Begin
-  result := ExtractFileName(ParamStr(0));
+function AppFileName(): String;
+begin
+  Result := ExtractFileName(ParamStr(0));
   // For working path: ExtractFilePAth
-End;
+end;
 
-Function MixTxtFiles(ListFiles : array of string;Destination:String;DeleteSources:boolean=true):boolean ;
+function MixTxtFiles(ListFiles: array of String; Destination: String;
+  DeleteSources: Boolean = True): Boolean;
 var
-  count      : integer = 0;
-  FinalFile  : TStringList;
-  ThisFile   : TStringList;
-  Added      : integer = 0;
-  Index      : integer;
-Begin
-  Result := true;
+  Count: Integer = 0;
+  FinalFile: TStringList;
+  ThisFile: TStringList;
+  Added: Integer = 0;
+  Index: Integer;
+begin
+  Result := True;
   FinalFile := TStringList.Create;
   ThisFile := TStringList.Create;
-  while count < Length(Listfiles) do
+  while Count < Length(Listfiles) do
+  begin
+    if FileExists(ListFiles[Count]) then
     begin
-    if FileExists(ListFiles[count]) then
-      begin
       ThisFile.Clear;
-      ThisFile.LoadFromFile(ListFiles[count]);
-      FinalFile.Add('-----> '+ListFiles[count]);
+      ThisFile.LoadFromFile(ListFiles[Count]);
+      FinalFile.Add('-----> ' + ListFiles[Count]);
       Index := 0;
-      While Index < ThisFile.count do
-        begin
+      while Index < ThisFile.Count do
+      begin
         FinalFile.Add(ThisFile[index]);
-        inc(index);
-        end;
-      Inc(added);
+        Inc(index);
       end;
-    if DeleteSources then TryDeletefile(ListFiles[count]);
-    Inc(Count);
+      Inc(added);
     end;
+    if DeleteSources then TryDeletefile(ListFiles[Count]);
+    Inc(Count);
+  end;
   if Added > 0 then
     FinalFile.SaveToFile(Destination);
   FinalFile.Free;
   ThisFile.Free;
-  Result := true;
-End;
+  Result := True;
+end;
 
-Function SendFileViaTCP(filename,message,host:String;Port:integer):Boolean;
+function SendFileViaTCP(filename, message, host: String; Port: Integer): Boolean;
 var
-  Client   : TidTCPClient;
-  MyStream : TMemoryStream;
-Begin
-  Result := true;
-  if not fileExists(filename) then exit(false);
+  Client: TidTCPClient;
+  MyStream: TMemoryStream;
+begin
+  Result := True;
+  if not fileExists(filename) then exit(False);
   MyStream := TMemoryStream.Create;
   MyStream.LoadFromFile(filename);
   Client := TidTCPClient.Create(nil);
-  Client.Host:=host;
-  Client.Port:=Port;
-  Client.ConnectTimeout:= 1000;
-  Client.ReadTimeout:=1000;
-  TRY
+  Client.Host := host;
+  Client.Port := Port;
+  Client.ConnectTimeout := 1000;
+  Client.ReadTimeout := 1000;
+  try
     Client.Connect;
     Client.IOHandler.WriteLn(message);
-    Client.IOHandler.Write(MyStream,0,true);
-  EXCEPT on E:Exception do
+    Client.IOHandler.Write(MyStream, 0, True);
+  except
+    on E: Exception do
     begin
-    Result := false;
-    ToDeepDeb('NosoGeneral,SendFile,'+filename+' Error: '+E.Message);
+      Result := False;
+      ToDeepDeb('NosoGeneral,SendFile,' + filename + ' Error: ' + E.Message);
     end;
-  END;{Try}
+  end;{Try}
   if client.Connected then Client.Disconnect();
   client.Free;
   MyStream.Free;
-End;
+end;
 
 // Unzip a zip file and (optional) delete it
-Function UnzipFile(filename:String;delFile:boolean):boolean;
+function UnzipFile(filename: String; delFile: Boolean): Boolean;
 var
   UnZipper: TUnZipper;
-Begin
-  Result := true;
+begin
+  Result := True;
   UnZipper := TUnZipper.Create;
-    TRY
+  try
     UnZipper.FileName := filename;
     UnZipper.OutputPath := '';
     UnZipper.Examine;
     UnZipper.UnZipAllFiles;
-    EXCEPT on E:Exception do
-      begin
-      Result := false;
-      ToDeepDeb('NosoGeneral,UnzipFile,'+E.Message);
-      end;
-    END; {TRY}
+  except
+    on E: Exception do
+    begin
+      Result := False;
+      ToDeepDeb('NosoGeneral,UnzipFile,' + E.Message);
+    end;
+  end; {TRY}
   if delfile then Trydeletefile(filename);
   UnZipper.Free;
-End;
+end;
 
 // Creates an empty file
-Function CreateEmptyFile(lFilename:String):Boolean;
+function CreateEmptyFile(lFilename: String): Boolean;
 var
-  lFile : textfile;
-Begin
-  result := true;
-  TRY
+  lFile: textfile;
+begin
+  Result := True;
+  try
     Assignfile(lFile, lFilename);
     rewrite(lFile);
     Closefile(lFile);
-  EXCEPT on E:Exception do
+  except
+    on E: Exception do
     begin
-    ToDeepDeb('Nosogeneral,CreateEmptyFile,'+E.Message);
-    result := false;
+      ToDeepDeb('Nosogeneral,CreateEmptyFile,' + E.Message);
+      Result := False;
     end;
-  END;
-End;
+  end;
+end;
 
 {$ENDREGION}
 
 {$REGION Protocol specific}
 
 // Convierte una orden en una cadena para compartir
-function GetStringFromOrder(order:Torderdata):String;
-Begin
-  result:= Order.OrderType+' '+
-         Order.OrderID+' '+
-         IntToStr(order.OrderLines)+' '+
-         order.OrderType+' '+
-         IntToStr(Order.TimeStamp)+' '+
-         Order.reference+' '+
-         IntToStr(order.TrxLine)+' '+
-         order.sender+' '+
-         Order.Address+' '+
-         Order.Receiver+' '+
-         IntToStr(Order.AmmountFee)+' '+
-         IntToStr(Order.AmmountTrf)+' '+
-         Order.Signature+' '+
-         Order.TrfrID;
-End;
+function GetStringFromOrder(order: Torderdata): String;
+begin
+  Result := Order.OrderType + ' ' + Order.OrderID + ' ' +
+    IntToStr(order.OrderLines) + ' ' + order.OrderType + ' ' +
+    IntToStr(Order.TimeStamp) + ' ' + Order.reference + ' ' +
+    IntToStr(order.TrxLine) + ' ' + order.Sender + ' ' + Order.Address +
+    ' ' + Order.Receiver + ' ' + IntToStr(Order.AmmountFee) + ' ' +
+    IntToStr(Order.AmmountTrf) + ' ' + Order.Signature + ' ' + Order.TrfrID;
+end;
 
-function ExtractMNsText(lText:String):String;
-  var
-  startpos : integer;
-  content : string;
-Begin
+function ExtractMNsText(lText: String): String;
+var
+  startpos: Integer;
+  content: String;
+begin
   Result := '';
-  startpos := Pos('$',lText);
-  Result := Copy(lText,Startpos+1,Length(lText));
-End;
+  startpos := Pos('$', lText);
+  Result := Copy(lText, Startpos + 1, Length(lText));
+end;
 
 {$ENDREGION Protocol specific}
 
 
-END.{UNIT}
-
+end.{UNIT}
