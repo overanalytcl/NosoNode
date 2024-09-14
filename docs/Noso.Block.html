@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: Noso.Block</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit Noso.Block</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section"><a class="section" href="#PasDoc-Types">Types</a></div><div class="one_section">Constants</div><div class="one_section"><a class="section" href="#PasDoc-Variables">Variables</a></div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>FileUtil</li><li><a href="Noso.Crypto.html">Noso.Crypto</a></li><li><a href="Noso.Debug.html">Noso.Debug</a></li><li><a href="Noso.General.html">Noso.General</a></li><li><a href="Noso.Summary.html">Noso.Summary</a></li><li>SysUtils</li><li>Zipper</li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="Noso.Block.BlockHeaderData.html"><code>BlockHeaderData</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Record&nbsp;<a class="bold" href="Noso.Block.TDBRecord.html"><code>TDBRecord</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#AddRecordToDBFile-Integer-Integer-Integer-Integer-">AddRecordToDBFile</a></strong>(block, order, Source, target: Integer): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="Noso.Block.html#CreateDBFile">CreateDBFile</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#CreateOrderIDIndex">CreateOrderIDIndex</a></strong>(): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#GetBlockFromOrder-String-">GetBlockFromOrder</a></strong>(OrderID: String): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#GetBlocksAsStream-TMemoryStream-Integer-Integer-">GetBlocksAsStream</a></strong>(out LMs: TMemoryStream; firstblock, CurrentLastblock: Integer): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#GetBlockTrxs-Integer-">GetBlockTrxs</a></strong>(BlockNumber: Integer): <a href="Noso.General.html#TBlockOrdersArray">TBlockOrdersArray</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#GetDBLastBlock">GetDBLastBlock</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#GetDBRecords">GetDBRecords</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#GetMyLastUpdatedBlock">GetMyLastUpdatedBlock</a></strong>(): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#GetOrderFromDB-String-TOrderData-">GetOrderFromDB</a></strong>(OrderID: String; out OrderInfo: <a href="Noso.General.TOrderData.html">TOrderData</a>): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#InsertToIndex-TDBRecord-">InsertToIndex</a></strong>(LData: <a href="Noso.Block.TDBRecord.html">TDBRecord</a>): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#LoadBlockDataHeader-Integer-">LoadBlockDataHeader</a></strong>(BlockNumber: Integer): <a href="Noso.Block.BlockHeaderData.html">BlockHeaderData</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#SaveStreamAsZipBlocks-TMemoryStream-">SaveStreamAsZipBlocks</a></strong>(const LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="Noso.Block.html#SetBlockDirectory-String-">SetBlockDirectory</a></strong>(NewFolder: String);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Block.html#UpdateBlockDatabase">UpdateBlockDatabase</a></strong>(): Boolean;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Block.html#IntArray">IntArray</a></strong> = array of Integer;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Block.html#BlockDirectory">BlockDirectory</a></strong>: String = 'NOSODATA' + DirectorySeparator + 'BLOCKS' +
+    DirectorySeparator;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Block.html#BlocksZipFile">BlocksZipFile</a></strong>: String = 'blocks.zip';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Block.html#CSDBFile">CSDBFile</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Block.html#CSDBIndex">CSDBIndex</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Block.html#DataBaseFilename">DataBaseFilename</a></strong>: String = 'blocks_db.nos';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Block.html#DBDirectory">DBDirectory</a></strong>: String = 'DB' + DirectorySeparator;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Block.html#DBFile">DBFile</a></strong>: file of <a href="Noso.Block.TDBRecord.html">TDBRecord</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Block.html#OrderIDIndex">OrderIDIndex</a></strong>: array of <a href="Noso.Summary.html#TIndexRecord">TindexRecord</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AddRecordToDBFile-Integer-Integer-Integer-Integer-"></span><code>function <strong>AddRecordToDBFile</strong>(block, order, Source, target: Integer): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Add a new record to the File and also to the index</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateDBFile"></span><code>procedure <strong>CreateDBFile</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an empty DB file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateOrderIDIndex"></span><code>function <strong>CreateOrderIDIndex</strong>(): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates the INDEX from the file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetBlockFromOrder-String-"></span><code>function <strong>GetBlockFromOrder</strong>(OrderID: String): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the block number where the order is found, or -1 if none</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetBlocksAsStream-TMemoryStream-Integer-Integer-"></span><code>function <strong>GetBlocksAsStream</strong>(out LMs: TMemoryStream; firstblock, CurrentLastblock: Integer): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates the zip block file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetBlockTrxs-Integer-"></span><code>function <strong>GetBlockTrxs</strong>(BlockNumber: Integer): <a href="Noso.General.html#TBlockOrdersArray">TBlockOrdersArray</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Return the array containing orders in the specified block</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetDBLastBlock"></span><code>function <strong>GetDBLastBlock</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the last block on file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetDBRecords"></span><code>function <strong>GetDBRecords</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the records count on file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetMyLastUpdatedBlock"></span><code>function <strong>GetMyLastUpdatedBlock</strong>(): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the last downloaded block</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetOrderFromDB-String-TOrderData-"></span><code>function <strong>GetOrderFromDB</strong>(OrderID: String; out OrderInfo: <a href="Noso.General.TOrderData.html">TOrderData</a>): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the order data from its orderID</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="InsertToIndex-TDBRecord-"></span><code>function <strong>InsertToIndex</strong>(LData: <a href="Noso.Block.TDBRecord.html">TDBRecord</a>): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Insert a value on index</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LoadBlockDataHeader-Integer-"></span><code>function <strong>LoadBlockDataHeader</strong>(BlockNumber: Integer): <a href="Noso.Block.BlockHeaderData.html">BlockHeaderData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SaveStreamAsZipBlocks-TMemoryStream-"></span><code>function <strong>SaveStreamAsZipBlocks</strong>(const LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetBlockDirectory-String-"></span><code>procedure <strong>SetBlockDirectory</strong>(NewFolder: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UpdateBlockDatabase"></span><code>function <strong>UpdateBlockDatabase</strong>(): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+updates file and database to most recent block on disk</p>
+</td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IntArray"></span><code><strong>IntArray</strong> = array of Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BlockDirectory"></span><code><strong>BlockDirectory</strong>: String = 'NOSODATA' + DirectorySeparator + 'BLOCKS' +
+    DirectorySeparator;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BlocksZipFile"></span><code><strong>BlocksZipFile</strong>: String = 'blocks.zip';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSDBFile"></span><code><strong>CSDBFile</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSDBIndex"></span><code><strong>CSDBIndex</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DataBaseFilename"></span><code><strong>DataBaseFilename</strong>: String = 'blocks_db.nos';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DBDirectory"></span><code><strong>DBDirectory</strong>: String = 'DB' + DirectorySeparator;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="DBFile"></span><code><strong>DBFile</strong>: file of <a href="Noso.Block.TDBRecord.html">TDBRecord</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="OrderIDIndex"></span><code><strong>OrderIDIndex</strong>: array of <a href="Noso.Summary.html#TIndexRecord">TindexRecord</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: Noso.Time</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit Noso.Time</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section">Constants</div><div class="one_section"><a class="section" href="#PasDoc-Variables">Variables</a></div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>DateUtils</li><li>IdSNTP</li><li>strutils</li><li>SysUtils</li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Noso.Time.TThreadUpdateOffset.html"><code>TThreadUpdateOffset</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Time.html#BlockAge">BlockAge</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Time.html#GetNetworkTimestamp-String-">GetNetworkTimestamp</a></strong>(hostname: String): Int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Time.html#GetTimeOffset-String-">GetTimeOffset</a></strong>(NTPServers: String): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Time.html#IsBlockOpen">IsBlockOpen</a></strong>(): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Time.html#NextBlockTimeStamp">NextBlockTimeStamp</a></strong>(): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Time.html#TimeSinceStamp-Int64-">TimeSinceStamp</a></strong>(Lvalue: Int64): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Time.html#TimestampToDate-Int64-">TimestampToDate</a></strong>(timestamp: Int64): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="Noso.Time.html#UpdateOffset-String-">UpdateOffset</a></strong>(NTPServers: String);</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Time.html#UTCTime">UTCTime</a></strong>: Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Time.html#UTCTimeStr">UTCTimeStr</a></strong>: String;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Time.html#NosoT_LastServer">NosoT_LastServer</a></strong>: String = '';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Time.html#NosoT_LastUpdate">NosoT_LastUpdate</a></strong>: Int64 = 0;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Time.html#NosoT_TimeOffset">NosoT_TimeOffset</a></strong>: Int64 = 0;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="BlockAge"></span><code>function <strong>BlockAge</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Return the current block age</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetNetworkTimestamp-String-"></span><code>function <strong>GetNetworkTimestamp</strong>(hostname: String): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the data from the specified NTP server [Hostname]</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetTimeOffset-String-"></span><code>function <strong>GetTimeOffset</strong>(NTPServers: String): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Uses a random NTP server from the list provided to set the value of the local variables. NTPservers string must use NosoCFG format: server1:server2:server3:....serverX: If directly invoked, will block the main thread until finish. (not recommended except on app launchs)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsBlockOpen"></span><code>function <strong>IsBlockOpen</strong>(): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns if the current block is in operation period</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NextBlockTimeStamp"></span><code>function <strong>NextBlockTimeStamp</strong>(): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the expected timestamp for next block</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TimeSinceStamp-Int64-"></span><code>function <strong>TimeSinceStamp</strong>(Lvalue: Int64): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Tool: returns a simple string with the time elapsed since the provided timestamp [LValue]</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TimestampToDate-Int64-"></span><code>function <strong>TimestampToDate</strong>(timestamp: Int64): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns a UNIX timestamp in a human readeable format</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UpdateOffset-String-"></span><code>procedure <strong>UpdateOffset</strong>(NTPServers: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implemented to allow an async update of the offset; can be called every 5 seconds max</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UTCTime"></span><code>function <strong>UTCTime</strong>: Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the UTC UNIX timestamp</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UTCTimeStr"></span><code>function <strong>UTCTimeStr</strong>: String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Implemented for easy compatibility with nosowallet</p>
+</td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NosoT_LastServer"></span><code><strong>NosoT_LastServer</strong>: String = '';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NosoT_LastUpdate"></span><code><strong>NosoT_LastUpdate</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="NosoT_TimeOffset"></span><code><strong>NosoT_TimeOffset</strong>: Int64 = 0;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

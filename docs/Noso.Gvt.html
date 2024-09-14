@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: Noso.Gvt</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit Noso.Gvt</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section"><a class="section" href="#PasDoc-Constants">Constants</a></div><div class="one_section"><a class="section" href="#PasDoc-Variables">Variables</a></div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li><a href="Noso.Crypto.html">Noso.Crypto</a></li><li><a href="Noso.Debug.html">Noso.Debug</a></li><li>SysUtils</li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="Noso.Gvt.TGVT.html"><code>TGVT</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Gvt.html#ChangeGVTOwner-Integer-String-String-">ChangeGVTOwner</a></strong>(Lnumber: Integer; OldOwner, NewOWner: String): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Gvt.html#CountAvailableGVTs">CountAvailableGVTs</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Gvt.html#CreateGVTsFile">CreateGVTsFile</a></strong>(): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Gvt.html#GetGVTIndex-Integer-">GetGVTIndex</a></strong>(Index: Integer): <a href="Noso.Gvt.TGVT.html">TGVT</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Gvt.html#GetGVTLength">GetGVTLength</a></strong>: Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Gvt.html#GetGVTPrice-Integer-Boolean-">GetGVTPrice</a></strong>(available: Integer; ToSell: Boolean = False): Int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Gvt.html#GetGVTsAsStream-TMemoryStream-">GetGVTsAsStream</a></strong>(out LStream: TMemoryStream): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="Noso.Gvt.html#GetGVTsFileData">GetGVTsFileData</a></strong>();</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="Noso.Gvt.html#SaveGVTs">SaveGVTs</a></strong>();</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Gvt.html#SaveStreamAsGVTs-TMemoryStream-">SaveStreamAsGVTs</a></strong>(const LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Constants"></span><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Gvt.html#GVTBaseValue">GVTBaseValue</a></strong> = 70000000000;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Gvt.html#ArrGVTs">ArrGVTs</a></strong>: array of <a href="Noso.Gvt.TGVT.html">TGVT</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Gvt.html#CSGVTsArray">CSGVTsArray</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Gvt.html#CSGVTsFile">CSGVTsFile</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Gvt.html#FileGVTs">FileGVTs</a></strong>: file of <a href="Noso.Gvt.TGVT.html">TGVT</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Gvt.html#GVTsFilename">GVTsFilename</a></strong>: String = 'NOSODATA' + DirectorySeparator + 'gvts.psk';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Gvt.html#MyGVTsHash">MyGVTsHash</a></strong>: String = '';</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ChangeGVTOwner-Integer-String-String-"></span><code>function <strong>ChangeGVTOwner</strong>(Lnumber: Integer; OldOwner, NewOWner: String): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CountAvailableGVTs"></span><code>function <strong>CountAvailableGVTs</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateGVTsFile"></span><code>function <strong>CreateGVTsFile</strong>(): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a GVTs file. If it already exists, rewrite a new empty one.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetGVTIndex-Integer-"></span><code>function <strong>GetGVTIndex</strong>(Index: Integer): <a href="Noso.Gvt.TGVT.html">TGVT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetGVTLength"></span><code>function <strong>GetGVTLength</strong>: Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetGVTPrice-Integer-Boolean-"></span><code>function <strong>GetGVTPrice</strong>(available: Integer; ToSell: Boolean = False): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetGVTsAsStream-TMemoryStream-"></span><code>function <strong>GetGVTsAsStream</strong>(out LStream: TMemoryStream): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Loads the GVTs file into a stream</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetGVTsFileData"></span><code>procedure <strong>GetGVTsFileData</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SaveGVTs"></span><code>procedure <strong>SaveGVTs</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SaveStreamAsGVTs-TMemoryStream-"></span><code>function <strong>SaveStreamAsGVTs</strong>(const LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Save a stream as the GVT file</p>
+</td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GVTBaseValue"></span><code><strong>GVTBaseValue</strong> = 70000000000;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ArrGVTs"></span><code><strong>ArrGVTs</strong>: array of <a href="Noso.Gvt.TGVT.html">TGVT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSGVTsArray"></span><code><strong>CSGVTsArray</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CSGVTsFile"></span><code><strong>CSGVTsFile</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FileGVTs"></span><code><strong>FileGVTs</strong>: file of <a href="Noso.Gvt.TGVT.html">TGVT</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GVTsFilename"></span><code><strong>GVTsFilename</strong>: String = 'NOSODATA' + DirectorySeparator + 'gvts.psk';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MyGVTsHash"></span><code><strong>MyGVTsHash</strong>: String = '';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: Noso.Pso</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit Noso.Pso</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section"><a class="section" href="#PasDoc-Types">Types</a></div><div class="one_section"><a class="section" href="#PasDoc-Constants">Constants</a></div><div class="one_section"><a class="section" href="#PasDoc-Variables">Variables</a></div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li><a href="Noso.Crypto.html">Noso.Crypto</a></li><li><a href="Noso.Debug.html">Noso.Debug</a></li><li><a href="Noso.General.html">Noso.General</a></li><li>SysUtils</li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Record&nbsp;<a class="bold" href="Noso.Pso.TMNsLock.html"><code>TMNsLock</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Record&nbsp;<a class="bold" href="Noso.Pso.TPSOData.html"><code>TPSOData</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Record&nbsp;<a class="bold" href="Noso.Pso.TPSOHeader.html"><code>TPSOHeader</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#AddLockedMM-String-Integer-">AddLockedMM</a></strong>(Address: String; block: Integer): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#AddNewPSO-Integer-String-Integer-String-">AddNewPSO</a></strong>(LMode: Integer; LOwner: String; LExpire: Integer; LParams: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#ClearExpiredLockedMNs-Integer-">ClearExpiredLockedMNs</a></strong>(BlockNumber: Integer): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#GetLockedMNIndex-Integer-">GetLockedMNIndex</a></strong>(index: Integer): <a href="Noso.Pso.TMNsLock.html">TMNsLock</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#GetLockedMNsCount">GetLockedMNsCount</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#GetPSOHeaders">GetPSOHeaders</a></strong>(): <a href="Noso.Pso.TPSOHeader.html">TPSOHeader</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#GetPSOHeadersFromFile">GetPSOHeadersFromFile</a></strong>: Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#GetPSOsAsMemStream-TMemoryStream-">GetPSOsAsMemStream</a></strong>(out LMs: TMemoryStream): Int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#GetPSOsCopy">GetPSOsCopy</a></strong>(): <a href="Noso.Pso.html#TPSOsArray">TPSOsArray</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#GetPSOValue-String-String-">GetPSOValue</a></strong>(LValue: String; LParams: String): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#IsLockedMN-String-">IsLockedMN</a></strong>(Address: String): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#LoadPSOFileFromDisk">LoadPSOFileFromDisk</a></strong>(): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#LockedMNsRawString">LockedMNsRawString</a></strong>(): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#SavePSOFileToDisk-Integer-">SavePSOFileToDisk</a></strong>(BlockNumber: Integer): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Pso.html#SavePSOsToFile-TMemoryStream-">SavePSOsToFile</a></strong>(const LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>procedure <strong><a href="Noso.Pso.html#SetPSOHeaders-TPSOHeader-">SetPSOHeaders</a></strong>(NewData: <a href="Noso.Pso.TPSOHeader.html">TPSOHeader</a>);</code></td>
+</tr>
+</table>
+<span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#TPSOsArray">TPSOsArray</a></strong> = array of <a href="Noso.Pso.TPSOData.html">TPSOData</a>;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Constants"></span><h3 class="summary">Constants</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#MNsLockExpireLapse">MNsLockExpireLapse</a></strong>: Integer = 2016;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOAction">PSOAction</a></strong>: String = '3';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOBlock">PSOBlock</a></strong>: String = '2';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSODuration">PSODuration</a></strong>: String = '5';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOFee">PSOFee</a></strong>: String = '4';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOMaxSize">PSOMaxSize</a></strong>: String = '8';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOMinSize">PSOMinSize</a></strong>: String = '7';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOOverfill">PSOOverfill</a></strong>: String = '9';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOsFileName">PSOsFileName</a></strong>: String = 'NOSODATA' + DirectorySeparator + 'psos.dat';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOSource">PSOSource</a></strong>: String = '10';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOTarget">PSOTarget</a></strong>: String = '6';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOTimestamp">PSOTimestamp</a></strong>: String = '1';</code></td>
+</tr>
+</table>
+<span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#CS_LockedMNs">CS_LockedMNs</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#CS_PSOFile">CS_PSOFile</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#CS_PSOHeaders">CS_PSOHeaders</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#CS_PSOsArray">CS_PSOsArray</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#MNSLockArray">MNSLockArray</a></strong>: array of <a href="Noso.Pso.TMNsLock.html">TMNsLock</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOFileHash">PSOFileHash</a></strong>: String = '';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOHeader">PSOHeader</a></strong>: <a href="Noso.Pso.TPSOHeader.html">TPSOHeader</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Pso.html#PSOsArray">PSOsArray</a></strong>: array of <a href="Noso.Pso.TPSOData.html">TPSOData</a>;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AddLockedMM-String-Integer-"></span><code>function <strong>AddLockedMM</strong>(Address: String; block: Integer): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AddNewPSO-Integer-String-Integer-String-"></span><code>function <strong>AddNewPSO</strong>(LMode: Integer; LOwner: String; LExpire: Integer; LParams: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ClearExpiredLockedMNs-Integer-"></span><code>function <strong>ClearExpiredLockedMNs</strong>(BlockNumber: Integer): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetLockedMNIndex-Integer-"></span><code>function <strong>GetLockedMNIndex</strong>(index: Integer): <a href="Noso.Pso.TMNsLock.html">TMNsLock</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetLockedMNsCount"></span><code>function <strong>GetLockedMNsCount</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Locked Masternodes control</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPSOHeaders"></span><code>function <strong>GetPSOHeaders</strong>(): <a href="Noso.Pso.TPSOHeader.html">TPSOHeader</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+PSOHeaders control</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPSOHeadersFromFile"></span><code>function <strong>GetPSOHeadersFromFile</strong>: Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+File access</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPSOsAsMemStream-TMemoryStream-"></span><code>function <strong>GetPSOsAsMemStream</strong>(out LMs: TMemoryStream): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPSOsCopy"></span><code>function <strong>GetPSOsCopy</strong>(): <a href="Noso.Pso.html#TPSOsArray">TPSOsArray</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPSOValue-String-String-"></span><code>function <strong>GetPSOValue</strong>(LValue: String; LParams: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsLockedMN-String-"></span><code>function <strong>IsLockedMN</strong>(Address: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LoadPSOFileFromDisk"></span><code>function <strong>LoadPSOFileFromDisk</strong>(): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LockedMNsRawString"></span><code>function <strong>LockedMNsRawString</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SavePSOFileToDisk-Integer-"></span><code>function <strong>SavePSOFileToDisk</strong>(BlockNumber: Integer): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SavePSOsToFile-TMemoryStream-"></span><code>function <strong>SavePSOsToFile</strong>(const LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetPSOHeaders-TPSOHeader-"></span><code>procedure <strong>SetPSOHeaders</strong>(NewData: <a href="Noso.Pso.TPSOHeader.html">TPSOHeader</a>);</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TPSOsArray"></span><code><strong>TPSOsArray</strong> = array of <a href="Noso.Pso.TPSOData.html">TPSOData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Constants</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MNsLockExpireLapse"></span><code><strong>MNsLockExpireLapse</strong>: Integer = 2016;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOAction"></span><code><strong>PSOAction</strong>: String = '3';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOBlock"></span><code><strong>PSOBlock</strong>: String = '2';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSODuration"></span><code><strong>PSODuration</strong>: String = '5';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOFee"></span><code><strong>PSOFee</strong>: String = '4';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOMaxSize"></span><code><strong>PSOMaxSize</strong>: String = '8';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOMinSize"></span><code><strong>PSOMinSize</strong>: String = '7';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOOverfill"></span><code><strong>PSOOverfill</strong>: String = '9';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOsFileName"></span><code><strong>PSOsFileName</strong>: String = 'NOSODATA' + DirectorySeparator + 'psos.dat';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOSource"></span><code><strong>PSOSource</strong>: String = '10';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOTarget"></span><code><strong>PSOTarget</strong>: String = '6';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOTimestamp"></span><code><strong>PSOTimestamp</strong>: String = '1';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CS_LockedMNs"></span><code><strong>CS_LockedMNs</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CS_PSOFile"></span><code><strong>CS_PSOFile</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CS_PSOHeaders"></span><code><strong>CS_PSOHeaders</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CS_PSOsArray"></span><code><strong>CS_PSOsArray</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MNSLockArray"></span><code><strong>MNSLockArray</strong>: array of <a href="Noso.Pso.TMNsLock.html">TMNsLock</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOFileHash"></span><code><strong>PSOFileHash</strong>: String = '';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOHeader"></span><code><strong>PSOHeader</strong>: <a href="Noso.Pso.TPSOHeader.html">TPSOHeader</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="PSOsArray"></span><code><strong>PSOsArray</strong>: array of <a href="Noso.Pso.TPSOData.html">TPSOData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

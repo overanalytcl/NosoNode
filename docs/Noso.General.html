@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: Noso.General</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit Noso.General</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section"><a class="section" href="#PasDoc-Types">Types</a></div><div class="one_section">Constants</div><div class="one_section">Variables</div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li>fileutil</li><li>fphttpclient</li><li>IdGlobal</li><li>IdTCPClient</li><li><a href="Noso.Debug.html">Noso.Debug</a></li><li>opensslsockets</li><li>Process</li><li>StrUtils</li><li>SysUtils</li><li>Zipper</li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Record&nbsp;<a class="bold" href="Noso.General.TMultiOrder.html"><code>TMultiOrder</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list2">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="Noso.General.TOrderData.html"><code>TOrderData</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+<tr class="list">
+<td class="itemname">Class&nbsp;<a class="bold" href="Noso.General.TStreamHelper.html"><code>TStreamHelper</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#AppFileName">AppFileName</a></strong>(): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#CreateEmptyFile-String-">CreateEmptyFile</a></strong>(lFilename: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#ExtractMNsText-String-">ExtractMNsText</a></strong>(lText: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetCommand-String-">GetCommand</a></strong>(LineText: String): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetCustFee-Integer-">GetCustFee</a></strong>(Block: Integer): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetDevPercentage-Integer-">GetDevPercentage</a></strong>(block: Integer): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetMaximunToSend-Int64-">GetMaximunToSend</a></strong>(amount: Int64): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetMinimumFee-Int64-">GetMinimumFee</a></strong>(amount: Int64): Int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetMNsPercentage-Integer-String-">GetMNsPercentage</a></strong>(block: Integer; MainnetMode: String = 'NORMAL'): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetPoSPercentage-Integer-">GetPoSPercentage</a></strong>(block: Integer): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetStackRequired-Integer-">GetStackRequired</a></strong>(block: Integer): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetStringFromOrder-Torderdata-">GetStringFromOrder</a></strong>(order: <a href="Noso.General.TOrderData.html">Torderdata</a>): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetSupply-Integer-">GetSupply</a></strong>(block: Integer): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#HashrateToShow-Int64-">HashrateToShow</a></strong>(speed: Int64): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#Int2Curr-Int64-">Int2Curr</a></strong>(LValue: Int64): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#IsValidIP-String-">IsValidIP</a></strong>(IpString: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#LoadTextFromDisk-TFileName-">LoadTextFromDisk</a></strong>(const aFileName: TFileName): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#MixTxtFiles-arrayofString-String-Boolean-">MixTxtFiles</a></strong>(ListFiles: array of String; Destination: String; DeleteSources: Boolean = True): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#OSVersion">OSVersion</a></strong>: String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#Parameter-String-Int64-String-">Parameter</a></strong>(LineText: String; ParamNumber: Int64; de_limit: String = ' '): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#ProCommand-String-">ProCommand</a></strong>(LineText: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#RequestLineToPeer-String-Integer-String-">RequestLineToPeer</a></strong>(host: String; port: Integer; command: String): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#RequestToPeer-String-String-">RequestToPeer</a></strong>(hostandPort, command: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#Restar-Int64-">Restar</a></strong>(number: Int64): Int64;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="Noso.General.html#RunExternalProgram-String-">RunExternalProgram</a></strong>(ProgramToRun: String);</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#SaveTextToDisk-TFileName-String-">SaveTextToDisk</a></strong>(const aFileName: TFileName; const aText: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#SendApiRequest-String-">SendApiRequest</a></strong>(urltocheck: String): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#SendFileViaTCP-String-String-String-Integer-">SendFileViaTCP</a></strong>(filename, message, host: String; Port: Integer): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#TryCopyFile-String-String-">TryCopyFile</a></strong>(Source, destination: String): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#TryDeleteFile-String-">TryDeleteFile</a></strong>(filename: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#UnzipFile-String-Boolean-">UnzipFile</a></strong>(filename: String; delFile: Boolean): Boolean;</code></td>
+</tr>
+</table>
+<span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.General.html#TBlockOrdersArray">TBlockOrdersArray</a></strong> = array of <a href="Noso.General.TOrderData.html">TOrderData</a>;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.General.html#TStringArray">TStringArray</a></strong> = array of String;</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AppFileName"></span><code>function <strong>AppFileName</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the name of the app file without path</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateEmptyFile-String-"></span><code>function <strong>CreateEmptyFile</strong>(lFilename: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates an empty file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ExtractMNsText-String-"></span><code>function <strong>ExtractMNsText</strong>(lText: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetCommand-String-"></span><code>function <strong>GetCommand</strong>(LineText: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetCustFee-Integer-"></span><code>function <strong>GetCustFee</strong>(Block: Integer): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the <a class="normal" href="MP.Protocol.html#Custom">custom</a> fee amount</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetDevPercentage-Integer-"></span><code>function <strong>GetDevPercentage</strong>(block: Integer): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the Project percentage for the specified block</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetMaximunToSend-Int64-"></span><code>function <strong>GetMaximunToSend</strong>(amount: Int64): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the maximum that can be sent from the specified amount</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetMinimumFee-Int64-"></span><code>function <strong>GetMinimumFee</strong>(amount: Int64): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the minimum fee to be paid for the specified amount</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetMNsPercentage-Integer-String-"></span><code>function <strong>GetMNsPercentage</strong>(block: Integer; MainnetMode: String = 'NORMAL'): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the MNs percentage for the specified block (0 to 10000)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetPoSPercentage-Integer-"></span><code>function <strong>GetPoSPercentage</strong>(block: Integer): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the PoS percentage for the specified block (0 to 10000)</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetStackRequired-Integer-"></span><code>function <strong>GetStackRequired</strong>(block: Integer): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the required noso stack size</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetStringFromOrder-Torderdata-"></span><code>function <strong>GetStringFromOrder</strong>(order: <a href="Noso.General.TOrderData.html">Torderdata</a>): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Protocol specific</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetSupply-Integer-"></span><code>function <strong>GetSupply</strong>(block: Integer): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the circulating supply on the specified block</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="HashrateToShow-Int64-"></span><code>function <strong>HashrateToShow</strong>(speed: Int64): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts a integer in a human readeaeble format for hashrate</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="Int2Curr-Int64-"></span><code>function <strong>Int2Curr</strong>(LValue: Int64): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts a integer in a human readeaeble format for currency</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="IsValidIP-String-"></span><code>function <strong>IsValidIP</strong>(IpString: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Verify if a string is valid IPv4 address</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LoadTextFromDisk-TFileName-"></span><code>function <strong>LoadTextFromDisk</strong>(const aFileName: TFileName): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MixTxtFiles-arrayofString-String-Boolean-"></span><code>function <strong>MixTxtFiles</strong>(ListFiles: array of String; Destination: String; DeleteSources: Boolean = True): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="OSVersion"></span><code>function <strong>OSVersion</strong>: String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Gets OS version</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="Parameter-String-Int64-String-"></span><code>function <strong>Parameter</strong>(LineText: String; ParamNumber: Int64; de_limit: String = ' '): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Generic</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ProCommand-String-"></span><code>function <strong>ProCommand</strong>(LineText: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RequestLineToPeer-String-Integer-String-"></span><code>function <strong>RequestLineToPeer</strong>(host: String; port: Integer; command: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Network</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RequestToPeer-String-String-"></span><code>function <strong>RequestToPeer</strong>(hostandPort, command: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="Restar-Int64-"></span><code>function <strong>Restar</strong>(number: Int64): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Convert any positive integer in negative</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RunExternalProgram-String-"></span><code>procedure <strong>RunExternalProgram</strong>(ProgramToRun: String);</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Runs an external program</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SaveTextToDisk-TFileName-String-"></span><code>function <strong>SaveTextToDisk</strong>(const aFileName: TFileName; const aText: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+File handling</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SendApiRequest-String-"></span><code>function <strong>SendApiRequest</strong>(urltocheck: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SendFileViaTCP-String-String-String-Integer-"></span><code>function <strong>SendFileViaTCP</strong>(filename, message, host: String; Port: Integer): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TryCopyFile-String-String-"></span><code>function <strong>TryCopyFile</strong>(Source, destination: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TryDeleteFile-String-"></span><code>function <strong>TryDeleteFile</strong>(filename: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Try to delete a file safely</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UnzipFile-String-Boolean-"></span><code>function <strong>UnzipFile</strong>(filename: String; delFile: Boolean): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Unzip a zip file and (optional) delete it</p>
+</td></tr>
+</table>
+<h3 class="detail">Types</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TBlockOrdersArray"></span><code><strong>TBlockOrdersArray</strong> = array of <a href="Noso.General.TOrderData.html">TOrderData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="TStringArray"></span><code><strong>TStringArray</strong> = array of String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>

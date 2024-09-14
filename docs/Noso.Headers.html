@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>NosoNode: Noso.Headers</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="PasDoc 0.16.0-snapshot">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<link rel="stylesheet" type="text/css" href="tipuesearch/tipuesearch.css">
+
+<link rel="StyleSheet" type="text/css" href="pasdoc.css">
+</head>
+<body>
+<div class="container"><div class="navigation">
+<h2><a href="index.html">NosoNode</a></h2><ul><li><a href="AllUnits.html">Units</a></li><li><a href="ClassHierarchy.html">Class Hierarchy</a></li><li><a href="AllClasses.html">Classes, Interfaces, Objects and Records</a></li><li><a href="AllTypes.html">Types</a></li><li><a href="AllVariables.html">Variables</a></li><li><a href="AllConstants.html">Constants</a></li><li><a href="AllFunctions.html">Functions and Procedures</a></li><li><a href="AllIdentifiers.html">Identifiers</a></li><li><form class="search-form" action="tipue_results.html"><div class="search-input"><input type="text" name="q" id="tipue_search_input" pattern=".{1,}" title="At least 1 characters" required><div class="search-button"><input type="button" id="tipue_search_button" onclick="this.form.submit();"></div></div></form>
+<div style="clear: both"></div>
+</li></ul></div><div class="content">
+<h1 class="unit">Unit Noso.Headers</h1>
+<div class="sections">
+<div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section"><a class="section" href="#PasDoc-Classes">Classes, Interfaces, Objects and Records</a></div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section">Constants</div><div class="one_section"><a class="section" href="#PasDoc-Variables">Variables</a></div></div>
+<span id="PasDoc-Description"></span><h2 class="description">Description</h2>
+<p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
+<ul class="useslist"><li>Classes</li><li><a href="Noso.Crypto.html">Noso.Crypto</a></li><li><a href="Noso.Debug.html">Noso.Debug</a></li><li><a href="Noso.General.html">Noso.General</a></li><li>SysUtils</li></ul><h2 class="overview">Overview</h2>
+<span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
+<table class="classestable wide_list">
+<tr class="listheader">
+<th class="itemname">Name</th>
+<th class="itemdesc">Description</th>
+</tr>
+<tr class="list">
+<td class="itemname">Packed Record&nbsp;<a class="bold" href="Noso.Headers.ResumenData.html"><code>ResumenData</code></a></td>
+<td class="itemdesc">&nbsp;</td>
+</tr>
+</table>
+<span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#AddRecordToHeaders-Int64-String-String-">AddRecordToHeaders</a></strong>(BlockNumber: Int64; BlockHash, SumHash: String): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#CreateHeadersFile">CreateHeadersFile</a></strong>(): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#GetHeadersAsMemStream-TMemoryStream-">GetHeadersAsMemStream</a></strong>(var LMs: TMemoryStream): Int64;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#GetHeadersHeigth">GetHeadersHeigth</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#GetHeadersLastBlock">GetHeadersLastBlock</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#GetResumenHash">GetResumenHash</a></strong>(): String;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#LastHeadersString-Integer-">LastHeadersString</a></strong>(FromBlock: Integer): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#RemoveHeadersLastRecord">RemoveHeadersLastRecord</a></strong>(): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#SaveStreamAsHeaders-TMemoryStream-">SaveStreamAsHeaders</a></strong>(var LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.Headers.html#SetHeadersFileName-String-">SetHeadersFileName</a></strong>(Filename: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>procedure <strong><a href="Noso.Headers.html#SetResumenHash">SetResumenHash</a></strong>();</code></td>
+</tr>
+</table>
+<span id="PasDoc-Variables"></span><h3 class="summary">Variables</h3>
+<table class="summary wide_list">
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Headers.html#CS_HeadersFile">CS_HeadersFile</a></strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Headers.html#FileResumen">FileResumen</a></strong>: file of <a href="Noso.Headers.ResumenData.html">ResumenData</a>;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Headers.html#MyResumenHash">MyResumenHash</a></strong>: String = '';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Headers.html#ResumenFilename">ResumenFilename</a></strong>: String = 'blchhead.nos';</code></td>
+</tr>
+</table>
+<h2 class="description">Description</h2>
+<h3 class="detail">Functions and Procedures</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="AddRecordToHeaders-Int64-String-String-"></span><code>function <strong>AddRecordToHeaders</strong>(BlockNumber: Int64; BlockHash, SumHash: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CreateHeadersFile"></span><code>function <strong>CreateHeadersFile</strong>(): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Creates a headers file. If it already exists, rewrite a new empty one.</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetHeadersAsMemStream-TMemoryStream-"></span><code>function <strong>GetHeadersAsMemStream</strong>(var LMs: TMemoryStream): Int64;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the headers file as a STREAM</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetHeadersHeigth"></span><code>function <strong>GetHeadersHeigth</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetHeadersLastBlock"></span><code>function <strong>GetHeadersLastBlock</strong>(): Integer;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the block number of the last record on headers</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetResumenHash"></span><code>function <strong>GetResumenHash</strong>(): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the hash of the file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="LastHeadersString-Integer-"></span><code>function <strong>LastHeadersString</strong>(FromBlock: Integer): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Returns the string for headers updates</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="RemoveHeadersLastRecord"></span><code>function <strong>RemoveHeadersLastRecord</strong>(): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SaveStreamAsHeaders-TMemoryStream-"></span><code>function <strong>SaveStreamAsHeaders</strong>(var LStream: TMemoryStream): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Save a provided stream as the headers file</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetHeadersFileName-String-"></span><code>function <strong>SetHeadersFileName</strong>(Filename: String): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Sets the headers file path and name</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="SetResumenHash"></span><code>procedure <strong>SetResumenHash</strong>();</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Sets the hash value</p>
+</td></tr>
+</table>
+<h3 class="detail">Variables</h3>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="CS_HeadersFile"></span><code><strong>CS_HeadersFile</strong>: TRTLCriticalSection;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+'NOSODATA'+DirectorySeparator+</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="FileResumen"></span><code><strong>FileResumen</strong>: file of <a href="Noso.Headers.ResumenData.html">ResumenData</a>;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MyResumenHash"></span><code><strong>MyResumenHash</strong>: String = '';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ResumenFilename"></span><code><strong>ResumenFilename</strong>: String = 'blchhead.nos';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
+</span>
+</div></div></body></html>
