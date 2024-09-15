@@ -21,7 +21,7 @@
 <p>
 Unit for general functions.</p>
 <span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
-<ul class="useslist"><li>Classes</li><li>fileutil</li><li>fphttpclient</li><li>IdGlobal</li><li>IdTCPClient</li><li><a href="Noso.Debug.html">Noso.Debug</a></li><li>opensslsockets</li><li>Process</li><li>StrUtils</li><li>SysUtils</li><li>Zipper</li></ul><h2 class="overview">Overview</h2>
+<ul class="useslist"><li>Classes</li><li>fileutil</li><li>fphttpclient</li><li>IdGlobal</li><li>IdTCPClient</li><li>Math</li><li><a href="Noso.Debug.html">Noso.Debug</a></li><li>opensslsockets</li><li>Process</li><li>StrUtils</li><li>SysUtils</li><li>Zipper</li></ul><h2 class="overview">Overview</h2>
 <span id="PasDoc-Classes"></span><h3 class="cio">Classes, Interfaces, Objects and Records</h3>
 <table class="classestable wide_list">
 <tr class="listheader">
@@ -47,13 +47,13 @@ Unit for general functions.</p>
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#AppFileName">AppFileName</a></strong>(): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#CombineTextFiles-TStringArray-String-Boolean-">CombineTextFiles</a></strong>(FileList: <a href="Noso.General.html#TStringArray">TStringArray</a>; Destination: String; DeleteSources: Boolean = True): Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#CombineTextFiles-TStringArray-String-Boolean-">CombineTextFiles</a></strong>(FileList: <a href="Noso.General.html#TStringArray">TStringArray</a>; const Destination: String; DeleteSources: Boolean = True): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#CreateEmptyFile-String-">CreateEmptyFile</a></strong>(FileName: String): Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#CreateEmptyFile-String-">CreateEmptyFile</a></strong>(const FileName: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#ExtractMasternodesText-String-">ExtractMasternodesText</a></strong>(Text: String): String;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#ExtractMasternodesText-String-">ExtractMasternodesText</a></strong>(const Text: String): String;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#GetCirculatingSupply-Integer-">GetCirculatingSupply</a></strong>(const Block: Integer): Int64;</code></td>
@@ -62,55 +62,55 @@ Unit for general functions.</p>
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#GetCommand-String-">GetCommand</a></strong>(const Line: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetCustFee-Integer-">GetCustFee</a></strong>(Block: Integer): Int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetCustomFee-Integer-">GetCustomFee</a></strong>(const Block: Integer): Int64;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#GetDevPercentage-Integer-">GetDevPercentage</a></strong>(Block: Integer): Integer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetMasterNodesPercentage-Integer-String-">GetMasterNodesPercentage</a></strong>(Block: Integer; MainnetMode: String = 'NORMAL'): Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetMasterNodesPercentage-Integer-String-">GetMasterNodesPercentage</a></strong>(const Block: Integer; const MainnetMode: String = 'NORMAL'): Integer;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetMaximumToSend-Int64-">GetMaximumToSend</a></strong>(Amount: Int64): Int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetMaximumToSend-Int64-">GetMaximumToSend</a></strong>(const Amount: Int64): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetMinimumFee-Int64-">GetMinimumFee</a></strong>(Amount: Int64): Int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetMinimumFeeForAmount-Int64-">GetMinimumFeeForAmount</a></strong>(const Amount: Int64): Int64;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#GetParameter-String-Int64-String-">GetParameter</a></strong>(const Line: String; const ParamNumber: Int64; const Delimiter: String = ' '): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetPoSPercentage-Integer-">GetPoSPercentage</a></strong>(Block: Integer): Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetPoSPercentage-Integer-">GetPoSPercentage</a></strong>(const Block: Integer): Integer;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#GetProtocolCommand-String-">GetProtocolCommand</a></strong>(const Line: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetStackRequired-Integer-">GetStackRequired</a></strong>(Block: Integer): Int64;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetStackRequired-Integer-">GetStackRequired</a></strong>(const Block: Integer): Int64;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#GetStringFromOrder-TOrderData-">GetStringFromOrder</a></strong>(Order: <a href="Noso.General.TOrderData.html">TOrderData</a>): String;</code></td>
-</tr>
-<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#HashRateToReadable-Int64-">HashRateToReadable</a></strong>(const Speed: Int64): String;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#IntToCurrency-Int64-">IntToCurrency</a></strong>(const Value: Int64): String;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#IsValidIP-String-">IsValidIP</a></strong>(const IpAddress: String): Boolean;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#LoadTextFromDisk-TFileName-">LoadTextFromDisk</a></strong>(const FileName: TFileName): String;</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#OrderToString-TOrderData-">OrderToString</a></strong>(const Order: <a href="Noso.General.TOrderData.html">TOrderData</a>): String;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#OSVersion">OSVersion</a></strong>: String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#RequestLineToPeer-String-Integer-String-">RequestLineToPeer</a></strong>(Host: String; Port: Integer; Command: String): String;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#RequestLineToPeer-String-Integer-String-">RequestLineToPeer</a></strong>(const Host: String; const Port: Integer; const Command: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#RequestToPeer-String-String-">RequestToPeer</a></strong>(HostAndPort, Command: String): String;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#RequestToPeer-String-String-">RequestToPeer</a></strong>(const HostAndPort, Command: String): String;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>procedure <strong><a href="Noso.General.html#RunExternalProgram-String-">RunExternalProgram</a></strong>(const ProgramToRun: String);</code></td>
@@ -119,22 +119,22 @@ Unit for general functions.</p>
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#SaveTextToDisk-TFileName-String-">SaveTextToDisk</a></strong>(const FileName: TFileName; const Text: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#SendApiRequest-String-">SendApiRequest</a></strong>(Url: String): String;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#SendApiRequest-String-">SendApiRequest</a></strong>(const Url: String): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#SendFileViaTCP-String-String-String-Integer-">SendFileViaTCP</a></strong>(FileName, Message, Host: String; Port: Integer): Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#SendFileViaTCP-String-String-String-Integer-">SendFileViaTCP</a></strong>(const FileName, Message, Host: String; const Port: Integer): Boolean;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.General.html#ToNegative-Int64-">ToNegative</a></strong>(const Number: Int64): Int64;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#TryCopyFile-String-String-">TryCopyFile</a></strong>(Source, Destination: String): Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#TryCopyFile-String-String-">TryCopyFile</a></strong>(const Source, Destination: String): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#TryDeleteFile-String-">TryDeleteFile</a></strong>(FileName: String): Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#TryDeleteFile-String-">TryDeleteFile</a></strong>(const FileName: String): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.General.html#UnzipFile-String-Boolean-">UnzipFile</a></strong>(FileName: String; DeleteFile: Boolean): Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.General.html#UnzipFile-String-Boolean-">UnzipFile</a></strong>(const FileName: String; DeleteFile: Boolean): Boolean;</code></td>
 </tr>
 </table>
 <span id="PasDoc-Types"></span><h3 class="summary">Types</h3>
@@ -154,31 +154,114 @@ Unit for general functions.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Returns the name of the app file without path</p>
-</td></tr>
+Returns the name of the application executable without the path.</p>
+<p>
+ 
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  AppName: <span class="pascal_keyword">String</span>;
+<span class="pascal_keyword">begin</span>
+  AppName := AppFileName();
+  Writeln(<span class="pascal_string">'The application file name is: '</span>, AppName);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The file name of the application executable.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="CombineTextFiles-TStringArray-String-Boolean-"></span><code>function <strong>CombineTextFiles</strong>(FileList: <a href="Noso.General.html#TStringArray">TStringArray</a>; Destination: String; DeleteSources: Boolean = True): Boolean;</code></td>
-</tr>
-<tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><span id="CreateEmptyFile-String-"></span><code>function <strong>CreateEmptyFile</strong>(FileName: String): Boolean;</code></td>
+<td class="itemcode"><span id="CombineTextFiles-TStringArray-String-Boolean-"></span><code>function <strong>CombineTextFiles</strong>(FileList: <a href="Noso.General.html#TStringArray">TStringArray</a>; const Destination: String; DeleteSources: Boolean = True): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Creates an empty file</p>
-</td></tr>
+Combines multiple text files into one destination file.</p>
+<p>
+
+
+<p>   
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  Success: Boolean;
+  Files: TStringArray;
+<span class="pascal_keyword">begin</span>
+  Files := [<span class="pascal_string">'file1.txt'</span>, <span class="pascal_string">'file2.txt'</span>, <span class="pascal_string">'file3.txt'</span>];
+  Success := CombineTextFiles(Files, <span class="pascal_string">'combined.txt'</span>, True);
+  <span class="pascal_keyword">if</span> Success <span class="pascal_keyword">then</span>
+    Writeln(<span class="pascal_string">'Files combined successfully!'</span>)
+  <span class="pascal_keyword">else</span>
+    Writeln(<span class="pascal_string">'Failed to combine the files.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>FileList</dt>
+<dd>An array of file names to combine.</dd>
+<dt>Destination</dt>
+<dd>The destination file where the combined text will be saved.</dd>
+<dt>DeleteSources</dt>
+<dd>If <code>True</code>, the source files will be deleted after they are combined. Defaults to <code>True</code>.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if all files were successfully combined and saved, <code>False</code> otherwise.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ExtractMasternodesText-String-"></span><code>function <strong>ExtractMasternodesText</strong>(Text: String): String;</code></td>
+<td class="itemcode"><span id="CreateEmptyFile-String-"></span><code>function <strong>CreateEmptyFile</strong>(const FileName: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Creates an empty file on disk.</p>
+<p>
+
+
+<p> 
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  Success: Boolean;
+<span class="pascal_keyword">begin</span>
+  Success := CreateEmptyFile(<span class="pascal_string">'emptyfile.txt'</span>);
+  <span class="pascal_keyword">if</span> Success <span class="pascal_keyword">then</span>
+    Writeln(<span class="pascal_string">'Empty file created successfully!'</span>)
+  <span class="pascal_keyword">else</span>
+    Writeln(<span class="pascal_string">'Failed to create the file.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>FileName</dt>
+<dd>The name of the empty file to create.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the file was created successfully, <code>False</code> otherwise.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="ExtractMasternodesText-String-"></span><code>function <strong>ExtractMasternodesText</strong>(const Text: String): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Extracts the masternode's text in a string.</p>
+<p>
+  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Text</dt>
+<dd>The master node text.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The substring after the '$' character.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -229,12 +312,20 @@ Extracts the command from the first parameter of the input string.</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetCustFee-Integer-"></span><code>function <strong>GetCustFee</strong>(Block: Integer): Int64;</code></td>
+<td class="itemcode"><span id="GetCustomFee-Integer-"></span><code>function <strong>GetCustomFee</strong>(const Block: Integer): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Returns the <a class="normal" href="MP.Protocol.html#Custom">custom</a> fee amount</p>
-</td></tr>
+Returns the <a class="normal" href="MP.Protocol.html#Custom">custom</a> fee.</p>
+<p>
+  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Block</dt>
+<dd>The current block.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The <a class="normal" href="MP.Protocol.html#Custom">custom</a> fee as an Int64 value.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -242,35 +333,69 @@ Returns the <a class="normal" href="MP.Protocol.html#Custom">custom</a> fee amou
 </tr>
 <tr><td colspan="1">
 <p>
-Returns the Project percentage for the specified block</p>
-</td></tr>
+Returns the developer percentage.</p>
+<p>
+  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Block</dt>
+<dd>The current block.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The developer percentage for the specified block, as a number from 0 to 10000.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMasterNodesPercentage-Integer-String-"></span><code>function <strong>GetMasterNodesPercentage</strong>(Block: Integer; MainnetMode: String = 'NORMAL'): Integer;</code></td>
+<td class="itemcode"><span id="GetMasterNodesPercentage-Integer-String-"></span><code>function <strong>GetMasterNodesPercentage</strong>(const Block: Integer; const MainnetMode: String = 'NORMAL'): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Returns the MNs percentage for the specified block (0 to 10000)</p>
-</td></tr>
+Calculates the percentage of master <a class="normal" href="MP.Protocol.html#Nodes">nodes</a> based on the current block number and mode.
+
+<p>  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Block</dt>
+<dd>The current block number.</dd>
+<dt>MainnetMode</dt>
+<dd>The mode of the mainnet. If it contains 'MNSONLY', the percentage is adjusted for master <a class="normal" href="MP.Protocol.html#Nodes">nodes</a> only. Defaults to 'NORMAL'.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The percentage of master <a class="normal" href="MP.Protocol.html#Nodes">nodes</a>.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMaximumToSend-Int64-"></span><code>function <strong>GetMaximumToSend</strong>(Amount: Int64): Int64;</code></td>
+<td class="itemcode"><span id="GetMaximumToSend-Int64-"></span><code>function <strong>GetMaximumToSend</strong>(const Amount: Int64): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Returns the maximum that can be sent from the specified amount</p>
-</td></tr>
+Returns the maximum amount that can be sent for a specific amount.</p>
+<p>
+  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Amount</dt>
+<dd>The amount.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The maximum amount.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMinimumFee-Int64-"></span><code>function <strong>GetMinimumFee</strong>(Amount: Int64): Int64;</code></td>
+<td class="itemcode"><span id="GetMinimumFeeForAmount-Int64-"></span><code>function <strong>GetMinimumFeeForAmount</strong>(const Amount: Int64): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Returns the minimum fee to be paid for the specified amount</p>
-</td></tr>
+Returns the minimum fee that can be paid for a specific amount.</p>
+<p>
+  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Amount</dt>
+<dd>The amount to which the fee applies.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The minimum fee.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -295,12 +420,20 @@ Extracts a specific parameter from a delimited string</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetPoSPercentage-Integer-"></span><code>function <strong>GetPoSPercentage</strong>(Block: Integer): Integer;</code></td>
+<td class="itemcode"><span id="GetPoSPercentage-Integer-"></span><code>function <strong>GetPoSPercentage</strong>(const Block: Integer): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Returns the PoS percentage for the specified block (0 to 10000)</p>
-</td></tr>
+Returns the PoS percentage.</p>
+<p>
+  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Block</dt>
+<dd>The current block.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The PoS percentage for the specified block, as a number from 0 to 10000.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -325,21 +458,20 @@ Extracts the protocol command from the input string.</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetStackRequired-Integer-"></span><code>function <strong>GetStackRequired</strong>(Block: Integer): Int64;</code></td>
+<td class="itemcode"><span id="GetStackRequired-Integer-"></span><code>function <strong>GetStackRequired</strong>(const Block: Integer): Int64;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Returns the required noso stack size</p>
-</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><span id="GetStringFromOrder-TOrderData-"></span><code>function <strong>GetStringFromOrder</strong>(Order: <a href="Noso.General.TOrderData.html">TOrderData</a>): String;</code></td>
-</tr>
-<tr><td colspan="1">
+Returns the stack required for Noso.</p>
 <p>
-Protocol specific Convierte una orden en una cadena para compartir</p>
-</td></tr>
+  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Block</dt>
+<dd>The current block.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The stack size as an Int64 value.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -456,7 +588,66 @@ Validates an IP address.</p>
 <td class="itemcode"><span id="LoadTextFromDisk-TFileName-"></span><code>function <strong>LoadTextFromDisk</strong>(const FileName: TFileName): String;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Loads text from a file on disk.</p>
+<p>
+
+
+<p> 
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  FileText: <span class="pascal_keyword">String</span>;
+<span class="pascal_keyword">begin</span>
+  FileText := LoadTextFromDisk(<span class="pascal_string">'example.txt'</span>);
+  <span class="pascal_keyword">if</span> FileText &lt;&gt; <span class="pascal_string">''</span> <span class="pascal_keyword">then</span>
+    Writeln(<span class="pascal_string">'File loaded successfully: '</span>, FileText)
+  <span class="pascal_keyword">else</span>
+    Writeln(<span class="pascal_string">'Failed to load the file.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>FileName</dt>
+<dd>The name and path of the file to load.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The content of the file as a string, or an empty string in case of failure.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="OrderToString-TOrderData-"></span><code>function <strong>OrderToString</strong>(const Order: <a href="Noso.General.TOrderData.html">TOrderData</a>): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Converts an order record to a formatted string.</p>
+<p>
+
+
+<p> 
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  OrderString: <span class="pascal_keyword">String</span>;
+  MyOrder: TOrderData;
+<span class="pascal_keyword">begin</span>
+  MyOrder := GetOrder(); <span class="pascal_comment">// Could be any order.</span>
+  Writeln(<span class="pascal_string">'Order as string: '</span>, OrderToString(MyOrder));
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Order</dt>
+<dd>The order record to convert.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">A string representing the order.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -464,24 +655,82 @@ Validates an IP address.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Gets OS version</p>
+Returns the OS name as a string.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RequestLineToPeer-String-Integer-String-"></span><code>function <strong>RequestLineToPeer</strong>(Host: String; Port: Integer; Command: String): String;</code></td>
+<td class="itemcode"><span id="RequestLineToPeer-String-Integer-String-"></span><code>function <strong>RequestLineToPeer</strong>(const Host: String; const Port: Integer; const Command: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Network</p>
-</td></tr>
+Send a command to peer via TCP and return the response.</p>
+<p>
+
+
+<p>   
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  Response: <span class="pascal_keyword">String</span>;
+<span class="pascal_keyword">begin</span>
+  Response := RequestLineToPeer(<span class="pascal_string">'192.168.1.100'</span>, <span class="pascal_numeric">8080</span>, <span class="pascal_string">'GET_INFO'</span>);
+  <span class="pascal_keyword">if</span> Response &lt;&gt; <span class="pascal_string">''</span> <span class="pascal_keyword">then</span>
+    WriteLn(<span class="pascal_string">'Response from peer: '</span>, Response)
+  <span class="pascal_keyword">else</span>
+    WriteLn(<span class="pascal_string">'Failed to get a response from peer.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Host</dt>
+<dd>The hostname or IP address of the peer.</dd>
+<dt>Port</dt>
+<dd>The port number of the peer.</dd>
+<dt>Command</dt>
+<dd>The command to be sent to the peer.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The response from the peer as a string.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="RequestToPeer-String-String-"></span><code>function <strong>RequestToPeer</strong>(HostAndPort, Command: String): String;</code></td>
+<td class="itemcode"><span id="RequestToPeer-String-String-"></span><code>function <strong>RequestToPeer</strong>(const HostAndPort, Command: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Send a command to a peer using a combined Host:Port string.</p>
+<p>
+
+
+<p>  
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  Response: <span class="pascal_keyword">String</span>;
+<span class="pascal_keyword">begin</span>
+  Response := RequestToPeer(<span class="pascal_string">'example.com:9000'</span>, <span class="pascal_string">'PING'</span>);
+  <span class="pascal_keyword">if</span> Response &lt;&gt; <span class="pascal_string">''</span> <span class="pascal_keyword">then</span>
+    WriteLn(<span class="pascal_string">'Response from peer: '</span>, Response)
+  <span class="pascal_keyword">else</span>
+    WriteLn(<span class="pascal_string">'Failed to get a response from peer.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>HostAndPort</dt>
+<dd>The string in the format 'host:port'.</dd>
+<dt>Command</dt>
+<dd>The command to send to the peer.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The response from the peer as a string.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -514,22 +763,107 @@ Runs an external program or script based on the operating system. The procedure 
 </tr>
 <tr><td colspan="1">
 <p>
-File handling</p>
-</td></tr>
+Saves a given text to a file on disk.</p>
+<p>
+
+
+<p>  
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  Success: Boolean;
+<span class="pascal_keyword">begin</span>
+  Success := SaveTextToDisk(<span class="pascal_string">'example.txt'</span>, <span class="pascal_string">'This is some example text.'</span>);
+  <span class="pascal_keyword">if</span> Success <span class="pascal_keyword">then</span>
+    Writeln(<span class="pascal_string">'File saved successfully!'</span>)
+  <span class="pascal_keyword">else</span>
+    Writeln(<span class="pascal_string">'Failed to save the file.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>FileName</dt>
+<dd>The name and path of the file to save.</dd>
+<dt>Text</dt>
+<dd>The content to save to the file.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the file was saved successfully, <code>False</code> otherwise.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SendApiRequest-String-"></span><code>function <strong>SendApiRequest</strong>(Url: String): String;</code></td>
+<td class="itemcode"><span id="SendApiRequest-String-"></span><code>function <strong>SendApiRequest</strong>(const Url: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Send HTTP GET request to the specified URL.</p>
+<p>
+  
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  ApiResponse: <span class="pascal_keyword">String</span>;
+<span class="pascal_keyword">begin</span>
+  ApiResponse := SendApiRequest(<span class="pascal_string">'https://api.example.com/data'</span>);
+  <span class="pascal_keyword">if</span> ApiResponse &lt;&gt; <span class="pascal_string">''</span> <span class="pascal_keyword">then</span>
+    WriteLn(<span class="pascal_string">'API Response: '</span>, ApiResponse)
+  <span class="pascal_keyword">else</span>
+    WriteLn(<span class="pascal_string">'Failed to get a response from the API.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Url</dt>
+<dd>The URL to send the request to.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The response from the API as a string.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SendFileViaTCP-String-String-String-Integer-"></span><code>function <strong>SendFileViaTCP</strong>(FileName, Message, Host: String; Port: Integer): Boolean;</code></td>
+<td class="itemcode"><span id="SendFileViaTCP-String-String-String-Integer-"></span><code>function <strong>SendFileViaTCP</strong>(const FileName, Message, Host: String; const Port: Integer): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Sends a file to a peer via TCP, preceded by a message.</p>
+<p>
+
+
+<p>    
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  Success: Boolean;
+<span class="pascal_keyword">begin</span>
+  Success := SendFileViaTCP(<span class="pascal_string">'example.txt'</span>, <span class="pascal_string">'Sending file'</span>, <span class="pascal_string">'192.168.1.10'</span>, <span class="pascal_numeric">8080</span>);
+  <span class="pascal_keyword">if</span> Success <span class="pascal_keyword">then</span>
+    Writeln(<span class="pascal_string">'File sent successfully!'</span>)
+  <span class="pascal_keyword">else</span>
+    Writeln(<span class="pascal_string">'Failed to send the file.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>FileName</dt>
+<dd>The name of the file to be sent.</dd>
+<dt>Message</dt>
+<dd>The message to be sent before the file.</dd>
+<dt>Host</dt>
+<dd>The hostname or IP address of the peer.</dd>
+<dt>Port</dt>
+<dd>The port number to connect to.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the file was sent successfully, <code>False</code> otherwise.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -559,28 +893,109 @@ Writeln(ToNegative(<span class="pascal_numeric">25</span>));  <span class="pasca
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="TryCopyFile-String-String-"></span><code>function <strong>TryCopyFile</strong>(Source, Destination: String): Boolean;</code></td>
-</tr>
-<tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><span id="TryDeleteFile-String-"></span><code>function <strong>TryDeleteFile</strong>(FileName: String): Boolean;</code></td>
+<td class="itemcode"><span id="TryCopyFile-String-String-"></span><code>function <strong>TryCopyFile</strong>(const Source, Destination: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Try to delete a file safely</p>
-</td></tr>
+Copies a file from source to destination.</p>
+<p>
+
+
+<p>   <dl class="tag warning"><dt><strong>Warning</strong></dt><dd>This function will overwrite the destination, if it exists.</dd></dl>
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  Success: Boolean;
+<span class="pascal_keyword">begin</span>
+  Success := TryCopyFile(<span class="pascal_string">'source.txt'</span>, <span class="pascal_string">'destination.txt'</span>);
+  <span class="pascal_keyword">if</span> Success <span class="pascal_keyword">then</span>
+    Writeln(<span class="pascal_string">'File copied successfully!'</span>)
+  <span class="pascal_keyword">else</span>
+    Writeln(<span class="pascal_string">'Failed to copy the file.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Source</dt>
+<dd>The full path of the source file.</dd>
+<dt>Destination</dt>
+<dd>The full path of the destination file.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the file was copied successfully, <code>False</code> otherwise.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="UnzipFile-String-Boolean-"></span><code>function <strong>UnzipFile</strong>(FileName: String; DeleteFile: Boolean): Boolean;</code></td>
+<td class="itemcode"><span id="TryDeleteFile-String-"></span><code>function <strong>TryDeleteFile</strong>(const FileName: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Unzip a zip file and (optional) delete it</p>
-</td></tr>
+Attempts to delete a file safely.</p>
+<p>
+
+
+<p> 
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  Success: Boolean;
+<span class="pascal_keyword">begin</span>
+  Success := TryDeleteFile(<span class="pascal_string">'example.txt'</span>);
+  <span class="pascal_keyword">if</span> Success <span class="pascal_keyword">then</span>
+    Writeln(<span class="pascal_string">'File deleted successfully!'</span>)
+  <span class="pascal_keyword">else</span>
+    Writeln(<span class="pascal_string">'Failed to delete the file.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>FileName</dt>
+<dd>The name of the file to delete.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the file was deleted successfully, <code>False</code> otherwise.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="UnzipFile-String-Boolean-"></span><code>function <strong>UnzipFile</strong>(const FileName: String; DeleteFile: Boolean): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Unzips a file and optionally deletes the source file.</p>
+<p>
+
+
+<p>  
+
+<p>Example: </p>
+
+<pre class="longcode">
+<span class="pascal_keyword">var</span>
+  Success: Boolean;
+<span class="pascal_keyword">begin</span>
+  Success := UnzipFile(<span class="pascal_string">'archive.zip'</span>, True);
+  <span class="pascal_keyword">if</span> Success <span class="pascal_keyword">then</span>
+    Writeln(<span class="pascal_string">'File unzipped and deleted successfully!'</span>)
+  <span class="pascal_keyword">else</span>
+    Writeln(<span class="pascal_string">'Failed to unzip the file.'</span>);
+<span class="pascal_keyword">end</span>;</pre>
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>FileName</dt>
+<dd>The name of the zip file to be extracted.</dd>
+<dt>DeleteFile</dt>
+<dd>If <code>True</code>, deletes the source file after extraction.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the file was unzipped successfully, <code>False</code> otherwise.</p></td></tr>
 </table>
 <h3 class="detail">Types</h3>
 <table class="detail wide_list">

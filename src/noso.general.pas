@@ -8,12 +8,55 @@ interface
 
 uses
   Classes, SysUtils, Process, StrUtils, IdTCPClient, IdGlobal, fphttpclient,
-  opensslsockets, fileutil, Noso.Debug, Zipper;
+  opensslsockets, fileutil, Noso.Debug, Zipper, Math;
 
 type
   // TStream helper class for string manipulation in streams
   TStreamHelper = class helper for TStream
-    procedure SetString(const S: String);
+    {
+      @abstract(Writes a string to the stream, preceded by its length.)
+
+      @param(S The string to write to the stream.)
+
+      Example:
+      @longcode(#
+      var
+        MyStream: TMemoryStream;
+      begin
+        MyStream := TMemoryStream.Create;
+        try
+          MyStream.SetString('Hello, World!');
+        finally
+          MyStream.Free;
+        end;
+      end;
+      #)
+    }
+    procedure SetString(const AString: String);
+
+    {
+      @abstract(Reads a string from the stream, which was previously written with @link(SetString).)
+
+      @returns(The string read from the stream.)
+
+      Example:
+      @longcode(#
+      var
+        MyStream: TMemoryStream;
+        S: String;
+      begin
+        MyStream := TMemoryStream.Create;
+        try
+          MyStream.SetString('Hello, World!');
+          MyStream.Position := 0;
+          S := MyStream.GetString;
+          Writeln('Read string: ', S);
+        finally
+          MyStream.Free;
+        end;
+      end;
+      #)
+    }
     function GetString: String;
   end;
 
@@ -204,81 +247,379 @@ function IntToCurrency(const Value: Int64): String;
 }
 procedure RunExternalProgram(const ProgramToRun: String);
 
+{
+  @abstract(Returns the custom fee.)
+  @param(Block The current block.)
+  @returns(The custom fee as an Int64 value.)
+}
+function GetCustomFee(const Block: Integer): Int64;
 
-function GetCustFee(Block: Integer): Int64;
+{
+  @abstract(Returns the stack required for Noso.)
+  @param(Block The current block.)
+  @returns(The stack size as an Int64 value.)
+}
+function GetStackRequired(const Block: Integer): Int64;
 
+{
+  Calculates the percentage of master nodes based on the current block number and mode.
 
-function GetStackRequired(Block: Integer): Int64;
+  @param(Block The current block number.)
+  @param(MainnetMode The mode of the mainnet. If it contains 'MNSONLY',
+                     the percentage is adjusted for master nodes only.
+                     Defaults to 'NORMAL'.)
+  @returns(The percentage of master nodes.)
+}
+function GetMasterNodesPercentage(const Block: Integer;
+  const MainnetMode: String = 'NORMAL'): Integer;
 
+{
+  @abstract(Returns the PoS percentage.)
+  @param(Block The current block.)
+  @returns(The PoS percentage for the specified block, as a number from 0 to 10000.)
+}
+function GetPoSPercentage(const Block: Integer): Integer;
 
-function GetMasterNodesPercentage(Block: Integer;
-  MainnetMode: String = 'NORMAL'): Integer;
-
-
-function GetPoSPercentage(Block: Integer): Integer;
-
-
+{
+  @abstract(Returns the developer percentage.)
+  @param(Block The current block.)
+  @returns(The developer percentage for the specified block, as a number from 0 to 10000.)
+}
 function GetDevPercentage(Block: Integer): Integer;
 
+{
+  @abstract(Returns the minimum fee that can be paid for a specific amount.)
+  @param(Amount The amount to which the fee applies.)
+  @returns(The minimum fee.)
+}
+function GetMinimumFeeForAmount(const Amount: Int64): Int64;
 
-function GetMinimumFee(Amount: Int64): Int64;
+{
+  @abstract(Returns the maximum amount that can be sent for a specific amount.)
+  @param(Amount The amount.)
+  @returns(The maximum amount.)
+}
+function GetMaximumToSend(const Amount: Int64): Int64;
 
-
-function GetMaximumToSend(Amount: Int64): Int64;
-
-
+{
+  @abstract(Returns the OS name as a string.)
+}
 function OSVersion: String;
 
-{Network}
-function RequestLineToPeer(Host: String; Port: Integer; Command: String): String;
-function RequestToPeer(HostAndPort, Command: String): String;
-function SendApiRequest(Url: String): String;
+{
+  @abstract(Send a command to peer via TCP and return the response.)
 
-{File handling}
+  @param(Host The hostname or IP address of the peer.)
+  @param(Port The port number of the peer.)
+  @param(Command The command to be sent to the peer.)
+  @returns(The response from the peer as a string.)
+
+  Example:
+  @longcode(#
+  var
+    Response: String;
+  begin
+    Response := RequestLineToPeer('192.168.1.100', 8080, 'GET_INFO');
+    if Response <> '' then
+      WriteLn('Response from peer: ', Response)
+    else
+      WriteLn('Failed to get a response from peer.');
+  end;
+  #)
+}
+function RequestLineToPeer(const Host: String; const Port: Integer;
+  const Command: String): String;
+
+{
+  @abstract(Send a command to a peer using a combined Host:Port string.)
+
+  @param(HostAndPort The string in the format 'host:port'.)
+  @param(Command The command to send to the peer.)
+  @returns(The response from the peer as a string.)
+
+  Example:
+  @longcode(#
+  var
+    Response: String;
+  begin
+    Response := RequestToPeer('example.com:9000', 'PING');
+    if Response <> '' then
+      WriteLn('Response from peer: ', Response)
+    else
+      WriteLn('Failed to get a response from peer.');
+  end;
+  #)
+}
+function RequestToPeer(const HostAndPort, Command: String): String;
+
+{
+  @abstract(Send HTTP GET request to the specified URL.)
+  @param(Url The URL to send the request to.)
+  @returns(The response from the API as a string.)
+
+  Example:
+  @longcode(#
+  var
+    ApiResponse: String;
+  begin
+    ApiResponse := SendApiRequest('https://api.example.com/data');
+    if ApiResponse <> '' then
+      WriteLn('API Response: ', ApiResponse)
+    else
+      WriteLn('Failed to get a response from the API.');
+  end;
+  #)
+}
+function SendApiRequest(const Url: String): String;
+
+{
+  @abstract(Saves a given text to a file on disk.)
+
+  @param(FileName The name and path of the file to save.)
+  @param(Text The content to save to the file.)
+  @returns(@true if the file was saved successfully, @false otherwise.)
+
+  Example:
+  @longcode(#
+  var
+    Success: Boolean;
+  begin
+    Success := SaveTextToDisk('example.txt', 'This is some example text.');
+    if Success then
+      Writeln('File saved successfully!')
+    else
+      Writeln('Failed to save the file.');
+  end;
+  #)
+}
 function SaveTextToDisk(const FileName: TFileName; const Text: String): Boolean;
-function LoadTextFromDisk(const FileName: TFileName): String;
-function TryCopyFile(Source, Destination: String): Boolean;
-function TryDeleteFile(FileName: String): Boolean;
-function AppFileName(): String;
-function CombineTextFiles(FileList: TStringArray; Destination: String;
-  DeleteSources: Boolean = True): Boolean;
-function SendFileViaTCP(FileName, Message, Host: String; Port: Integer): Boolean;
-function UnzipFile(FileName: String; DeleteFile: Boolean): Boolean;
-function CreateEmptyFile(FileName: String): Boolean;
 
-{Protocol specific}
-function GetStringFromOrder(Order: TOrderData): String;
-function ExtractMasternodesText(Text: String): String;
+{
+  @abstract(Loads text from a file on disk.)
+
+  @param(FileName The name and path of the file to load.)
+  @returns(The content of the file as a string, or an empty string in case of failure.)
+
+  Example:
+  @longcode(#
+  var
+    FileText: String;
+  begin
+    FileText := LoadTextFromDisk('example.txt');
+    if FileText <> '' then
+      Writeln('File loaded successfully: ', FileText)
+    else
+      Writeln('Failed to load the file.');
+  end;
+  #)
+}
+function LoadTextFromDisk(const FileName: TFileName): String;
+
+{
+  @abstract(Copies a file from source to destination.)
+
+  @param(Source The full path of the source file.)
+  @param(Destination The full path of the destination file.)
+  @returns(@true if the file was copied successfully, @false otherwise.)
+  @warning(This function will overwrite the destination, if it exists.)
+
+  Example:
+  @longcode(#
+  var
+    Success: Boolean;
+  begin
+    Success := TryCopyFile('source.txt', 'destination.txt');
+    if Success then
+      Writeln('File copied successfully!')
+    else
+      Writeln('Failed to copy the file.');
+  end;
+  #)
+}
+function TryCopyFile(const Source, Destination: String): Boolean;
+
+{
+  @abstract(Attempts to delete a file safely.)
+
+  @param(FileName The name of the file to delete.)
+  @returns(@true if the file was deleted successfully, @false otherwise.)
+
+  Example:
+  @longcode(#
+  var
+    Success: Boolean;
+  begin
+    Success := TryDeleteFile('example.txt');
+    if Success then
+      Writeln('File deleted successfully!')
+    else
+      Writeln('Failed to delete the file.');
+  end;
+  #)
+}
+function TryDeleteFile(const FileName: String): Boolean;
+
+{
+  @abstract(Returns the name of the application executable without the path.)
+  @returns(The file name of the application executable.)
+
+  Example:
+  @longcode(#
+  var
+    AppName: String;
+  begin
+    AppName := AppFileName();
+    Writeln('The application file name is: ', AppName);
+  end;
+  #)
+}
+function AppFileName(): String;
+
+{
+  @abstract(Combines multiple text files into one destination file.)
+
+  @param(FileList An array of file names to combine.)
+  @param(Destination The destination file where the combined text will be saved.)
+  @param(DeleteSources If @true, the source files will be deleted after they are
+         combined. Defaults to @true.)
+  @returns(@true if all files were successfully combined and saved, @false otherwise.)
+
+  Example:
+  @longcode(#
+  var
+    Success: Boolean;
+    Files: TStringArray;
+  begin
+    Files := ['file1.txt', 'file2.txt', 'file3.txt'];
+    Success := CombineTextFiles(Files, 'combined.txt', True);
+    if Success then
+      Writeln('Files combined successfully!')
+    else
+      Writeln('Failed to combine the files.');
+  end;
+  #)
+}
+function CombineTextFiles(FileList: TStringArray; const Destination: String;
+  DeleteSources: Boolean = True): Boolean;
+
+{
+  @abstract(Sends a file to a peer via TCP, preceded by a message.)
+
+  @param(FileName The name of the file to be sent.)
+  @param(Message The message to be sent before the file.)
+  @param(Host The hostname or IP address of the peer.)
+  @param(Port The port number to connect to.)
+  @returns(@true if the file was sent successfully, @false otherwise.)
+
+  Example:
+  @longcode(#
+  var
+    Success: Boolean;
+  begin
+    Success := SendFileViaTCP('example.txt', 'Sending file', '192.168.1.10', 8080);
+    if Success then
+      Writeln('File sent successfully!')
+    else
+      Writeln('Failed to send the file.');
+  end;
+  #)
+}
+function SendFileViaTCP(const FileName, Message, Host: String;
+  const Port: Integer): Boolean;
+
+{
+  @abstract(Unzips a file and optionally deletes the source file.)
+
+  @param(FileName The name of the zip file to be extracted.)
+  @param(DeleteFile If @true, deletes the source file after extraction.)
+  @returns(@true if the file was unzipped successfully, @false otherwise.)
+
+  Example:
+  @longcode(#
+  var
+    Success: Boolean;
+  begin
+    Success := UnzipFile('archive.zip', True);
+    if Success then
+      Writeln('File unzipped and deleted successfully!')
+    else
+      Writeln('Failed to unzip the file.');
+  end;
+  #)
+}
+function UnzipFile(const FileName: String; DeleteFile: Boolean): Boolean;
+
+{
+  @abstract(Creates an empty file on disk.)
+
+  @param(FileName The name of the empty file to create.)
+  @returns(@true if the file was created successfully, @false otherwise.)
+
+  Example:
+  @longcode(#
+  var
+    Success: Boolean;
+  begin
+    Success := CreateEmptyFile('emptyfile.txt');
+    if Success then
+      Writeln('Empty file created successfully!')
+    else
+      Writeln('Failed to create the file.');
+  end;
+  #)
+}
+function CreateEmptyFile(const FileName: String): Boolean;
+
+{
+  @abstract(Converts an order record to a formatted string.)
+
+  @param(Order The order record to convert.)
+  @returns(A string representing the order.)
+
+  Example:
+  @longcode(#
+  var
+    OrderString: String;
+    MyOrder: TOrderData;
+  begin
+    MyOrder := GetOrder(); // Could be any order.
+    Writeln('Order as string: ', OrderToString(MyOrder));
+  end;
+  #)
+}
+function OrderToString(const Order: TOrderData): String;
+
+{
+  @abstract(Extracts the masternode's text in a string.)
+  @param(Text The master node text.)
+  @returns(The substring after the '$' character.)
+}
+function ExtractMasternodesText(const Text: String): String;
 
 implementation
 
-{$REGION Stream helper}
-
-procedure TStreamHelper.SetString(const S: String);
+procedure TStreamHelper.SetString(const AString: String);
 var
-  LSize: Word;
+  StringSize: Word;
 begin
-  LSize := Length(S);
-  WriteBuffer(LSize, SizeOf(LSize));
-  WriteBuffer(Pointer(S)^, LSize);
+  StringSize := Length(AString);
+
+  WriteBuffer(StringSize, SizeOf(StringSize));
+  if StringSize > 0 then
+    WriteBuffer(Pointer(AString)^, StringSize);
 end;
 
 function TStreamHelper.GetString: String;
 var
-  LSize: Word = 0;
-  P: Pbyte;
+  StringSize: Word = 0;
 begin
-  ReadBuffer(LSize, SizeOf(LSize));
-  SetLength(Result, LSize);
-  if LSize > 0 then
-  begin
-    ReadBuffer(Pointer(Result)^, LSize);
-    P := Pointer(Result) + LSize;
-    P^ := 0;
-  end;
-end;
+  ReadBuffer(StringSize, SizeOf(StringSize));
+  SetLength(Result, StringSize);
 
-{$ENDREGION}
+  // If the string has any data, read it
+  if StringSize > 0 then
+    ReadBuffer(Pointer(Result)^, StringSize);
+end;
 
 function GetParameter(const Line: String; const ParamNumber: Int64;
   const Delimiter: String = ' '): String;
@@ -465,11 +806,7 @@ begin
 end;
 
 function IntToCurrency(const Value: Int64): String;
-var
-  FormattedValue: String;
 begin
-  FormattedValue := FormatFloat('0.00', Abs(Value) / 100);
-
   Result := IntToStr(Abs(Value));
   Result := AddChar('0', Result, 9);
   Insert('.', Result, Length(Result) - 7);
@@ -525,368 +862,445 @@ begin
   end;
 end;
 
-{Returns the custom fee amount}
-function GetCustFee(Block: Integer): Int64;
+function GetCustomFee(const Block: Integer): Int64;
 begin
-  Result := 1000000;
-  if block < 162000 then Result := 25000;
+  if Block < 162000 then
+    Result := 2500
+  else
+    Result := 1000000;
 end;
 
-{Returns the required noso stack size}
-function GetStackRequired(Block: Integer): Int64;
+function GetStackRequired(const Block: Integer): Int64;
+const
+  MaxStackCap = 1100000000000;
+  ReducedStackCap = 1050000000000;
 begin
-  Result := (GetCirculatingSupply(Block) * 20) div 10000;
-  if Result > 1100000000000 then Result := 1100000000000;
-  if Block > 110000 then Result := 1050000000000;
+  // NOTE: it was 20/10000 = 1/500. Yeah, advanced math for sure. ;)
+  Result := GetCirculatingSupply(Block) div 500;
+
+  if Result > MaxStackCap then
+    Result := MaxStackCap;
+
+  if Block > 110000 then
+    Result := ReducedStackCap;
 end;
 
-{Returns the MNs percentage for the specified block (0 to 10000)}
-function GetMasterNodesPercentage(Block: Integer;
-  MainnetMode: String = 'NORMAL'): Integer;
+function GetMasterNodesPercentage(const Block: Integer;
+  const MainnetMode: String = 'NORMAL'): Integer;
+const
+  MasterNodeBlockStart = 48010;
+  PoSBlockEnd = 88400;
+  MasterNodePercentageStart = 2000;
+  MasterNodePercentageMax = 6000;
+  MasterNodePercentageMNsOnly = 9000;
 begin
   Result := 0;
-  if Block >= 48010{MNBlockStart} then
+
+  if Block >= MasterNodeBlockStart then
   begin
-    Result := 2000{MNsPercentage} + (((Block - 48010{MNBlockStart}) div 4000) * 100);
-    if Block >= 88400{PoSBlockEnd} then Inc(Result, 1000);
-    if Result > 6000 then Result := 6000;
-    if AnsiContainsStr(MainnetMode, 'MNSONLY') then Result := 9000;
+    Result := MasterNodePercentageStart + ((Block - MasterNodeBlockStart) div
+      4000) * 100;
+
+    if Block >= PoSBlockEnd then
+      Inc(Result, 1000);
+
+    if Result > MasterNodePercentageMax then
+      Result := MasterNodePercentageMax;
+
+    if AnsiContainsStr(MainnetMode, 'MNSONLY') then
+      Result := MasterNodePercentageMNsOnly;
   end;
 end;
 
-{Returns the PoS percentage for the specified block (0 to 10000)}
-function GetPoSPercentage(Block: Integer): Integer;
+function GetPoSPercentage(const Block: Integer): Integer;
+const
+  PoSPercentage = 1000;
+  PoSBlockEnd = 88400;
+  PoSBlockStart = 8424;
+  PoSPercentageMax = 2000;
 begin
   Result := 0;
-  if ((Block > 8424) and (Block < 40000)) then Result := 1000{PoSPercentage};
+  if (Block > PoSBlockStart) and (Block < 40000) then
+    Result := PoSPercentage;
+
   if Block >= 40000 then
   begin
-    Result := 1000{PoSPercentage} + (((Block - 39000) div 1000) * 100);
-    if Result > 2000 then Result := 2000;
+    Result := Min(PoSPercentage + ((Block - 39000) div 1000) * 100, PoSPercentageMax);
   end;
-  if Block >= 88400{PoSBlockEnd} then Result := 0;
+
+  // No more PoS after block 88400... wait, what? Why are you doing it like this,
+  // Pedro? Whatever.
+  if Block >= PoSBlockEnd then
+    Result := 0;
 end;
 
-{Returns the Project percentage for the specified block}
 function GetDevPercentage(Block: Integer): Integer;
+const
+  PoSBlockEnd = 88400;
+  DevPercentage = 1000;
 begin
-  Result := 0;
-  if Block >= 88400{PoSBlockEnd} then Result := 1000;
+  if Block >= PoSBlockEnd then
+    Result := DevPercentage
+  else
+    Result := 0;
 end;
 
-{Returns the minimum fee to be paid for the specified amount}
-function GetMinimumFee(Amount: Int64): Int64;
+function GetMinimumFeeForAmount(const Amount: Int64): Int64;
+const
+  CommissionTransfer = 10000;
+  MinimumFee = 1000000;
 begin
-  Result := Amount div 10000{Comisiontrfr};
-  if Result < 1000000{MinimunFee} then Result := 1000000{MinimunFee};
+  Result := Max(Amount div CommissionTransfer, MinimumFee);
 end;
 
-{Returns the maximum that can be sent from the specified amount}
-function GetMaximumToSend(Amount: Int64): Int64;
+function GetMaximumToSend(const Amount: Int64): Int64;
+const
+  ComissionTransfer = 10000;
+  MinimumFee = 1000000;
 var
-  maximo: Int64;
-  comision: Int64;
-  Envio: Int64;
-  Diferencia: Int64;
+  MaxSend, Fee, Difference: Int64;
 begin
-  if Amount < 1000000{MinimunFee} then
+  if Amount < MinimumFee then
     exit(0);
-  maximo := (Amount * 10000{Comisiontrfr}) div (10000{Comisiontrfr} + 1);
-  comision := maximo div 10000{Comisiontrfr};
-  if Comision < 1000000{MinimunFee} then Comision := 1000000{MinimunFee};
-  Envio := maximo + comision;
-  Diferencia := Amount - envio;
-  Result := maximo + diferencia;
+
+  MaxSend := (Amount * ComissionTransfer) div (ComissionTransfer + 1);
+  Fee := MaxSend div ComissionTransfer;
+
+  if Fee < MinimumFee then
+    Fee := MinimumFee;
+
+  Difference := Amount - (MaxSend + Fee);
+  Result := MaxSend + Difference;
 end;
 
-// Gets OS version
 function OSVersion: String;
 begin
   {$IFDEF LCLcarbon}
   OSVersion := 'Mac OS X 10.';
-  {$ELSE}
+  {$ENDIF}
+
   {$IFDEF UNIX}
-  OSVersion := 'Linux Kernel ';
-  {$ELSE}
+  OSVersion := 'Linux ';
+  {$ENDIF}
+
   {$IFDEF UNIX}
   OSVersion := 'Unix ';
-  {$ELSE}
+  {$ENDIF}
+
   {$IFDEF WINDOWS}
-  OSVersion:= 'Windows';
-  {$ENDIF}
-  {$ENDIF}
-  {$ENDIF}
+  OSVersion := 'Windows ';
   {$ENDIF}
 end;
 
-{$REGION Network}
+function RequestLineToPeer(const Host: String; const Port: Integer;
+  const Command: String): String;
+var
+  Client: TidTCPClient;
+begin
+  Result := '';
+  Client := TIdTCPClient.Create(nil);
+  try
+    Client.Host := Host;
+    Client.Port := Port;
+    Client.ConnectTimeout := 1000;
+    Client.ReadTimeout := 1000;
+    Client.IOHandler.MaxLineLength := MaxInt;
+    try
+      Client.Connect;
+      try
+        Client.IOHandler.WriteLn(Command);
+        Result := Client.IOHandler.ReadLn();
+      finally
+        if Client.Connected then
+          Client.Disconnect;
+      end;
+    except
+      on E: Exception do
+        ToLog('exceps', 'Error during request to peer: ' + E.Message);
+    end;
+  finally
+    Client.Free;
+  end;
+end;
 
-function RequestLineToPeer(Host: String; Port: Integer; Command: String): String;
+function RequestToPeer(const HostAndPort, Command: String): String;
 var
   Client: TidTCPClient;
 begin
   Result := '';
   Client := TidTCPClient.Create(nil);
-  Client.Host := Host;
-  Client.Port := Port;
-  Client.ConnectTimeout := 1000;
-  Client.ReadTimeout := 1000;
   try
-    Client.Connect;
-    Client.IOHandler.WriteLn(Command);
-    client.IOHandler.MaxLineLength := Maxint;
-    Result := Client.IOHandler.ReadLn();
-  except
-    on E: Exception do
-
-  end;{Try}
-  if client.Connected then Client.Disconnect();
-  client.Free;
+    Client.Host := GetParameter(HostAndPort, 0);
+    Client.Port := StrToIntDef(GetParameter(HostAndPort, 1), 8080);
+    Client.ConnectTimeout := 1000;
+    Client.ReadTimeout := 1000;
+    Client.IOHandler.MaxLineLength := MaxInt;
+    try
+      Client.Connect;
+      try
+        Client.IOHandler.WriteLn(Command);
+        Result := Client.IOHandler.ReadLn();
+      finally
+        if Client.Connected then
+          Client.Disconnect;
+      end;
+    except
+      on E: Exception do
+        ToLog('exceps', 'Error during request to peer: ' + E.Message);
+    end;
+  finally
+    Client.Free;
+  end;
 end;
 
-function RequestToPeer(HostAndPort, Command: String): String;
+function SendApiRequest(const Url: String): String;
 var
-  Client: TidTCPClient;
+  Client: TFPHTTPClient;
 begin
   Result := '';
-  Client := TidTCPClient.Create(nil);
-  Client.Host := GetParameter(HostAndPort, 0);
-  Client.Port := StrToIntDef(GetParameter(HostAndPort, 1), 8080);
-  Client.ConnectTimeout := 1000;
-  Client.ReadTimeout := 1000;
+  Client := TFPHTTPClient.Create(nil);
   try
-    Client.Connect;
-    Client.IOHandler.WriteLn(Command);
-    client.IOHandler.MaxLineLength := Maxint;
-    Result := Client.IOHandler.ReadLn();
-  except
-    on E: Exception do
-
-  end;{Try}
-  if client.Connected then Client.Disconnect();
-  client.Free;
+    Client.ConnectTimeout := 3000;
+    Client.IOTimeout := 3000;
+    try
+      Result := Trim(Client.SimpleGet(Url));
+    except
+      on E: Exception do
+        ToLog('exceps', 'Error during API request: ' + E.Message);
+    end;
+  finally
+    Client.Free;
+  end;
 end;
-
-function SendApiRequest(Url: String): String;
-var
-  Conector: TFPHttpClient;
-begin
-  Result := '';
-  Conector := TFPHttpClient.Create(nil);
-  conector.ConnectTimeout := 3000;
-  conector.IOTimeout := 3000;
-  try
-    Result := Trim(Conector.SimpleGet(Url));
-  except
-    on E: Exception do
-
-  end;//TRY
-  Conector.Free;
-end;
-
-{$ENDREGION}
-
-{$REGION File handling}
 
 function SaveTextToDisk(const FileName: TFileName; const Text: String): Boolean;
 var
-  LStream: TStringStream;
+  Stream: TStringStream;
 begin
   Result := True;
-  LStream := TStringStream.Create(Text);
+  Stream := TStringStream.Create(Text, TEncoding.UTF8);
   try
-    LStream.SaveToFile(FileName);
-  except
-    On E: Exception do
-    begin
-      Result := False;
-      ToDeepDeb('NosoGeneral,SaveTextToDisk,' + E.Message);
-    end;
-  end;{Try}
-  LStream.Free;
+    try
+      Stream.SaveToFile(FileName);
+    except
+      on E: Exception do
+      begin
+        Result := False;
+        ToDeepDeb('NosoGeneral,SaveTextToDisk,' + E.Message);
+      end;
+    end
+  finally
+    Stream.Free;
+  end;
 end;
 
 function LoadTextFromDisk(const FileName: TFileName): String;
 var
-  LStream: TStringStream;
+  Stream: TStringStream;
 begin
   Result := '';
-  LStream := TStringStream.Create;
+  Stream := TStringStream.Create('', TEncoding.UTF8);
   try
-    LStream.LoadFromFile(FileName);
-    Result := LStream.DataString;
-  except
-    On E: Exception do
-    begin
-      Result := '';
-      ToDeepDeb('NosoGeneral,LoadTextFromDisk,' + E.Message);
-    end;
-  end;{Try}
-  LStream.Free;
+    try
+      Stream.LoadFromFile(FileName);
+      Result := Stream.DataString;
+    except
+      on E: Exception do
+      begin
+        Result := '';
+        ToDeepDeb('NosoGeneral,LoadTextFromDisk,' + E.Message);
+      end;
+    end
+  finally
+    Stream.Free;
+  end;
 end;
 
-function TryCopyFile(Source, Destination: String): Boolean;
+function TryCopyFile(const Source, Destination: String): Boolean;
 begin
   Result := True;
   try
-    copyfile(Source, Destination, [cffOverwriteFile], True);
+    CopyFile(Source, Destination, [cffOverwriteFile], True);
   except
     on E: Exception do
     begin
       Result := False;
       ToDeepDeb('NosoGeneral,TryCopyFile,' + E.Message);
     end;
-  end; {TRY}
+  end;
 end;
 
-{Try to delete a file safely}
-function TryDeleteFile(FileName: String): Boolean;
+function TryDeleteFile(const FileName: String): Boolean;
 begin
-  Result := deletefile(FileName);
+  Result := DeleteFile(FileName);
 end;
 
-// Returns the name of the app file without path
 function AppFileName(): String;
 begin
   Result := ExtractFileName(ParamStr(0));
-  // For working path: ExtractFilePAth
 end;
 
-function CombineTextFiles(FileList: TStringArray; Destination: String;
+function CombineTextFiles(FileList: TStringArray; const Destination: String;
   DeleteSources: Boolean = True): Boolean;
 var
-  Count: Integer = 0;
   FinalFile: TStringList;
-  ThisFile: TStringList;
-  Added: Integer = 0;
+  CurrentFile: TStringList;
   Index: Integer;
 begin
   Result := True;
   FinalFile := TStringList.Create;
-  ThisFile := TStringList.Create;
-  while Count < Length(FileList) do
-  begin
-    if FileExists(FileList[Count]) then
-    begin
-      ThisFile.Clear;
-      ThisFile.LoadFromFile(FileList[Count]);
-      FinalFile.Add('-----> ' + FileList[Count]);
-      Index := 0;
-      while Index < ThisFile.Count do
-      begin
-        FinalFile.Add(ThisFile[index]);
-        Inc(index);
-      end;
-      Inc(added);
-    end;
-    if DeleteSources then TryDeletefile(FileList[Count]);
-    Inc(Count);
-  end;
-  if Added > 0 then
-    FinalFile.SaveToFile(Destination);
-  FinalFile.Free;
-  ThisFile.Free;
-  Result := True;
-end;
+  CurrentFile := TStringList.Create;
 
-function SendFileViaTCP(FileName, Message, Host: String; Port: Integer): Boolean;
-var
-  Client: TidTCPClient;
-  MyStream: TMemoryStream;
-begin
-  Result := True;
-  if not fileExists(FileName) then exit(False);
-  MyStream := TMemoryStream.Create;
-  MyStream.LoadFromFile(FileName);
-  Client := TidTCPClient.Create(nil);
-  Client.Host := Host;
-  Client.Port := Port;
-  Client.ConnectTimeout := 1000;
-  Client.ReadTimeout := 1000;
   try
-    Client.Connect;
-    Client.IOHandler.WriteLn(Message);
-    Client.IOHandler.Write(MyStream, 0, True);
-  except
-    on E: Exception do
+    for Index := 0 to High(FileList) do
     begin
-      Result := False;
-      ToDeepDeb('NosoGeneral,SendFile,' + FileName + ' Error: ' + E.Message);
+      if FileExists(FileList[Index]) then
+      begin
+        try
+          CurrentFile.LoadFromFile(FileList[Index]);
+          FinalFile.Add('-----> ' + FileList[Index]);
+          FinalFile.AddStrings(CurrentFile);
+        except
+          on E: Exception do
+          begin
+            ToDeepDeb(Format('NosoGeneral,CombineTextFiles,Error loading file: %s, %s',
+              [FileList[Index], E.Message]));
+            Result := False;
+          end;
+        end;
+
+        if DeleteSources then
+          TryDeleteFile(FileList[Index]);
+      end
+      else
+      begin
+        ToDeepDeb('NosoGeneral,CombineTextFiles, File not found: ' + FileList[Index]);
+        Result := False;
+      end;
     end;
-  end;{Try}
-  if client.Connected then Client.Disconnect();
-  client.Free;
-  MyStream.Free;
+
+    if FinalFile.Count > 0 then
+    begin
+      try
+        FinalFile.SaveToFile(Destination);
+      except
+        on E: Exception do
+        begin
+          ToDeepDeb('NosoGeneral,CombineTextFiles,Error saving destination file: ' +
+            Destination + ', ' + E.Message);
+          Result := False;
+        end;
+      end;
+    end;
+  finally
+    FinalFile.Free;
+    CurrentFile.Free;
+  end;
 end;
 
-// Unzip a zip file and (optional) delete it
-function UnzipFile(FileName: String; DeleteFile: Boolean): Boolean;
+function SendFileViaTCP(const FileName, Message, Host: String;
+  const Port: Integer): Boolean;
+var
+  Client: TIdTCPClient;
+  Stream: TMemoryStream;
+begin
+  Result := False;
+  if not FileExists(FileName) then Exit;
+
+  Stream := TMemoryStream.Create;
+  try
+    Stream.LoadFromFile(FileName);
+
+    Client := TIdTCPClient.Create(nil);
+    try
+      Client.Host := Host;
+      Client.Port := Port;
+      Client.ConnectTimeout := 1000;
+      Client.ReadTimeout := 1000;
+      Client.Connect;
+
+      Client.IOHandler.WriteLn(Message);
+      Client.IOHandler.Write(Stream, 0, True);
+
+      Result := True;
+    except
+      on E: Exception do
+        ToDeepDeb('NosoGeneral,SendFile,' + FileName + ' Error: ' + E.Message);
+    end;
+
+    if Client.Connected then
+      Client.Disconnect;
+  finally
+    Client.Free;
+    Stream.Free;
+  end;
+end;
+
+function UnzipFile(const FileName: String; DeleteFile: Boolean): Boolean;
 var
   UnZipper: TUnZipper;
 begin
-  Result := True;
+  Result := False;
+
+  if not FileExists(FileName) then Exit;
+
   UnZipper := TUnZipper.Create;
   try
-    UnZipper.FileName := FileName;
-    UnZipper.OutputPath := '';
-    UnZipper.Examine;
-    UnZipper.UnZipAllFiles;
-  except
-    on E: Exception do
-    begin
-      Result := False;
-      ToDeepDeb('NosoGeneral,UnzipFile,' + E.Message);
+    try
+      UnZipper.FileName := FileName;
+      UnZipper.OutputPath := '';
+      UnZipper.Examine;
+      UnZipper.UnZipAllFiles;
+
+      Result := True;
+
+      if DeleteFile then
+        TryDeleteFile(FileName);
+    except
+      on E: Exception do
+        ToDeepDeb('NosoGeneral,UnzipFile,' + E.Message);
     end;
-  end; {TRY}
-  if DeleteFile then Trydeletefile(FileName);
-  UnZipper.Free;
+  finally
+    UnZipper.Free;
+  end;
 end;
 
-// Creates an empty file
-function CreateEmptyFile(FileName: String): Boolean;
+function CreateEmptyFile(const FileName: String): Boolean;
 var
-  lFile: textfile;
+  EmptyFile: TextFile;
 begin
   Result := True;
   try
-    Assignfile(lFile, FileName);
-    rewrite(lFile);
-    Closefile(lFile);
+    AssignFile(EmptyFile, FileName);
+    Rewrite(EmptyFile);
+    CloseFile(EmptyFile);
   except
     on E: Exception do
     begin
-      ToDeepDeb('Nosogeneral,CreateEmptyFile,' + E.Message);
+      ToDeepDeb('NosoGeneral,CreateEmptyFile,' + E.Message);
       Result := False;
     end;
   end;
 end;
 
-{$ENDREGION}
-
-{$REGION Protocol specific}
-
-// Convierte una orden en una cadena para compartir
-function GetStringFromOrder(Order: TOrderData): String;
+function OrderToString(const Order: TOrderData): String;
 begin
-  Result := Order.OrderType + ' ' + Order.OrderID + ' ' +
-    IntToStr(Order.OrderLines) + ' ' + Order.OrderType + ' ' +
-    IntToStr(Order.TimeStamp) + ' ' + Order.reference + ' ' +
-    IntToStr(Order.TrxLine) + ' ' + Order.Sender + ' ' + Order.Address +
-    ' ' + Order.Receiver + ' ' + IntToStr(Order.AmountFee) + ' ' +
-    IntToStr(Order.AmountTransferred) + ' ' + Order.Signature + ' ' + Order.TransferID;
+  Result := Format('%s %s %d %s %d %s %d %s %s %s %d %d %s %s',
+    [Order.OrderType, Order.OrderID, Order.OrderLines, Order.OrderType,
+    Order.TimeStamp, Order.Reference, Order.TrxLine, Order.Sender,
+    Order.Address, Order.Receiver, Order.AmountFee, Order.AmountTransferred,
+    Order.Signature, Order.TransferID]);
 end;
 
-function ExtractMasternodesText(Text: String): String;
+function ExtractMasternodesText(const Text: String): String;
 var
-  startpos: Integer;
-  content: String;
+  StartPos: Integer;
 begin
-  Result := '';
-  startpos := Pos('$', Text);
-  Result := Copy(Text, Startpos + 1, Length(Text));
+  Result := EmptyStr;
+  StartPos := Pos('$', Text);
+
+  if StartPos > 0 then
+    Result := Copy(Text, StartPos + 1, Length(Text));
 end;
-
-{$ENDREGION Protocol specific}
-
 
 end.{UNIT}

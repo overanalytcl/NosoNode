@@ -600,7 +600,7 @@ begin
   if address <> OrderInfo.Address then ErrorCode := 1;
   // La direccion no dispone de fondos
   if GetAddressBalanceIndexed(Address) - GetAddressPendingPays(Address) <
-    GetCustFee(MyLastBlock) then ErrorCode := 2;
+    GetCustomFee(MyLastBlock) then ErrorCode := 2;
   if TranxAlreadyPending(OrderInfo.TransferID) then ErrorCode := 3;
   if OrderInfo.TimeStamp < LastBlockData.TimeStart then ErrorCode := 4;
   if TrxExistsInLastBlock(OrderInfo.TransferID) then ErrorCode := 5;
@@ -757,7 +757,7 @@ begin
       Textbak := GetOpData(Textbak);
     end;
     GenOrderID := GetOrderHash(GenOrderID);
-    if TotalFee < GetMinimumFee(TotalSent) then
+    if TotalFee < GetMinimumFeeForAmount(TotalSent) then
     begin
       TodoValido := False;
       ErrorCode := 100;
@@ -822,7 +822,7 @@ begin
   if address <> OrderInfo.Address then ErrorCode := 1;
   // La direccion no dispone de fondos
   if GetAddressBalanceIndexed(Address) - GetAddressPendingPays(Address) <
-    GetCustFee(MyLastBlock) then ErrorCode := 2;
+    GetCustomFee(MyLastBlock) then ErrorCode := 2;
   if TranxAlreadyPending(OrderInfo.TransferID) then ErrorCode := 3;
   if OrderInfo.TimeStamp < LastBlockData.TimeStart then ErrorCode := 4;
   if TrxExistsInLastBlock(OrderInfo.TransferID) then ErrorCode := 5;

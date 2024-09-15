@@ -2663,7 +2663,7 @@ begin
   if not IsValidHashAddress(address) then info('Address already customized')
   else if AddressAlreadyCustomized(address) then info('Address already customized')
   else if GetAddressBalanceIndexed(Address) - GetAddressPendingPays(address) <
-    GetCustFee(MyLastBlock) then info('Insufficient funds')
+    GetCustomFee(MyLastBlock) then info('Insufficient funds')
   else
   begin
     DireccionesPanel.Enabled := False;

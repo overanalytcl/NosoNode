@@ -233,7 +233,7 @@ begin
     LeaveCriticalSection(CSPending);
     for contador := 0 to Length(CopyArrayPoolTXs) - 1 do
     begin
-      Textline := GetStringFromOrder(CopyArrayPoolTXs[contador]);
+      Textline := OrderToString(CopyArrayPoolTXs[contador]);
       if (CopyArrayPoolTXs[contador].OrderType = 'CUSTOM') then
       begin
         TextToSlot(slot, Encab + '$' + TextLine);
@@ -242,7 +242,7 @@ begin
       begin
         if CopyArrayPoolTXs[contador].TrxLine = 1 then
           TextOrder := TextOrder + IntToStr(CopyArrayPoolTXs[contador].OrderLines) + ' ';
-        TextOrder := TextOrder + '$' + GetStringfromOrder(
+        TextOrder := TextOrder + '$' + OrderToString(
           CopyArrayPoolTXs[contador]) + ' ';
         if CopyArrayPoolTXs[contador].OrderLines =
           CopyArrayPoolTXs[contador].TrxLine then

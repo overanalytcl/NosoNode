@@ -651,7 +651,7 @@ begin
     if ArrayOrders[cont].OrderType = 'SNDGVT' then
     begin
       Inc(GVTsTrfer);
-      SummaryPay(ArrayOrders[cont].Sender, GetCustFee(BlockNumber), BlockNumber);
+      SummaryPay(ArrayOrders[cont].Sender, GetCustomFee(BlockNumber), BlockNumber);
       ChangeGVTOwner(StrToIntDef(ArrayOrders[cont].Reference, 100),
         ArrayOrders[cont].Sender, ArrayOrders[cont].Receiver);
     end;
