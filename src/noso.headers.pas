@@ -85,7 +85,7 @@ begin
     ON E: Exception do
     begin
       Result := False;
-      ToDeepDeb('NosoHeaders,CreateHeadersFile,' + E.Message);
+      ToDeepDebug('NosoHeaders,CreateHeadersFile,' + E.Message);
     end;
   end;
   LeaveCriticalSection(CS_HeadersFile);
@@ -115,7 +115,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoHeaders,AddRecordToHeaders,' + E.Message);
+      ToDeepDebug('NosoHeaders,AddRecordToHeaders,' + E.Message);
       Result := False;
     end;
   end;
@@ -141,7 +141,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoHeaders,RemoveHeadersLastRecord,' + E.Message);
+      ToDeepDebug('NosoHeaders,RemoveHeadersLastRecord,' + E.Message);
       Result := False;
     end;
   end;
@@ -165,7 +165,7 @@ begin
   except
     on E: Exception do
     begin
-      ToDeepDeb('NosoHeaders,GetHeadersHeigth,' + E.Message);
+      ToDeepDebug('NosoHeaders,GetHeadersHeigth,' + E.Message);
     end;
   end;
   if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
@@ -196,7 +196,7 @@ begin
   except
     on E: Exception do
     begin
-      ToDeepDeb('NosoHeaders,GetHeadersLastBlock,' + E.Message);
+      ToDeepDebug('NosoHeaders,GetHeadersLastBlock,' + E.Message);
     end;
   end;
   if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
@@ -216,7 +216,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoHeaders,GetHeadersAsMemStream,' + E.Message);
+      ToDeepDebug('NosoHeaders,GetHeadersAsMemStream,' + E.Message);
     end;
   end;
   LeaveCriticalSection(CS_HeadersFile);
@@ -234,7 +234,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoHeaders,SaveStreamAsHeaders,' + E.Message);
+      ToDeepDebug('NosoHeaders,SaveStreamAsHeaders,' + E.Message);
     end;
   end{Try};
   LeaveCriticalSection(CS_HeadersFile);
@@ -266,7 +266,7 @@ begin
   except
     on E: Exception do
     begin
-      ToDeepDeb('NosoHeaders,LastHeadersString,' + E.Message);
+      ToDeepDebug('NosoHeaders,LastHeadersString,' + E.Message);
     end;
   end;
   //if ( (opened) and (not PorperlyClosed) ) then closefile(FileResumen);

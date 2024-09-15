@@ -53,7 +53,7 @@ begin
     ON E: Exception do
     begin
       Result := False;
-      ToDeepDeb('NosoGVTs,CreateGVTsFile,' + E.Message);
+      ToDeepDebug('NosoGVTs,CreateGVTsFile,' + E.Message);
     end;
   end;
   LeaveCriticalSection(CSGVTsFile);
@@ -72,7 +72,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoGVTs,GetGVTsAsStream,' + E.Message);
+      ToDeepDebug('NosoGVTs,GetGVTsAsStream,' + E.Message);
     end;
   end{Try};
   LeaveCriticalSection(CSGVTsFile);
@@ -89,7 +89,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoGVTs,SaveStreamAsGVTs,' + E.Message);
+      ToDeepDebug('NosoGVTs,SaveStreamAsGVTs,' + E.Message);
     end;
   end{Try};
   LeaveCriticalSection(CSGVTsFile);
@@ -115,7 +115,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoGVTs,GetGVTsFileData,' + E.Message);
+      ToDeepDebug('NosoGVTs,GetGVTsFileData,' + E.Message);
     end;
   end;
   LeaveCriticalSection(CSGVTsArray);
@@ -139,7 +139,7 @@ begin
     Closefile(FileGVTs);
   except
     ON E: Exception do
-      ToDeepDeb('NosoGVTs,SaveGVTs,' + E.Message);
+      ToDeepDebug('NosoGVTs,SaveGVTs,' + E.Message);
   end;
   LeaveCriticalSection(CSGVTsArray);
   LeaveCriticalSection(CSGVTsFile);

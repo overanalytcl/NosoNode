@@ -67,11 +67,11 @@ type
   TOrderData = packed record
     Block: Integer;
     OrderID: String[64];
-    OrderLines: Integer;
+    OrderLineCount: Integer;
     OrderType: String[6];
     TimeStamp: Int64;
     Reference: String[64];
-    TrxLine: Integer;
+    TransferLine: Integer;
     Sender: String[120];
     Address: String[40];
     Receiver: String[40];
@@ -98,7 +98,7 @@ type
   end;
 
   // Dynamic array of TOrderData records
-  TBlockOrdersArray = specialize TArray<TOrderData>;
+  TBlockOrders = specialize TArray<TOrderData>;
 
 {
   @abstract(Extracts a specific parameter from a delimited string)
@@ -1086,7 +1086,7 @@ begin
       on E: Exception do
       begin
         Result := False;
-        ToDeepDeb('NosoGeneral,SaveTextToDisk,' + E.Message);
+        ToDeepDebug('NosoGeneral,SaveTextToDisk,' + E.Message);
       end;
     end
   finally
@@ -1108,7 +1108,7 @@ begin
       on E: Exception do
       begin
         Result := '';
-        ToDeepDeb('NosoGeneral,LoadTextFromDisk,' + E.Message);
+        ToDeepDebug('NosoGeneral,LoadTextFromDisk,' + E.Message);
       end;
     end
   finally
@@ -1125,7 +1125,7 @@ begin
     on E: Exception do
     begin
       Result := False;
-      ToDeepDeb('NosoGeneral,TryCopyFile,' + E.Message);
+      ToDeepDebug('NosoGeneral,TryCopyFile,' + E.Message);
     end;
   end;
 end;
@@ -1163,7 +1163,7 @@ begin
         except
           on E: Exception do
           begin
-            ToDeepDeb(Format('NosoGeneral,CombineTextFiles,Error loading file: %s, %s',
+            ToDeepDebug(Format('NosoGeneral,CombineTextFiles,Error loading file: %s, %s',
               [FileList[Index], E.Message]));
             Result := False;
           end;
@@ -1174,7 +1174,7 @@ begin
       end
       else
       begin
-        ToDeepDeb('NosoGeneral,CombineTextFiles, File not found: ' + FileList[Index]);
+        ToDeepDebug('NosoGeneral,CombineTextFiles, File not found: ' + FileList[Index]);
         Result := False;
       end;
     end;
@@ -1186,7 +1186,7 @@ begin
       except
         on E: Exception do
         begin
-          ToDeepDeb('NosoGeneral,CombineTextFiles,Error saving destination file: ' +
+          ToDeepDebug('NosoGeneral,CombineTextFiles,Error saving destination file: ' +
             Destination + ', ' + E.Message);
           Result := False;
         end;
@@ -1225,7 +1225,7 @@ begin
       Result := True;
     except
       on E: Exception do
-        ToDeepDeb('NosoGeneral,SendFile,' + FileName + ' Error: ' + E.Message);
+        ToDeepDebug('NosoGeneral,SendFile,' + FileName + ' Error: ' + E.Message);
     end;
 
     if Client.Connected then
@@ -1258,7 +1258,7 @@ begin
         TryDeleteFile(FileName);
     except
       on E: Exception do
-        ToDeepDeb('NosoGeneral,UnzipFile,' + E.Message);
+        ToDeepDebug('NosoGeneral,UnzipFile,' + E.Message);
     end;
   finally
     UnZipper.Free;
@@ -1277,7 +1277,7 @@ begin
   except
     on E: Exception do
     begin
-      ToDeepDeb('NosoGeneral,CreateEmptyFile,' + E.Message);
+      ToDeepDebug('NosoGeneral,CreateEmptyFile,' + E.Message);
       Result := False;
     end;
   end;
@@ -1286,8 +1286,8 @@ end;
 function OrderToString(const Order: TOrderData): String;
 begin
   Result := Format('%s %s %d %s %d %s %d %s %s %s %d %d %s %s',
-    [Order.OrderType, Order.OrderID, Order.OrderLines, Order.OrderType,
-    Order.TimeStamp, Order.Reference, Order.TrxLine, Order.Sender,
+    [Order.OrderType, Order.OrderID, Order.OrderLineCount, Order.OrderType,
+    Order.TimeStamp, Order.Reference, Order.TransferLine, Order.Sender,
     Order.Address, Order.Receiver, Order.AmountFee, Order.AmountTransferred,
     Order.Signature, Order.TransferID]);
 end;

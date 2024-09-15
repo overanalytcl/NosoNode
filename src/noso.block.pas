@@ -54,7 +54,7 @@ function GetBlockFromOrder(OrderID: String): Integer;
 function GetOrderFromDB(OrderID: String; out OrderInfo: TOrderData): Boolean;
 
 function GetMyLastUpdatedBlock(): Int64;
-function GetBlockTrxs(BlockNumber: Integer): TBlockOrdersArray;
+function GetBlockTransfers(BlockNumber: Integer): TBlockOrders;
 function LoadBlockDataHeader(BlockNumber: Integer): BlockHeaderData;
 
 function SaveStreamAsZipBlocks(const LStream: TMemoryStream): Boolean;
@@ -91,7 +91,7 @@ begin
   except
     ON E: Exception do
     begin
-      TodeepDeb('NosoBlock,CreateDBFile,' + E.Message);
+      ToDeepDebug('NosoBlock,CreateDBFile,' + E.Message);
     end;
   end;
 end;
@@ -199,7 +199,7 @@ var
   LastUpdated: Integer;
   UntilBlock: Integer;
   counter, counter2: Integer;
-  ArrayOrders: TBlockOrdersArray;
+  ArrayOrders: TBlockOrders;
   ThisOrder: TOrderData;
 begin
   Result := True;
@@ -208,8 +208,8 @@ begin
   if untilblock > GetMyLastUpdatedBlock then untilblock := GetMyLastUpdatedBlock;
   for counter := LastUpdated + 1 to untilblock do
   begin
-    ArrayOrders := Default(TBlockOrdersArray);
-    ArrayOrders := GetBlockTrxs(counter);
+    ArrayOrders := Default(TBlockOrders);
+    ArrayOrders := GetBlockTransfers(counter);
     for counter2 := 0 to length(ArrayOrders) - 1 do
     begin
       ThisOrder := ArrayOrders[counter2];
@@ -278,7 +278,7 @@ var
   ThisArray: IntArray;
   counter: Integer;
   counter2: Integer;
-  ArrayOrders: TBlockOrdersArray;
+  ArrayOrders: TBlockOrders;
 begin
   Result := -1;
   LValue := DBIndex(OrderID);
@@ -286,8 +286,8 @@ begin
   begin
     for counter := 0 to length(ThisArray) - 1 do
     begin
-      ArrayOrders := Default(TBlockOrdersArray);
-      ArrayOrders := GetBlockTrxs(ThisArray[counter]);
+      ArrayOrders := Default(TBlockOrders);
+      ArrayOrders := GetBlockTransfers(ThisArray[counter]);
       for counter2 := 0 to length(ArrayOrders) - 1 do
       begin
         if Arrayorders[counter2].OrderID = OrderID then
@@ -305,7 +305,7 @@ var
   IndexValue: Integer;
   Counter, counter2: Integer;
   ThisArray: IntArray;
-  ArrayOrders: TBlockOrdersArray;
+  ArrayOrders: TBlockOrders;
 begin
   Result := False;
   OrderInfo := Default(TOrderData);
@@ -315,8 +315,8 @@ begin
   begin
     for counter := 0 to length(ThisArray) - 1 do
     begin
-      ArrayOrders := Default(TBlockOrdersArray);
-      ArrayOrders := GetBlockTrxs(ThisArray[counter]);
+      ArrayOrders := Default(TBlockOrders);
+      ArrayOrders := GetBlockTransfers(ThisArray[counter]);
       for counter2 := 0 to length(ArrayOrders) - 1 do
       begin
         if Arrayorders[counter2].OrderID = OrderID then
@@ -365,9 +365,9 @@ begin
 end;
 
 // Return the array containing orders in the specified block
-function GetBlockTrxs(BlockNumber: Integer): TBlockOrdersArray;
+function GetBlockTransfers(BlockNumber: Integer): TBlockOrders;
 var
-  ArrTrxs: TBlockOrdersArray;
+  ArrTrxs: TBlockOrders;
   MemStr: TMemoryStream;
   Header: BlockHeaderData;
   ArchData: String;
@@ -389,7 +389,7 @@ begin
   except
     on E: Exception do
     begin
-      ToDeepDeb('Nosoblock,GetBlockTrxs,' + E.Message);
+      ToDeepDebug('Nosoblock,GetBlockTrxs,' + E.Message);
     end;
   end;
   MemStr.Free;
@@ -433,7 +433,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoBlock,SaveStreamAsZipBlocks,' + E.Message);
+      ToDeepDebug('NosoBlock,SaveStreamAsZipBlocks,' + E.Message);
     end;
   end{Try};
 end;

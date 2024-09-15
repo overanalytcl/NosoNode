@@ -39,42 +39,42 @@
 <tr class="list2">
 <td class="itemname"><a class="bold" href="MPForm.NetworkData.html">NetworkData</a></td>
 <td class="itemunit"><a class="bold" href="MPForm.html">MPForm</a></td>
-<td class="itemdesc"><p><a class="normal" href="Noso.Block.BlockHeaderData.html">BlockHeaderData</a> = Packed Record Number : Int64; TimeStart : Int64; TimeEnd : Int64; TimeTotal : integer; TimeLast20 : integer; TrxTotales : integer; Difficult : integer; TargetHash : String[32]; Solution : String[200]; // 180 necessary LastBlockHash : String[32]; NxtBlkDiff : integer; AccountMiner : String[40]; MinerFee : Int64; Reward : Int64; end;</p></td>
+<td class="itemdesc"><p><a class="normal" href="Noso.Block.BlockHeaderData.html">BlockHeaderData</a> = Packed Record Number : Int64; TimeStart : Int64; TimeEnd : Int64; TimeTotal : integer; TimeLast20 : integer; TrxTotales : integer; Difficult : integer; TargetHash : String[32]; Solution : String[200]; // 180 necessary <a class="normal" href="Noso.Network.html#LastBlockHash">LastBlockHash</a> : String[32]; NxtBlkDiff : integer; AccountMiner : String[40]; MinerFee : Int64; Reward : Int64; end;</p></td>
 </tr>
 <tr class="list">
-<td class="itemname"><a class="bold" href="Noso.Network.NodeServerEvents.html">NodeServerEvents</a></td>
-<td class="itemunit"><a class="bold" href="Noso.Network.html">Noso.Network</a></td>
-<td class="itemdesc"><p>&nbsp;</p></td>
-</tr>
-<tr class="list2">
 <td class="itemname"><a class="bold" href="Noso.Headers.ResumenData.html">ResumenData</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Headers.html">Noso.Headers</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="MPForm.TArrayCriptoOp.html">TArrayCriptoOp</a></td>
 <td class="itemunit"><a class="bold" href="MPForm.html">MPForm</a></td>
 <td class="itemdesc"><p><a class="normal" href="Noso.Masternodes.TMNCheck.html">TMNCheck</a> = Record ValidatorIP : string; // Validator IP Block : integer; SignAddress : string; PubKey : string; ValidNodes : string; Signature : string; end;</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="MPForm.TArrayPos.html">TArrayPos</a></td>
 <td class="itemunit"><a class="bold" href="MPForm.html">MPForm</a></td>
 <td class="itemdesc"><p>BlockOrdersArray = Array of OrderData;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="Noso.Summary.TBlockRecords.html">TBlockRecords</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Summary.html">Noso.Summary</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="Noso.Network.TBotData.html">TBotData</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Network.html">Noso.Network</a></td>
-<td class="itemdesc"><p>&nbsp;</p></td>
+<td class="itemdesc"><p>Stores data related to a bot, such as its IP address and the timestamp of the last refused connection.</p></td>
+</tr>
+<tr class="list2">
+<td class="itemname"><a class="bold" href="Noso.Network.TClientReadThread.html">TClientReadThread</a></td>
+<td class="itemunit"><a class="bold" href="Noso.Network.html">Noso.Network</a></td>
+<td class="itemdesc"><p>Thread for handling client read operations in a connection slot.</p></td>
 </tr>
 <tr class="list">
-<td class="itemname"><a class="bold" href="Noso.Network.Tconectiondata.html">Tconectiondata</a></td>
+<td class="itemname"><a class="bold" href="Noso.Network.TConnectionData.html">TConnectionData</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Network.html">Noso.Network</a></td>
-<td class="itemdesc"><p>&nbsp;</p></td>
+<td class="itemdesc"><p>Represents the data of a network connection.</p></td>
 </tr>
 <tr class="list2">
 <td class="itemname"><a class="bold" href="Noso.Consensus.TConsensusData.html">TConsensusData</a></td>
@@ -174,61 +174,61 @@
 <tr class="list">
 <td class="itemname"><a class="bold" href="Noso.Network.TNodeData.html">TNodeData</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Network.html">Noso.Network</a></td>
-<td class="itemdesc"><p>&nbsp;</p></td>
+<td class="itemdesc"><p>Stores basic data for a network node.</p></td>
 </tr>
 <tr class="list2">
+<td class="itemname"><a class="bold" href="Noso.Network.TNodeServerEvents.html">TNodeServerEvents</a></td>
+<td class="itemunit"><a class="bold" href="Noso.Network.html">Noso.Network</a></td>
+<td class="itemdesc"><p>Handles various TCP server events for the node, such as connect, disconnect, execution, and exceptions.</p></td>
+</tr>
+<tr class="list">
 <td class="itemname"><a class="bold" href="Noso.General.TOrderData.html">TOrderData</a></td>
 <td class="itemunit"><a class="bold" href="Noso.General.html">Noso.General</a></td>
 <td class="itemdesc"><p>Record structure for order data</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="Noso.Summary.TOrderGroup.html">TOrderGroup</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Summary.html">Noso.Summary</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="Noso.Debug.Tperformance.html">Tperformance</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Debug.html">Noso.Debug</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="Noso.Pso.TPSOData.html">TPSOData</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Pso.html">Noso.Pso</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="Noso.Pso.TPSOHeader.html">TPSOHeader</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Pso.html">Noso.Pso</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="MPForm.TServerTipo.html">TServerTipo</a></td>
 <td class="itemunit"><a class="bold" href="MPForm.html">MPForm</a></td>
-<td class="itemdesc"><p><a class="normal" href="Noso.Network.TThreadClientRead.html">TThreadClientRead</a></p></td>
+<td class="itemdesc"><p><a class="normal" href="Noso.Network.TClientReadThread.html">TClientReadThread</a></p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="MP.Utils.Signing.TSignerUtils.html">TSignerUtils</a></td>
 <td class="itemunit"><a class="bold" href="MP.Utils.Signing.html">MP.Utils.Signing</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="Noso.General.TStreamHelper.html">TStreamHelper</a></td>
 <td class="itemunit"><a class="bold" href="Noso.General.html">Noso.General</a></td>
 <td class="itemdesc"><p>TStream helper class for string manipulation in streams</p></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemname"><a class="bold" href="Noso.Summary.TSummaryData.html">TSummaryData</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Summary.html">Noso.Summary</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemname"><a class="bold" href="Noso.Consensus.TThreadAutoConsensus.html">TThreadAutoConsensus</a></td>
 <td class="itemunit"><a class="bold" href="Noso.Consensus.html">Noso.Consensus</a></td>
-<td class="itemdesc"><p>&nbsp;</p></td>
-</tr>
-<tr class="list2">
-<td class="itemname"><a class="bold" href="Noso.Network.TThreadClientRead.html">TThreadClientRead</a></td>
-<td class="itemunit"><a class="bold" href="Noso.Network.html">Noso.Network</a></td>
 <td class="itemdesc"><p>&nbsp;</p></td>
 </tr>
 <tr class="list">

@@ -65,9 +65,9 @@ var
   contador: Integer;
 begin
   Result := 0;
-  for contador := 1 to MaxConecciones do
+  for contador := 1 to MaxConnections do
   begin
-    if GetConexIndex(contador).ip = ip then
+    if GetConnectionData(contador).IpAddress = ip then
     begin
       Result := contador;
       break;
@@ -81,9 +81,9 @@ var
   contador: Integer;
 begin
   Result := 0;
-  for contador := 1 to MaxConecciones do
+  for contador := 1 to MaxConnections do
   begin
-    if GetConexIndex(contador).context = Context then
+    if GetConnectionData(contador).Context = Context then
     begin
       Result := contador;
       break;
@@ -114,37 +114,37 @@ Begin
     if ((ListaNodos[contador].ip = IPUser) and (ListaNodos[contador].port = port)) then result := contador;
 End;
 }
-// Almacena una conexion con sus datos en el array Conexiones
+// Almacena una conexion con sus datos en el array Connections
 function SaveConection(tipo, ipuser: String; contextdata: TIdContext;
   toSlot: Integer = -1): Integer;
 var
   counter: Integer = 1;
   Slot: Int64 = 0;
   FoundSlot: Boolean = False;
-  NewValue: Tconectiondata;
+  NewValue: TConnectionData;
 begin
-  NewValue := Default(Tconectiondata);
-  NewValue.Autentic := False;
-  NewValue.Connections := 0;
-  NewValue.tipo := tipo;
-  NewValue.ip := ipuser;
-  NewValue.lastping := UTCTimeStr;
-  NewValue.context := contextdata;
-  NewValue.Lastblock := '0';
-  NewValue.LastblockHash := '';
-  NewValue.SumarioHash := '';
+  NewValue := Default(TConnectionData);
+  NewValue.IsAuthenticated := False;
+  NewValue.ActiveConnections := 0;
+  NewValue.ConnectionType := tipo;
+  NewValue.IpAddress := ipuser;
+  NewValue.LastPingTime := UTCTimeStr;
+  NewValue.Context := contextdata;
+  NewValue.LastBlockNumber := '0';
+  NewValue.LastBlockHash := '';
+  NewValue.SummaryHash := '';
   NewValue.ListeningPort := -1;
-  NewValue.Pending := 0;
-  NewValue.ResumenHash := '';
-  NewValue.ConexStatus := 0;
+  NewValue.PendingOperations := 0;
+  NewValue.SummaryBlockHash := '';
+  NewValue.ConnectionStatus := 0;
   if ToSLot < 0 then
   begin
-    for counter := 1 to MaxConecciones do
+    for counter := 1 to MaxConnections do
     begin
-      if GetConexIndex(counter).tipo = '' then
+      if GetConnectionData(counter).ConnectionType = '' then
       begin
-        SetConexIndex(counter, NewValue);
-        ClearIncoming(counter);
+        SetConnectionData(counter, NewValue);
+        ClearIncomingMessages(counter);
         FoundSlot := True;
         Result := counter;
         break;
@@ -154,8 +154,8 @@ begin
   end
   else
   begin
-    SetConexIndex(toSlot, NewValue);
-    ClearIncoming(ToSLot);
+    SetConnectionData(toSlot, NewValue);
+    ClearIncomingMessages(ToSLot);
     Result := ToSLot;
   end;
 end;
@@ -165,7 +165,7 @@ var
   PortNumber: Integer;
 begin
   KeepServerOn := True;
-  PortNumber := StrToIntDef(LocalMN_Port, 8080);
+  PortNumber := StrToIntDef(LocalMasternodePort, 8080);
   if Form1.Server.Active then
   begin
     ToLog('console', 'Server Already active'); //'Server Already active'
@@ -194,8 +194,8 @@ procedure StartServer();
 var
   PortNumber: Integer;
 begin
-  PortNumber := StrToIntDef(LocalMN_Port, 8080);
-  if WallAddIndex(LocalMN_Sign) < 0 then
+  PortNumber := StrToIntDef(LocalMasternodePort, 8080);
+  if WallAddIndex(LocalMasternodeSignature) < 0 then
   begin
     ToLog('console', rs2000); //Sign address not valid
     exit;
@@ -251,7 +251,7 @@ end;
 function IsSlotFree(number: Integer): Boolean;
 begin
   Result := True;
-  if GetConexIndex(number).tipo <> '' then Result := False;
+  if GetConnectionData(number).ConnectionType <> '' then Result := False;
 end;
 
 // Returns first available slot
@@ -260,7 +260,7 @@ var
   contador: Integer = 1;
 begin
   Result := 0;
-  for contador := 1 to MaxConecciones do
+  for contador := 1 to MaxConnections do
   begin
     if IsSlotFree(Contador) then
     begin
@@ -276,11 +276,11 @@ var
   contador: Integer = 1;
 begin
   Result := 0;
-  for contador := 1 to MaxConecciones do
+  for contador := 1 to MaxConnections do
   begin
     if IsSlotFree(Contador) then
     begin
-      SetConexReserved(contador, True);
+      ReserveConnectionSlot(contador, True);
       Result := contador;
       break;
     end;
@@ -290,10 +290,10 @@ end;
 // Reserves the first available slot
 procedure UnReserveSlot(number: Integer);
 begin
-  if GetConexIndex(number).tipo = 'RES' then
+  if GetConnectionData(number).ConnectionType = 'RES' then
   begin
-    SetConexReserved(number, False);
-    CloseSlot(Number);
+    ReserveConnectionSlot(number, False);
+    CloseConnectionSlot(Number);
   end
   else
   begin
@@ -315,12 +315,12 @@ begin
   ConContext := Default(TIdContext);
   Slot := ReserveSlot();
   if Slot = 0 then exit;  // No free slots
-  CanalCliente[Slot].Host := Address;
-  CanalCliente[Slot].Port := StrToIntDef(Port, 8080);
-  CanalCliente[Slot].ConnectTimeout := 1000;
-  ClearOutTextToSlot(slot);
+  ClientChannels[Slot].Host := Address;
+  ClientChannels[Slot].Port := StrToIntDef(Port, 8080);
+  ClientChannels[Slot].ConnectTimeout := 1000;
+  ClearOutgoingTextForSlot(slot);
   try
-    CanalCliente[Slot].Connect;
+    ClientChannels[Slot].Connect;
     ConnectOk := True;
   except
     on E: Exception do
@@ -333,17 +333,17 @@ begin
     SavedSlot := SaveConection('SER', Address, ConContext, slot);
     ToLog('events', TimeToStr(now) + 'Connected TO: ' + Address);
     //Connected TO:
-    StartConexThread(Slot);
+    StartConnectionThread(Slot);
     Result := Slot;
     try
-      CanalCliente[Slot].IOHandler.WriteLn('PSK ' + Address + ' ' +
+      ClientChannels[Slot].IOHandler.WriteLn('PSK ' + Address + ' ' +
         MainnetVersion + NodeRelease + ' ' + UTCTimeStr);
-      CanalCliente[Slot].IOHandler.WriteLn(ProtocolLine(3));   // Send PING
+      ClientChannels[Slot].IOHandler.WriteLn(GetProtocolLineFromCode(3));   // Send PING
     except
       on E: Exception do
       begin
         Result := 0;
-        CloseSlot(slot);
+        CloseConnectionSlot(slot);
       end;
     end;{TRY}
   end
@@ -356,13 +356,13 @@ end;
 
 {
 // Retuns the number of active peers connections
-function GetTotalConexiones():integer;
+function GetTotalConnections():integer;
 var
   counter:integer;
 Begin
   BeginPerformance('GetTotalConexiones');
   result := 0;
-  for counter := 1 to MaxConecciones do
+  for counter := 1 to MaxConnections do
     if IsSlotConnected(Counter) then result := result + 1;
   EndPerformance('GetTotalConexiones');
 End;
@@ -374,8 +374,8 @@ var
   counter:integer;
 Begin
 result := 0;
-for counter := 1 to MaxConecciones do
-   if conexiones[Counter].Autentic then result := result + 1;
+for counter := 1 to MaxConnections do
+   if Connections[Counter].IsAuthenticated then result := result + 1;
 End;
 }
 
@@ -384,8 +384,8 @@ var
   counter: Integer;
 begin
   Result := 0;
-  for counter := 1 to MaxConecciones do
-    if GetConexIndex(Counter).MerkleHash = GetCOnsensus(0) then Result := Result + 1;
+  for counter := 1 to MaxConnections do
+    if GetConnectionData(Counter).MerkleTreeHash = GetCOnsensus(0) then Result := Result + 1;
 end;
 
 // Close all outgoing connections
@@ -395,9 +395,9 @@ var
 begin
   Result := '';
   try
-    for contador := 1 to MaxConecciones do
+    for contador := 1 to MaxConnections do
     begin
-      if GetConexIndex(contador).tipo = 'SER' then CloseSlot(contador);
+      if GetConnectionData(contador).ConnectionType = 'SER' then CloseConnectionSlot(contador);
     end;
     Result := 'Clients connections closed'
   except
@@ -419,18 +419,18 @@ procedure LeerLineasDeClientes();
 var
   contador: Integer = 0;
 begin
-  for contador := 1 to Maxconecciones do
+  for contador := 1 to MaxConnections do
   begin
     if IsSlotConnected(contador) then
     begin
-      if ((UTCTime > StrToInt64Def(GetConexIndex(contador).lastping, 0) + 15) and
-        (not GetConexIndex(contador).IsBusy) and (not REbuildingSumary)) then
+      if ((UTCTime > StrToInt64Def(GetConnectionData(contador).LastPingTime, 0) + 15) and
+        (not GetConnectionData(contador).IsBusy) and (not REbuildingSumary)) then
       begin
         ToLog('events', TimeToStr(now) + 'Conection closed: Time Out Auth -> ' +
-          GetConexIndex(contador).ip);   //Conection closed: Time Out Auth ->
-        CloseSlot(contador);
+          GetConnectionData(contador).IpAddress);   //Conection closed: Time Out Auth ->
+        CloseConnectionSlot(contador);
       end;
-      if GetConexIndex(contador).IsBusy then SetConexIndexLastPing(contador, UTCTimeStr);
+      if GetConnectionData(contador).IsBusy then UpdateConnectionLastPing(contador, UTCTimeStr);
     end;
   end;
 end;
@@ -442,7 +442,7 @@ var
   ValidSlot: Integer;
 begin
   try
-    NumeroConexiones := GetTotalConexiones;
+    NumeroConexiones := GetTotalConnections;
     if NumeroConexiones = 0 then  // Desconectado
     begin
       EnterCriticalSection(CSCriptoThread);
@@ -460,7 +460,7 @@ begin
         ToLog('console', 'Disconnected.');       //Disconnected
         G_TotalPings := 0;
         U_Datapanel := True;
-        ClearAllPending; //THREADSAFE
+        ClearAllPendingTransactions; //THREADSAFE
       end;
       // Resetear todos los valores
     end;
@@ -476,7 +476,7 @@ begin
       if (G_LastPing + 5) < UTCTime then
       begin
         G_LastPing := UTCTime;
-        OutgoingMsjsAdd(ProtocolLine(ping));
+        OutgoingMsjsAdd(GetProtocolLineFromCode(ping));
       end;
     end;
     if ((NumeroConexiones >= 3) and (MyConStatus < 2) and (not STATUS_Connected)) then
@@ -491,7 +491,7 @@ begin
       if Last_SyncWithMainnet + 4 < UTCTime then SyncWithMainnet();
     end;
     if ((MyConStatus = 2) and (STATUS_Connected) and
-      (IntToStr(MyLastBlock) = Getconsensus(2)) and
+      (IntToStr(LastBlockIndex) = Getconsensus(2)) and
       (copy(MySumarioHash, 0, 5) = GetConsensus(17)) and
       (copy(GetResumenHash, 0, 5) = GetConsensus(5))) then
     begin
@@ -501,34 +501,34 @@ begin
       ToLog('console', 'Updated!');   //Updated!
       //if RPCAuto then  ProcessLinesAdd('RPCON');
       if WO_AutoServer then ProcessLinesAdd('serveron');
-      if StrToIntDef(GetConsensus(3), 0) < GetPendingCount then
+      if StrToIntDef(GetConsensus(3), 0) < GetPendingTransactionCount then
       begin
-        setlength(ArrayPoolTXs, 0);
+        setlength(PendingTransactionsPool, 0);
       end;
       // Get MNS
-      PTC_SendLine(ValidSlot, ProtocolLine(11));  // Get MNs
-      LastTimeMNsRequested := UTCTime;
-      OutgoingMsjsAdd(ProtocolLine(ping));
+      PTC_SendLine(ValidSlot, GetProtocolLineFromCode(11));  // Get MNs
+      LastMasternodeListRequestTime := UTCTime;
+      OutgoingMsjsAdd(GetProtocolLineFromCode(ping));
     end;
     if MyConStatus = 3 then
     begin
       GetValidSlotForSeed(ValidSlot);
       if ((RPCAuto) and (not Form1.RPCServer.Active)) then  ProcessLinesAdd('RPCON');
       if ((not RPCAuto) and (Form1.RPCServer.Active)) then  ProcessLinesAdd('RPCOFF');
-      if ((StrToIntDef(GetConsensus(3), 0) > GetPendingCount) and
-        (LastTimePendingRequested + 5 < UTCTime) and (length(ArrayCriptoOp) = 0)) then
+      if ((StrToIntDef(GetConsensus(3), 0) > GetPendingTransactionCount) and
+        (LastPendingTransactionsRequestTime + 5 < UTCTime) and (length(ArrayCriptoOp) = 0)) then
       begin
         ClearReceivedOrdersIDs();
-        PTC_SendLine(ValidSlot, ProtocolLine(5));  // Get pending
-        LastTimePendingRequested := UTCTime;
+        PTC_SendLine(ValidSlot, GetProtocolLineFromCode(5));  // Get pending
+        LastPendingTransactionsRequestTime := UTCTime;
       end;
-      if GetAddressBalanceIndexed(LocalMN_Funds) < GetStackRequired(MyLastBlock) then
+      if GetAddressBalanceIndexed(LocalMasternodeFunds) < GetStackRequired(LastBlockIndex) then
         LastTimeReportMyMN := NextBlockTimeStamp + 5;
-      if ((not IsMyMNListed(LocalMN_IP)) and (Form1.Server.Active) and
+      if ((not IsMyMNListed(LocalMasternodeIP)) and (Form1.Server.Active) and
         (UTCTime > LastTimeReportMyMN + 5) and (BlockAge > 10 + MNsRandomWait) and
         (BlockAge < 495) and (1 = 1)) then
       begin
-        OutGoingMsjsAdd(ProtocolLine(MNReport));
+        OutGoingMsjsAdd(GetProtocolLineFromCode(MNReport));
         ToLog('events', TimeToStr(now) + 'My Masternode reported');
         LastTimeReportMyMN := UTCTime;
       end;
@@ -556,7 +556,7 @@ begin
   if GetConsensus = '' then exit;
   if ((BlockAge < 10) or (blockAge > 595)) then exit;
   ConsenLB := StrToIntDef(GetConsensus(2), -1);
-  if ((MyLastBlock > ConsenLB) and (ConsenLB >= 0)) then
+  if ((LastBlockIndex > ConsenLB) and (ConsenLB >= 0)) then
   begin
     Removed := RemoveBlocks(ConsenLB);
     ToLog('console', format('%d blocks deleted', [Removed]));
@@ -574,7 +574,7 @@ begin
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
-      PTC_SendLine(ValidSlot, ProtocolLine(GetCFG));
+      PTC_SendLine(ValidSlot, GetProtocolLineFromCode(GetCFG));
       LasTimeCFGRequest := UTCTime;
       ToLog('console', 'Noso CFG file requested');
     end;
@@ -582,87 +582,87 @@ begin
 
   // *** Update MNs file
   if ((GetConsensus(8) <> Copy(GetMNsHash, 1, 5)) and
-    (LastTimeMNHashRequestes + 5 < UTCTime) and (GetConsensus(8) <> '')) then
+    (LastMasternodeHashRequestTime + 5 < UTCTime) and (GetConsensus(8) <> '')) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
-      PTC_SendLine(ValidSlot, ProtocolLine(GetMNsFile));  // Get MNsFile
-      LastTimeMNHashRequestes := UTCTime;
-      ToLog('console', 'Mns File requested to ' + GetConexIndex(ValidSlot).ip);
+      PTC_SendLine(ValidSlot, GetProtocolLineFromCode(GetMNsFile));  // Get MNsFile
+      LastMasternodeHashRequestTime := UTCTime;
+      ToLog('console', 'Mns File requested to ' + GetConnectionData(ValidSlot).IpAddress);
     end;
   end;
 
   // *** update headers
   if Copy(GetResumenhash, 0, 5) <> GetConsensus(cHeaders) then  // Request headers
   begin
-    ClearAllPending;
+    ClearAllPendingTransactions;
     ClearMNsChecks();
     ClearMNsList();
-    if ((LastTimeRequestResumen + 10 < UTCTime) and (not DownloadHeaders)) then
+    if ((LastAccountSummaryRequestTime + 10 < UTCTime) and (not DownloadingHeaders)) then
     begin
-      if ((NLBV - mylastblock >= 144) or (ForceCompleteHeadersDownload)) then
+      if ((NLBV - LastBlockIndex >= 144) or (ForceHeadersDownload)) then
       begin
         if GetValidSlotForSeed(ValidSlot) then
         begin
-          PTC_SendLine(ValidSlot, ProtocolLine(7)); // GetResumen
-          ToLog('console', 'Headers file requested to ' + GetConexIndex(ValidSlot).ip);
+          PTC_SendLine(ValidSlot, GetProtocolLineFromCode(7)); // GetResumen
+          ToLog('console', 'Headers file requested to ' + GetConnectionData(ValidSlot).IpAddress);
           //'Headers file requested'
-          LastTimeRequestResumen := UTCTime;
+          LastAccountSummaryRequestTime := UTCTime;
         end;
       end
       else // If less than 144 block just update headers
       begin
         if GetValidSlotForSeed(ValidSlot) then
         begin
-          PTC_SendLine(ValidSlot, ProtocolLine(18)); // GetResumen
+          PTC_SendLine(ValidSlot, GetProtocolLineFromCode(18)); // GetResumen
           ToLog('console', Format('Headers update (%d) requested from %s',
-            [mylastblock, GetConexIndex(ValidSlot).ip]));
-          LastTimeRequestResumen := UTCTime;
+            [LastBlockIndex, GetConnectionData(ValidSlot).IpAddress]));
+          LastAccountSummaryRequestTime := UTCTime;
         end;
       end;
     end;
   end;
 
   // *** Update blocks
-  if ((Copy(GetResumenhash, 0, 5) = GetConsensus(5)) and (mylastblock < NLBV)) then
+  if ((Copy(GetResumenhash, 0, 5) = GetConsensus(5)) and (LastBlockIndex < NLBV)) then
     // request up to 100 blocks
   begin
-    ClearAllPending;
+    ClearAllPendingTransactions;
     ClearMNsChecks();
     ClearMNsList();
-    if ((LastTimeRequestBlock + 5 < UTCTime) and (not DownLoadBlocks)) then
+    if ((LastBlockRequestTime + 5 < UTCTime) and (not DownloadingBlocks)) then
     begin
       if GetValidSlotForSeed(ValidSlot) then
       begin
-        PTC_SendLine(ValidSlot, ProtocolLine(8)); // lastblock
+        PTC_SendLine(ValidSlot, GetProtocolLineFromCode(8)); // lastblock
         if WO_FullNode then
           ToLog('console', 'LastBlock requested from block ' +
-            IntToStr(mylastblock) + ' to ' + GetConexIndex(ValidSlot).ip)
+            IntToStr(LastBlockIndex) + ' to ' + GetConnectionData(ValidSlot).IpAddress)
         //'LastBlock requested from block '
         else
         begin
           LastDownBlock := NLBV - SecurityBlocks;
-          if LastDownBlock < MyLastBlock then LastDownBlock := MyLastBlock;
+          if LastDownBlock < LastBlockIndex then LastDownBlock := LastBlockIndex;
           ToLog('console', 'LastBlock requested from block ' + IntToStr(LastDownBlock));
         end;
-        LastTimeRequestBlock := UTCTime;
+        LastBlockRequestTime := UTCTime;
       end;
     end;
   end;
 
   // Update summary
-  if ((copy(GetResumenhash, 0, 5) = GetConsensus(5)) and (mylastblock = NLBV) and
-    (MySumarioHash <> GetConsensus(17)) {and (SummaryLastop < mylastblock)}) then
+  if ((copy(GetResumenhash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
+    (MySumarioHash <> GetConsensus(17)) {and (SummaryLastop < LastBlockIndex)}) then
   begin  // complete or download summary
-    if (SummaryLastop + (2 * SumMarkInterval) < mylastblock) then
+    if (SummaryLastop + (2 * SumMarkInterval) < LastBlockIndex) then
     begin
-      if ((LastTimeRequestsumary + 5 < UTCTime) and (not DownloadSumary)) then
+      if ((LastSummaryRequestTime + 5 < UTCTime) and (not DownloadingSummary)) then
       begin
         if GetValidSlotForSeed(ValidSlot) then
         begin
-          PTC_SendLine(ValidSlot, ProtocolLine(6)); // Getsumary
+          PTC_SendLine(ValidSlot, GetProtocolLineFromCode(6)); // Getsumary
           ToLog('console', rs2003); //'sumary file requested'
-          LastTimeRequestsumary := UTCTime;
+          LastSummaryRequestTime := UTCTime;
         end;
       end;
     end
@@ -674,92 +674,92 @@ begin
 
   // Update GVTs file
   if ((GetConsensus(18) <> Copy(MyGVTsHash, 0, 5)) and
-    (LasTimeGVTsRequest + 5 < UTCTime) and (GetConsensus(18) <> '') and
-    (not DownloadGVTs)) then
+    (LastGVTsRequestTime + 5 < UTCTime) and (GetConsensus(18) <> '') and
+    (not DownloadingGVTs)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
-      PTC_SendLine(ValidSlot, ProtocolLine(GetGVTs));
-      LasTimeGVTsRequest := UTCTime;
-      ToLog('console', 'GVTs File requested to ' + GetConexIndex(ValidSlot).ip);
+      PTC_SendLine(ValidSlot, GetProtocolLineFromCode(GetGVTs));
+      LastGVTsRequestTime := UTCTime;
+      ToLog('console', 'GVTs File requested to ' + GetConnectionData(ValidSlot).IpAddress);
     end;
   end;
 
   // Update PSOs file
   if ((GetConsensus(20) <> Copy(PSOFileHash, 0, 5)) and
-    (LasTimePSOsRequest + 5 < UTCTime) and (GetConsensus(20) <> '') and
-    (not DownloadPSOs)) then
+    (LastPSOsRequestTime + 5 < UTCTime) and (GetConsensus(20) <> '') and
+    (not DownloadingPSOs)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
-      PTC_SendLine(ValidSlot, ProtocolLine(GetPSOs));
-      LasTimePSOsRequest := UTCTime;
-      ToLog('console', 'Requested PSOs to: ' + GetConexIndex(ValidSlot).ip);
+      PTC_SendLine(ValidSlot, GetProtocolLineFromCode(GetPSOs));
+      LastPSOsRequestTime := UTCTime;
+      ToLog('console', 'Requested PSOs to: ' + GetConnectionData(ValidSlot).IpAddress);
     end;
   end;
 
   // *** Request reported MNs
   if ((StrToIntDef(GetConsensus(9), 0) > GetMNsListLength) and
-    (LastTimeMNsRequested + 15 < UTCTime) and (LengthWaitingMNs = 0) and
-    (BlockAge > 30) and (IsAllSynced = 0)) then
+    (LastMasternodeListRequestTime + 15 < UTCTime) and (LengthWaitingMNs = 0) and
+    (BlockAge > 30) and (IsAllSynchronized = ssSynchronized)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
       ClearReceivedMNs();
       ClearMNIPProcessed;
-      PTC_SendLine(ValidSlot, ProtocolLine(11));  // Get MNsList
-      LastTimeMNsRequested := UTCTime;
-      ToLog('console', 'MNs reports requested to ' + GetConexIndex(ValidSlot).ip);
+      PTC_SendLine(ValidSlot, GetProtocolLineFromCode(11));  // Get MNsList
+      LastMasternodeListRequestTime := UTCTime;
+      ToLog('console', 'MNs reports requested to ' + GetConnectionData(ValidSlot).IpAddress);
     end;
   end;
 
   // *** Request MNs verifications
-  if ((StrToIntDef(GetConsensus(14), 0) > GetMNsChecksCount) and
-    (LastTimeChecksRequested + 5 < UTCTime) and (IsAllSynced = 0)) then
+  if ((StrToIntDef(GetConsensus(14), 0) > GetMasternodeCheckCount) and
+    (LastMasternodeCheckRequestTime + 5 < UTCTime) and (IsAllSynchronized = ssSynchronized)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
-      PTC_SendLine(ValidSlot, ProtocolLine(GetChecks));  // Get MNsChecks
-      LastTimeChecksRequested := UTCTime;
-      ToLog('console', 'Checks requested to ' + GetConexIndex(ValidSlot).ip);
+      PTC_SendLine(ValidSlot, GetProtocolLineFromCode(GetChecks));  // Get MNsChecks
+      LastMasternodeCheckRequestTime := UTCTime;
+      ToLog('console', 'Checks requested to ' + GetConnectionData(ValidSlot).IpAddress);
     end;
   end;
 
   // Blockchain status issues starts here
-  if ((copy(GetResumenhash, 0, 5) = GetConsensus(5)) and (mylastblock = NLBV) and
+  if ((copy(GetResumenhash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
     (copy(MySumarioHash, 0, 5) <> GetConsensus(17)) and
-    (SummaryLastop = mylastblock) and (LastTimeRequestsumary + 5 < UTCTime)) then
+    (SummaryLastop = LastBlockIndex) and (LastSummaryRequestTime + 5 < UTCTime)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
       ToLog('console', format('%s <> %s', [copy(MySumarioHash, 0, 5),
         GetConsensus(17)]));
-      PTC_SendLine(ValidSlot, ProtocolLine(6)); // Getsumary
+      PTC_SendLine(ValidSlot, GetProtocolLineFromCode(6)); // Getsumary
       ToLog('console', rs2003); //'sumary file requested'
-      LastTimeRequestsumary := UTCTime;
+      LastSummaryRequestTime := UTCTime;
     end;
   end
-  else if ((mylastblock = NLBV) and ((copy(GetResumenhash, 0, 5) <> GetConsensus(5)) or
-    (MyLastBlockHash <> GetConsensus(10)))) then
+  else if ((LastBlockIndex = NLBV) and ((copy(GetResumenhash, 0, 5) <> GetConsensus(5)) or
+    (LastBlockHash <> GetConsensus(10)))) then
   begin
-    ToLog('console', MyLastBlockHash + ' ' + MyLastBlockHash);
+    ToLog('console', LastBlockHash + ' ' + LastBlockHash);
     UndoneLastBlock();
   end
   // Update headers
   else if ((copy(GetResumenhash, 0, 5) <> GetConsensus(5)) and
-    (NLBV = mylastblock) and (MyLastBlockHash = GetConsensus(10)) and
-    (copy(MySumarioHash, 0, 5) = GetConsensus(17)) and (not DownloadHeaders)) then
+    (NLBV = LastBlockIndex) and (LastBlockHash = GetConsensus(10)) and
+    (copy(MySumarioHash, 0, 5) = GetConsensus(17)) and (not DownloadingHeaders)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
-      ClearAllPending;
-      PTC_SendLine(ValidSlot, ProtocolLine(7));
+      ClearAllPendingTransactions;
+      PTC_SendLine(ValidSlot, GetProtocolLineFromCode(7));
       ToLog('console', 'Headers file requested');
-      LastTimeRequestResumen := UTCTime;
+      LastAccountSummaryRequestTime := UTCTime;
     end;
   end;
 
-  if IsAllSynced = 0 then Last_SyncWithMainnet := UTCTime;
+  if IsAllSynchronized = ssSynchronized then Last_SyncWithMainnet := UTCTime;
 end;
 
 function GetOutGoingConnections(): Integer;
@@ -767,9 +767,9 @@ var
   contador: Integer;
 begin
   Result := 0;
-  for contador := 1 to MaxConecciones do
+  for contador := 1 to MaxConnections do
   begin
-    if GetConexIndex(contador).tipo = 'SER' then
+    if GetConnectionData(contador).ConnectionType = 'SER' then
       Inc(Result);
   end;
 end;
@@ -779,9 +779,9 @@ var
   contador: Integer;
 begin
   Result := 0;
-  for contador := 1 to MaxConecciones do
+  for contador := 1 to MaxConnections do
   begin
-    if GetConexIndex(contador).tipo = 'CLI' then
+    if GetConnectionData(contador).ConnectionType = 'CLI' then
       Inc(Result);
   end;
 end;
@@ -793,11 +793,11 @@ var
   counter: Integer;
 begin
   Result := False;
-  for counter := 1 to MaxConecciones do
+  for counter := 1 to MaxConnections do
   begin
     Inc(SlotCount);
-    if SlotCount > MaxConecciones then SlotCount := 1;
-    if ((GetConexIndex(SlotCount).MerkleHash = GetConsensus(0))) then
+    if SlotCount > MaxConnections then SlotCount := 1;
+    if ((GetConnectionData(SlotCount).MerkleTreeHash = GetConsensus(0))) then
     begin
       Result := True;
       slot := SlotCount;
@@ -811,9 +811,9 @@ var
   contador: Integer;
 begin
   Result := 0;
-  for contador := 1 to MaxConecciones do
+  for contador := 1 to MaxConnections do
   begin
-    if IsSeedNode(GetConexIndex(contador).ip) then
+    if IsSeedNode(GetConnectionData(contador).IpAddress) then
       Inc(Result);
   end;
 end;
@@ -823,7 +823,7 @@ var
   counter, counter2: Integer;
   orderfound: Boolean = False;
   resultorder: TOrderGroup;
-  ArrTrxs: TBlockOrdersArray;
+  ArrTrxs: TBlockOrders;
   LastBlockToCheck: Integer = 0;
   FirstBlockToCheck: Integer;
   TryonIndex: Integer = -1;
@@ -832,12 +832,12 @@ begin
   BeginPerformance('GetOrderDetails');
   resultorder := default(TOrderGroup);
   Result := resultorder;
-  if GetPendingCount > 0 then
+  if GetPendingTransactionCount > 0 then
   begin
-    EnterCriticalSection(CSPending);
+    EnterCriticalSection(CSPendingTransactions);
     SetLength(CopyPendings, 0);
-    CopyPendings := copy(ArrayPoolTXs, 0, length(ArrayPoolTXs));
-    LeaveCriticalSection(CSPending);
+    CopyPendings := copy(PendingTransactionsPool, 0, length(PendingTransactionsPool));
+    LeaveCriticalSection(CSPendingTransactions);
     for counter := 0 to length(CopyPendings) - 1 do
     begin
       if CopyPendings[counter].OrderID = orderid then
@@ -847,7 +847,7 @@ begin
         resultorder.reference := CopyPendings[counter].reference;
         resultorder.TimeStamp := CopyPendings[counter].TimeStamp;
         resultorder.receiver := CopyPendings[counter].receiver;
-        if CopyPendings[counter].OrderLines = 1 then
+        if CopyPendings[counter].OrderLineCount = 1 then
           resultorder.Sender := CopyPendings[counter].address
         else
           resultorder.Sender :=
@@ -871,7 +871,7 @@ begin
     if TryonIndex >= 0 then
     begin
       ToLog('console', 'Order found on index: ' + TryOnIndex.ToString());
-      ArrTrxs := GetBlockTrxs(TryonIndex);
+      ArrTrxs := GetBlockTransfers(TryonIndex);
       if length(ArrTrxs) > 0 then
       begin
         for counter2 := 0 to length(ArrTrxs) - 1 do
@@ -883,7 +883,7 @@ begin
             resultorder.reference := ArrTrxs[counter2].reference;
             resultorder.TimeStamp := ArrTrxs[counter2].TimeStamp;
             resultorder.receiver := ArrTrxs[counter2].receiver;
-            if ArrTrxs[counter2].OrderLines = 1 then
+            if ArrTrxs[counter2].OrderLineCount = 1 then
               resultorder.Sender := ArrTrxs[counter2].Sender
             else
               resultorder.Sender :=
@@ -904,7 +904,7 @@ begin
     end
     else
     begin
-      FirstBlockToCheck := mylastblock;
+      FirstBlockToCheck := LastBlockIndex;
       ToLog('console', 'Order not on index');
     end;
   end;
@@ -917,17 +917,17 @@ var
   LastBlockToCheck: Integer;
   Counter: Integer;
   counter2: Integer;
-  ArrTrxs: TBlockOrdersArray;
+  ArrTrxs: TBlockOrders;
   orderfound: Boolean = False;
 begin
   Result := '';
   if WO_FullNode then LastBlockToCheck := 1
   else
-    LastBlockToCheck := mylastblock - SecurityBlocks;
+    LastBlockToCheck := LastBlockIndex - SecurityBlocks;
   if LastBlockToCheck < 1 then LastBlockToCheck := 1;
-  for counter := mylastblock downto mylastblock - 4000 do
+  for counter := LastBlockIndex downto LastBlockIndex - 4000 do
   begin
-    ArrTrxs := GetBlockTrxs(counter);
+    ArrTrxs := GetBlockTransfers(counter);
     if length(ArrTrxs) > 0 then
     begin
       for counter2 := 0 to length(ArrTrxs) - 1 do
@@ -954,14 +954,14 @@ begin
   //           9{MNscount} 10{LasBlockHash} 11{BestHashDiff} 12{LastBlockTimeEnd} 13{LBMiner}
   //           14{ChecksCount} 15{LastBlockPoW} 16{LastBlockDiff} 17{summary} 18{GVTs} 19{nosoCFG}
   //           20{PSOHash}
-  Result := {1}IntToStr(GetTotalConexiones) + ' ' +{2}IntToStr(MyLastBlock) + ' ' +
-    {3}GetPendingCount.ToString + ' ' +
+  Result := {1}IntToStr(GetTotalConnections) + ' ' +{2}IntToStr(LastBlockIndex) + ' ' +
+    {3}GetPendingTransactionCount.ToString + ' ' +
     {4}IntToStr(UTCTime - EngineLastUpdate) + ' ' +{5}copy(GetResumenHash, 0, 5) + ' ' +
     {6}MainnetVersion + NodeRelease + ' ' +{7}UTCTimeStr + ' ' +{8}copy(
     GetMnsHash, 0, 5) + ' ' +{9}GetMNsListLength.ToString + ' ' +
-    {10}MyLastBlockHash + ' ' +{11}{GetNMSData.Diff}'null' + ' ' +
+    {10}LastBlockHash + ' ' +{11}{GetNMSData.Diff}'null' + ' ' +
     {12}IntToStr(LastBlockData.TimeEnd) + ' ' +
-    {13}LastBlockData.AccountMiner + ' ' +{14}GetMNsChecksCount.ToString +
+    {13}LastBlockData.AccountMiner + ' ' +{14}GetMasternodeCheckCount.ToString +
     ' ' +{15}GetParameter(LastBlockData.Solution, 2) + ' ' +
     {16}GetParameter(LastBlockData.Solution, 1) + ' ' +{17}copy(
     MySumarioHash, 0, 5) + ' ' +{18}copy(MyGVTsHash, 0, 5) + ' ' +
@@ -1011,7 +1011,7 @@ begin
   except
     on E: Exception do
     begin
-      ToDeepDeb('mpRed,GetRepoFile,' + E.Message);
+      ToDeepDebug('mpRed,GetRepoFile,' + E.Message);
     end;
   end;//TRY
   Conector.Free;
@@ -1072,11 +1072,11 @@ var
   TCPClient: TidTCPClient;
   NodeToUse: Integer;
 begin
-  NodeToUse := Random(NodesListLen);
+  NodeToUse := Random(GetNodeListLength);
   Result := '';
   TCPClient := TidTCPClient.Create(nil);
-  TCPclient.Host := NodesIndex(NodeToUse).ip;
-  TCPclient.Port := StrToIntDef(NodesIndex(NodeToUse).port, 8080);
+  TCPclient.Host := GetNodeDataAtIndex(NodeToUse).IpAddress;
+  TCPclient.Port := StrToIntDef(GetNodeDataAtIndex(NodeToUse).Port, 8080);
   TCPclient.ConnectTimeout := 1000;
   TCPclient.ReadTimeout := 1000;
   try
@@ -1108,10 +1108,10 @@ begin
     remain := remain mod 60;
     seconds := remain;
     if Days > 0 then Result :=
-        Format('[%d] %dd %.2d:%.2d:%.2d', [G_MNVerifications, Days,
+        Format('[%d] %dd %.2d:%.2d:%.2d', [MasternodeVerificationCount, Days,
         Hours, Minutes, Seconds])
     else
-      Result := Format('[%d] %.2d:%.2d:%.2d', [G_MNVerifications,
+      Result := Format('[%d] %.2d:%.2d:%.2d', [MasternodeVerificationCount,
         Hours, Minutes, Seconds]);
   end;
 end;
@@ -1142,8 +1142,8 @@ begin
     Inc(TrysCount);
     if GetValidSlotForSeed(RanNode) then
     begin
-      Client.Host := GetConexIndex(RanNode).ip;
-      Client.Port := GetConexIndex(RanNode).ListeningPort;
+      Client.Host := GetConnectionData(RanNode).IpAddress;
+      Client.Port := GetConnectionData(RanNode).ListeningPort;
       Client.ConnectTimeout := 3000;
       Client.ReadTimeout := 3000;
       try

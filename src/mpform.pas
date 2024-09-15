@@ -10,13 +10,14 @@ uses
   fileutil, Clipbrd, Menus, ExploreForm, lclintf, ComCtrls,
   strutils, IdHTTPServer, IdCustomHTTPServer,
   IdHTTP, fpJSON, Types, DefaultTranslator, LCLTranslator, translation, Noso.Debug,
-  IdComponent, Noso.General, Noso.Crypto, Noso.Summary, Noso.Consensus, Noso.Pso, Noso.WallCon,
+  IdComponent, Noso.General, Noso.Crypto, Noso.Summary, Noso.Consensus,
+  Noso.Pso, Noso.WallCon,
   Noso.Headers, Noso.Block, Noso.Network, Noso.Gvt, Noso.Masternodes,
   Noso.Config, Noso.IP.Control;
 
 type
 
-  { TThreadClientRead }
+  { TClientReadThread }
 
   TServerTipo = class(TObject)
   private
@@ -93,14 +94,14 @@ type
      LastblockHash: string[64];         // Hash del ultimo bloque
      SumarioHash : string[64];          // Hash del sumario de cuenta
      Pending: Integer;                  // Cantidad de operaciones pendientes
-     Protocol : integer;                // Numero de protocolo usado
+     Protocol : integer;                // Numero de ProtocolVersion usado
      Version : string[8];
      ListeningPort : integer;
      offset : integer;                  // Segundos de diferencia a su tiempo
      ResumenHash : String[64];           //
      ConexStatus : integer;
      IsBusy : Boolean;
-     Thread : TThreadClientRead;
+     Thread : TClientReadThread;
      MNsHash : string[5];
      MNsCount : Integer;
      BestHashDiff : string[32];
@@ -557,8 +558,8 @@ const
     'N3DthVsfEUtqrgWFHTEB6F88xLkT3Df N4ZR3fKhTUod34evnEcDQX3i6XufBDU';
 
   DefaultServerPort = 8080;
-  MaxConecciones = 99;
-  //Protocolo = 2;
+  MaxConnections = 99;
+  //ProtocolVersion = 2;
   DefaultDonation = 10;
   // Custom values for coin
   SecondsPerBlock = 600;            // 10 minutes
@@ -625,26 +626,26 @@ var
   {Network}
   MaxOutgoingConnections: Integer = 3;
   {
-  SlotLines        : array [1..MaxConecciones] of TStringList;
-  CanalCliente     : array [1..MaxConecciones] of TIdTCPClient;
+  SlotTextLines        : array [1..MaxConnections] of TStringList;
+  ClientChannels     : array [1..MaxConnections] of TIdTCPClient;
   }
   //ListadoBots      : array of BotData;
   //ListaNodos       : array of NodeData;
-  //ArrayPoolTXs     : Array of TOrderData;
+  //PendingTransactionsPool     : Array of TOrderData;
   ArrayOrderIDsProcessed: array of String;
   OutgoingMsjs: TStringList;
   KeepServerOn: Boolean = False;
   LastTryServerOn: Int64 = 0;
   ServerStartTime: Int64 = 0;
   {
-  DownloadHeaders  : boolean = false;
-  DownloadSumary   : Boolean = false;
-  DownLoadBlocks   : boolean = false;
-  DownLoadGVTs     : boolean = false;
-  DownloadPSOs     : boolean = false;
+  DownloadingHeaders  : boolean = false;
+  DownloadingSummary   : Boolean = false;
+  DownloadingBlocks   : boolean = false;
+  DownloadingGVTs     : boolean = false;
+  DownloadingPSOs     : boolean = false;
   }
   RebuildingSumary: Boolean = False;
-  //OpenReadClientThreads : integer = 0;
+  //ActiveClientReadThreads : integer = 0;
 
   // Threads
   SendOutMsgsThread: TThreadSendOutMsjs;
@@ -669,7 +670,7 @@ var
   G_TotalPings: Int64 = 0;
   LastCommand: String = '';
   ProcessLines: TStringList;
-  //LastBotClear         : string = '';
+  //LastBotClearTime         : string = '';
   S_Wallet: Boolean = False;
   MontoIncoming: Int64 = 0;
   MontoOutgoing: Int64 = 0;
@@ -683,7 +684,7 @@ var
   FormState_Status: Integer;
 
   // Masternodes
-  //G_MNVerifications  : integer = 0;
+  //MasternodeVerificationCount  : integer = 0;
   //ArrayMNsData       : array of TMNsData;
   LastTimeReportMyMN: Int64 = 0;
   MNsArray: array of TMasterNode;
@@ -692,18 +693,18 @@ var
   U_MNsGrid_Last: Int64 = 0;
 
   //MNsList       : array of TMnode;
-  //ArrMNChecks   : array of TMNCheck;
+  //MasternodeChecks   : array of TMNCheck;
   MNsRandomWait: Integer = 0;
 
 
   {
   //MySumarioHash : String = '';
-  MyLastBlock     : integer = 0;
-  MyLastBlockHash : String = '';
+  LastBlockIndex     : integer = 0;
+  LastBlockHash : String = '';
   MyResumenHash   : String = '';
   MyGVTsHash      : string = '';
   MyCFGHash       : string = '';
-  MyPublicIP      : String = '';
+  PublicIPAddress      : String = '';
   MyMNsHash       : String = '';
   }
 
@@ -716,22 +717,22 @@ var
 
   Last_SyncWithMainnet: Int64 = 0;
   {
-  LastTimeRequestSumary        : int64 = 0;
-  LastTimeRequestBlock         : int64 = 0;
-  LastTimeRequestResumen       : int64 = 0;
-  LastTimePendingRequested     : int64 = 0;
+  LastSummaryRequestTime        : int64 = 0;
+  LastBlockRequestTime         : int64 = 0;
+  LastAccountSummaryRequestTime       : int64 = 0;
+  LastPendingTransactionsRequestTime     : int64 = 0;
   }
-  //ForceCompleteHeadersDownload : boolean = false;
+  //ForceHeadersDownload : boolean = false;
   {
-  LastTimeMNHashRequestes      : int64 = 0;
-  LastTimeBestHashRequested    : int64 = 0;
-  LastTimeMNsRequested         : int64 = 0;
-  LastTimeChecksRequested      : int64 = 0;
-  LastRunMNVerification        : int64 = 0;
-  LasTimeGVTsRequest           : int64 = 0;
+  LastMasternodeHashRequestTime      : int64 = 0;
+  LastBestHashRequestTime    : int64 = 0;
+  LastMasternodeListRequestTime         : int64 = 0;
+  LastMasternodeCheckRequestTime      : int64 = 0;
+  LastMasternodeVerificationTime        : int64 = 0;
+  LastGVTsRequestTime           : int64 = 0;
   }
   //LasTimeCFGRequest            : int64 = 0;
-  //LasTimePSOsRequest           : int64 = 0;
+  //LastPSOsRequestTime           : int64 = 0;
 
   // Variables asociadas a mi conexion
   MyConStatus: Integer = 0;
@@ -748,10 +749,10 @@ var
   CSProcessLines: TRTLCriticalSection;
   CSOutgoingMsjs: TRTLCriticalSection;
   CSBlocksAccess: TRTLCriticalSection;
-  //CSPending     : TRTLCriticalSection;
+  //CSPendingTransactions     : TRTLCriticalSection;
   CSCriptoThread: TRTLCriticalSection;
   CSClosingApp: TRTLCriticalSection;
-  //CSClientReads : TRTLCriticalSection;
+  //CSClientReadThreads : TRTLCriticalSection;
   //CSGVTsArray   : TRTLCriticalSection;
   CSNosoCFGStr: TRTLCriticalSection;
 
@@ -764,9 +765,9 @@ var
 
 
   // Outgoing lines, needs to be initialized
-  //CSOutGoingArr : array[1..MaxConecciones] of TRTLCriticalSection;
-  //ArrayOutgoing : array[1..MaxConecciones] of array of string;
-  //CSIncomingArr : array[1..MaxConecciones] of TRTLCriticalSection;
+  //CSOutgoingMessages : array[1..MaxConnections] of TRTLCriticalSection;
+  //OutgoingMessages : array[1..MaxConnections] of array of string;
+  //CSIncomingMessages : array[1..MaxConnections] of TRTLCriticalSection;
 
 
 
@@ -930,16 +931,16 @@ begin
     UpdateOpenThread('Masternodes', UTCTime);
     if UTCTime mod 10 = 0 then
     begin
-      if ((IsValidator(LocalMN_IP)) and (BlockAge > 500 + (MNsRandomWait div 4)) and
+      if ((IsNodeValidator(LocalMasternodeIP)) and (BlockAge > 500 + (MNsRandomWait div 4)) and
         (not IsMyMNCheckDone) and (BlockAge < 575) and
-        (LastRunMNVerification <> UTCTime) and (MyConStatus = 3) and
+        (LastMasternodeVerificationTime <> UTCTime) and (MyConStatus = 3) and
         (VerifyThreadsCount <= 0)) then
       begin
-        LastRunMNVerification := UTCTime;
-        TextLine := RunMNVerification(MyLastBlock, GetSynctus,
-          LocalMN_IP, GetWallArrIndex(WallAddIndex(LocalMN_Sign)).PublicKey,
-          GetWallArrIndex(WallAddIndex(LocalMN_Sign)).PrivateKey);
-        OutGoingMsjsAdd(ProtocolLine(MNCheck) + TextLine);
+        LastMasternodeVerificationTime := UTCTime;
+        TextLine := RunMNVerification(LastBlockIndex, GetSynchronizationStatus,
+          LocalMasternodeIP, GetWallArrIndex(WallAddIndex(LocalMasternodeSignature)).PublicKey,
+          GetWallArrIndex(WallAddIndex(LocalMasternodeSignature)).PrivateKey);
+        OutGoingMsjsAdd(GetProtocolLineFromCode(MNCheck) + TextLine);
         //ToLog('console','Masternodes Verification completed: '+TextLine)
       end;
     end;
@@ -948,11 +949,11 @@ begin
       LastIPVerify := NextBlockTimeStamp;
       MyIP := GetMiIP();
       //ToLog('console','Auto IP executed');
-      if ((MyIP <> '') and (MyIP <> LocalMN_IP) and (MyIP <> 'Closing NODE') and
+      if ((MyIP <> '') and (MyIP <> LocalMasternodeIP) and (MyIP <> 'Closing NODE') and
         (MyIP <> 'BANNED') and (IsValidIP(MyIP))) then
       begin
         ToLog('console', 'Auto IP: updated to ' + MyIp);
-        LocalMN_IP := MyIP;
+        LocalMasternodeIP := MyIP;
         S_AdvOpt := True;
       end;
     end;
@@ -961,9 +962,9 @@ begin
       TextLine := GetWaitingMNs;
       if not IsIPMNAlreadyProcessed(TextLine) then
       begin
-        ReportInfo := CheckMNReport(TextLine, MyLastBlock);
+        ReportInfo := CheckMNReport(TextLine, LastBlockIndex);
         if ReportInfo <> '' then
-          outGOingMsjsAdd(GetPTCEcn + ReportInfo);
+          outGOingMsjsAdd(GetProtocolHeader + ReportInfo);
         sleep(1);
       end;
     end;
@@ -1109,7 +1110,7 @@ begin
       Linea := OutgoingMsjsGet();
       if Linea <> '' then
       begin
-        for Slot := 1 to MaxConecciones do
+        for Slot := 1 to MaxConnections do
         begin
           try
             if IsSlotConnected(slot) then PTC_SendLine(Slot, linea);
@@ -1157,16 +1158,18 @@ begin
   begin
     UpdateOpenThread('KeepConnect', UTCTime);
     TryThis := True;
-    if getTotalConexiones >= 99 then TryThis := False;
+    if GetTotalConnections >= 99 then TryThis := False;
     if GetTotalSyncedConnections >= 3 then TryThis := False;
     if ((BlockAge < 10) or (blockAge > 595)) then TryThis := False;
     if trythis then
     begin
       Inc(LastTrySlot);
-      if LastTrySlot >= NodesListLen then LastTrySlot := 0;
-      if ((GetSlotFromIP(NodesIndex(LastTrySlot).ip) = 0) and
-        (GetFreeSlot() > 0) and (NodesIndex(LastTrySlot).ip <> LocalMN_IP)) then
-        ConnectClient(NodesIndex(LastTrySlot).ip, NodesIndex(LastTrySlot).port);
+      if LastTrySlot >= GetNodeListLength then LastTrySlot := 0;
+      if ((GetSlotFromIP(GetNodeDataAtIndex(LastTrySlot).IpAddress) = 0) and
+        (GetFreeSlot() > 0) and (GetNodeDataAtIndex(LastTrySlot).IpAddress <>
+        LocalMasternodeIP)) then
+        ConnectClient(GetNodeDataAtIndex(LastTrySlot).IpAddress,
+          GetNodeDataAtIndex(LastTrySlot).Port);
     end;
     sleep(3000);
     if PRestartTime > 0 then
@@ -1199,9 +1202,9 @@ begin
       sleep(1000);
       continue;
     end;
-    if MyLastBlock > GetDBLastBlock then
+    if LastBlockIndex > GetDBLastBlock then
     begin
-      if ((blockAge > 60) and (copy(MyLastBlockHash, 1, 5) =
+      if ((blockAge > 60) and (copy(LastBlockHash, 1, 5) =
         copy(getconsensus(10), 1, 5))) then
       begin
         UpdateBlockDatabase;
@@ -1231,7 +1234,7 @@ begin
   InitCriticalSection(CSProcessLines);
   InitCriticalSection(CSOutgoingMsjs);
   InitCriticalSection(CSBlocksAccess);
-  //InitCriticalSection(CSPending);
+  //InitCriticalSection(CSPendingTransactions);
   InitCriticalSection(CSCriptoThread);
   //InitCriticalSection(CSMNsArray);
   //InitCriticalSection(CSWaitingMNs);
@@ -1239,19 +1242,19 @@ begin
   InitCriticalSection(CSClosingApp);
   //InitCriticalSection(CSNosoCFGStr);
   InitCriticalSection(CSIdsProcessed);
-  for counter := 1 to MaxConecciones do
+  for counter := 1 to MaxConnections do
   begin
-    //InitCriticalSection(CSOutGoingArr[counter]);
-    //InitCriticalSection(CSIncomingArr[counter]);
-    //SetLength(ArrayOutgoing[counter],0);
-    //SlotLines[counter] := TStringlist.Create;
-    //CanalCliente[counter] := TIdTCPClient.Create(form1);
+    //InitCriticalSection(CSOutgoingMessages[counter]);
+    //InitCriticalSection(CSIncomingMessages[counter]);
+    //SetLength(OutgoingMessages[counter],0);
+    //SlotTextLines[counter] := TStringlist.Create;
+    //ClientChannels[counter] := TIdTCPClient.Create(form1);
   end;
   CreateFormInicio();
   CreateFormSlots();
   SetLength(ArrayOrderIDsProcessed, 0);
   //SetLength(ArrayMNsData,0);
-  //Setlength(ArrayPoolTXs,0);
+  //Setlength(PendingTransactionsPool,0);
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
@@ -1261,7 +1264,7 @@ begin
   DoneCriticalSection(CSProcessLines);
   DoneCriticalSection(CSOutgoingMsjs);
   DoneCriticalSection(CSBlocksAccess);
-  //DoneCriticalSection(CSPending);
+  //DoneCriticalSection(CSPendingTransactions);
   DoneCriticalSection(CSCriptoThread);
   //DoneCriticalSection(CSMNsArray);
   //DoneCriticalSection(CSWaitingMNs);
@@ -1269,13 +1272,13 @@ begin
   DoneCriticalSection(CSClosingApp);
   //DoneCriticalSection(CSNosoCFGStr);
   DoneCriticalSection(CSIdsProcessed);
-  for contador := 1 to MaxConecciones do
+  for contador := 1 to MaxConnections do
   begin
-    //DoneCriticalSection(CSOutGoingArr[contador]);
-    //DoneCriticalSection(CSIncomingArr[contador]);
+    //DoneCriticalSection(CSOutgoingMessages[contador]);
+    //DoneCriticalSection(CSIncomingMessages[contador]);
   end;
-  //for contador := 1 to maxconecciones do
-  //If Assigned(SlotLines[contador]) then SlotLines[contador].Free;
+  //for contador := 1 to MaxConnections do
+  //If Assigned(SlotTextLines[contador]) then SlotTextLines[contador].Free;
   form1.Server.Free;
   form1.RPCServer.Free;
 end;
@@ -1357,7 +1360,7 @@ begin
   form1.LabAbout.Caption := CoinName + ' project' + SLINEBREAK +
     'Brought to you by the Noso Team' + SLINEBREAK + 'Crypto routines by Xor-el' +
     SLINEBREAK + 'Version ' + MainnetVersion + NodeRelease + SLINEBREAK +
-    'Protocol ' + IntToStr(Protocolo) + SLINEBREAK + BuildDate;
+    'Protocol ' + IntToStr(ProtocolVersion) + SLINEBREAK + BuildDate;
   form1.SG_Performance.FocusRectVisible := False;
   form1.SG_Performance.ColWidths[0] := 142;
   form1.SG_Performance.ColWidths[1] := 73;
@@ -1434,7 +1437,7 @@ begin
   InitGUI();
   GetTimeOffset(GetParameter(GetCFGDataStr, 2));
   OutText('✓ Mainnet time synced', False, 1);
-  UpdateMyData();
+  UpdateNodeData();
   OutText(rs0024, False, 1); //'✓ My data updated'
   LoadOptionsToPanel();
   form1.Caption := coinname + format(rs0027, [MainnetVersion, NodeRelease]);
@@ -1463,7 +1466,7 @@ begin
     SetLength(ArrayCriptoOp, 0);
     Setlength(MNsArray, 0);
     Setlength(MNsList, 0);
-    Setlength(ArrMNChecks, 0);
+    Setlength(MasternodeChecks, 0);
     //Setlength(WaitingMNs,0);
     ThreadMNs := TUpdateMNs.Create(True);
     ThreadMNs.FreeOnTerminate := True;
@@ -1508,7 +1511,7 @@ begin
   SetLength(ArrayCriptoOp, 0);
   Setlength(MNsArray, 0);
   Setlength(MNsList, 0);
-  Setlength(ArrMNChecks, 0);
+  Setlength(MasternodeChecks, 0);
   //Setlength(WaitingMNs,0);
   ThreadMNs := TUpdateMNs.Create(True);
   ThreadMNs.FreeOnTerminate := True;
@@ -1639,7 +1642,7 @@ var
   ts: TTextStyle;
   posrequired: Int64;
 begin
-  posrequired := (GetCirculatingSupply(MyLastBlock + 1) * PosStackCoins) div 10000;
+  posrequired := (GetCirculatingSupply(LastBlockIndex + 1) * PosStackCoins) div 10000;
   if (ACol = 1) then
   begin
     ts := (Sender as TStringGrid).Canvas.TextStyle;
@@ -1792,12 +1795,12 @@ begin
   if EngineLastUpdate <> UTCtime then EngineLastUpdate := UTCtime;
   Form1.Latido.Enabled := False;
   if ((UTCTime >= BuildNMSBlock) and (BuildNMSBlock > 0) and
-    (MyConStatus = 3) and (MyLastBlock = StrToIntDef(GetCOnsensus(2), -1))) then
+    (MyConStatus = 3) and (LastBlockIndex = StrToIntDef(GetCOnsensus(2), -1))) then
   begin
-    ToLog('events', 'Starting construction of block ' + (MyLastBlock + 1).ToString);
-    BuildNewBlock(MyLastBlock + 1, BuildNMSBlock, MyLastBlockHash,
+    ToLog('events', 'Starting construction of block ' + (LastBlockIndex + 1).ToString);
+    BuildNewBlock(LastBlockIndex + 1, BuildNMSBlock, LastBlockHash,
       {GetNMSData.Miner}'NpryectdevepmentfundsGE',{GetNMSData.Hash}'!!!!!!!!!100000000');
-    G_MNVerifications := 0;
+    MasternodeVerificationCount := 0;
   end;
   BeginPerformance('ActualizarGUI');
   ActualizarGUI();
@@ -1823,8 +1826,8 @@ begin
   if ConnectedRotor > 6 then ConnectedRotor := 0;
   UpdateStatusBar;
   if ((UTCTime mod 60 = 0) and (LastIPsClear <> UTCTime)) then ClearIPControls;
-  if ((UTCTime mod 3600 = 3590) and (LastBotClear <> UTCTime) and (Form1.Server.Active))
-  then DeleteBots;
+  if ((UTCTime mod 3600 = 3590) and (LastBotClearTime <> UTCTime) and (Form1.Server.Active))
+  then RemoveAllBots;
   if ((UTCTime mod 600 >= 570) and (UTCTime > NosoT_LastUpdate + 599)) then
     UpdateOffset(GetParameter(GetCFGDataStr, 2));
   Form1.Latido.Enabled := True;
@@ -1867,8 +1870,8 @@ begin
   if MyConStatus = 1 then Form1.StaConLab.Color := clyellow;
   if MyConStatus = 2 then Form1.StaConLab.Color := claqua;
   if MyConStatus = 3 then Form1.StaConLab.Color := clgreen;
-  Form1.BitBtnBlocks.Caption := IntToStr(MyLastBlock);
-  form1.BitBtnPending.Caption := GetPendingCount.ToString;
+  Form1.BitBtnBlocks.Caption := IntToStr(LastBlockIndex);
+  form1.BitBtnPending.Caption := GetPendingTransactionCount.ToString;
   if form1.RPCServer.active then Form1.StaRPCimg.Visible := True
   else
     Form1.StaRPCimg.Visible := False;
@@ -2142,7 +2145,7 @@ begin
     Result := True;
   except
     on E: Exception do
-      ToDeepDeb('NosoServer,GetStreamFromContext,' + E.Message);
+      ToDeepDebug('NosoServer,GetStreamFromContext,' + E.Message);
   end;
 end;
 
@@ -2185,7 +2188,7 @@ begin
   IPUser := AContext.Connection.Socket.Binding.PeerIP;
   slot := GetSlotFromIP(IPUser);
   repeat
-    LineToSend := GetTextToSlot(slot);
+    LineToSend := GetOutgoingTextForSlot(slot);
     if LineToSend <> '' then
     begin
       TryMessageToNode(AContext, LineToSend);
@@ -2216,11 +2219,11 @@ begin
   end{Try};
   if GoAhead then
   begin
-    SetConexIndexBusy(Slot, True);
+    SetConnectionBusy(Slot, True);
     if GetParameter(LLine, 0) = 'RESUMENFILE' then
     begin
       MemStream := TMemoryStream.Create;
-      DownloadHeaders := True;
+      DownloadingHeaders := True;
       try
         AContext.Connection.IOHandler.ReadStream(MemStream);
         GetFileOk := True;
@@ -2237,9 +2240,9 @@ begin
           ToLog('console', Format(rs0047, [copy(HashMD5File(ResumenFilename), 1, 5)]));
         //'Headers file received'
       end;
-      UpdateMyData();
-      LastTimeRequestResumen := 0;
-      DownloadHeaders := False;
+      UpdateNodeData();
+      LastAccountSummaryRequestTime := 0;
+      DownloadingHeaders := False;
       MemStream.Free;
     end // END GET RESUMEN FILE
     else if LLine = 'BLOCKZIP' then
@@ -2247,7 +2250,7 @@ begin
       BlockZipName := BlockDirectory + 'blocks.zip';
       TryDeleteFile(BlockZipName);
       MemStream := TMemoryStream.Create;
-      DownLoadBlocks := True;
+      DownloadingBlocks := True;
       try
         AContext.Connection.IOHandler.ReadStream(MemStream);
         MemStream.SaveToFile(BlockZipName);
@@ -2263,14 +2266,14 @@ begin
       begin
         if UnzipFile(BlockDirectory + 'blocks.zip', True) then
         begin
-          MyLastBlock := GetMyLastUpdatedBlock();
-          LastTimeRequestBlock := 0;
-          ToLog('events', TimeToStr(now) + format(rs0021, [IntToStr(MyLastBlock)]));
-          //'Blocks received up to '+IntToStr(MyLastBlock));
+          LastBlockIndex := GetMyLastUpdatedBlock();
+          LastBlockRequestTime := 0;
+          ToLog('events', TimeToStr(now) + format(rs0021, [IntToStr(LastBlockIndex)]));
+          //'Blocks received up to '+IntToStr(LastBlockIndex));
         end;
       end;
       MemStream.Free;
-      DownLoadBlocks := False;
+      DownloadingBlocks := False;
     end
     else if GetParameter(LLine, 4) = '$GETRESUMEN' then
     begin
@@ -2285,7 +2288,7 @@ begin
         except
           on E: Exception do
           begin
-            Form1.TryCloseServerConnection(GetConexIndex(Slot).context);
+            Form1.TryCloseServerConnection(GetConnectionData(Slot).Context);
             ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
               ' -> ' + Format(rs0051, [E.Message]));
           end;
@@ -2364,7 +2367,7 @@ begin
           except
             ON E: Exception do
             begin
-              Form1.TryCloseServerConnection(GetConexIndex(Slot).context);
+              Form1.TryCloseServerConnection(GetConnectionData(Slot).Context);
               //ToLog('exceps',FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now)+' -> '+Format(rs0053,[E.Message])); //'SERVER: Error sending ZIP blocks file ('+E.Message+')');
             end
           end; {TRY}
@@ -2401,26 +2404,27 @@ begin
 
     else if GetParameter(LLine, 0) = 'PSOSFILE' then
     begin
-      DownloadPSOs := True;
+      DownloadingPSOs := True;
       MemStream := TMemoryStream.Create;
       if GetStreamFromContext(Acontext, MemStream) then
       begin
         if SavePSOsToFile(MemStream) then
         begin
           LoadPSOFileFromDisk;
-          UpdateMyData();
+          UpdateNodeData();
           ToLog('console', 'PSOs file received on server');
         end;
       end;
       MemStream.Free;
-      DownloadPSOs := False;
-      LasTimePSOsRequest := 0;
+      DownloadingPSOs := False;
+      LastPSOsRequestTime := 0;
     end
 
-    else if AnsiContainsStr(ValidProtocolCommands, Uppercase(GetParameter(LLine, 4))) then
+    else if AnsiContainsStr(ValidProtocolCommands,
+      Uppercase(GetParameter(LLine, 4))) then
     begin
       try
-        AddToIncoming(slot, LLine);
+        AddIncomingMessage(slot, LLine);
       except
         On E: Exception do
           ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
@@ -2435,7 +2439,7 @@ begin
         ' -> ' + Format(rs0055, [LLine]));
       //ToLog('exceps',FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now)+' -> '+'SERVER: Got unexpected line: '+LLine);
     end;
-    SetConexIndexBusy(Slot, False);
+    SetConnectionBusy(Slot, False);
   end;
 end;
 
@@ -2512,7 +2516,7 @@ begin
     else if GetParameter(LLine, 0) = 'GETMIIP' then
       TryCloseServerConnection(AContext, IPUser)
     else if GetParameter(LLine, 0) = 'MNVER' then
-      TryCloseServerConnection(AContext, GetVerificationMNLine(IPUser))
+      TryCloseServerConnection(AContext, GenerateMasternodeVerificationLine(IPUser))
     else if GetParameter(LLine, 0) = 'NSLBALANCE' then
       TryCloseServerConnection(AContext, IntToStr(
         GetAddressAvailable(GetParameter(LLine, 1))))
@@ -2577,14 +2581,14 @@ begin
       UpdateBotData(IPUser);
     end
 
-    else if IPUser = MyPublicIP then
+    else if IPUser = PublicIPAddress then
     begin
       ToLog('events', TimeToStr(now) + rs0059);
       //ToLog('events',TimeToStr(now)+'SERVER: Own connected');
       TryCloseServerConnection(AContext);
     end
 
-    else if ((Abs(UTCTime - PeerUTC) > 5) and (Mylastblock >= 70000)) then
+    else if ((Abs(UTCTime - PeerUTC) > 5) and (LastBlockIndex >= 70000)) then
     begin
       TryCloseServerConnection(AContext, 'WRONG_TIME');
     end
@@ -2592,13 +2596,13 @@ begin
     begin
       ToLog('events', TimeToStr(now) + Format(rs0060, [IPUser]));
       //ToLog('events',TimeToStr(now)+'SERVER: Duplicated connection->'+IPUser);
-      TryCloseServerConnection(AContext, GetPTCEcn + 'DUPLICATED');
+      TryCloseServerConnection(AContext, GetProtocolHeader + 'DUPLICATED');
       UpdateBotData(IPUser);
     end
     else if Copy(Peerversion, 1, 3) < Copy(VersionRequired, 1, 3) then
     begin
-      TryCloseServerConnection(AContext, GetPTCEcn + 'OLDVERSION->REQUIRED_' +
-        VersionRequired);
+      TryCloseServerConnection(AContext, GetProtocolHeader +
+        'OLDVERSION->REQUIRED_' + VersionRequired);
     end
     else if Copy(LLine, 1, 4) = 'PSK ' then
     begin    // Check for available slot
@@ -2611,9 +2615,9 @@ begin
         //New Connection from:
         ContextData.Slot := ThisSlot;
         AContext.Data := ContextData;
-        if IsValidIP(MiIp) then MyPublicIP := MiIp;
+        if IsValidIP(MiIp) then PublicIPAddress := MiIp;
         U_DataPanel := True;
-        ClearOutTextToSlot(ThisSlot);
+        ClearOutgoingTextForSlot(ThisSlot);
       end;
     end
     else
@@ -2632,13 +2636,13 @@ var
 begin
   ContextData := TServerTipo(AContext.Data);
   if ContextData.Slot > 0 then
-    CloseSlot(ContextData.Slot);
+    CloseConnectionSlot(ContextData.Slot);
 end;
 
 // Excepcion en el servidor
 procedure TForm1.IdTCPServer1Exception(AContext: TIdContext; AException: Exception);
 begin
-  CloseSlot(GetSlotFromContext(AContext));
+  CloseConnectionSlot(GetSlotFromContext(AContext));
   ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
     ' -> ' + 'Server Excepcion: ' + AException.Message);    //Server Excepcion:
 end;
@@ -2663,7 +2667,7 @@ begin
   if not IsValidHashAddress(address) then info('Address already customized')
   else if AddressAlreadyCustomized(address) then info('Address already customized')
   else if GetAddressBalanceIndexed(Address) - GetAddressPendingPays(address) <
-    GetCustomFee(MyLastBlock) then info('Insufficient funds')
+    GetCustomFee(LastBlockIndex) then info('Insufficient funds')
   else
   begin
     DireccionesPanel.Enabled := False;
@@ -3130,21 +3134,21 @@ procedure TForm1.TabNodeOptionsShow(Sender: TObject);
 begin
   CBAutoIP.Checked := MN_AutoIP;
   CheckBox4.Checked := WO_AutoServer;
-  LabeledEdit5.Text := LocalMN_IP;
+  LabeledEdit5.Text := LocalMasternodeIP;
   //LabeledEdit5.visible:=not MN_AutoIP;
-  LabeledEdit6.Text := LocalMN_Port;
-  LabeledEdit8.Text := LocalMN_Funds;
-  LabeledEdit9.Text := LocalMN_Sign;
+  LabeledEdit6.Text := LocalMasternodePort;
+  LabeledEdit8.Text := LocalMasternodeFunds;
+  LabeledEdit9.Text := LocalMasternodeSignature;
 end;
 
 // Save Node options
 procedure TForm1.BSaveNodeOptionsClick(Sender: TObject);
 begin
   WO_AutoServer := CheckBox4.Checked;
-  LocalMN_IP := Trim(LabeledEdit5.Text);
-  LocalMN_Port := Trim(LabeledEdit6.Text);
-  LocalMN_Funds := Trim(LabeledEdit8.Text);
-  LocalMN_Sign := Trim(LabeledEdit9.Text);
+  LocalMasternodeIP := Trim(LabeledEdit5.Text);
+  LocalMasternodePort := Trim(LabeledEdit6.Text);
+  LocalMasternodeFunds := Trim(LabeledEdit8.Text);
+  LocalMasternodeSignature := Trim(LabeledEdit9.Text);
   MN_AutoIP := CBAutoIP.Checked;
   LastTimeReportMyMN := 0;
   S_AdvOpt := True;
@@ -3166,7 +3170,7 @@ begin
     info(rs0081); // Invalid sign address
     exit;
   end;
-  if GetAddressBalanceIndexed(LabeledEdit8.Text) < GetStackRequired(MylastBlock) then
+  if GetAddressBalanceIndexed(LabeledEdit8.Text) < GetStackRequired(LastBlockIndex) then
   begin
     info(rs0082); // Funds address do not owns enough coins
     exit;
@@ -3299,9 +3303,9 @@ begin
     MyIP := GetMiIP();
     begin
       LabeledEdit5.Caption := MyIP;
-      if MyIP <> LocalMN_IP then
+      if MyIP <> LocalMasternodeIP then
       begin
-        LocalMN_IP := MyIP;
+        LocalMasternodeIP := MyIP;
         S_AdvOpt := True;
       end;
     end;

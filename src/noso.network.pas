@@ -5,189 +5,444 @@ unit Noso.Network;
 interface
 
 uses
-  Classes, SysUtils, strutils,
+  Classes, SysUtils, StrUtils,
   IdContext, IdGlobal, IdTCPClient, IdTCPServer,
-  Noso.Debug, Noso.Time, Noso.General, Noso.Headers, Noso.Crypto, Noso.Block, Noso.Consensus,
+  Noso.Debug, Noso.Time, Noso.General, Noso.Headers, Noso.Crypto,
+  Noso.Block, Noso.Consensus,
   Noso.Summary, Noso.Config, Noso.Gvt, Noso.Masternodes, Noso.Pso;
 
 type
 
-  TThreadClientRead = class(TThread)
+  // Thread class to handle client reading operations
+  {
+    @abstract(Thread for handling client read operations in a connection slot.)
+    @member(FSlot The connection slot that this thread is responsible for.)
+    @member(Execute The main procedure that runs the thread’s logic.)
+    @member(Create Initializes the thread with a connection slot, optionally in a paused state.)
+  }
+  TClientReadThread = class(TThread)
   private
-    FSlot: Integer;
+    FSlot: Integer;  //< Connection slot for the thread
   protected
-    procedure Execute; override;
+    procedure Execute; override;  //< Core thread execution logic
   public
-    constructor Create(const CreatePaused: Boolean; const ConexSlot: Integer);
+    {
+      @param(CreatePaused If True, the thread will be created in a paused state.)
+      @param(ConnectionSlot The slot number representing the connection this thread is handling.)
+    }
+    constructor Create(const CreatePaused: Boolean; const ConnectionSlot: Integer);
   end;
 
+  {
+    @abstract(Stores basic data for a network node.)
+    @member(IpAddress The IP address of the node.)
+    @member(Port The port the node is listening on.)
+  }
   TNodeData = packed record
-    ip: String[15];
-    port: String[8];
+    IpAddress: String[15];
+    Port: String[8];
   end;
 
-  Tconectiondata = packed record
-    Autentic: Boolean;
-    // si la conexion esta autenticada por un ping
-    Connections: Integer;             // A cuantos pares esta conectado
-    tipo: String[8];                   // Tipo: SER o CLI
-    ip: String[20];                    // La IP del par
-    lastping: String[15];              // UTCTime del ultimo ping
-    context: TIdContext;               // Informacion para los canales cliente
-    Lastblock: String[15];             // Numero del ultimo bloque
-    LastblockHash: String[64];         // Hash del ultimo bloque
-    SumarioHash: String[64];          // Hash del sumario de cuenta
-    Pending: Integer;                  // Cantidad de operaciones pendientes
-    Protocol: Integer;                // Numero de protocolo usado
-    Version: String[8];
+  { @abstract(Type representing a UTC timestamp.) }
+  TTimeStamp = String[15];
+  { @abstract(Type representing a short 5-character hash.) }
+  THashIdentifier = String[5];
+  { @abstract(Type representing a 15-character block number.) }
+  TBlockNumber = String[15];
+  { @abstract(Type representing a hash string (MD5, 32 chars, 128 bits).) }
+  THashString = String[32];
+  { @abstract(Type representing a hash string (SHA256?, 64 chars, 256 bits).) }
+  TLongHashString = String[64];
+
+  {
+    @abstract(Represents the data of a network connection.)
+
+    @member(IsAuthenticated Whether the connection has been authenticated via a ping.)
+    @member(ActiveConnections The number of peers currently connected.)
+    @member(ConnectionType The type of connection, either 'SER' for server or 'CLI' for client.)
+    @member(IPAddress The IP address of the peer.)
+    @member(LastPingTime The UTC time of the last ping.)
+    @member(Context Client context information used for communication channels.)
+    @member(LastBlockNumber The number of the last known block.)
+    @member(LastBlockHash The hash of the last known block.)
+    @member(SummaryHash The hash of the account summary.)
+    @member(PendingOperations The number of pending operations for this connection.)
+    @member(ProtocolVersion The version of the protocol being used.)
+    @member(ClientVersion The software version of the client.)
+    @member(ListeningPort The port the peer is listening on.)
+    @member(TimeOffset The time difference in seconds from this peer.)
+    @member(SummaryBlockHash The hash of the summary block.)
+    @member(ConnectionStatus The status of the connection.)
+    @member(IsBusy Whether the peer is currently busy.)
+    @member(ReadThread The thread used for client reading operations.)
+    @member(MasternodeShortHash The shortened hash for identifying the masternode.)
+    @member(MasternodeCount The number of masternodes connected.)
+    @member(BestHashDifficulty The best hash difficulty found.)
+    @member(MasternodeChecksCount The number of checks performed on masternodes.)
+    @member(GVTHash The hash of the GVT.)
+    @member(ConfigurationHash The hash of the configuration file.)
+    @member(MerkleTreeHash The hash of the Merkle tree.)
+    @member(PSOHash The hash of the Proof of Stake (PoS) state.)
+  }
+  TConnectionData = packed record
+    IsAuthenticated: Boolean;
+    ActiveConnections: Integer;
+    ConnectionType: String[8];
+    IpAddress: String[20];
+    LastPingTime: TTimeStamp;
+    Context: TIdContext;
+    LastBlockNumber: String[15];
+    LastBlockHash: TLongHashString;
+    SummaryHash: TLongHashString;
+    PendingOperations: Integer;
+    ProtocolVersion: Integer;
+    ClientVersion: String[8];
     ListeningPort: Integer;
-    offset: Integer;                  // Segundos de diferencia a su tiempo
-    ResumenHash: String[64];
-    ConexStatus: Integer;
+    TimeOffset: Integer;
+    SummaryBlockHash: TLongHashString;
+    ConnectionStatus: Integer;
     IsBusy: Boolean;
-    Thread: TThreadClientRead;
-    MNsHash: String[5];
-    MNsCount: Integer;
-    BestHashDiff: String[32];
-    MNChecksCount: Integer;
-    GVTsHash: String[32];
-    CFGHash: String[32];
-    MerkleHash: String[32];
-    PSOHash: String[32];
+    ReadThread: TClientReadThread;
+    MasternodeShortHash: THashIdentifier;
+    MasternodeCount: Integer;
+    BestHashDifficulty: THashString;
+    MasternodesChecksCount: Integer;
+    GVTHash: THashString;
+    ConfigHash: THashString;
+    MerkleTreeHash: THashString;
+    PSOHash: THashString;
   end;
 
+  {
+    @abstract(Stores data related to a bot, such as its IP address and the timestamp of the last refused connection.)
+    @member(IpAddress The IP address of the bot.)
+    @member(LastRefused The timestamp (in Unix time) of the last time the bot's connection was refused.)
+  }
   TBotData = packed record
-    ip: String[15];
+    IpAddress: String[15];
     LastRefused: Int64;
   end;
 
-  NodeServerEvents = class
+  {
+    @abstract(Handles various TCP server events for the node, such as connect, disconnect, execution, and exceptions.)
+    @member(OnExecute Handles the execution of an operation on the server.)
+    @member(OnConnect Called when a client connects to the server.)
+    @member(OnDisconnect Called when a client disconnects from the server.)
+    @member(OnException Handles exceptions that occur during the server operations.)
+
+    @note(This class, for all intents and purposes, is a no-op. The procedures don't do anything.)
+  }
+  TNodeServerEvents = class
     class procedure OnExecute(AContext: TIdContext);
     class procedure OnConnect(AContext: TIdContext);
     class procedure OnDisconnect(AContext: TIdContext);
     class procedure OnException(AContext: TIdContext);
   end;
 
-function GetPendingCount(): Integer;
-procedure ClearAllPending();
-procedure SendPendingsToPeer(Slot: Int64);
-function TranxAlreadyPending(TrxHash: String): Boolean;
-function AddArrayPoolTXs(order: TOrderData): Boolean;
-function TrxExistsInLastBlock(trfrhash: String): Boolean;
+  { @abstract(An enum representing the synchronization status. Used in IsAllSynchronized.) }
+  TSyncStatus = (
+    ssSynchronized,          //< Fully synchronized (= 0)
+    ssBlockHeightMismatch,   //< Block height mismatch (= 1)
+    ssBlockHashMismatch,     //< Block hash mismatch (= 2)
+    ssSummaryHashMismatch,   //< Summary hash mismatch (= 3)
+    ssResumenHashMismatch    //< Resumen hash mismatch (= 4)
+    );
 
-function GetPTCEcn(): String;
-function IsValidProtocol(line: String): Boolean;
+{
+  @abstract(Return the number of pending transactions.)
+
+  @returns(Return the number of pending transactions in the pool.)
+}
+function GetPendingTransactionCount(): Integer;
+{
+  @abstract(Clears all pending transactions.)
+}
+procedure ClearAllPendingTransactions();
+{
+  @abstract(Sends pending transactions to the specified peer slot.)
+
+  It copies the pending transaction pool safely, and then sends each transaction to the peer based on its type.
+
+  @param(Slot The slot number of the peer to send transactions to.)
+}
+procedure SendPendingTransactionsToPeer(const Slot: Int64);
+{
+  @abstract(Checks if a transaction with the given hash already exists in the pending pool.)
+  @note(The function is thread-safe and locks the critical section during the search.)
+
+  @param(Hash The transfer ID of the transaction to check.)
+  @returns(@true if the transaction is already pending, otherwise @false.)
+}
+function TransactionAlreadyPending(const Hash: String): Boolean;
+{
+  @abstract(Adds a new transaction to the pending pool in a thread-safe manner.)
+
+  The function finds the correct insertion position based on timestamps and order IDs.
+
+  @param(Order The transaction data to add to the pending pool.)
+  @returns(@true if the transaction was successfully added, otherwise @false.)
+}
+function AddTransactionToPool(const Order: TOrderData): Boolean;
+{
+  @abstract(Checks if a transfer with the given hash exists in the last block.)
+
+  @param(TransferHash The transfer ID to check for.)
+  @returns(@true if the transfer exists in the last block, otherwise @false.)
+}
+function TransferExistsInLastBlock(const TransferHash: String): Boolean;
+
+{
+  @abstract(Returns the protocol header.)
+
+  The protocol header is of the form "PSK P MN U", where P is the protocol version
+  (currently 2), M is the Mainnet version (0.4.4), N is the node release (Ab7) and
+  U is UTCTimeStr. For instance, a valid header is: "PSK 2 0.4.4Ab7 1726431338".
+
+  @returns(The protocol header in the given format.)
+}
+function GetProtocolHeader(): String;
+{
+  @abstract(Checks if the current line is a valid protocol line (if it starts with PSK or NOS))
+
+  @param(Line The line to validate.)
+  @returns(@true if Line is a valid protocol line, and @false otherwise.)
+}
+function IsValidProtocol(const Line: String): Boolean;
+{
+  @abstract(Generates a ping string.)
+
+  Generates a ping string containing details about the current node's state, including
+  connections, last block, and transaction information.
+
+  @returns(A formatted ping string.)
+}
 function GetPingString(): String;
-function ProtocolLine(LCode: Integer): String;
-procedure ProcessPing(LineaDeTexto: String; Slot: Integer; Responder: Boolean);
-procedure ProcessIncomingLine(FSlot: Integer; LLine: String);
-procedure SendMNsListToPeer(slot: Integer);
-procedure SendMNChecksToPeer(Slot: Integer);
-function GetVerificationMNLine(ToIp: String): String;
-function IsAllSynced(): Integer;
-function GetSyncTus(): String;
+{
+  @abstract(Generates a specific protocol line based on the provided code.)
 
-procedure ClearOutTextToSlot(slot: Integer);
-function GetTextToSlot(slot: Integer): String;
-procedure TextToSlot(Slot: Integer; LText: String);
+  The protocol line varies according to the command type represented by the code.
 
-function GetConexIndex(Slot: Integer): Tconectiondata;
-procedure SetConexIndex(Slot: Integer; LData: Tconectiondata);
-procedure SetConexIndexBusy(LSlot: Integer; Value: Boolean);
-procedure SetConexIndexLastPing(LSlot: Integer; Value: String);
-procedure SetConexReserved(LSlot: Integer; Reserved: Boolean);
-procedure StartConexThread(LSlot: Integer);
-procedure CloseSlot(Slot: Integer);
-function GetTotalConexiones(): Integer;
-function IsSlotConnected(number: Integer): Boolean;
+  @param(Code The integer code representing a specific protocol command.)
+  @returns(A formatted protocol line for the given command code.)
+}
+function GetProtocolLineFromCode(const Code: Integer): String;
+{
+  @abstract(Processes a ping command received from a peer.)
 
-procedure UpdateMyData();
-function IsValidator(Ip: String): Boolean;
-function ValidateMNCheck(Linea: String): String;
+  It extracts the peer's data from the line,
+  authenticates the peer, and optionally sends a pong response if ShouldRespond is True.
 
-procedure InitNodeServer();
-function ClientsCount: Integer;
-function TryMessageToClient(AContext: TIdContext; message: String): Boolean;
-function GetStreamFromClient(AContext: TIdContext; out LStream: TMemoryStream): Boolean;
-procedure TryCloseServerConnection(AContext: TIdContext; closemsg: String = '');
+  @param(Line The ping command line from the peer.)
+  @param(Slot The connection slot of the peer.)
+  @param(ShouldRespond Whether the server should respond with a pong command.)
+}
+procedure ProcessPingCommand(const Line: String; const Slot: Integer;
+  ShouldRespond: Boolean);
+{
+  @abstract(Processes an incoming command from the peer, such as ping, pong, or transaction requests.)
+
+  If the protocol is invalid or the peer is not authenticated, the connection is closed.
+
+  @param(Slot The connection slot of the peer.)
+  @param(Line The incoming command line from the peer.)
+}
+procedure ProcessIncomingCommand(const Slot: Integer; const Line: String);
+
+{
+  Sends the current list of masternodes to the specified peer.
+  Each masternode's data is sent as a separate message to the peer.
+
+  @param(PeerSlot The identifier of the peer connection slot.)
+}
+procedure SendMasternodeListToPeer(const PeerSlot: Integer);
+{
+  Sends the list of masternode checks to the specified peer.
+  Each check is sent as a separate message to the peer.
+
+  @param(PeerSlot The identifier of the peer connection slot.)
+}
+procedure SendMasternodeChecksToPeer(const PeerSlot: Integer);
+{
+  Generates a masternode verification line for a given masternode IP.
+  The verification includes synchronization status and other relevant data.
+
+  @param(MasternodeIP The IP address of the target masternode.)
+  @returns(A string representing the verification line.)
+}
+function GenerateMasternodeVerificationLine(const MasternodeIP: String): String;
+
+{
+  Checks if the local node is fully synchronized with the consensus network.
+
+  @returns(A TSyncStatus representing the synchronization status:
+           @unorderedList(
+           @item(ssSynchronized (0) - Fully synchronized.)
+           @item(ssBlockHeightMismatch (1) - Block height mismatch.)
+           @item(ssBlockHashMismatch (2) - Block hash mismatch.)
+           @item(ssSummaryHashMismatch (3) - Summary hash mismatch.)
+           @item(ssResumenHashMismatch (4) - Resumen hash mismatch.)))
+}
+function IsAllSynchronized(): TSyncStatus;
+
+{**
+  Retrieves the current synchronization status of the node as a formatted string.
+  This status is a combination of the last block index, resumen hash, summary hash,
+  and last block hash.
+
+  @returns(A string representing the synchronization status.)
+*}
+function GetSynchronizationStatus(): String;
 
 
-procedure IncClientReadThreads();
-procedure DecClientReadThreads();
-function GetClientReadThreads(): Integer;
+procedure ClearOutgoingTextForSlot(const Slot: Integer);
 
-procedure AddToIncoming(Index: Integer; texto: String);
-function GetIncoming(Index: Integer): String;
-function LengthIncoming(Index: Integer): Integer;
-procedure ClearIncoming(Index: Integer);
+function GetOutgoingTextForSlot(const Slot: Integer): String;
 
-procedure UpdateBotData(IPUser: String);
-procedure DeleteBots();
-function BotExists(IPUser: String): Boolean;
+procedure AddTextToSlot(const Slot: Integer; const Text: String);
 
-procedure FillNodeList();
-function NodesListLen(): Integer;
-function NodesIndex(lIndex: Integer): TNodeData;
+
+function GetConnectionData(const Slot: Integer): TConnectionData;
+
+procedure SetConnectionData(const Slot: Integer; const Data: TConnectionData);
+
+procedure SetConnectionBusy(const Slot: Integer; Value: Boolean);
+
+procedure UpdateConnectionLastPing(const Slot: Integer; Value: String);
+
+procedure ReserveConnectionSlot(const Slot: Integer; IsReserved: Boolean);
+
+procedure StartConnectionThread(const Slot: Integer);
+
+procedure CloseConnectionSlot(const Slot: Integer);
+
+function GetTotalConnections(): Integer;
+
+function IsSlotConnected(const Slot: Integer): Boolean;
+
+
+procedure UpdateNodeData();
+
+function IsNodeValidator(const Ip: String): Boolean;
+
+function ValidateMasternodeCheck(const Line: String): String;
+
+
+procedure InitializeNodeServer();
+
+function GetClientCount: Integer;
+
+function SendMessageToClient(AContext: TIdContext; Message: String): Boolean;
+
+function RetrieveStreamFromClient(AContext: TIdContext;
+  out Stream: TMemoryStream): Boolean;
+
+procedure SafelyCloseClientConnection(AContext: TIdContext; CloseMessage: String = '');
+
+
+procedure IncrementClientReadThreadCount();
+
+procedure DecrementClientReadThreadCount();
+
+function GetActiveClientReadThreadCount(): Integer;
+
+
+procedure AddIncomingMessage(Index: Integer; Message: String);
+
+function GetIncomingMessage(Index: Integer): String;
+
+function GetIncomingMessageLength(Index: Integer): Integer;
+
+procedure ClearIncomingMessages(Index: Integer);
+
+
+procedure UpdateBotData(BotIP: String);
+
+procedure RemoveAllBots();
+
+function BotExists(BotIp: String): Boolean;
+
+
+procedure PopulateNodeList();
+
+function GetNodeListLength(): Integer;
+
+function GetNodeDataAtIndex(Index: Integer): TNodeData;
+
 
 procedure InitializeElements();
+
 procedure ClearElements();
 
 const
-  MaxConecciones = 99;
-  Protocolo = 2;
+  MaxConnections = 99;
+  ProtocolVersion = 2;
   MainnetVersion = '0.4.4';
 
-var
-  // General
-  Conexiones: array [1..MaxConecciones] of Tconectiondata;
-  SlotLines: array [1..MaxConecciones] of TStringList;
-  CanalCliente: array [1..MaxConecciones] of TIdTCPClient;
-  ArrayOutgoing: array [1..MaxConecciones] of array of String;
-  BotsList: array of TBotData;
-  ArrayPoolTXs: array of TOrderData;
-  ArrayMultiTXs: array of TMultiOrderData;
-  // Donwloading files
-  DownloadHeaders: Boolean = False;
-  DownloadSumary: Boolean = False;
-  DownLoadBlocks: Boolean = False;
-  DownLoadGVTs: Boolean = False;
-  DownloadPSOs: Boolean = False;
-  // Last time files request
-  LastTimeMNHashRequestes: Int64 = 0;
-  LastTimeBestHashRequested: Int64 = 0;
-  LastTimeMNsRequested: Int64 = 0;
-  LastTimeChecksRequested: Int64 = 0;
-  LastRunMNVerification: Int64 = 0;
-  LasTimeGVTsRequest: Int64 = 0;
-  LastTimeRequestSumary: Int64 = 0;
-  LastTimeRequestBlock: Int64 = 0;
-  LastTimeRequestResumen: Int64 = 0;
-  LastTimePendingRequested: Int64 = 0;
-  LasTimePSOsRequest: Int64 = 0;
-  LastBotClear: Int64 = 0;
-  ForceCompleteHeadersDownload: Boolean = False;
-  G_MNVerifications: Integer = 0;
-  // Local data hashes
-  MyLastBlock: Integer = 0;
-  MyLastBlockHash: String = '';
+type
+  TConnectionList = array [1..MaxConnections] of TConnectionData;
+  TConnectionStringListArray = array [1..MaxConnections] of TStringList;
+  TConnectionChannelList = array [1..MaxConnections] of TIdTCPClient;
+  TConnectionOutgoingMessagesList = array [1..MaxConnections] of TStringArray;
+  TConnectionCriticalSectionList = array[1..MaxConnections] of TRTLCriticalSection;
 
-  //MyGVTsHash      : string = '';
-  //MyCFGHash       : string = '';
-  MyPublicIP: String = '';
+  TTimestampInteger = Int64;
+
+var
+  Connections: TConnectionList;
+  SlotTextLines: TConnectionStringListArray;
+  ClientChannels: TConnectionChannelList;
+  OutgoingMessages: TConnectionOutgoingMessagesList;
+
+  BotList: specialize TArray<TBotData>;
+
+  PendingTransactionsPool: specialize TArray<TOrderData>;
+  MultiOrderTransactionsPool: specialize TArray<TMultiOrderData>;
+
+  DownloadingHeaders: Boolean = False;
+  DownloadingSummary: Boolean = False;
+  DownloadingBlocks: Boolean = False;
+  DownloadingGVTs: Boolean = False;
+  DownloadingPSOs: Boolean = False;
+
+  LastMasternodeHashRequestTime: TTimestampInteger = 0;
+  LastBestHashRequestTime: TTimestampInteger = 0;
+  LastMasternodeListRequestTime: TTimestampInteger = 0;
+  LastMasternodeCheckRequestTime: TTimestampInteger = 0;
+  LastMasternodeVerificationTime: TTimestampInteger = 0;
+  LastGVTsRequestTime: TTimestampInteger = 0;
+  LastSummaryRequestTime: TTimestampInteger = 0;
+  LastBlockRequestTime: TTimestampInteger = 0;
+  LastAccountSummaryRequestTime: TTimestampInteger = 0;
+  LastPendingTransactionsRequestTime: TTimestampInteger = 0;
+  LastPSOsRequestTime: TTimestampInteger = 0;
+  LastBotClearTime: TTimestampInteger = 0;
+
+  ForceHeadersDownload: Boolean = False;
+  MasternodeVerificationCount: Integer = 0;
+
+  // Local data hashes
+  LastBlockIndex: Integer = 0;
+  LastBlockHash: String = '';
+  PublicIPAddress: String = '';
+
   // Local information
   LastBlockData: BlockHeaderData;
-  OpenReadClientThreads: Integer = 0;
+
+  ActiveClientReadThreads: Integer = 0;
+
   // Critical sections
-  CSClientReads: TRTLCriticalSection;
-  CSIncomingArr: array[1..MaxConecciones] of TRTLCriticalSection;
-  CSOutGoingArr: array[1..MaxConecciones] of TRTLCriticalSection;
-  CSConexiones: TRTLCriticalSection;
-  CSBotsList: TRTLCriticalSection;
-  CSPending: TRTLCriticalSection;
-  CS_MultiTRX: TRTLCriticalSection;
+  CSClientReadThreads: TRTLCriticalSection;
+  CSIncomingMessages: TConnectionCriticalSectionList;
+  CSOutgoingMessages: TConnectionCriticalSectionList;
+  CSConnections: TRTLCriticalSection;
+  CSBotList: TRTLCriticalSection;
+  CSPendingTransactions: TRTLCriticalSection;
+  CSMultiOrderTransactions: TRTLCriticalSection;
+
   // nodes list
-  NodesList: array of TNodeData;
-  CSNodesList: TRTLCriticalSection;
+  NodeList: specialize TArray<TNodeData>;
+  CSNodeList: TRTLCriticalSection;
+
   // Node server
   NodeServer: TIdTCPServer;
 
@@ -195,535 +450,546 @@ implementation
 
 uses
   MPForm;
-  // To be removed, only due to server dependancy until it is implemented
 
-  {$REGION Pending Pool transactions}
-
-function GetPendingCount(): Integer;
+function GetPendingTransactionCount(): Integer;
 begin
-  EnterCriticalSection(CSPending);
-  Result := Length(ArrayPoolTXs);
-  LeaveCriticalSection(CSPending);
-end;
-
-// Clear the pending transactions array safely
-procedure ClearAllPending();
-begin
-  EnterCriticalSection(CSPending);
-  SetLength(ArrayPoolTXs, 0);
-  LeaveCriticalSection(CSPending);
-end;
-
-// Send pending transactions to peer, former PTC_SendPending
-procedure SendPendingsToPeer(Slot: Int64);
-var
-  contador: Integer;
-  Encab: String;
-  Textline: String;
-  TextOrder: String;
-  CopyArrayPoolTXs: array of TOrderData;
-begin
-  Encab := GetPTCEcn;
-  TextOrder := encab + 'ORDER ';
-  if GetPendingCount > 0 then
-  begin
-    EnterCriticalSection(CSPending);
-    SetLength(CopyArrayPoolTXs, 0);
-    CopyArrayPoolTXs := copy(ArrayPoolTXs, 0, length(ArrayPoolTXs));
-    LeaveCriticalSection(CSPending);
-    for contador := 0 to Length(CopyArrayPoolTXs) - 1 do
-    begin
-      Textline := OrderToString(CopyArrayPoolTXs[contador]);
-      if (CopyArrayPoolTXs[contador].OrderType = 'CUSTOM') then
-      begin
-        TextToSlot(slot, Encab + '$' + TextLine);
-      end;
-      if (CopyArrayPoolTXs[contador].OrderType = 'TRFR') then
-      begin
-        if CopyArrayPoolTXs[contador].TrxLine = 1 then
-          TextOrder := TextOrder + IntToStr(CopyArrayPoolTXs[contador].OrderLines) + ' ';
-        TextOrder := TextOrder + '$' + OrderToString(
-          CopyArrayPoolTXs[contador]) + ' ';
-        if CopyArrayPoolTXs[contador].OrderLines =
-          CopyArrayPoolTXs[contador].TrxLine then
-        begin
-          Setlength(TextOrder, length(TextOrder) - 1);
-          TextToSlot(slot, TextOrder);
-          TextOrder := encab + 'ORDER ';
-        end;
-      end;
-      if (CopyArrayPoolTXs[contador].OrderType = 'SNDGVT') then
-      begin
-        TextToSlot(slot, Encab + '$' + TextLine);
-      end;
-    end;
-    SetLength(CopyArrayPoolTXs, 0);
+  EnterCriticalSection(CSPendingTransactions);
+  try
+    Result := Length(PendingTransactionsPool);
+  finally
+    LeaveCriticalSection(CSPendingTransactions);
   end;
 end;
 
-function TranxAlreadyPending(TrxHash: String): Boolean;
+procedure ClearAllPendingTransactions();
+begin
+  EnterCriticalSection(CSPendingTransactions);
+  try
+    SetLength(PendingTransactionsPool, 0);
+  finally
+    LeaveCriticalSection(CSPendingTransactions);
+  end;
+end;
+
+procedure SendPendingTransactionsToPeer(const Slot: Int64);
 var
-  cont: Integer;
+  i: Integer;
+  Header, Line, TextOrder: String;
+  PendingTransactionsCopy: array of TOrderData;
+  Transaction: TOrderData;
+begin
+  if GetPendingTransactionCount = 0 then Exit;
+
+  Header := GetProtocolHeader;
+  TextOrder := Header + 'ORDER ';
+
+  EnterCriticalSection(CSPendingTransactions);
+  try
+    PendingTransactionsCopy := Copy(PendingTransactionsPool);
+  finally
+    LeaveCriticalSection(CSPendingTransactions);
+  end;
+
+  for i := 0 to High(PendingTransactionsCopy) do
+  begin
+    Transaction := PendingTransactionsCopy[i];
+    Line := OrderToString(Transaction);
+
+    case Transaction.OrderType of
+      'CUSTOM', 'SNDGVT':
+        AddTextToSlot(Slot, Header + '$' + Line);
+
+      'TRFR':
+      begin
+        if Transaction.TransferLine = 1 then
+          TextOrder := Format('%s%d ', [TextOrder, Transaction.OrderLineCount]);
+
+        TextOrder := Format('%s$%s ', [TextOrder, Line]);
+
+        if Transaction.OrderLineCount = Transaction.TransferLine then
+        begin
+          SetLength(TextOrder, Length(TextOrder) - 1);
+          AddTextToSlot(Slot, TextOrder);
+          TextOrder := Header + 'ORDER ';
+        end;
+      end;
+
+      else
+        ;
+    end;
+  end;
+end;
+
+function TransactionAlreadyPending(const Hash: String): Boolean;
+var
+  i: Integer;
 begin
   Result := False;
-  if GetPendingCount > 0 then
+  if GetPendingTransactionCount > 0 then
   begin
-    EnterCriticalSection(CSPending);
-    for cont := 0 to GetPendingCount - 1 do
-    begin
-      if TrxHash = ArrayPoolTXs[cont].TransferId then
-      begin
-        Result := True;
-        break;
-      end;
+    EnterCriticalSection(CSPendingTransactions);
+    try
+      for i := 0 to GetPendingTransactionCount - 1 do
+        if Hash = PendingTransactionsPool[i].TransferId then
+        begin
+          Result := True;
+          Break;
+        end;
+
+    finally
+      LeaveCriticalSection(CSPendingTransactions);
     end;
-    LeaveCriticalSection(CSPending);
   end;
+
 end;
 
-// Add a new trx to the pending pool
-function AddArrayPoolTXs(order: TOrderData): Boolean;
+function AddTransactionToPool(const Order: TOrderData): Boolean;
 var
-  counter: Integer = 0;
-  ToInsert: Boolean = False;
-  LResult: Integer = 0;
+  i, InsertPos: Integer;
+  Transaction: TOrderData;
 begin
-  BeginPerformance('AddArrayPoolTXs');
-  if order.TimeStamp < LastBlockData.TimeStart then exit;
-  if TrxExistsInLastBlock(order.TransferId) then exit;
-  if ((BlockAge > 585) and (order.TimeStamp < LastBlockData.TimeStart + 540)) then exit;
-  if not TranxAlreadyPending(order.TransferId) then
-  begin
-    EnterCriticalSection(CSPending);
-    while counter < length(ArrayPoolTXs) do
+  BeginPerformance('AddTransactionToPool');
+  Result := False;
+
+  if (Order.TimeStamp < LastBlockData.TimeStart) or
+    TransferExistsInLastBlock(Order.TransferId) or
+    ((BlockAge > 585) and (Order.TimeStamp < LastBlockData.TimeStart + 540)) or
+    TransactionAlreadyPending(Order.TransferId) then Exit;
+
+  EnterCriticalSection(CSPendingTransactions);
+  try
+    InsertPos := Length(PendingTransactionsPool);
+
+    for i := 0 to High(PendingTransactionsPool) do
     begin
-      if order.TimeStamp < ArrayPoolTXs[counter].TimeStamp then
+      Transaction := PendingTransactionsPool[i];
+
+      if (Order.TimeStamp < Transaction.TimeStamp) or
+        ((Order.TimeStamp = Transaction.TimeStamp) and
+        ((Order.OrderID < Transaction.OrderID) or
+        ((Order.OrderID = Transaction.OrderID) and
+        (Order.TransferLine < Transaction.TransferLine)))) then
       begin
-        ToInsert := True;
-        LResult := counter;
-        break;
-      end
-      else if order.TimeStamp = ArrayPoolTXs[counter].TimeStamp then
-      begin
-        if order.OrderID < ArrayPoolTXs[counter].OrderID then
-        begin
-          ToInsert := True;
-          LResult := counter;
-          break;
-        end
-        else if order.OrderID = ArrayPoolTXs[counter].OrderID then
-        begin
-          if order.TrxLine < ArrayPoolTXs[counter].TrxLine then
-          begin
-            ToInsert := True;
-            LResult := counter;
-            break;
-          end;
-        end;
+        InsertPos := i;
+        Break;
       end;
-      Inc(counter);
     end;
-    if not ToInsert then LResult := length(ArrayPoolTXs);
-    Insert(order, ArrayPoolTXs, LResult);
-    LeaveCriticalSection(CSPending);
+
+    Insert(Order, PendingTransactionsPool, InsertPos);
     Result := True;
-    //VerifyIfPendingIsMine(order);
+  finally
+    LeaveCriticalSection(CSPendingTransactions);
   end;
-  EndPerformance('AddArrayPoolTXs');
+
+  EndPerformance('AddTransactionToPool');
 end;
 
-// Check if the TRxID exists in the last block
-function TrxExistsInLastBlock(trfrhash: String): Boolean;
+
+function TransferExistsInLastBlock(const TransferHash: String): Boolean;
 var
-  ArrayLastBlockTrxs: TBlockOrdersArray;
-  cont: Integer;
+  BlockTransfers: TBlockOrders;
+  Transfer: TOrderData;
 begin
   Result := False;
-  ArrayLastBlockTrxs := Default(TBlockOrdersArray);
-  ArrayLastBlockTrxs := GetBlockTrxs(MyLastBlock);
-  for cont := 0 to length(ArrayLastBlockTrxs) - 1 do
+
+  BlockTransfers := GetBlockTransfers(LastBlockIndex);
+
+  for Transfer in BlockTransfers do
   begin
-    if ArrayLastBlockTrxs[cont].TransferId = trfrhash then
+    if Transfer.TransferId = TransferHash then
     begin
       Result := True;
-      break;
+      Exit;
     end;
   end;
 end;
 
-{$ENDREGION Pending Pool transactions}
-
-{$REGION Pending Multi transactions}
-
-function GetMultiTrxCount(): Integer;
+function GetMultiTransferCount(): Integer;
 begin
-  EnterCriticalSection(CS_MultiTRX);
-  Result := Length(ArrayMultiTXs);
-  LeaveCriticalSection(CS_MultiTRX);
+  EnterCriticalSection(CSMultiOrderTransactions);
+  try
+    Result := Length(MultiOrderTransactionsPool);
+  finally
+    LeaveCriticalSection(CSMultiOrderTransactions);
+  end;
 end;
 
-// Clear the pending transactions array safely
-procedure ClearAllMultiTrx();
+procedure ClearAllMultiTransfers();
 begin
-  EnterCriticalSection(CS_MultiTRX);
-  SetLength(ArrayMultiTXs, 0);
-  LeaveCriticalSection(CS_MultiTRX);
+  EnterCriticalSection(CSMultiOrderTransactions);
+  try
+    SetLength(MultiOrderTransactionsPool, 0);
+  finally
+    LeaveCriticalSection(CSMultiOrderTransactions);
+  end;
 end;
 
-{$ENDREGION}
-
-{$REGION Protocol}
-
-// Returns protocolo message header
-function GetPTCEcn(): String;
+function GetProtocolHeader(): String;
 begin
-  Result := 'PSK ' + IntToStr(protocolo) + ' ' + MainnetVersion +
-    NodeRelease + ' ' + UTCTimeStr + ' ';
+  Result := Format('PSK %d %s%s %s ', [ProtocolVersion, MainnetVersion,
+    NodeRelease, UTCTimeStr]);
 end;
 
-function IsValidProtocol(line: String): Boolean;
+function IsValidProtocol(const Line: String): Boolean;
+var
+  Prefix: String;
 begin
-  if ((copy(line, 1, 4) = 'PSK ') or (copy(line, 1, 4) = 'NOS ')) then Result := True
-  else
-    Result := False;
+  Prefix := Copy(Line, 1, 4);
+  Result := (Prefix = 'PSK ') or (Prefix = 'NOS ');
 end;
 
 function GetPingString(): String;
 var
-  LPort: Integer = 0;
+  Port: Integer = 0;
 begin
-  if Form1.Server.Active then Lport := Form1.Server.DefaultPort
+  if Form1.Server.Active then
+    Port := Form1.Server.DefaultPort
   else
-    Lport := -1;
-  Result := IntToStr(GetTotalConexiones()) + ' ' + IntToStr(MyLastBlock) +
-    ' ' + MyLastBlockHash + ' ' + MySumarioHash + ' ' + GetPendingCount.ToString +
-    ' ' + GetResumenHash + ' ' + IntToStr(MyConStatus) + ' ' +
-    IntToStr(Lport) + ' ' + copy(GetMNsHash, 0, 5) + ' ' +
-    IntToStr(GetMNsListLength) + ' ' + 'null' + ' ' + //GetNMSData.Diff
-    GetMNsChecksCount.ToString + ' ' + MyGVTsHash + ' ' +
-    Copy(HashMD5String(GetCFGDataStr), 0, 5) + ' ' + Copy(PSOFileHash, 0, 5);
+    Port := -1;
+
+  Result := Format('%d %d %s %s %d %s %d %d %s %d null %d %s %s %s',
+    [GetTotalConnections(), LastBlockIndex, LastBlockHash, MySumarioHash,
+    GetPendingTransactionCount(), GetResumenHash, MyConStatus, Port,
+    Copy(GetMNsHash, 0, 5), GetMNsListLength, GetMasternodeCheckCount(),
+    MyGVTsHash, Copy(HashMD5String(GetCFGDataStr), 0, 5), Copy(PSOFileHash, 0, 5)]);
 end;
 
-function ProtocolLine(LCode: Integer): String;
+function GetProtocolLineFromCode(const Code: Integer): String;
 var
-  Specific: String = '';
-  Header: String = '';
+  Specific: String;
 begin
-  Header := 'PSK ' + IntToStr(protocolo) + ' ' + MainnetVersion +
-    'zzz ' + UTCTimeStr + ' ';
-  if LCode = 0 then Specific := '';                                 //OnlyHeaders
-  if LCode = 3 then Specific := '$PING ' + GetPingString;             //Ping
-  if LCode = 4 then Specific := '$PONG ' + GetPingString;             //Pong
-  if LCode = 5 then Specific := '$GETPENDING';                      //GetPending
-  if LCode = 6 then Specific := '$GETSUMARY';                       //GetSumary
-  if LCode = 7 then Specific := '$GETRESUMEN';                      //GetResumen
-  if LCode = 8 then Specific := '$LASTBLOCK ' + IntToStr(mylastblock);//LastBlock
-  if LCode = 9 then Specific := '$CUSTOM ';                         //Custom
-  if LCode = 11 then Specific := '$GETMNS';                         //GetMNs
-  if LCode = 12 then Specific := '$BESTHASH';                       //BestHash
-  if LCode = 13 then Specific := '$MNREPO ' + GetMNReportString(MyLastBlock);
-  //MNReport
-  if LCode = 14 then Specific := '$MNCHECK ';                       //MNCheck
-  if LCode = 15 then Specific := '$GETCHECKS';                      //GetChecks
-  if LCode = 16 then Specific := 'GETMNSFILE';                      //GetMNsFile
-  if LCode = 17 then Specific := 'MNFILE';                              //MNFile
-  if LCode = 18 then Specific := 'GETHEADUPDATE ' + MyLastBlock.ToString; //GetHeadUpdate
-  if LCode = 19 then Specific := 'HEADUPDATE';                      //HeadUpdate
-  if LCode = 20 then Specific := '$GETGVTS';                        //GetGVTs
-  if LCode = 21 then Specific := '$SNDGVT ';
-  if LCode = 30 then Specific := 'GETCFGDATA';                      //GetCFG
-  if LCode = 31 then Specific := 'SETCFGDATA $';                    //SETCFG
-  if LCode = 32 then Specific := '$GETPSOS';                        //GetPSOs
-  Result := Header + Specific;
+  Specific := '';
+  case Code of
+    0: Specific := '';                                  // OnlyHeaders
+    3: Specific := '$PING ' + GetPingString;            // Ping
+    4: Specific := '$PONG ' + GetPingString;            // Pong
+    5: Specific := '$GETPENDING';                       // GetPending
+    6: Specific := '$GETSUMARY';                        // GetSummary
+    7: Specific := '$GETRESUMEN';                       // GetResumen
+    8: Specific := Format('$LASTBLOCK %d', [LastBlockIndex]); // LastBlock
+    9: Specific := '$CUSTOM ';                          // Custom
+    11: Specific := '$GETMNS';                          // GetMNs
+    12: Specific := '$BESTHASH';                        // BestHash
+    13: Specific := '$MNREPO ' + GetMNReportString(LastBlockIndex); // MNReport
+    14: Specific := '$MNCHECK ';                        // MNCheck
+    15: Specific := '$GETCHECKS';                       // GetChecks
+    16: Specific := 'GETMNSFILE';                       // GetMNsFile
+    17: Specific := 'MNFILE';                           // MNFile
+    18: Specific := Format('GETHEADUPDATE %d', [LastBlockIndex]); // GetHeadUpdate
+    19: Specific := 'HEADUPDATE';                       // HeadUpdate
+    20: Specific := '$GETGVTS';                         // GetGVTs
+    21: Specific := '$SNDGVT ';
+    30: Specific := 'GETCFGDATA';                       // GetCFG
+    31: Specific := 'SETCFGDATA $';                     // SETCFG
+    32: Specific := '$GETPSOS';                         // GetPSOs
+  end;
+
+  Result := Format('PSK %d %szzz %s %s', [ProtocolVersion, MainnetVersion,
+    UTCTimeStr, Specific]);
 end;
 
-procedure ProcessPing(LineaDeTexto: String; Slot: Integer; Responder: Boolean);
+procedure ProcessPingCommand(const Line: String; const Slot: Integer;
+  ShouldRespond: Boolean);
 var
-  NewData: Tconectiondata;
+  Data: TConnectionData;
 begin
-  NewData := GetConexIndex(Slot);
-  NewData.Autentic := True;
-  NewData.Protocol := StrToIntDef(GetParameter(LineaDeTexto, 1), 0);
-  NewData.Version := GetParameter(LineaDeTexto, 2);
-  NewData.offset := StrToInt64Def(GetParameter(LineaDeTexto, 3), UTCTime) - UTCTime;
-  NewData.Connections := StrToIntDef(GetParameter(LineaDeTexto, 5), 0);
-  NewData.Lastblock := GetParameter(LineaDeTexto, 6);
-  NewData.LastblockHash := GetParameter(LineaDeTexto, 7);
-  NewData.SumarioHash := GetParameter(LineaDeTexto, 8);
-  NewData.Pending := StrToIntDef(GetParameter(LineaDeTexto, 9), 0);
-  NewData.ResumenHash := GetParameter(LineaDeTexto, 10);
-  NewData.ConexStatus := StrToIntDef(GetParameter(LineaDeTexto, 11), 0);
-  NewData.ListeningPort := StrToIntDef(GetParameter(LineaDeTexto, 12), -1);
-  NewData.MNsHash := GetParameter(LineaDeTexto, 13);
-  NewData.MNsCount := StrToIntDef(GetParameter(LineaDeTexto, 14), 0);
-  NewData.BestHashDiff := 'null'{15};
-  NewData.MNChecksCount := StrToIntDef(GetParameter(LineaDeTexto, 16), 0);
-  NewData.lastping := UTCTimeStr;
-  NewData.GVTsHash := GetParameter(LineaDeTexto, 17);
-  NewData.CFGHash := GetParameter(LineaDeTexto, 18);
-  NewData.PSOHash := GetParameter(LineaDeTexto, 19);
-  ;
-  NewData.MerkleHash := HashMD5String(NewData.Lastblock + copy(
-    NewData.ResumenHash, 0, 5) + copy(NewData.MNsHash, 0, 5) +
-    copy(NewData.LastblockHash, 0, 5) + copy(NewData.SumarioHash, 0, 5) +
-    copy(NewData.GVTsHash, 0, 5) + copy(NewData.CFGHash, 0, 5));
-  SetConexIndex(Slot, NewData);
-  if responder then
+  Data := GetConnectionData(Slot);
+
+  with Data do
   begin
-    TextToSlot(slot, ProtocolLine(4));
+    IsAuthenticated := True;
+    ProtocolVersion := StrToIntDef(GetParameter(Line, 1), 0);
+    ClientVersion := GetParameter(Line, 2);
+    TimeOffset := StrToInt64Def(GetParameter(Line, 3), UTCTime) - UTCTime;
+    ActiveConnections := StrToIntDef(GetParameter(Line, 5), 0);
+    LastBlockNumber := GetParameter(Line, 6);
+    LastBlockHash := GetParameter(Line, 7);
+    SummaryHash := GetParameter(Line, 8);
+    PendingOperations := StrToIntDef(GetParameter(Line, 9), 0);
+    SummaryBlockHash := GetParameter(Line, 10);
+    ConnectionStatus := StrToIntDef(GetParameter(Line, 11), 0);
+    ListeningPort := StrToIntDef(GetParameter(Line, 12), -1);
+    MasternodeShortHash := GetParameter(Line, 13);
+    MasternodeCount := StrToIntDef(GetParameter(Line, 14), 0);
+    BestHashDifficulty := 'null';
+    MasternodesChecksCount := StrToIntDef(GetParameter(Line, 16), 0);
+    LastPingTime := UTCTimeStr;
+    GVTHash := GetParameter(Line, 17);
+    ConfigHash := GetParameter(Line, 18);
+    PSOHash := GetParameter(Line, 19);
+    MerkleTreeHash := HashMD5String(LastBlockNumber +
+      Copy(SummaryBlockHash, 0, 5) + Copy(MasternodeShortHash, 0, 5) +
+      Copy(LastBlockHash, 0, 5) + Copy(SummaryHash, 0, 5) +
+      Copy(GVTHash, 0, 5) + Copy(ConfigHash, 0, 5));
+  end;
+
+  SetConnectionData(Slot, Data);
+
+  if ShouldRespond then
+    // PONG
+    AddTextToSlot(Slot, GetProtocolLineFromCode(4));
+end;
+
+procedure ProcessIncomingCommand(const Slot: Integer; const Line: String);
+var
+  Command: String;
+begin
+  if not IsValidProtocol(Line) and not GetConnectionData(Slot).IsAuthenticated then
+  begin
+    UpdateBotData(GetConnectionData(Slot).IpAddress);
+    CloseConnectionSlot(Slot);
+    Exit;
+  end;
+
+  Command := GetProtocolCommand(Line);
+
+  case UpperCase(Command) of
+    'DUPLICATED', 'OLDVERSION':
+      CloseConnectionSlot(Slot);
+    '$PING':
+      ProcessPingCommand(Line, Slot, True);
+    '$PONG':
+      ProcessPingCommand(Line, Slot, False);
+    '$GETPENDING':
+      SendPendingTransactionsToPeer(Slot);
   end;
 end;
 
-procedure ProcessIncomingLine(FSlot: Integer; LLine: String);
+procedure SendMasternodeListToPeer(const PeerSlot: Integer);
 var
-  Protocol, PeerVersion, PeerTime, Command: String;
+  MasternodeList: TStringArray;
+  i: Integer;
 begin
-  Protocol := GetParameter(LLine, 1);
-  PeerVersion := GetParameter(LLine, 2);
-  PeerTime := GetParameter(LLine, 3);
-  Command := GetProtocolCommand(LLine);
-  if ((not IsValidProtocol(LLine)) and (not GetConexIndex(FSlot).Autentic)) then
+  if PopulateMasternodeList(MasternodeList) then
   begin
-    UpdateBotData(GetConexIndex(Fslot).ip);
-    CloseSlot(FSlot);
-  end
-  else if UpperCase(LLine) = 'DUPLICATED' then CloseSlot(FSlot)
-  else if Copy(UpperCase(LLine), 1, 10) = 'OLDVERSION' then CloseSlot(FSlot)
-  else if Command = '$PING' then ProcessPing(LLine, FSlot, True)
-  else if Command = '$PONG' then ProcessPing(LLine, FSlot, False)
-  else if Command = '$GETPENDING' then SendPendingsToPeer(FSlot);
-end;
-
-procedure SendMNsListToPeer(slot: Integer);
-var
-  DataArray: array of String;
-  counter: Integer;
-begin
-  if FillMnsListArray(DataArray) then
-  begin
-    for counter := 0 to length(DataArray) - 1 do
-      TextToSlot(slot, GetPTCEcn + '$MNREPO ' + DataArray[counter]);
+    for i := 0 to Length(MasternodeList) - 1 do
+      AddTextToSlot(PeerSlot, GetProtocolHeader + '$MNREPO ' + MasternodeList[i]);
   end;
 end;
 
-procedure SendMNChecksToPeer(Slot: Integer);
+procedure SendMasternodeChecksToPeer(const PeerSlot: Integer);
 var
-  Counter: Integer;
-  Texto: String;
+  i: Integer;
+  MasternodeCheckString: String;
 begin
-  if GetMNsChecksCount > 0 then
+  if GetMasternodeCheckCount > 0 then
   begin
     EnterCriticalSection(CSMNsChecks);
-    for counter := 0 to length(ArrMNChecks) - 1 do
-    begin
-      Texto := ProtocolLine(14) + GetStringFromMNCheck(ArrMNChecks[counter]);
-      TextToSlot(slot, Texto);
+    try
+      for i := 0 to Length(MasternodeChecks) - 1 do
+      begin
+        MasternodeCheckString :=
+          Format('%s%s', [GetProtocolLineFromCode(14),
+          FormatMasternodeCheck(MasternodeChecks[i])]);
+
+        AddTextToSlot(PeerSlot, MasternodeCheckString);
+      end;
+    finally
+      LeaveCriticalSection(CSMNsChecks);
     end;
-    LeaveCriticalSection(CSMNsChecks);
   end;
 end;
 
-function GetVerificationMNLine(ToIp: String): String;
+function GenerateMasternodeVerificationLine(const MasternodeIP: String): String;
 begin
-  if IsAllSynced = 0 then
+  if IsAllSynchronized = ssSynchronized then
   begin
-    Result := 'True ' + GetSyncTus + ' ' + LocalMN_Funds + ' ' +
-      ToIp + ' ' + LocalMN_Sign;
-    Inc(G_MNVerifications);
+    Result := Format('True %s %s %s %s', [GetSynchronizationStatus,
+      LocalMasternodeFunds, MasternodeIP, LocalMasternodeSignature]);
+
+    Inc(MasternodeVerificationCount);
   end
   else
     Result := 'False';
 end;
 
-function IsAllSynced(): Integer;
+function IsAllSynchronized(): TSyncStatus;
 begin
-  Result := 0;
-  if MyLastBlock <> StrToIntDef(GetConsensus(cLastBlock), 0) then Result := 1;
-  if MyLastBlockHash <> GetConsensus(cLBHash) then Result := 2;
-  if Copy(MySumarioHash, 0, 5) <> GetConsensus(cSumHash) then Result := 3;
-  if Copy(GetResumenHash, 0, 5) <> GetConsensus(cHeaders) then Result := 4;
-  {
-  if Copy(GetMNsHash,1,5) <>  NetMNsHash.value then result := 5;
-  if MyGVTsHash <> NetGVTSHash.Value then result := 6;
-  if MyCFGHash <> NETCFGHash.Value then result := 7;
-  }
+  Result := ssSynchronized;
+
+  if LastBlockIndex <> StrToIntDef(GetConsensus(cLastBlock), 0) then
+    Result := ssBlockHeightMismatch;
+
+  if LastBlockHash <> GetConsensus(cLBHash) then
+    Result := ssBlockHashMismatch;
+
+  if Copy(MySumarioHash, 0, 5) <> GetConsensus(cSumHash) then
+    Result := ssSummaryHashMismatch;
+
+  if Copy(GetResumenHash, 0, 5) <> GetConsensus(cHeaders) then
+    Result := ssResumenHashMismatch;
 end;
 
-function GetSyncTus(): String;
+function GetSynchronizationStatus(): String;
 begin
   Result := '';
+
   try
-    Result := MyLastBlock.ToString + Copy(GetResumenHash, 1, 3) +
-      Copy(MySumarioHash, 1, 3) + Copy(MyLastBlockHash, 1, 3);
+    Result := Format('%d%s%s%s', [LastBlockIndex, Copy(GetResumenHash, 1, 3),
+      Copy(MySumarioHash, 1, 3), Copy(LastBlockHash, 1, 3)]);
   except
-    ON E: Exception do
-    begin
-      ToDeepDeb('NosoNetwork,GetSyncTus,' + e.Message);
-    end;
-  end; {TRY}
-end;
-
-{$ENDREGION Protocol}
-
-{$REGION ArrayOutgoing}
-
-procedure ClearOutTextToSlot(slot: Integer);
-begin
-  EnterCriticalSection(CSOutGoingArr[slot]);
-  SetLength(ArrayOutgoing[slot], 0);
-  LeaveCriticalSection(CSOutGoingArr[slot]);
-end;
-
-function GetTextToSlot(slot: Integer): String;
-begin
-  Result := '';
-  if ((Slot >= 1) and (slot <= MaxConecciones)) then
-  begin
-    EnterCriticalSection(CSOutGoingArr[slot]);
-    if length(ArrayOutgoing[slot]) > 0 then
-    begin
-      Result := ArrayOutgoing[slot][0];
-      Delete(ArrayOutgoing[slot], 0, 1);
-    end;
-    LeaveCriticalSection(CSOutGoingArr[slot]);
+    on E: Exception do
+      ToDeepDebug('NosoNetwork,GetSynchronizationStatus,' + e.Message);
   end;
 end;
 
-procedure TextToSlot(Slot: Integer; LText: String);
+{$REGION OutgoingMessages}
+
+procedure ClearOutgoingTextForSlot(const Slot: Integer);
+begin
+  EnterCriticalSection(CSOutgoingMessages[Slot]);
+  SetLength(OutgoingMessages[Slot], 0);
+  LeaveCriticalSection(CSOutgoingMessages[Slot]);
+end;
+
+function GetOutgoingTextForSlot(const Slot: Integer): String;
+begin
+  Result := '';
+  if ((Slot >= 1) and (Slot <= MaxConnections)) then
+  begin
+    EnterCriticalSection(CSOutgoingMessages[Slot]);
+    if Length(OutgoingMessages[Slot]) > 0 then
+    begin
+      Result := OutgoingMessages[Slot][0];
+      Delete(OutgoingMessages[Slot], 0, 1);
+    end;
+    LeaveCriticalSection(CSOutgoingMessages[Slot]);
+  end;
+end;
+
+procedure AddTextToSlot(const Slot: Integer; const Text: String);
 begin
   if ((Slot >= 1) and (Slot <= 99)) then
   begin
-    EnterCriticalSection(CSOutGoingArr[slot]);
-    Insert(LText, ArrayOutgoing[slot], length(ArrayOutgoing[slot]));
-    LeaveCriticalSection(CSOutGoingArr[slot]);
+    EnterCriticalSection(CSOutgoingMessages[Slot]);
+    Insert(Text, OutgoingMessages[Slot], Length(OutgoingMessages[Slot]));
+    LeaveCriticalSection(CSOutgoingMessages[Slot]);
   end;
 end;
 
-{$ENDREGION ArrayOutgoing}
+{$ENDREGION OutgoingMessages}
 
-{$REGION Conexiones control}
+{$REGION Connections control}
 
-function GetConexIndex(Slot: Integer): Tconectiondata;
+function GetConnectionData(const Slot: Integer): TConnectionData;
 begin
-  if ((slot < 1) or (Slot > MaxConecciones)) then Result := Default(Tconectiondata);
-  EnterCriticalSection(CSConexiones);
-  Result := Conexiones[Slot];
-  LeaveCriticalSection(CSConexiones);
+  if ((slot < 1) or (Slot > MaxConnections)) then Result := Default(TConnectionData);
+  EnterCriticalSection(CSConnections);
+  Result := Connections[Slot];
+  LeaveCriticalSection(CSConnections);
 end;
 
-procedure SetConexIndex(Slot: Integer; LData: Tconectiondata);
+procedure SetConnectionData(const Slot: Integer; const Data: TConnectionData);
 begin
-  if ((slot < 1) or (Slot > MaxConecciones)) then exit;
-  EnterCriticalSection(CSConexiones);
-  Conexiones[Slot] := LData;
-  LeaveCriticalSection(CSConexiones);
+  if ((slot < 1) or (Slot > MaxConnections)) then Exit;
+  EnterCriticalSection(CSConnections);
+  Connections[Slot] := Data;
+  LeaveCriticalSection(CSConnections);
 end;
 
-procedure SetConexIndexBusy(LSlot: Integer; Value: Boolean);
+procedure SetConnectionBusy(const Slot: Integer; Value: Boolean);
 begin
-  if ((Lslot < 1) or (LSlot > MaxConecciones)) then exit;
-  EnterCriticalSection(CSConexiones);
-  Conexiones[LSlot].IsBusy := Value;
-  LeaveCriticalSection(CSConexiones);
+  if ((Slot < 1) or (Slot > MaxConnections)) then Exit;
+  EnterCriticalSection(CSConnections);
+  Connections[Slot].IsBusy := Value;
+  LeaveCriticalSection(CSConnections);
 end;
 
-procedure SetConexIndexLastPing(LSlot: Integer; Value: String);
+procedure UpdateConnectionLastPing(const Slot: Integer; Value: String);
 begin
-  if ((Lslot < 1) or (LSlot > MaxConecciones)) then exit;
-  EnterCriticalSection(CSConexiones);
-  Conexiones[LSlot].lastping := Value;
-  LeaveCriticalSection(CSConexiones);
+  if ((Slot < 1) or (Slot > MaxConnections)) then Exit;
+  EnterCriticalSection(CSConnections);
+  Connections[Slot].LastPingTime := Value;
+  LeaveCriticalSection(CSConnections);
 end;
 
-procedure SetConexReserved(LSlot: Integer; Reserved: Boolean);
+procedure ReserveConnectionSlot(const Slot: Integer; IsReserved: Boolean);
 var
   ToShow: String = '';
 begin
-  if ((Lslot < 1) or (LSlot > MaxConecciones)) then exit;
-  if reserved then ToShow := 'RES';
-  EnterCriticalSection(CSConexiones);
-  Conexiones[LSlot].tipo := ToShow;
-  LeaveCriticalSection(CSConexiones);
+  if ((Slot < 1) or (Slot > MaxConnections)) then Exit;
+  if IsReserved then ToShow := 'RES';
+  EnterCriticalSection(CSConnections);
+  Connections[Slot].ConnectionType := ToShow;
+  LeaveCriticalSection(CSConnections);
 end;
 
-procedure StartConexThread(LSlot: Integer);
+procedure StartConnectionThread(const Slot: Integer);
 begin
-  if ((Lslot < 1) or (LSlot > MaxConecciones)) then exit;
-  EnterCriticalSection(CSConexiones);
-  Conexiones[Lslot].Thread := TThreadClientRead.Create(True, Lslot);
-  Conexiones[Lslot].Thread.FreeOnTerminate := True;
-  Conexiones[Lslot].Thread.Start;
-  LeaveCriticalSection(CSConexiones);
+  if ((Slot < 1) or (Slot > MaxConnections)) then Exit;
+  EnterCriticalSection(CSConnections);
+  Connections[Slot].ReadThread := TClientReadThread.Create(True, Slot);
+  Connections[Slot].ReadThread.FreeOnTerminate := True;
+  Connections[Slot].ReadThread.Start;
+  LeaveCriticalSection(CSConnections);
 end;
 
-procedure CloseSlot(Slot: Integer);
+procedure CloseConnectionSlot(const Slot: Integer);
 begin
-  if ((slot < 1) or (Slot > MaxConecciones)) then exit;
+  if ((slot < 1) or (Slot > MaxConnections)) then Exit;
   BeginPerformance('CloseSlot');
   try
-    if GetConexIndex(Slot).tipo = 'CLI' then
+    if GetConnectionData(Slot).ConnectionType = 'CLI' then
     begin
-      ClearIncoming(slot);
-      GetConexIndex(Slot).context.Connection.Disconnect;
+      ClearIncomingMessages(slot);
+      GetConnectionData(Slot).Context.Connection.Disconnect;
       Sleep(10);
     end;
-    if GetConexIndex(Slot).tipo = 'SER' then
+    if GetConnectionData(Slot).ConnectionType = 'SER' then
     begin
-      ClearIncoming(slot);
-      CanalCliente[Slot].IOHandler.InputBuffer.Clear;
-      CanalCliente[Slot].Disconnect;
+      ClearIncomingMessages(slot);
+      ClientChannels[Slot].IOHandler.InputBuffer.Clear;
+      ClientChannels[Slot].Disconnect;
     end;
   except
     on E: Exception do
-      ToDeepDeb('NosoNetwork,CloseSlot,' + E.Message);
+      ToDeepDebug('NosoNetwork,CloseSlot,' + E.Message);
   end;{Try}
-  SetConexIndex(Slot, Default(Tconectiondata));
+  SetConnectionData(Slot, Default(TConnectionData));
   EndPerformance('CloseSlot');
 end;
 
-function GetTotalConexiones(): Integer;
+function GetTotalConnections(): Integer;
 var
   counter: Integer;
 begin
   BeginPerformance('GetTotalConexiones');
   Result := 0;
-  for counter := 1 to MaxConecciones do
+  for counter := 1 to MaxConnections do
     if IsSlotConnected(Counter) then Inc(Result);
   EndPerformance('GetTotalConexiones');
 end;
 
-function IsSlotConnected(number: Integer): Boolean;
+function IsSlotConnected(const Slot: Integer): Boolean;
 begin
   Result := False;
-  if ((number < 1) or (number > MaxConecciones)) then exit;
-  if ((GetConexIndex(number).tipo = 'SER') or (GetConexIndex(number).tipo = 'CLI')) then
+  if ((Slot < 1) or (Slot > MaxConnections)) then Exit;
+  if ((GetConnectionData(Slot).ConnectionType = 'SER') or
+    (GetConnectionData(Slot).ConnectionType = 'CLI')) then
     Result := True;
 end;
 
-{$ENDREGION Conexiones control}
+{$ENDREGION Connections control}
 
 {$REGION General Data}
 
 // Updates local data hashes
-procedure UpdateMyData();
+procedure UpdateNodeData();
 begin
-  MyLastBlockHash := HashMD5File(BlockDirectory + IntToStr(MyLastBlock) + '.blk');
-  LastBlockData := LoadBlockDataHeader(MyLastBlock);
+  LastBlockHash := HashMD5File(BlockDirectory + IntToStr(LastBlockIndex) + '.blk');
+  LastBlockData := LoadBlockDataHeader(LastBlockIndex);
   SetResumenHash;
   if GetResumenHash = GetConsensus(5) then
-    ForceCompleteHeadersDownload := False;
-  //MyMNsHash       := HashMD5File(MasterNodesFilename);
-  //MyCFGHash       := Copy(HAshMD5String(GetCFGDataStr),1,5);
+    ForceHeadersDownload := False;
 end;
 
-function IsValidator(Ip: String): Boolean;
+function IsNodeValidator(const Ip: String): Boolean;
 begin
-  Result := False;
-  if IsSeedNode(IP) then Result := True;
+  Result := IsSeedNode(Ip);
 end;
 
 // Verify if a validation report is correct
-function ValidateMNCheck(Linea: String): String;
+function ValidateMasternodeCheck(const Line: String): String;
 var
   CheckData: TMNCheck;
   StartPos: Integer;
@@ -731,12 +997,12 @@ var
   ErrorCode: Integer = 0;
 begin
   Result := '';
-  StartPos := Pos('$', Linea);
-  ReportInfo := copy(Linea, StartPos, length(Linea));
-  CheckData := GetMNCheckFromString(Linea);
-  if MnsCheckExists(CheckData.ValidatorIP) then exit;
-  if not IsValidator(CheckData.ValidatorIP) then ErrorCode := 1;
-  if CheckData.Block <> MyLastBlock then ErrorCode := 2;
+  StartPos := Pos('$', Line);
+  ReportInfo := Copy(Line, StartPos, Length(Line));
+  CheckData := GetMNCheckFromString(Line);
+  if MnsCheckExists(CheckData.ValidatorIP) then Exit;
+  if not IsNodeValidator(CheckData.ValidatorIP) then ErrorCode := 1;
+  if CheckData.Block <> LastBlockIndex then ErrorCode := 2;
   if GetAddressFromPublicKey(CheckData.PubKey) <> CheckData.SignAddress then
     ErrorCode := 3;
   if not VerifySignedString(CheckData.ValidNodes, CheckData.Signature,
@@ -747,7 +1013,7 @@ begin
     Result := ReportInfo;
     AddMNCheck(CheckData);
     //if form1.Server.Active then
-    //  outGOingMsjsAdd(GetPTCEcn+ReportInfo);
+    //  outGOingMsjsAdd(GetProtocolHeader+ReportInfo);
   end;
 end;
 
@@ -755,21 +1021,21 @@ end;
 
 {$REGION Node Server}
 
-procedure InitNodeServer();
+procedure InitializeNodeServer();
 begin
   NodeServer := TIdTCPServer.Create(nil);
   NodeServer.DefaultPort := 8080;
   NodeServer.Active := False;
   NodeServer.UseNagle := True;
   NodeServer.TerminateWaitTime := 10000;
-  NodeServer.OnExecute := @NodeServerEvents.OnExecute;
-  NodeServer.OnConnect := @NodeServerEvents.OnConnect;
+  NodeServer.OnExecute := @TNodeServerEvents.OnExecute;
+  NodeServer.OnConnect := @TNodeServerEvents.OnConnect;
   NodeServer.OnDisconnect := @form1.IdTCPServer1Disconnect;
   NodeServer.OnException := @Form1.IdTCPServer1Exception;
 end;
 
 // returns the number of active connections
-function ClientsCount: Integer;
+function GetClientCount: Integer;
 var
   Clients: TList;
 begin
@@ -778,17 +1044,17 @@ begin
     Result := Clients.Count;
   except
     ON E: Exception do
-      ToDeepDeb('NosoNetwork,ClientsCount,' + E.Message);
+      ToDeepDebug('NosoNetwork,ClientsCount,' + E.Message);
   end; {TRY}
   Nodeserver.Contexts.UnlockList;
 end;
 
 // Try message to client safely
-function TryMessageToClient(AContext: TIdContext; message: String): Boolean;
+function SendMessageToClient(AContext: TIdContext; Message: String): Boolean;
 begin
   Result := True;
   try
-    Acontext.Connection.IOHandler.WriteLn(message);
+    Acontext.Connection.IOHandler.WriteLn(Message);
   except
     on E: Exception do
     begin
@@ -798,89 +1064,91 @@ begin
 end;
 
 // Get stream from client
-function GetStreamFromClient(AContext: TIdContext; out LStream: TMemoryStream): Boolean;
+function RetrieveStreamFromClient(AContext: TIdContext;
+  out Stream: TMemoryStream): Boolean;
 begin
   Result := False;
-  LStream.Clear;
+  Stream.Clear;
   try
-    AContext.Connection.IOHandler.ReadStream(LStream);
+    AContext.Connection.IOHandler.ReadStream(Stream);
     Result := True;
   except
     on E: Exception do
-      ToDeepDeb('NosoNetwork,GetStreamFromClient,' + E.Message);
+      ToDeepDebug('NosoNetwork,GetStreamFromClient,' + E.Message);
   end;
 end;
 
 // Trys to close a server connection safely
-procedure TryCloseServerConnection(AContext: TIdContext; closemsg: String = '');
+procedure SafelyCloseClientConnection(AContext: TIdContext; CloseMessage: String = '');
 begin
   try
-    if closemsg <> '' then
-      Acontext.Connection.IOHandler.WriteLn(closemsg);
+    if CloseMessage <> '' then
+      Acontext.Connection.IOHandler.WriteLn(CloseMessage);
     AContext.Connection.Disconnect();
     Acontext.Connection.IOHandler.InputBuffer.Clear;
   except
     on E: Exception do
-      ToDeepDeb('NosoNetwork,TryCloseServerConnection,' + E.Message);
+      ToDeepDebug('NosoNetwork,TryCloseServerConnection,' + E.Message);
   end; {TRY}
 end;
 
-class procedure NodeServerEvents.OnExecute(AContext: TIdContext);
-var
-  LLine: String = '';
-  IPUser: String = '';
-  slot: Integer = 0;
-  UpdateZipName: String = '';
-  UpdateVersion: String = '';
-  UpdateHash: String = '';
-  UpdateClavePublica: String = '';
-  UpdateFirma: String = '';
-  MemStream: TMemoryStream;
-  BlockZipName: String = '';
-  GetFileOk: Boolean = False;
-  GoAhead: Boolean;
-  NextLines: array of String;
-  LineToSend: String;
-  LinesSent: Integer = 0;
-  FTPTime, FTPSize, FTPSpeed: Int64;
+class procedure TNodeServerEvents.OnExecute(AContext: TIdContext);
+ //var
+ //  LLine: String = '';
+ //  IPUser: String = '';
+ //  slot: Integer = 0;
+ //  UpdateZipName: String = '';
+ //  UpdateVersion: String = '';
+ //  UpdateHash: String = '';
+ //  UpdateClavePublica: String = '';
+ //  UpdateFirma: String = '';
+ //  MemStream: TMemoryStream;
+ //  BlockZipName: String = '';
+ //  GetFileOk: Boolean = False;
+ //  GoAhead: Boolean;
+ //  NextLines: array of String;
+ //  LineToSend: String;
+ //  LinesSent: Integer = 0;
+ //  FTPTime, FTPSize, FTPSpeed: Int64;
 begin
+  AContext := AContext;
 end;
 
-class procedure NodeServerEvents.OnConnect(AContext: TIdContext);
+class procedure TNodeServerEvents.OnConnect(AContext: TIdContext);
 begin
-
+  AContext := AContext;
 end;
 
-class procedure NodeServerEvents.OnDisconnect(AContext: TIdContext);
+class procedure TNodeServerEvents.OnDisconnect(AContext: TIdContext);
 begin
-
+  AContext := AContext;
 end;
 
-class procedure NodeServerEvents.OnException(AContext: TIdContext);
+class procedure TNodeServerEvents.OnException(AContext: TIdContext);
 begin
-
+  AContext := AContext;
 end;
 
 {$ENDREGION Node Server}
 
 {$REGION Thread Client read}
 
-constructor TThreadClientRead.Create(const CreatePaused: Boolean;
-  const ConexSlot: Integer);
+constructor TClientReadThread.Create(const CreatePaused: Boolean;
+  const ConnectionSlot: Integer);
 begin
   inherited Create(CreatePaused);
-  FSlot := ConexSlot;
+  FSlot := ConnectionSlot;
 end;
 
 function LineToClient(Slot: Integer; LLine: String): Boolean;
 begin
   Result := False;
   try
-    CanalCliente[Slot].IOHandler.WriteLn(LLine);
+    ClientChannels[Slot].IOHandler.WriteLn(LLine);
     Result := True;
   except
     on E: Exception do
-      ToDeepDeb('NosoNetwork,LineToClient,' + E.Message);
+      ToDeepDebug('NosoNetwork,LineToClient,' + E.Message);
   end;
 end;
 
@@ -889,11 +1157,11 @@ begin
   Result := False;
   LStream.Clear;
   try
-    CanalCliente[Slot].IOHandler.ReadStream(LStream);
+    ClientChannels[Slot].IOHandler.ReadStream(LStream);
     Result := True;
   except
     on E: Exception do
-      ToDeepDeb('NosoNetwork,GetStreamFromClient,' + E.Message);
+      ToDeepDebug('NosoNetwork,GetStreamFromClient,' + E.Message);
   end;
 end;
 
@@ -901,17 +1169,17 @@ function SendLineToClient(FSlot: Integer; LLine: String): Boolean;
 begin
   Result := True;
   try
-    CanalCliente[FSlot].IOHandler.Writeln(LLine);
+    ClientChannels[FSlot].IOHandler.Writeln(LLine);
   except
     ON E: Exception do
     begin
       Result := False;
-      ToDeepDeb('NosoNetwork,SendLineToClient,' + E.Message);
+      ToDeepDebug('NosoNetwork,SendLineToClient,' + E.Message);
     end;
   end;
 end;
 
-procedure TThreadClientRead.Execute;
+procedure TClientReadThread.Execute;
 var
   LLine: String;
   MemStream: TMemoryStream;
@@ -925,30 +1193,30 @@ var
   LastActive: Int64 = 0;
 begin
   ThreadName := 'ReadClient ' + FSlot.ToString + ' ' + UTCTimeStr;
-  CanalCliente[FSlot].ReadTimeout := 1000;
-  CanalCliente[FSlot].IOHandler.MaxLineLength := Maxint;
-  IncClientReadThreads;
+  ClientChannels[FSlot].ReadTimeout := 1000;
+  ClientChannels[FSlot].IOHandler.MaxLineLength := Maxint;
+  IncrementClientReadThreadCount;
   AddNewOpenThread(ThreadName, UTCTime);
   LastActive := UTCTime;
   repeat
   try
-    sleep(10);
+    Sleep(10);
     OnBuffer := True;
-    if CanalCliente[FSlot].IOHandler.InputBufferIsEmpty then
+    if ClientChannels[FSlot].IOHandler.InputBufferIsEmpty then
     begin
-      CanalCliente[FSlot].IOHandler.CheckForDataOnSource(1000);
-      if CanalCliente[FSlot].IOHandler.InputBufferIsEmpty then
+      ClientChannels[FSlot].IOHandler.CheckForDataOnSource(1000);
+      if ClientChannels[FSlot].IOHandler.InputBufferIsEmpty then
       begin
         OnBuffer := False;
         repeat
-          LineToSend := GetTextToSlot(Fslot);
+          LineToSend := GetOutgoingTextForSlot(Fslot);
           if LineToSend <> '' then
           begin
             if not SendLineToClient(FSlot, LineToSend) then
             begin
               killit := True;
-              Conexiones[FSlot].Thread.Terminate;
-              break;
+              Connections[FSlot].ReadThread.Terminate;
+              Break;
             end;
           end;
         until LineToSend = '';
@@ -956,30 +1224,30 @@ begin
     end;
     if OnBuffer then
     begin
-      while not CanalCliente[FSlot].IOHandler.InputBufferIsEmpty do
+      while not ClientChannels[FSlot].IOHandler.InputBufferIsEmpty do
       begin
-        SetConexIndexBusy(FSlot, True);
-        SetConexIndexLastPing(fSlot, UTCTimeStr);
+        SetConnectionBusy(FSlot, True);
+        UpdateConnectionLastPing(fSlot, UTCTimeStr);
         LLine := '';
         try
-          LLine := CanalCliente[FSlot].IOHandler.ReadLn(IndyTextEncoding_UTF8);
+          LLine := ClientChannels[FSlot].IOHandler.ReadLn(IndyTextEncoding_UTF8);
         except
           on E: Exception do
           begin
-            SetConexIndexBusy(FSlot, False);
-            Conexiones[FSlot].Thread.Terminate;
+            SetConnectionBusy(FSlot, False);
+            Connections[FSlot].ReadThread.Terminate;
             KillIt := True;
-            break;
+            Break;
           end;
         end; {TRY}
         if LLine <> '' then
         begin
           LastActive := UTCTime;
           UpdateOpenThread(ThreadName, UTCTime);
-          CanalCliente[FSlot].ReadTimeout := 10000;
+          ClientChannels[FSlot].ReadTimeout := 10000;
           if GetParameter(LLine, 0) = 'RESUMENFILE' then
           begin
-            DownloadHeaders := True;
+            DownloadingHeaders := True;
             MemStream := TMemoryStream.Create;
             if GetStreamFromClient(FSlot, MemStream) then
               SavedToFile := SaveStreamAsHeaders(MemStream)
@@ -987,18 +1255,18 @@ begin
               SavedToFile := False;
             if SavedToFile then
             begin
-              UpdateMyData();
+              UpdateNodeData();
             end
             else
               killit := True;
-            LastTimeRequestResumen := 0;
+            LastAccountSummaryRequestTime := 0;
             MemStream.Free;
-            DownloadHeaders := False;
+            DownloadingHeaders := False;
           end
 
           else if GetParameter(LLine, 0) = 'SUMARYFILE' then
           begin
-            DownloadSumary := True;
+            DownloadingSummary := True;
             MemStream := TMemoryStream.Create;
             if GetStreamFromClient(FSlot, MemStream) then
               SavedToFile := SaveSummaryToFile(MemStream)
@@ -1006,19 +1274,19 @@ begin
               SavedToFile := False;
             if SavedToFile then
             begin
-              UpdateMyData();
+              UpdateNodeData();
               CreateSumaryIndex();
             end
             else
               killit := True;
-            LastTimeRequestSumary := 0;
+            LastSummaryRequestTime := 0;
             MemStream.Free;
-            DownloadSumary := False;
+            DownloadingSummary := False;
           end
 
           else if GetParameter(LLine, 0) = 'PSOSFILE' then
           begin
-            DownloadPSOs := True;
+            DownloadingPSOs := True;
             MemStream := TMemoryStream.Create;
             if GetStreamFromClient(FSlot, MemStream) then
               SavedToFile := SavePSOsToFile(MemStream)
@@ -1027,17 +1295,17 @@ begin
             if SavedToFile then
             begin
               LoadPSOFileFromDisk;
-              UpdateMyData();
+              UpdateNodeData();
             end
             else
               killit := True;
-            LasTimePSOsRequest := 0;
+            LastPSOsRequestTime := 0;
             MemStream.Free;
-            DownloadPSOs := False;
+            DownloadingPSOs := False;
           end
           else if GetParameter(LLine, 0) = 'GVTSFILE' then
           begin
-            DownloadGVTs := True;
+            DownloadingGVTs := True;
             MemStream := TMemoryStream.Create;
             if GetStreamFromClient(FSlot, MemStream) then
               SavedToFile := SaveStreamAsGVTs(MemStream)
@@ -1049,14 +1317,14 @@ begin
             end
             else
               killit := True;
-            LasTimeGVTsRequest := 0;
+            LastGVTsRequestTime := 0;
             MemStream.Free;
-            DownloadGVTs := False;
+            DownloadingGVTs := False;
           end
 
           else if GetParameter(LLine, 0) = 'BLOCKZIP' then
           begin
-            DownLoadBlocks := True;
+            DownloadingBlocks := True;
             MemStream := TMemoryStream.Create;
             if GetStreamFromClient(FSlot, MemStream) then
               SavedToFile := SaveStreamAsZipBlocks(MemStream)
@@ -1066,40 +1334,40 @@ begin
             begin
               if UnzipFile(BlockDirectory + 'blocks.zip', True) then
               begin
-                MyLastBlock := GetMyLastUpdatedBlock();
-                MyLastBlockHash :=
-                  HashMD5File(BlockDirectory + IntToStr(MyLastBlock) + '.blk');
-                UpdateMyData();
+                LastBlockIndex := GetMyLastUpdatedBlock();
+                LastBlockHash :=
+                  HashMD5File(BlockDirectory + IntToStr(LastBlockIndex) + '.blk');
+                UpdateNodeData();
               end;
             end
             else
               killit := True;
-            LastTimeRequestBlock := 0;
+            LastBlockRequestTime := 0;
             MemStream.Free;
-            DownLoadBlocks := False;
+            DownloadingBlocks := False;
           end // END RECEIVING BLOCKS
           else
           begin
-            //ProcessIncomingLine(FSlot,LLine);
-            AddToIncoming(FSlot, LLine);
+            //ProcessIncomingCommand(FSlot,LLine);
+            AddIncomingMessage(FSlot, LLine);
           end;
         end;
-        SetConexIndexBusy(FSlot, False);
+        SetConnectionBusy(FSlot, False);
       end; // end while client is not empty
     end;   // End OnBuffer
     if LastActive + 30 < UTCTime then killit := True;
-    if GetConexIndex(Fslot).tipo <> 'SER' then killit := True;
-    if not CanalCliente[FSlot].Connected then killit := True;
+    if GetConnectionData(Fslot).ConnectionType <> 'SER' then killit := True;
+    if not ClientChannels[FSlot].Connected then killit := True;
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoNetwork,TThreadClientRead,' + E.Message);
+      ToDeepDebug('NosoNetwork,TThreadClientRead,' + E.Message);
       KillIt := True;
     end;
   end;
   until ((terminated) or (KillIt));
-  CloseSlot(Fslot);
-  DecClientReadThreads;
+  CloseConnectionSlot(Fslot);
+  DecrementClientReadThreadCount;
   CloseOpenThread(ThreadName);
 end;
 
@@ -1109,62 +1377,62 @@ end;
 
 {$REGION ClientReadThreads}
 
-procedure IncClientReadThreads();
+procedure IncrementClientReadThreadCount();
 begin
-  EnterCriticalSection(CSClientReads);
-  Inc(OpenReadClientThreads);
-  LeaveCriticalSection(CSClientReads);
+  EnterCriticalSection(CSClientReadThreads);
+  Inc(ActiveClientReadThreads);
+  LeaveCriticalSection(CSClientReadThreads);
 end;
 
-procedure DecClientReadThreads();
+procedure DecrementClientReadThreadCount();
 begin
-  EnterCriticalSection(CSClientReads);
-  Dec(OpenReadClientThreads);
-  LeaveCriticalSection(CSClientReads);
+  EnterCriticalSection(CSClientReadThreads);
+  Dec(ActiveClientReadThreads);
+  LeaveCriticalSection(CSClientReadThreads);
 end;
 
-function GetClientReadThreads(): Integer;
+function GetActiveClientReadThreadCount(): Integer;
 begin
-  EnterCriticalSection(CSClientReads);
-  Result := OpenReadClientThreads;
-  LeaveCriticalSection(CSClientReads);
+  EnterCriticalSection(CSClientReadThreads);
+  Result := ActiveClientReadThreads;
+  LeaveCriticalSection(CSClientReadThreads);
 end;
 
 {$ENDREGION ClientReadThreads}
 
 {$REGION Incoming/outgoing info}
 
-procedure AddToIncoming(Index: Integer; texto: String);
+procedure AddIncomingMessage(Index: Integer; Message: String);
 begin
-  EnterCriticalSection(CSIncomingArr[Index]);
-  SlotLines[Index].Add(texto);
-  LeaveCriticalSection(CSIncomingArr[Index]);
+  EnterCriticalSection(CSIncomingMessages[Index]);
+  SlotTextLines[Index].Add(Message);
+  LeaveCriticalSection(CSIncomingMessages[Index]);
 end;
 
-function GetIncoming(Index: Integer): String;
+function GetIncomingMessage(Index: Integer): String;
 begin
   Result := '';
-  if LengthIncoming(Index) > 0 then
+  if GetIncomingMessageLength(Index) > 0 then
   begin
-    EnterCriticalSection(CSIncomingArr[Index]);
-    Result := SlotLines[Index][0];
-    SlotLines[index].Delete(0);
-    LeaveCriticalSection(CSIncomingArr[Index]);
+    EnterCriticalSection(CSIncomingMessages[Index]);
+    Result := SlotTextLines[Index][0];
+    SlotTextLines[index].Delete(0);
+    LeaveCriticalSection(CSIncomingMessages[Index]);
   end;
 end;
 
-function LengthIncoming(Index: Integer): Integer;
+function GetIncomingMessageLength(Index: Integer): Integer;
 begin
-  EnterCriticalSection(CSIncomingArr[Index]);
-  Result := SlotLines[Index].Count;
-  LeaveCriticalSection(CSIncomingArr[Index]);
+  EnterCriticalSection(CSIncomingMessages[Index]);
+  Result := SlotTextLines[Index].Count;
+  LeaveCriticalSection(CSIncomingMessages[Index]);
 end;
 
-procedure ClearIncoming(Index: Integer);
+procedure ClearIncomingMessages(Index: Integer);
 begin
-  EnterCriticalSection(CSIncomingArr[Index]);
-  SlotLines[Index].Clear;
-  LeaveCriticalSection(CSIncomingArr[Index]);
+  EnterCriticalSection(CSIncomingMessages[Index]);
+  SlotTextLines[Index].Clear;
+  LeaveCriticalSection(CSIncomingMessages[Index]);
 end;
 
 
@@ -1172,60 +1440,60 @@ end;
 
 {$REGION Bots array}
 
-procedure UpdateBotData(IPUser: String);
+procedure UpdateBotData(BotIP: String);
 var
   contador: Integer = 0;
   updated: Boolean = False;
 begin
-  if IsSeedNode(IPUser) then exit;
-  EnterCriticalSection(CSBotsList);
-  for contador := 0 to length(BotsList) - 1 do
+  if IsSeedNode(BotIP) then Exit;
+  EnterCriticalSection(CSBotList);
+  for contador := 0 to Length(BotList) - 1 do
   begin
-    if BotsList[Contador].ip = IPUser then
+    if BotList[Contador].IpAddress = BotIP then
     begin
-      BotsList[Contador].LastRefused := UTCTime;
+      BotList[Contador].LastRefused := UTCTime;
       Updated := True;
     end;
   end;
-  LeaveCriticalSection(CSBotsList);
+  LeaveCriticalSection(CSBotList);
   if not updated then
   begin
-    EnterCriticalSection(CSBotsList);
-    SetLength(BotsList, Length(BotsList) + 1);
-    BotsList[Length(BotsList) - 1].ip := IPUser;
-    BotsList[Length(BotsList) - 1].LastRefused := UTCTime;
-    LeaveCriticalSection(CSBotsList);
+    EnterCriticalSection(CSBotList);
+    SetLength(BotList, Length(BotList) + 1);
+    BotList[Length(BotList) - 1].IpAddress := BotIP;
+    BotList[Length(BotList) - 1].LastRefused := UTCTime;
+    LeaveCriticalSection(CSBotList);
   end;
 end;
 
-procedure DeleteBots();
+procedure RemoveAllBots();
 begin
-  EnterCriticalSection(CSBotsList);
-  SetLength(BotsList, 0);
-  LeaveCriticalSection(CSBotsList);
-  LastBotClear := UTCTime;
+  EnterCriticalSection(CSBotList);
+  SetLength(BotList, 0);
+  LeaveCriticalSection(CSBotList);
+  LastBotClearTime := UTCTime;
 end;
 
-function BotExists(IPUser: String): Boolean;
+function BotExists(BotIp: String): Boolean;
 var
   contador: Integer = 0;
 begin
   Result := False;
-  EnterCriticalSection(CSBotsList);
-  for contador := 0 to length(BotsList) - 1 do
-    if BotsList[contador].ip = IPUser then
+  EnterCriticalSection(CSBotList);
+  for contador := 0 to Length(BotList) - 1 do
+    if BotList[contador].IpAddress = BotIp then
     begin
       Result := True;
-      break;
+      Break;
     end;
-  LeaveCriticalSection(CSBotsList);
+  LeaveCriticalSection(CSBotList);
 end;
 
 {$ENDREGION Bots array}
 
 {$REGION Nodes list}
 
-procedure FillNodeList();
+procedure PopulateNodeList();
 var
   counter: Integer;
   ThisNode: String = '';
@@ -1237,8 +1505,8 @@ begin
   counter := 0;
   SourceStr := GetParameter(GetCFGDataStr, 1) + GetVerificatorsText;
   SourceStr := StringReplace(SourceStr, ':', ' ', [rfReplaceAll, rfIgnoreCase]);
-  EnterCriticalSection(CSNodesList);
-  SetLength(NodesList, 0);
+  EnterCriticalSection(CSNodeList);
+  SetLength(NodeList, 0);
   repeat
     ThisNode := GetParameter(SourceStr, counter);
     ThisNode := StringReplace(ThisNode, ';', ' ', [rfReplaceAll, rfIgnoreCase]);
@@ -1247,29 +1515,29 @@ begin
     if thisnode = '' then continuar := False
     else
     begin
-      NodeToAdd.ip := ThisNode;
-      NodeToAdd.port := IntToStr(ThisPort);
-      Insert(NodeToAdd, NodesList, Length(NodesList));
+      NodeToAdd.IpAddress := ThisNode;
+      NodeToAdd.Port := IntToStr(ThisPort);
+      Insert(NodeToAdd, NodeList, Length(NodeList));
       counter += 1;
     end;
   until not continuar;
-  LeaveCriticalSection(CSNodesList);
+  LeaveCriticalSection(CSNodeList);
 end;
 
-function NodesListLen(): Integer;
+function GetNodeListLength(): Integer;
 begin
-  EnterCriticalSection(CSNodesList);
-  Result := Length(NodesList);
-  LeaveCriticalSection(CSNodesList);
+  EnterCriticalSection(CSNodeList);
+  Result := Length(NodeList);
+  LeaveCriticalSection(CSNodeList);
 end;
 
-function NodesIndex(lIndex: Integer): TNodeData;
+function GetNodeDataAtIndex(Index: Integer): TNodeData;
 begin
   Result := Default(TNodeData);
-  if lIndex >= NodesListLen then exit;
-  EnterCriticalSection(CSNodesList);
-  Result := NodesList[lIndex];
-  LeaveCriticalSection(CSNodesList);
+  if Index >= GetNodeListLength then Exit;
+  EnterCriticalSection(CSNodeList);
+  Result := NodeList[Index];
+  LeaveCriticalSection(CSNodeList);
 end;
 
 {$ENDREGION Nodes list}
@@ -1280,23 +1548,23 @@ procedure InitializeElements();
 var
   counter: Integer;
 begin
-  InitCriticalSection(CSClientReads);
-  InitCriticalSection(CSConexiones);
-  InitCriticalSection(CSBotsList);
-  InitCriticalSection(CSPending);
-  InitCriticalSection(CS_MultiTRX);
-  InitCriticalSection(CSNodesList);
-  SetLength(BotsList, 0);
-  Setlength(ArrayPoolTXs, 0);
-  SetLength(ArrayMultiTXs, 0);
-  Setlength(NodesList, 0);
-  for counter := 1 to MaxConecciones do
+  InitCriticalSection(CSClientReadThreads);
+  InitCriticalSection(CSConnections);
+  InitCriticalSection(CSBotList);
+  InitCriticalSection(CSPendingTransactions);
+  InitCriticalSection(CSMultiOrderTransactions);
+  InitCriticalSection(CSNodeList);
+  SetLength(BotList, 0);
+  SetLength(PendingTransactionsPool, 0);
+  SetLength(MultiOrderTransactionsPool, 0);
+  SetLength(NodeList, 0);
+  for counter := 1 to MaxConnections do
   begin
-    InitCriticalSection(CSIncomingArr[counter]);
-    SlotLines[counter] := TStringList.Create;
-    CanalCliente[counter] := TIdTCPClient.Create(nil);
-    InitCriticalSection(CSOutGoingArr[counter]);
-    SetLength(ArrayOutgoing[counter], 0);
+    InitCriticalSection(CSIncomingMessages[counter]);
+    SlotTextLines[counter] := TStringList.Create;
+    ClientChannels[counter] := TIdTCPClient.Create(nil);
+    InitCriticalSection(CSOutgoingMessages[counter]);
+    SetLength(OutgoingMessages[counter], 0);
   end;
 end;
 
@@ -1304,17 +1572,17 @@ procedure ClearElements();
 var
   counter: Integer;
 begin
-  DoneCriticalSection(CSClientReads);
-  DoneCriticalSection(CSConexiones);
-  DoneCriticalSection(CSBotsList);
-  DoneCriticalSection(CS_MultiTRX);
-  DoneCriticalSection(CSNodesList);
-  for counter := 1 to MaxConecciones do
+  DoneCriticalSection(CSClientReadThreads);
+  DoneCriticalSection(CSConnections);
+  DoneCriticalSection(CSBotList);
+  DoneCriticalSection(CSMultiOrderTransactions);
+  DoneCriticalSection(CSNodeList);
+  for counter := 1 to MaxConnections do
   begin
-    DoneCriticalSection(CSIncomingArr[counter]);
-    SlotLines[counter].Free;
-    CanalCliente[counter].Free;
-    DoneCriticalSection(CSOutGoingArr[counter]);
+    DoneCriticalSection(CSIncomingMessages[counter]);
+    SlotTextLines[counter].Free;
+    ClientChannels[counter].Free;
+    DoneCriticalSection(CSOutgoingMessages[counter]);
   end;
 end;
 

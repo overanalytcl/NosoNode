@@ -178,7 +178,7 @@ begin
     on E: Exception do
     begin
       Result := False;
-      ToDeepDeb('NosoWallcon,GetAddressFromFile,' + E.Message);
+      ToDeepDebug('NosoWallcon,GetAddressFromFile,' + E.Message);
     end;
   end;
   if ((opened) and (not Closed)) then CloseFile(TempFile);
@@ -204,12 +204,12 @@ begin
       end;
       Inc(Counter);
     end;
-    if Result > 0 then ToDeepDeb(
+    if Result > 0 then ToDeepDebug(
         format('Imported %d addresses from backup files', [Result]));
   except
     on E: Exception do
     begin
-      ToDeepDeb('NosoWallcon,ImportAddressesFromBackup,' + E.Message);
+      ToDeepDebug('NosoWallcon,ImportAddressesFromBackup,' + E.Message);
     end;
   end;
   BakFiles.Free;
@@ -235,7 +235,7 @@ begin
     on E: Exception do
     begin
       Result := False;
-      ToDeepDeb('NosoWallcon,SaveAddresstoFile,' + E.Message);
+      ToDeepDebug('NosoWallcon,SaveAddresstoFile,' + E.Message);
     end;
   end;
   if ((opened) and (not Closed)) then CloseFile(TempFile);
@@ -261,7 +261,7 @@ begin
   except
     on E: Exception do
     begin
-      ToDeepDeb('NosoWallcon,CreateNewWallet,' + E.Message);
+      ToDeepDebug('NosoWallcon,CreateNewWallet,' + E.Message);
     end;
   end; {TRY}
 end;
@@ -278,7 +278,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoWallcon,GetWalletAsStream,' + E.Message);
+      ToDeepDebug('NosoWallcon,GetWalletAsStream,' + E.Message);
     end;
   end{Try};
   LeaveCriticalSection(CS_WalletFile);
@@ -305,7 +305,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('NosoWallcon,SaveWalletToFile,' + E.Message);
+      ToDeepDebug('NosoWallcon,SaveWalletToFile,' + E.Message);
       Result := False;
     end;
   end;

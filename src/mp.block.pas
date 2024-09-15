@@ -39,11 +39,11 @@ begin
   Result := Default(TOrderData);
   Result.Block := number;
   //Result.OrderID    :='';
-  Result.OrderLines := 1;
+  Result.OrderLineCount := 1;
   Result.OrderType := 'PROJCT';
   Result.TimeStamp := timestamp - 1;
   Result.Reference := 'null';
-  Result.TrxLine := 1;
+  Result.TransferLine := 1;
   Result.Sender := 'COINBASE';
   Result.Address := 'COINBASE';
   Result.Receiver := 'NpryectdevepmentfundsGE';
@@ -51,7 +51,7 @@ begin
   Result.AmountTransferred := amount;
   Result.Signature := 'COINBASE';
   Result.TransferId := GetTransferHash(Result.TimeStamp.ToString +
-    'COINBASE' + 'NpryectdevepmentfundsGE' + IntToStr(amount) + IntToStr(MyLastblock));
+    'COINBASE' + 'NpryectdevepmentfundsGE' + IntToStr(amount) + IntToStr(LastBlockIndex));
   Result.OrderID := {GetOrderHash(}'1' + Result.TransferID{)};
 end;
 
@@ -60,11 +60,11 @@ function CreateNosoPayOrder(number: Integer; AddSend, AddReceive: String;
 begin
   Result := Default(TOrderData);
   Result.Block := number;
-  Result.OrderLines := 1;
+  Result.OrderLineCount := 1;
   Result.OrderType := 'TRFR';
   Result.TimeStamp := timestamp - 1;
   Result.Reference := 'null';
-  Result.TrxLine := 1;
+  Result.TransferLine := 1;
   Result.Sender := AddSend;
   Result.Address := AddSend;
   Result.Receiver := AddReceive;
@@ -72,7 +72,7 @@ begin
   Result.AmountTransferred := amount;
   Result.Signature := 'Directive';
   Result.TransferId := GetTransferHash(Result.TimeStamp.ToString + 'TRFR' +
-    AddSend + IntToStr(amount) + IntToStr(MyLastblock));
+    AddSend + IntToStr(amount) + IntToStr(LastBlockIndex));
   Result.OrderID := GetOrderHash('1' + Result.TransferId);
 end;
 
@@ -98,7 +98,7 @@ var
   OperationAddress: String = '';
   errored: Boolean = False;
   PoWTotalReward: Int64;
-  ArrayLastBlockTrxs: TBlockOrdersArray;
+  ArrayLastBlockTrxs: TBlockOrders;
   ExistsInLastBlock: Boolean;
   Count2: Integer;
   NewMNs, ExpiredMNs: Integer;
@@ -130,10 +130,10 @@ begin
   if WO_skipBlocks then exit;
   if GetCFGDataStr(0) = 'STOP' then
   begin
-    ClearAllPending;
+    ClearAllPendingTransactions;
     exit;
   end;
-  if AnsiContainsStr(GetCFGDataStr(0), 'EMPTY') then ClearAllPending;
+  if AnsiContainsStr(GetCFGDataStr(0), 'EMPTY') then ClearAllPendingTransactions;
   BuildingBlock := Numero;
   BeginPerformance('BuildNewBlock');
   if ((numero > 0) and (Timestamp < lastblockdata.TimeEnd)) then
@@ -168,77 +168,77 @@ begin
     LeaveCriticalSection(CSGVTsArray);
 
     // Processs pending orders
-    EnterCriticalSection(CSPending);
+    EnterCriticalSection(CSPendingTransactions);
     BeginPerformance('NewBLOCK_PENDING');
-    ArrayLastBlockTrxs := Default(TBlockOrdersArray);
-    ArrayLastBlockTrxs := GetBlockTrxs(MyLastBlock);
+    ArrayLastBlockTrxs := Default(TBlockOrders);
+    ArrayLastBlockTrxs := GetBlockTransfers(LastBlockIndex);
     ResetBlockRecords;
-    for contador := 0 to length(ArrayPoolTXs) - 1 do
+    for contador := 0 to length(PendingTransactionsPool) - 1 do
     begin
       // Version 0.2.1Ga1 reverification starts
-      if ArrayPoolTXs[contador].TimeStamp < LastBlockData.TimeStart then
+      if PendingTransactionsPool[contador].TimeStamp < LastBlockData.TimeStart then
         continue;
       //{
       ExistsInLastBlock := False;
       for count2 := 0 to length(ArrayLastBlockTrxs) - 1 do
       begin
-        if ArrayLastBlockTrxs[count2].TransferId = ArrayPoolTXs[contador].TransferId then
+        if ArrayLastBlockTrxs[count2].TransferId = PendingTransactionsPool[contador].TransferId then
         begin
           ExistsInLastBlock := True;
           break;
         end;
       end;
       if ExistsInLastBlock then continue;
-      if ((ArrayPoolTXs[contador].TimeStamp + 60 > TimeStamp) or
+      if ((PendingTransactionsPool[contador].TimeStamp + 60 > TimeStamp) or
         (BlockTrfrs >= 2000)) then
       begin
-        if ArrayPoolTXs[contador].TimeStamp < TimeStamp + 600 then
-          insert(ArrayPoolTXs[contador], IgnoredTrxs, length(IgnoredTrxs));
+        if PendingTransactionsPool[contador].TimeStamp < TimeStamp + 600 then
+          insert(PendingTransactionsPool[contador], IgnoredTrxs, length(IgnoredTrxs));
         continue;
       end;
-      if ArrayPoolTXs[contador].OrderType = 'CUSTOM' then
+      if PendingTransactionsPool[contador].OrderType = 'CUSTOM' then
       begin
-        OperationAddress := GetAddressFromPublicKey(ArrayPoolTXs[contador].Sender);
-        if IsCustomizacionValid(OperationAddress, ArrayPoolTXs[contador].Receiver,
+        OperationAddress := GetAddressFromPublicKey(PendingTransactionsPool[contador].Sender);
+        if IsCustomizacionValid(OperationAddress, PendingTransactionsPool[contador].Receiver,
           numero) then
         begin
-          minerfee := minerfee + ArrayPoolTXs[contador].AmountFee;
-          ArrayPoolTXs[contador].Block := numero;
-          ArrayPoolTXs[contador].Sender := OperationAddress;
-          insert(ArrayPoolTXs[contador], ListaOrdenes, length(listaordenes));
+          minerfee := minerfee + PendingTransactionsPool[contador].AmountFee;
+          PendingTransactionsPool[contador].Block := numero;
+          PendingTransactionsPool[contador].Sender := OperationAddress;
+          insert(PendingTransactionsPool[contador], ListaOrdenes, length(listaordenes));
           Inc(BlockTrfrs);
         end;
       end;
-      if ArrayPoolTXs[contador].OrderType = 'TRFR' then
+      if PendingTransactionsPool[contador].OrderType = 'TRFR' then
       begin
-        OperationAddress := ArrayPoolTXs[contador].Address;
-        if SummaryValidPay(OperationAddress, ArrayPoolTXs[contador].AmountFee +
-          ArrayPoolTXs[contador].AmountTransferred, numero) then
+        OperationAddress := PendingTransactionsPool[contador].Address;
+        if SummaryValidPay(OperationAddress, PendingTransactionsPool[contador].AmountFee +
+          PendingTransactionsPool[contador].AmountTransferred, numero) then
         begin
-          minerfee := minerfee + ArrayPoolTXs[contador].AmountFee;
-          CreditTo(ArrayPoolTXs[contador].Receiver,
-            ArrayPoolTXs[contador].AmountTransferred, numero);
-          ArrayPoolTXs[contador].Block := numero;
-          ArrayPoolTXs[contador].Sender := OperationAddress;
-          insert(ArrayPoolTXs[contador], ListaOrdenes, length(listaordenes));
+          minerfee := minerfee + PendingTransactionsPool[contador].AmountFee;
+          CreditTo(PendingTransactionsPool[contador].Receiver,
+            PendingTransactionsPool[contador].AmountTransferred, numero);
+          PendingTransactionsPool[contador].Block := numero;
+          PendingTransactionsPool[contador].Sender := OperationAddress;
+          insert(PendingTransactionsPool[contador], ListaOrdenes, length(listaordenes));
           Inc(BlockTrfrs);
         end;
       end;
-      if ((ArrayPoolTXs[contador].OrderType = 'SNDGVT') and
-        (ArrayPoolTXs[contador].Sender = AdminPubKey)) then
+      if ((PendingTransactionsPool[contador].OrderType = 'SNDGVT') and
+        (PendingTransactionsPool[contador].Sender = AdminPubKey)) then
       begin
-        OperationAddress := GetAddressFromPublicKey(ArrayPoolTXs[contador].Sender);
+        OperationAddress := GetAddressFromPublicKey(PendingTransactionsPool[contador].Sender);
         if GetAddressBalanceIndexed(OperationAddress) <
-          ArrayPoolTXs[contador].AmountFee then continue;
-        if ChangeGVTOwner(StrToIntDef(ArrayPoolTXs[contador].Reference, 100),
-          OperationAddress, ArrayPoolTXs[contador].Receiver) = 0 then
+          PendingTransactionsPool[contador].AmountFee then continue;
+        if ChangeGVTOwner(StrToIntDef(PendingTransactionsPool[contador].Reference, 100),
+          OperationAddress, PendingTransactionsPool[contador].Receiver) = 0 then
         begin
-          minerfee := minerfee + ArrayPoolTXs[contador].AmountFee;
+          minerfee := minerfee + PendingTransactionsPool[contador].AmountFee;
           Inc(GVTsTransfered);
-          SummaryValidPay(OperationAddress, ArrayPoolTXs[contador].AmountFee, numero);
-          ArrayPoolTXs[contador].Block := numero;
-          ArrayPoolTXs[contador].Sender := OperationAddress;
-          insert(ArrayPoolTXs[contador], ListaOrdenes, length(listaordenes));
+          SummaryValidPay(OperationAddress, PendingTransactionsPool[contador].AmountFee, numero);
+          PendingTransactionsPool[contador].Block := numero;
+          PendingTransactionsPool[contador].Sender := OperationAddress;
+          insert(PendingTransactionsPool[contador], ListaOrdenes, length(listaordenes));
         end;
       end;
     end;
@@ -285,8 +285,8 @@ begin
       UpdateMyGVTsList;
     end;
     try
-      SetLength(ArrayPoolTXs, 0);
-      ArrayPoolTXs := copy(IgnoredTrxs, 0, length(IgnoredTrxs));
+      SetLength(PendingTransactionsPool, 0);
+      PendingTransactionsPool := copy(IgnoredTrxs, 0, length(IgnoredTrxs));
     except
       on E: Exception do
       begin
@@ -296,7 +296,7 @@ begin
     end; {TRY}
     SetLength(IgnoredTrxs, 0);
     EndPerformance('NewBLOCK_PENDING');
-    LeaveCriticalSection(CSPending);
+    LeaveCriticalSection(CSPendingTransactions);
 
     //PoS payment
     BeginPerformance('NewBLOCK_PoS');
@@ -323,9 +323,9 @@ begin
     // Masternodes processing
     BeginPerformance('NewBLOCK_MNs');
     CreditMNVerifications();
-    MNsFileText := GetMNsAddresses(MyLastBlock);
+    MNsFileText := GetMNsAddresses(LastBlockIndex);
     SaveMNsFile(MNsFileText);
-    FillNodeList;
+    PopulateNodeList;
     ClearMNsChecks();
     ClearMNsList();
     ClearReceivedMNs();
@@ -394,7 +394,7 @@ begin
     else
       BlockHeader.Difficult := PoSCount;
     BlockHeader.TargetHash := TargetHash;
-    //if protocolo = 1 then BlockHeader.Solution:= Solucion
+    //if ProtocolVersion = 1 then BlockHeader.Solution:= Solucion
     BlockHeader.Solution := Solucion + ' ' +
       {GetNMSData.Diff}'FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF1' + ' ' +
       PoWTotalReward.ToString + ' ' + MNsTotalReward.ToString + ' ' +
@@ -402,7 +402,7 @@ begin
     if numero = 0 then BlockHeader.Solution := '';
     if numero = 0 then BlockHeader.LastBlockHash := 'NOSO GENESYS BLOCK'
     else
-      BlockHeader.LastBlockHash := MyLastBlockHash;
+      BlockHeader.LastBlockHash := LastBlockHash;
     if numero < 53000 then BlockHeader.NxtBlkDiff :=
         0{MNsReward}//GetDiffForNextBlock(numero,BlockHeader.TimeLast20,BlockHeader.TimeTotal,BlockHeader.Difficult);
     else
@@ -424,17 +424,17 @@ begin
     SetLength(ListaOrdenes, 0);
     SetLength(PoSAddressess, 0);
     // Actualizar informacion
-    MyLastBlock := Numero;
-    MyLastBlockHash := HashMD5File(BlockDirectory + IntToStr(MyLastBlock) + '.blk');
-    LastBlockData := LoadBlockDataHeader(MyLastBlock);
+    LastBlockIndex := Numero;
+    LastBlockHash := HashMD5File(BlockDirectory + IntToStr(LastBlockIndex) + '.blk');
+    LastBlockData := LoadBlockDataHeader(LastBlockIndex);
     SetSummaryHash;
     SetMNsHash;
     // Actualizar el arvhivo de cabeceras
-    AddRecordToHeaders(Numero, MyLastBlockHash, MySumarioHash);
+    AddRecordToHeaders(Numero, LastBlockHash, MySumarioHash);
     SetResumenHash;
     if ((Numero > 0) and (form1.Server.Active)) then
     begin
-      OutgoingMsjsAdd(ProtocolLine(ping));
+      OutgoingMsjsAdd(GetProtocolLineFromCode(ping));
     end;
     CheckForMyPending;
 
@@ -581,7 +581,7 @@ end;
 function GetBlockPoSes(BlockNumber: Integer): BlockArraysPos;
 var
   resultado: BlockArraysPos;
-  ArrTrxs: TBlockOrdersArray;
+  ArrTrxs: TBlockOrders;
   ArchData: String;
   MemStr: TMemoryStream;
   Header: BlockHeaderData;
@@ -618,7 +618,7 @@ function GetBlockMNs(BlockNumber: Integer): BlockArraysPos;
 var
   resultado: BlockArraysPos;
   ArrayPos: BlockArraysPos;
-  ArrTrxs: TBlockOrdersArray;
+  ArrTrxs: TBlockOrders;
   ArchData: String;
   MemStr: TMemoryStream;
   Header: BlockHeaderData;
@@ -677,10 +677,10 @@ const
 var
   blocknumber: Integer;
 begin
-  blocknumber := MyLastBlock;
+  blocknumber := LastBlockIndex;
   if BlockNumber < Highest then
   begin
-    ToLog('Console', 'Can not undo block ' + mylastblock.ToString);
+    ToLog('Console', 'Can not undo block ' + LastBlockIndex.ToString);
     exit;
   end
   else
@@ -692,7 +692,7 @@ begin
     //if Form1.Server.Active then Form1.Server.Active := false;
     ClearMNsChecks();
     ClearMNsList();
-    ClearAllPending;
+    ClearAllPendingTransactions;
     ClearReceivedOrdersIDs;
   end;
   // recover summary
@@ -712,17 +712,17 @@ begin
   // actualizar el archivo de cabeceras
   RemoveHeadersLastRecord;
   // Borrar archivo del ultimo bloque
-  trydeletefile(BlockDirectory + IntToStr(MyLastBlock) + '.blk');
+  trydeletefile(BlockDirectory + IntToStr(LastBlockIndex) + '.blk');
   // Actualizar mi informacion
-  MyLastBlock := GetMyLastUpdatedBlock;
-  MyLastBlockHash := HashMD5File(BlockDirectory + IntToStr(MyLastBlock) + '.blk');
-  LastBlockData := LoadBlockDataHeader(MyLastBlock);
+  LastBlockIndex := GetMyLastUpdatedBlock;
+  LastBlockHash := HashMD5File(BlockDirectory + IntToStr(LastBlockIndex) + '.blk');
+  LastBlockData := LoadBlockDataHeader(LastBlockIndex);
   SetResumenHAsh;
   ToLog('console', '****************************');
   ToLog('console', 'Block undone: ' + IntToStr(blocknumber)); //'Block undone: '
   ToLog('console', '****************************');
   ToLog('events', TimeToStr(now) + 'Block Undone: ' + IntToStr(blocknumber));
-  ToDeepDeb('Block undone: ' + Blocknumber.ToString);
+  ToDeepDebug('Block undone: ' + Blocknumber.ToString);
   U_DataPanel := True;
 end;
 
@@ -739,31 +739,31 @@ begin
       Inc(Result);
     end;
   until Last < UpToBlock;
-  MyLastBlock := GetMyLastUpdatedBlock;
+  LastBlockIndex := GetMyLastUpdatedBlock;
 end;
 
 function GEtNSLBlkOrdInfo(LineText: String): String;
 var
   ParamBlock: String;
   BlkNumber: Integer;
-  OrdersArray: TBlockOrdersArray;
+  OrdersArray: TBlockOrders;
   Cont: Integer;
   ThisOrder: String = '';
 begin
   BeginPErformance('GEtNSLBlkOrdInfo');
   Result := 'NSLBLKORD ';
   ParamBlock := UpperCase(GetParameter(LineText, 1));
-  if paramblock = 'LAST' then BlkNumber := MyLastBlock
+  if paramblock = 'LAST' then BlkNumber := LastBlockIndex
   else
     BlkNumber := StrToIntDef(ParamBlock, -1);
-  if ((BlkNumber < 0) or (BlkNumber < MyLastBlock - 4000) or
-    (BlkNumber > MyLastBlock)) then
+  if ((BlkNumber < 0) or (BlkNumber < LastBlockIndex - 4000) or
+    (BlkNumber > LastBlockIndex)) then
     Result := Result + 'ERROR'
   else
   begin
     Result := Result + BlkNumber.ToString + ' ';
-    OrdersArray := Default(TBlockOrdersArray);
-    OrdersArray := GetBlockTrxs(BlkNumber);
+    OrdersArray := Default(TBlockOrders);
+    OrdersArray := GetBlockTransfers(BlkNumber);
     if Length(OrdersArray) > 0 then
     begin
       for Cont := 0 to LEngth(OrdersArray) - 1 do

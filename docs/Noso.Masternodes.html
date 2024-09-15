@@ -73,25 +73,25 @@
 <td class="itemcode"><code>procedure <strong><a href="Noso.Masternodes.html#FillMNsArray-String-">FillMNsArray</a></strong>(TValue: String);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#FillMnsListArray-TStringArray-">FillMnsListArray</a></strong>(out LDataArray: <a href="Noso.General.html#TStringArray">TStringArray</a>): Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#FormatMasternodeCheck-TMNCheck-">FormatMasternodeCheck</a></strong>(Data: <a href="Noso.Masternodes.TMNCheck.html">TMNCheck</a>): String;</code></td>
 </tr>
 <tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetMasternodeCheckCount">GetMasternodeCheckCount</a></strong>(): Integer;</code></td>
+</tr>
+<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetMNAgeCount-TMNode-">GetMNAgeCount</a></strong>(TNode: <a href="Noso.Masternodes.TMNode.html">TMNode</a>): String;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetMNCheckFromString-String-">GetMNCheckFromString</a></strong>(Linea: String): <a href="Noso.Masternodes.TMNCheck.html">TMNCheck</a>;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetMNodeFromString-String-TMNode-">GetMNodeFromString</a></strong>(const StringData: String; out ToMNode: <a href="Noso.Masternodes.TMNode.html">TMNode</a>): Boolean;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetMNReportString-Integer-">GetMNReportString</a></strong>(block: Integer): String;</code></td>
 </tr>
-<tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetMNsAddresses-Integer-">GetMNsAddresses</a></strong>(Block: Integer): String;</code></td>
-</tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetMNsChecksCount">GetMNsChecksCount</a></strong>(): Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetMNsAddresses-Integer-">GetMNsAddresses</a></strong>(Block: Integer): String;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetMNsHash">GetMNsHash</a></strong>(): String;</code></td>
@@ -106,43 +106,43 @@
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetStringFromMN-TMNode-">GetStringFromMN</a></strong>(Node: <a href="Noso.Masternodes.TMNode.html">TMNode</a>): String;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetStringFromMNCheck-TMNCheck-">GetStringFromMNCheck</a></strong>(Data: <a href="Noso.Masternodes.TMNCheck.html">TMNCheck</a>): String;</code></td>
-</tr>
-<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetValidNodesCountOnCheck-String-">GetValidNodesCountOnCheck</a></strong>(StringNodes: String): Integer;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetVerificatorsText">GetVerificatorsText</a></strong>(): String;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#GetWaitingMNs">GetWaitingMNs</a></strong>(): String;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#IsIPMNAlreadyProcessed-String-">IsIPMNAlreadyProcessed</a></strong>(OrderText: String): Boolean;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#IsLegitNewNode-TMNode-Integer-">IsLegitNewNode</a></strong>(ThisNode: <a href="Noso.Masternodes.TMNode.html">TMNode</a>; block: Integer): Boolean;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#IsMNIPReceived-String-">IsMNIPReceived</a></strong>(DataSource: String): Boolean;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#IsMyMNCheckDone">IsMyMNCheckDone</a></strong>(): Boolean;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#IsMyMNListed-String-">IsMyMNListed</a></strong>(LocalIP: String): Boolean;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#LengthReceivedMNs">LengthReceivedMNs</a></strong>(): Integer;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#LengthWaitingMNs">LengthWaitingMNs</a></strong>(): Integer;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#LoadMNsFile">LoadMNsFile</a></strong>(): String;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#MnsCheckExists-String-">MnsCheckExists</a></strong>(Ip: String): Boolean;</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#PopulateMasternodeList-TStringArray-">PopulateMasternodeList</a></strong>(out LDataArray: <a href="Noso.General.html#TStringArray">TStringArray</a>): Boolean;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Masternodes.html#RunMNVerification-Integer-String-String-String-String-">RunMNVerification</a></strong>(Block: Integer; LocSynctus: String; LocalIP: String; publicK, privateK: String): String;</code></td>
@@ -178,64 +178,64 @@
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#ArrayMNsData">ArrayMNsData</a></strong>: array of <a href="Noso.Masternodes.TMNsData.html">TMNsData</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#ArrMNChecks">ArrMNChecks</a></strong>: array of <a href="Noso.Masternodes.TMNCheck.html">TMNCheck</a>;</code></td>
-</tr>
-<tr class="list2">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#ArrReceivedMNs">ArrReceivedMNs</a></strong>: array of String;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#ArrWaitMNs">ArrWaitMNs</a></strong>: array of String;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CSMNsChecks">CSMNsChecks</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CSMNsFile">CSMNsFile</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CSMNsIPProc">CSMNsIPProc</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CSMNsList">CSMNsList</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CSMN_FileText">CSMN_FileText</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CSReceivedMNs">CSReceivedMNs</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CSVerifyThread">CSVerifyThread</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CSVerNodes">CSVerNodes</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CSWaitingMNs">CSWaitingMNs</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list">
+<tr class="list2">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CS_MNsHash">CS_MNsHash</a></strong>: TRTLCriticalSection;</code></td>
 </tr>
-<tr class="list2">
+<tr class="list">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#CurrSynctus">CurrSynctus</a></strong>: String;</code></td>
 </tr>
-<tr class="list">
-<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMN_Funds">LocalMN_Funds</a></strong>: String = '';</code></td>
-</tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMN_IP">LocalMN_IP</a></strong>: String = '';</code></td>
+<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMasternodeFunds">LocalMasternodeFunds</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMN_Port">LocalMN_Port</a></strong>: String = '8080';</code></td>
+<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMasternodeIP">LocalMasternodeIP</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMN_Private">LocalMN_Private</a></strong>: String = '';</code></td>
+<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMasternodePort">LocalMasternodePort</a></strong>: String = '8080';</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMN_Public">LocalMN_Public</a></strong>: String = '';</code></td>
+<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMasternodePrivateKey">LocalMasternodePrivateKey</a></strong>: String = '';</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMN_Sign">LocalMN_Sign</a></strong>: String = '';</code></td>
+<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMasternodePublicKey">LocalMasternodePublicKey</a></strong>: String = '';</code></td>
+</tr>
+<tr class="list">
+<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#LocalMasternodeSignature">LocalMasternodeSignature</a></strong>: String = '';</code></td>
+</tr>
+<tr class="list2">
+<td class="itemcode"><code><strong><a href="Noso.Masternodes.html#MasternodeChecks">MasternodeChecks</a></strong>: array of <a href="Noso.Masternodes.TMNCheck.html">TMNCheck</a>;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code><strong><a href="Noso.Masternodes.html#MasterNodesFilename">MasterNodesFilename</a></strong>: String = '';</code></td>
@@ -336,11 +336,18 @@ Clears all the MNS checks</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="FillMnsListArray-TStringArray-"></span><code>function <strong>FillMnsListArray</strong>(out LDataArray: <a href="Noso.General.html#TStringArray">TStringArray</a>): Boolean;</code></td>
+<td class="itemcode"><span id="FormatMasternodeCheck-TMNCheck-"></span><code>function <strong>FormatMasternodeCheck</strong>(Data: <a href="Noso.Masternodes.TMNCheck.html">TMNCheck</a>): String;</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="GetMasternodeCheckCount"></span><code>function <strong>GetMasternodeCheckCount</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>
-Fills the given array with the <a class="normal" href="MP.Protocol.html#Nodes">nodes</a> reports to be sent to another peer</p>
+Returns the number of MNs checks</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -388,15 +395,6 @@ Returns the string to be stored on the masternodes.txt file</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetMNsChecksCount"></span><code>function <strong>GetMNsChecksCount</strong>(): Integer;</code></td>
-</tr>
-<tr><td colspan="1">
-<p>
-Returns the number of MNs checks</p>
-</td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
 <td class="itemcode"><span id="GetMNsHash"></span><code>function <strong>GetMNsHash</strong>(): String;</code></td>
 </tr>
 <tr><td colspan="1">
@@ -426,13 +424,6 @@ Returns the count of reported MNs</p>
 <p>
 Converst a MNNode data into a string</p>
 </td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><span id="GetStringFromMNCheck-TMNCheck-"></span><code>function <strong>GetStringFromMNCheck</strong>(Data: <a href="Noso.Masternodes.TMNCheck.html">TMNCheck</a>): String;</code></td>
-</tr>
-<tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -524,6 +515,15 @@ Verify if an IP already sent a verification</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
+<td class="itemcode"><span id="PopulateMasternodeList-TStringArray-"></span><code>function <strong>PopulateMasternodeList</strong>(out LDataArray: <a href="Noso.General.html#TStringArray">TStringArray</a>): Boolean;</code></td>
+</tr>
+<tr><td colspan="1">
+<p>
+Fills the given array with the <a class="normal" href="MP.Protocol.html#Nodes">nodes</a> reports to be sent to another peer</p>
+</td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
 <td class="itemcode"><span id="RunMNVerification-Integer-String-String-String-String-"></span><code>function <strong>RunMNVerification</strong>(Block: Integer; LocSynctus: String; LocalIP: String; publicK, privateK: String): String;</code></td>
 </tr>
 <tr><td colspan="1">
@@ -589,13 +589,6 @@ Verify if an IP already sent a verification</p>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="ArrayMNsData"></span><code><strong>ArrayMNsData</strong>: array of <a href="Noso.Masternodes.TMNsData.html">TMNsData</a>;</code></td>
-</tr>
-<tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
-</table>
-<table class="detail wide_list">
-<tr class="list">
-<td class="itemcode"><span id="ArrMNChecks"></span><code><strong>ArrMNChecks</strong>: array of <a href="Noso.Masternodes.TMNCheck.html">TMNCheck</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
@@ -693,42 +686,49 @@ Verify if an IP already sent a verification</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Funds"></span><code><strong>LocalMN_Funds</strong>: String = '';</code></td>
+<td class="itemcode"><span id="LocalMasternodeFunds"></span><code><strong>LocalMasternodeFunds</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_IP"></span><code><strong>LocalMN_IP</strong>: String = '';</code></td>
+<td class="itemcode"><span id="LocalMasternodeIP"></span><code><strong>LocalMasternodeIP</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Port"></span><code><strong>LocalMN_Port</strong>: String = '8080';</code></td>
+<td class="itemcode"><span id="LocalMasternodePort"></span><code><strong>LocalMasternodePort</strong>: String = '8080';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Private"></span><code><strong>LocalMN_Private</strong>: String = '';</code></td>
+<td class="itemcode"><span id="LocalMasternodePrivateKey"></span><code><strong>LocalMasternodePrivateKey</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Public"></span><code><strong>LocalMN_Public</strong>: String = '';</code></td>
+<td class="itemcode"><span id="LocalMasternodePublicKey"></span><code><strong>LocalMasternodePublicKey</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="LocalMN_Sign"></span><code><strong>LocalMN_Sign</strong>: String = '';</code></td>
+<td class="itemcode"><span id="LocalMasternodeSignature"></span><code><strong>LocalMasternodeSignature</strong>: String = '';</code></td>
+</tr>
+<tr><td colspan="1">
+<p class="nodescription">This item has no description.</p></td></tr>
+</table>
+<table class="detail wide_list">
+<tr class="list">
+<td class="itemcode"><span id="MasternodeChecks"></span><code><strong>MasternodeChecks</strong>: array of <a href="Noso.Masternodes.TMNCheck.html">TMNCheck</a>;</code></td>
 </tr>
 <tr><td colspan="1">
 <p class="nodescription">This item has no description.</p></td></tr>

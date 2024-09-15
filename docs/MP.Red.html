@@ -124,7 +124,7 @@
 </tr>
 <tr><td colspan="1">
 <p>
-Close all outgoing connections</p>
+Close all outgoing <a class="normal" href="Noso.Network.html#Connections">connections</a></p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -186,7 +186,7 @@ Function <a class="normal" href="Noso.Network.html#IsSlotConnected-Integer-">IsS
 </tr>
 <tr><td colspan="1">
 <p>
-Function <a class="normal" href="Noso.Network.html#GetSyncTus">GetSyncTus</a>():String;</p>
+Function GetSyncTus():String;</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -264,9 +264,9 @@ RETURNS THE SLOT OF THE GIVEN IP</p>
 </tr>
 <tr><td colspan="1">
 <p>
-function <a class="normal" href="Noso.Network.html#GetTotalConexiones">GetTotalConexiones</a>():integer; function GetTotalVerifiedConnections():Integer;
+function GetTotalConexiones():integer; function GetTotalVerifiedConnections():Integer;
 
-<p>function GetTotalVerifiedConnections():Integer; var counter:integer; Begin result := 0; for counter := 1 to <a class="normal" href="MPForm.html#MaxConecciones">MaxConecciones</a> do if <a class="normal" href="Noso.Network.html#Conexiones">conexiones</a>[Counter].Autentic then result := result + 1; End;</p>
+<p>function GetTotalVerifiedConnections():Integer; var counter:integer; Begin result := 0; for counter := 1 to <a class="normal" href="MPForm.html#MaxConnections">MaxConnections</a> do if <a class="normal" href="Noso.Network.html#Connections">Connections</a>[Counter].IsAuthenticated then result := result + 1; End;</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -289,7 +289,7 @@ function <a class="normal" href="Noso.Network.html#GetTotalConexiones">GetTotalC
 </tr>
 <tr><td colspan="1">
 <p>
-procedure <a class="normal" href="Noso.Network.html#CloseSlot-Integer-">CloseSlot</a>(Slot:integer);</p>
+procedure CloseSlot(Slot:integer);</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -323,7 +323,7 @@ Reserves the first available slot</p>
 </tr>
 <tr><td colspan="1">
 <p>
-function <a class="normal" href="Noso.Network.html#BotExists-String-">BotExists</a>(IPUser:String):Boolean; function NodeExists(IPUser,Port:String):integer; Almacena una conexion con sus datos en el array <a class="normal" href="Noso.Network.html#Conexiones">Conexiones</a></p>
+function <a class="normal" href="Noso.Network.html#BotExists-String-">BotExists</a>(IPUser:String):Boolean; function NodeExists(IPUser,Port:String):integer; Almacena una conexion con sus datos en el array <a class="normal" href="Noso.Network.html#Connections">Connections</a></p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -359,7 +359,7 @@ Apaga el servidor</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Function <a class="normal" href="Noso.Network.html#IsAllSynced">IsAllSynced</a>():integer; Procedure <a class="normal" href="Noso.Network.html#UpdateMyData">UpdateMyData</a>(); Request necessary files/<a class="normal" href="MP.Gui.html#Info-String-">info</a> to update</p>
+Function IsAllSynced():integer; Procedure UpdateMyData(); Request necessary files/<a class="normal" href="MP.Gui.html#Info-String-">info</a> to update</p>
 </td></tr>
 </table>
 <table class="detail wide_list">

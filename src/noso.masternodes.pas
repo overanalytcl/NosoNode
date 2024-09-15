@@ -64,17 +64,17 @@ function IsLegitNewNode(ThisNode: TMNode; block: Integer): Boolean;
 function CheckMNReport(LineText: String; block: Integer): String;
 function GetMNodeFromString(const StringData: String; out ToMNode: TMNode): Boolean;
 function GetStringFromMN(Node: TMNode): String;
-function FillMnsListArray(out LDataArray: TStringArray): Boolean;
+function PopulateMasternodeList(out LDataArray: TStringArray): Boolean;
 function GetMNsAddresses(Block: Integer): String;
 procedure CreditMNVerifications();
 
-function GetMNsChecksCount(): Integer;
+function GetMasternodeCheckCount(): Integer;
 function GetValidNodesCountOnCheck(StringNodes: String): Integer;
 function GetMNCheckFromString(Linea: String): TMNCheck;
 procedure ClearMNsChecks();
 function MnsCheckExists(Ip: String): Boolean;
 procedure AddMNCheck(ThisData: TMNCheck);
-function GetStringFromMNCheck(Data: TMNCheck): String;
+function FormatMasternodeCheck(Data: TMNCheck): String;
 function IsMyMNCheckDone(): Boolean;
 
 procedure SetMNsHash();
@@ -103,12 +103,12 @@ var
 
   MNsListCopy: array of TMnode;
   CurrSynctus: String;
-  LocalMN_IP: String = '';
-  LocalMN_Port: String = '8080';
-  LocalMN_Sign: String = '';
-  LocalMN_Funds: String = '';
-  LocalMN_Public: String = '';
-  LocalMN_Private: String = '';
+  LocalMasternodeIP: String = '';
+  LocalMasternodePort: String = '8080';
+  LocalMasternodeSignature: String = '';
+  LocalMasternodeFunds: String = '';
+  LocalMasternodePublicKey: String = '';
+  LocalMasternodePrivateKey: String = '';
   UnconfirmedIPs: Integer;
 
   MyMNsHash: String = '';
@@ -126,7 +126,7 @@ var
   ArrayIPsProcessed: array of String;
   CSMNsIPProc: TRTLCriticalSection;
 
-  ArrMNChecks: array of TMNCheck;
+  MasternodeChecks: array of TMNCheck;
   CSMNsChecks: TRTLCriticalSection;
 
   ArrayMNsData: array of TMNsData;
@@ -152,14 +152,14 @@ end;
 
 procedure SetLocalIP(NewValue: String);
 begin
-  LocalMN_IP := NewValue;
+  LocalMasternodeIP := NewValue;
 end;
 
 procedure SetMN_Sign(SignAddress, lPublicKey, lPrivateKey: String);
 begin
-  LocalMN_Sign := SignAddress;
-  LocalMN_Public := lPublicKey;
-  LocalMN_Private := lPrivateKey;
+  LocalMasternodeSignature := SignAddress;
+  LocalMasternodePublicKey := lPublicKey;
+  LocalMasternodePrivateKey := lPrivateKey;
 end;
 
 // Returns the string to send the own MN report
@@ -167,10 +167,10 @@ function GetMNReportString(block: Integer): String;
 begin
   // {5}IP 6{Port} 7{SignAddress} 8{FundsAddress} 9{FirstBlock} 10{LastVerified}
   //    11{TotalVerified} 12{BlockVerifys} 13{hash}
-  Result := LocalMN_IP + ' ' + LocalMN_Port + ' ' + LocalMN_Sign +
-    ' ' + LocalMN_Funds + ' ' + block.ToString + ' ' + block.ToString +
-    ' ' + '0' + ' ' + '0' + ' ' + HashMD5String(LocalMN_IP + LocalMN_Port +
-    LocalMN_Sign + LocalMN_Funds);
+  Result := LocalMasternodeIP + ' ' + LocalMasternodePort + ' ' + LocalMasternodeSignature +
+    ' ' + LocalMasternodeFunds + ' ' + block.ToString + ' ' + block.ToString +
+    ' ' + '0' + ' ' + '0' + ' ' + HashMD5String(LocalMasternodeIP + LocalMasternodePort +
+    LocalMasternodeSignature + LocalMasternodeFunds);
 end;
 
 {$REGION ThreadVerificator}
@@ -236,7 +236,7 @@ begin
         // Was not possitive
       end;
     end;
-    if GetParameter(Linea, 3) <> LocalMN_IP then Inc(UnconfirmedIPs);
+    if GetParameter(Linea, 3) <> LocalMasternodeIP then Inc(UnconfirmedIPs);
   except
     on E: Exception do
     begin
@@ -296,15 +296,15 @@ begin
     sleep(100);
     Inc(WaitCycles);
   until ((VerifyThreadsCount = 0) or (WaitCycles = 250));
-  //ToDeepDeb(Format('MNs verification finish: %d launched, %d Open, %d cycles',[Launched,VerifyThreadsCount,WaitCycles ]));
-  //ToDeepDeb(Format('Unconfirmed IPs: %d',[UnconfirmedIPs ]));
+  //ToDeepDebug(Format('MNs verification finish: %d launched, %d Open, %d cycles',[Launched,VerifyThreadsCount,WaitCycles ]));
+  //ToDeepDebug(Format('Unconfirmed IPs: %d',[UnconfirmedIPs ]));
   if VerifyThreadsCount > 0 then
   begin
     EnterCriticalSection(CSVerifyThread);
     OpenVerificators := 0;
     LeaveCriticalSection(CSVerifyThread);
   end;
-  Result := LocalIP + ' ' + Block.ToString + ' ' + LocalMN_Sign +
+  Result := LocalIP + ' ' + Block.ToString + ' ' + LocalMasternodeSignature +
     ' ' + publicK + ' ' + VerifiedNodes + ' ' + GetStringSigned(VerifiedNodes, privateK);
   EndPerformance('RunMNVerification');
 end;
@@ -494,7 +494,7 @@ begin
 end;
 
 // Fills the given array with the nodes reports to be sent to another peer
-function FillMnsListArray(out LDataArray: TStringArray): Boolean;
+function PopulateMasternodeList(out LDataArray: TStringArray): Boolean;
 var
   ThisLine: String;
   counter: Integer;
@@ -522,7 +522,7 @@ var
   Resultado: String = '';
   AddAge: String = '';
 begin
-  MinValidations := (GetMNsChecksCount div 2) - 1;
+  MinValidations := (GetMasternodeCheckCount div 2) - 1;
   Resultado := Block.ToString + ' ';
   EnterCriticalSection(CSMNsList);
   for counter := 0 to length(MNsList) - 1 do
@@ -564,9 +564,9 @@ var
 begin
   EnterCriticalSection(CSMNsList);
   EnterCriticalSection(CSMNsChecks);
-  for counter := 0 to length(ArrMNChecks) - 1 do
+  for counter := 0 to length(MasternodeChecks) - 1 do
   begin
-    NodesString := ArrMNChecks[counter].ValidNodes;
+    NodesString := MasternodeChecks[counter].ValidNodes;
     NodesString := StringReplace(NodesString, ':', ' ', [rfReplaceAll]);
     CheckNodes := 0;
     IPIndex := 0;
@@ -583,7 +583,7 @@ begin
         Inc(IPIndex);
       end;
     until ThisIP = '';
-    //ToLog('Console',ArrMNChecks[counter].ValidatorIP+': '+Checknodes.ToString);
+    //ToLog('Console',MasternodeChecks[counter].ValidatorIP+': '+Checknodes.ToString);
   end;
   LeaveCriticalSection(CSMNsChecks);
   LeaveCriticalSection(CSMNsList);
@@ -594,10 +594,10 @@ end;
 {$REGION MNs check handling}
 
 // Returns the number of MNs checks
-function GetMNsChecksCount(): Integer;
+function GetMasternodeCheckCount(): Integer;
 begin
   EnterCriticalSection(CSMNsChecks);
-  Result := Length(ArrMNChecks);
+  Result := Length(MasternodeChecks);
   LeaveCriticalSection(CSMNsChecks);
 end;
 
@@ -634,7 +634,7 @@ end;
 procedure ClearMNsChecks();
 begin
   EnterCriticalSection(CSMNsChecks);
-  SetLength(ArrMNChecks, 0);
+  SetLength(MasternodeChecks, 0);
   LeaveCriticalSection(CSMNsChecks);
 end;
 
@@ -645,9 +645,9 @@ var
 begin
   Result := False;
   EnterCriticalSection(CSMNsChecks);
-  for counter := 0 to length(ArrMNChecks) - 1 do
+  for counter := 0 to length(MasternodeChecks) - 1 do
   begin
-    if ArrMNChecks[counter].ValidatorIP = IP then
+    if MasternodeChecks[counter].ValidatorIP = IP then
     begin
       Result := True;
       break;
@@ -660,11 +660,11 @@ end;
 procedure AddMNCheck(ThisData: TMNCheck);
 begin
   EnterCriticalSection(CSMNsChecks);
-  Insert(ThisData, ArrMNChecks, Length(ArrMNChecks));
+  Insert(ThisData, MasternodeChecks, Length(MasternodeChecks));
   LeaveCriticalSection(CSMNsChecks);
 end;
 
-function GetStringFromMNCheck(Data: TMNCheck): String;
+function FormatMasternodeCheck(Data: TMNCheck): String;
 begin
   Result := Data.ValidatorIP + ' ' + IntToStr(Data.Block) + ' ' +
     Data.SignAddress + ' ' + Data.PubKey + ' ' + Data.ValidNodes + ' ' + Data.Signature;
@@ -676,9 +676,9 @@ var
 begin
   Result := False;
   EnterCriticalSection(CSMNsChecks);
-  for counter := 0 to length(ArrMNChecks) - 1 do
+  for counter := 0 to length(MasternodeChecks) - 1 do
   begin
-    if ArrMNChecks[counter].ValidatorIP = LocalMN_IP then
+    if MasternodeChecks[counter].ValidatorIP = LocalMasternodeIP then
     begin
       Result := True;
       break;
@@ -816,7 +816,7 @@ begin
   except
     on E: Exception do
     begin
-      ToDeepDeb('Nosomasternodes,LoadMNsFile,' + E.Message);
+      ToDeepDebug('Nosomasternodes,LoadMNsFile,' + E.Message);
     end;
   end {TRY};
   LeaveCriticalSection(CSMNsFile);
@@ -835,7 +835,7 @@ begin
   except
     on E: Exception do
     begin
-      ToDeepDeb('Nosomasternodes,SaveMNsFile,' + E.Message);
+      ToDeepDebug('Nosomasternodes,SaveMNsFile,' + E.Message);
       SetMN_FileText('');
     end;
   end {TRY};
@@ -909,7 +909,7 @@ begin
     end;
   except
     on E: Exception do
-      ToDeepDeb('Nosomasternodes,FillMNsArray,' + E.Message);
+      ToDeepDebug('Nosomasternodes,FillMNsArray,' + E.Message);
   end;
   EndPerformance('FillMNsArray');
 end;
@@ -934,7 +934,7 @@ initialization
   SetLength(MNsListCopy, 0);
   SetLength(MNsList, 0);
   SetLength(ArrayIPsProcessed, 0);
-  SetLength(ArrMNChecks, 0);
+  SetLength(MasternodeChecks, 0);
   SetLength(ArrayMNsData, 0);
   Setlength(ArrWaitMNs, 0);
   Setlength(ArrReceivedMNs, 0);

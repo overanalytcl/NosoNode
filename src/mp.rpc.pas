@@ -660,7 +660,7 @@ begin
       if thisblock <> '' then
       begin
         if ((StrToIntDef(thisblock, -1) >= 0) and
-          (StrToIntDef(thisblock, -1) <= MyLastblock)) then
+          (StrToIntDef(thisblock, -1) <= LastBlockIndex)) then
         begin
           Result := Result + 'blockinfo'#127'true'#127 + GetBlockHeaders(
             StrToIntDef(thisblock, -1)) + ' ';
@@ -722,7 +722,7 @@ end;
 function RPC_BlockOrders(NosoPParams: String): String;
 var
   blocknumber: Integer;
-  ArraTrxs: TBlockOrdersArray;
+  ArraTrxs: TBlockOrders;
   counter: Integer;
   Thisorderinfo: String;
   arrayOrds: array of TOrderGroup;
@@ -760,7 +760,7 @@ var
       arrayords[length(arrayords) - 1].AmmountTrf := order.AmountTransferred;
       arrayords[length(arrayords) - 1].AmmountFee := order.AmountFee;
       arrayords[length(arrayords) - 1].Reference := order.Reference;
-      if order.OrderLines = 1 then
+      if order.OrderLineCount = 1 then
         arrayords[length(arrayords) - 1].Sender := order.Sender
       else
         arrayords[length(arrayords) - 1].Sender := arrayords[length(arrayords) - 1].Sender +
@@ -773,11 +773,11 @@ begin
   Result := '';
   setlength(arrayOrds, 0);
   blocknumber := StrToIntDef(NosoPParams, -1);
-  if ((blocknumber < 0) or (blocknumber > MyLastblock)) then
+  if ((blocknumber < 0) or (blocknumber > LastBlockIndex)) then
     Result := 'blockorder'#127'false'#127 + NosoPParams + #127'0'
   else
   begin
-    ArraTrxs := GetBlockTrxs(BlockNumber);
+    ArraTrxs := GetBlockTransfers(BlockNumber);
     Result := 'blockorder'#127'true'#127 + NosoPParams + #127;
     if length(ArraTrxs) > 0 then
     begin
@@ -853,7 +853,7 @@ begin
   BeginPerformance('RPC_Blockmns');
   Result := '';
   blocknumber := StrToIntDef(NosoPParams, -1);
-  if ((blocknumber < 48010) or (blocknumber > MyLastblock)) then
+  if ((blocknumber < 48010) or (blocknumber > LastBlockIndex)) then
     Result := 'blockmns'#127'false'#127 + NosoPParams + #127'0'#127'0'#127'0'
   else
   begin

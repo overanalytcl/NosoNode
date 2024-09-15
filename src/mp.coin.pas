@@ -51,19 +51,19 @@ var
 begin
   Result := 0;
   if Address = '' then exit;
-  if GetPendingCount > 0 then
+  if GetPendingTransactionCount > 0 then
   begin
-    EnterCriticalSection(CSPending);
+    EnterCriticalSection(CSPendingTransactions);
     SetLength(CopyPendings, 0);
-    CopyPendings := copy(ArrayPoolTXs, 0, length(ArrayPoolTXs));
-    LeaveCriticalSection(CSPending);
+    CopyPendings := copy(PendingTransactionsPool, 0, length(PendingTransactionsPool));
+    LeaveCriticalSection(CSPendingTransactions);
     for cont := 0 to length(CopyPendings) - 1 do
     begin
       if address = CopyPendings[cont].address then
         Result := Result + CopyPendings[cont].AmountFee + CopyPendings[cont].AmountTransferred;
     end;
   end;
-  if MyLastBlock >= Update050Block then
+  if LastBlockIndex >= Update050Block then
     if IsLockedMN(Address) then Inc(Result, 1050000000000);
 end;
 
@@ -74,30 +74,30 @@ var
   CopyPendings: array of TOrderData;
 begin
   Result := 0;
-  if GetPendingCount > 0 then
+  if GetPendingTransactionCount > 0 then
   begin
-    EnterCriticalSection(CSPending);
+    EnterCriticalSection(CSPendingTransactions);
     SetLength(CopyPendings, 0);
-    CopyPendings := copy(ArrayPoolTXs, 0, length(ArrayPoolTXs));
-    LeaveCriticalSection(CSPending);
+    CopyPendings := copy(PendingTransactionsPool, 0, length(PendingTransactionsPool));
+    LeaveCriticalSection(CSPendingTransactions);
     for cont := 0 to length(CopyPendings) - 1 do
     begin
-      if address = ArrayPoolTXs[cont].receiver then
-        Result := Result + ArrayPoolTXs[cont].AmountTransferred;
+      if address = PendingTransactionsPool[cont].receiver then
+        Result := Result + PendingTransactionsPool[cont].AmountTransferred;
     end;
   end;
 end;
 
 {
 //Devuelve si una transaccion ya se encuentra pendiente
-function TranxAlreadyPending(TrxHash:string):boolean;
+function TransactionAlreadyPending(TrxHash:string):boolean;
 var
   cont : integer;
 Begin
 Result := false;
-for cont := 0 to GetPendingCount-1 do
+for cont := 0 to GetPendingTransactionCount-1 do
    begin
-   if TrxHash = ArrayPoolTXs[cont].TrfrID then
+   if TrxHash = PendingTransactionsPool[cont].TrfrID then
       begin
       result := true;
       break;
@@ -108,14 +108,14 @@ End;
 
 {
 // Devuelve si una transaccion existe en el ultimo bloque
-function TrxExistsInLastBlock(trfrhash:String):boolean;
+function TransferExistsInLastBlock(trfrhash:String):boolean;
 var
-  ArrayLastBlockTrxs : TBlockOrdersArray;
+  ArrayLastBlockTrxs : TBlockOrders;
   cont : integer;
 Begin
 Result := false;
-ArrayLastBlockTrxs := Default(TBlockOrdersArray);
-ArrayLastBlockTrxs := GetBlockTrxs(MyLastBlock);
+ArrayLastBlockTrxs := Default(TBlockOrders);
+ArrayLastBlockTrxs := GetBlockTransfers(LastBlockIndex);
 for cont := 0 to length(ArrayLastBlockTrxs)-1 do
    begin
    if ArrayLastBlockTrxs[cont].TrfrID = trfrhash then
@@ -132,15 +132,15 @@ End;
 function GetLastPendingTime():int64;
 Begin
   result := 0;
-  EnterCriticalSection(CSPending);
-  if length(ArrayPoolTXs) > 0 then result := ArrayPoolTXs[length(ArrayPoolTXs)-1].TimeStamp;
-  LeaveCriticalSection(CSPending);
+  EnterCriticalSection(CSPendingTransactions);
+  if length(PendingTransactionsPool) > 0 then result := PendingTransactionsPool[length(PendingTransactionsPool)-1].TimeStamp;
+  LeaveCriticalSection(CSPendingTransactions);
 End;
 }
 
 {
 // Añade la transaccion pendiente en su lugar
-function AddArrayPoolTXs(order:TOrderData):boolean;
+function AddTransactionToPool(order:TOrderData):boolean;
 var
   cont : integer = 0;
   insertar : boolean = false;
@@ -149,30 +149,30 @@ Begin
 BeginPerformance('AddArrayPoolTXs');
 //if order.OrderType='FEE' then exit;
 if order.TimeStamp < LastBlockData.TimeStart then exit;
-if TrxExistsInLastBlock(order.TrfrID) then exit;
+if TransferExistsInLastBlock(order.TrfrID) then exit;
 if ((BlockAge>585) and (order.TimeStamp < LastBlockData.TimeStart+540) ) then exit;
-if not TranxAlreadyPending(order.TrfrID) then
+if not TransactionAlreadyPending(order.TrfrID) then
    begin
-   EnterCriticalSection(CSPending);
-   while cont < length(ArrayPoolTXs) do
+   EnterCriticalSection(CSPendingTransactions);
+   while cont < length(PendingTransactionsPool) do
      begin
-     if order.TimeStamp < ArrayPoolTXs[cont].TimeStamp then
+     if order.TimeStamp < PendingTransactionsPool[cont].TimeStamp then
         begin
         insertar := true;
         resultado := cont;
         break;
         end
-     else if order.TimeStamp = ArrayPoolTXs[cont].TimeStamp then
+     else if order.TimeStamp = PendingTransactionsPool[cont].TimeStamp then
         begin
-        if order.OrderID < ArrayPoolTXs[cont].OrderID then
+        if order.OrderID < PendingTransactionsPool[cont].OrderID then
            begin
            insertar := true;
            resultado := cont;
            break;
            end
-        else if order.OrderID = ArrayPoolTXs[cont].OrderID then
+        else if order.OrderID = PendingTransactionsPool[cont].OrderID then
            begin
-           if order.TrxLine < ArrayPoolTXs[cont].TrxLine then
+           if order.TrxLine < PendingTransactionsPool[cont].TransferLine then
               begin
               insertar := true;
               resultado := cont;
@@ -182,9 +182,9 @@ if not TranxAlreadyPending(order.TrfrID) then
         end;
      cont := cont+1;
      end;
-   if not insertar then resultado := length(ArrayPoolTXs);
-   Insert(order,ArrayPoolTXs,resultado);
-   LeaveCriticalSection(CSPending);
+   if not insertar then resultado := length(PendingTransactionsPool);
+   Insert(order,PendingTransactionsPool,resultado);
+   LeaveCriticalSection(CSPendingTransactions);
    result := true;
    VerifyIfPendingIsMine(order);
    end;
@@ -222,9 +222,9 @@ var
 begin
   Result := False;
   if GetAddressAlias(address) <> '' then Exit(True);
-  for cont := 0 to GetPendingCount - 1 do
-    if ((ArrayPoolTXs[cont].Address = address) and
-      (ArrayPoolTXs[cont].OrderType = 'CUSTOM')) then
+  for cont := 0 to GetPendingTransactionCount - 1 do
+    if ((PendingTransactionsPool[cont].Address = address) and
+      (PendingTransactionsPool[cont].OrderType = 'CUSTOM')) then
       exit(True);
 end;
 
@@ -240,10 +240,10 @@ begin
     Result := True;
     exit;
   end;
-  for counter := 0 to GetPendingCount - 1 do
+  for counter := 0 to GetPendingTransactionCount - 1 do
   begin
-    if ((ArrayPoolTXs[counter].reference = NumberStr) and
-      (ArrayPoolTXs[counter].OrderType = 'SNDGVT')) then
+    if ((PendingTransactionsPool[counter].reference = NumberStr) and
+      (PendingTransactionsPool[counter].OrderType = 'SNDGVT')) then
     begin
       Result := True;
       break;
@@ -259,9 +259,9 @@ var
 begin
   Result := False;
   if GetIndexPosition(AddAlias, LRecord, True) >= 0 then Exit(True);
-  for cont := 0 to GetPendingCount - 1 do
-    if ((ArrayPoolTXs[cont].OrderType = 'CUSTOM') and
-      (ArrayPoolTXs[cont].Receiver = Addalias)) then
+  for cont := 0 to GetPendingTransactionCount - 1 do
+    if ((PendingTransactionsPool[cont].OrderType = 'CUSTOM') and
+      (PendingTransactionsPool[cont].Receiver = Addalias)) then
       Exit(True);
 end;
 
@@ -291,11 +291,11 @@ begin
   if montotrfr < 0 then montotrfr := 0;
   OrderInfo := Default(TOrderData);
   OrderInfo.OrderID := '';
-  OrderInfo.OrderLines := 1;
+  OrderInfo.OrderLineCount := 1;
   OrderInfo.OrderType := 'TRFR';
   OrderInfo.TimeStamp := StrToInt64(OrderTime);
   OrderInfo.reference := reference;
-  OrderInfo.TrxLine := linea;
+  OrderInfo.TransferLine := linea;
   OrderInfo.Sender := GetWallArrIndex(WallAddIndex(origen)).PublicKey;
   OrderInfo.Address := GetWallArrIndex(WallAddIndex(origen)).Hash;
   OrderInfo.Receiver := Destino;
@@ -305,7 +305,7 @@ begin
     IntToStr(comisiontrfr) + IntToStr(linea),
     GetWallArrIndex(WallAddIndex(origen)).PrivateKey);
   OrderInfo.TransferId := GetTransferHash(ordertime + origen + destino +
-    IntToStr(monto) + IntToStr(MyLastblock));
+    IntToStr(monto) + IntToStr(LastBlockIndex));
   Result := OrderInfo;
   EndPerformance('SendFundsFromAddress');
 end;
@@ -319,27 +319,27 @@ var
 begin
   MontoIncoming := 0;
   MontoOutgoing := 0;
-  if GetPendingCount = 0 then
+  if GetPendingTransactionCount = 0 then
   begin
     form1.ImageInc.Visible := False;
     form1.ImageOut.Visible := False;
   end
   else
   begin
-    for counter := 0 to GetPendingCount - 1 do
+    for counter := 0 to GetPendingTransactionCount - 1 do
     begin
-      DireccionEnvia := ArrayPoolTXs[counter].Address;
+      DireccionEnvia := PendingTransactionsPool[counter].Address;
       AddIndex := WallAddIndex(DireccionEnvia);
       if AddIndex >= 0 then
       begin
-        MontoOutgoing := MontoOutgoing + ArrayPoolTXs[counter].AmountFee +
-          ArrayPoolTXs[counter].AmountTransferred;
+        MontoOutgoing := MontoOutgoing + PendingTransactionsPool[counter].AmountFee +
+          PendingTransactionsPool[counter].AmountTransferred;
         SetPendingForAddress(AddIndex, GetWallArrIndex(AdDIndex).Pending +
-          ArrayPoolTXs[counter].AmountFee + ArrayPoolTXs[counter].AmountTransferred);
-        //WalletArray[WallAddIndex(DireccionEnvia)].Pending:=WalletArray[WallAddIndex(DireccionEnvia)].Pending+ArrayPoolTXs[counter].AmountFee+ArrayPoolTXs[counter].AmountTransferred;
+          PendingTransactionsPool[counter].AmountFee + PendingTransactionsPool[counter].AmountTransferred);
+        //WalletArray[WallAddIndex(DireccionEnvia)].Pending:=WalletArray[WallAddIndex(DireccionEnvia)].Pending+PendingTransactionsPool[counter].AmountFee+PendingTransactionsPool[counter].AmountTransferred;
       end;
-      if WallAddIndex(ArrayPoolTXs[counter].Receiver) >= 0 then
-        MontoIncoming := MontoIncoming + ArrayPoolTXs[counter].AmountTransferred;
+      if WallAddIndex(PendingTransactionsPool[counter].Receiver) >= 0 then
+        MontoIncoming := MontoIncoming + PendingTransactionsPool[counter].AmountTransferred;
     end;
     if MontoIncoming > 0 then form1.ImageInc.Visible := True
     else
@@ -438,12 +438,12 @@ var
   ThisPending: String;
 begin
   Result := '';
-  if Length(ArrayPoolTXs) > 0 then
+  if Length(PendingTransactionsPool) > 0 then
   begin
-    EnterCriticalSection(CSPending);
+    EnterCriticalSection(CSPendingTransactions);
     SetLength(CopyArrayPoolTXs, 0);
-    CopyArrayPoolTXs := copy(ArrayPoolTXs, 0, length(ArrayPoolTXs));
-    LeaveCriticalSection(CSPending);
+    CopyArrayPoolTXs := copy(PendingTransactionsPool, 0, length(PendingTransactionsPool));
+    LeaveCriticalSection(CSPendingTransactions);
     for counter := 0 to Length(CopyArrayPoolTXs) - 1 do
     begin
       if ForRPC then
@@ -476,19 +476,19 @@ end;
 
 {
 // Returns the length of the pending transactions array safely
-Function GetPendingCount():integer;
+Function GetPendingTransactionCount():integer;
 Begin
-EnterCriticalSection(CSPending);
-result := Length(ArrayPoolTXs);
-LeaveCriticalSection(CSPending);
+EnterCriticalSection(CSPendingTransactions);
+result := Length(PendingTransactionsPool);
+LeaveCriticalSection(CSPendingTransactions);
 End;
 
 // Clear the pending transactions array safely
-Procedure ClearAllPending();
+Procedure ClearAllPendingTransactions();
 Begin
-EnterCriticalSection(CSPending);
-SetLength(ArrayPoolTXs,0);
-LeaveCriticalSection(CSPending);
+EnterCriticalSection(CSPendingTransactions);
+SetLength(PendingTransactionsPool,0);
+LeaveCriticalSection(CSPendingTransactions);
 End;
 }
 

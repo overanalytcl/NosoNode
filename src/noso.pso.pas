@@ -239,7 +239,7 @@ begin
     end;
   except
     ON E: Exception do
-      ToDeepDeb('nosopsos,SavePSOFileToDisk,' + e.Message);
+      ToDeepDebug('nosopsos,SavePSOFileToDisk,' + e.Message);
   end;
   LeaveCriticalSection(CS_PSOsArray);
   SavePSOsToFile(MyStream);
@@ -272,7 +272,7 @@ begin
   except
     ON E: Exception do
     begin
-      ToDeepDeb('nosopsos,SavePSOsToFile,' + e.Message);
+      ToDeepDebug('nosopsos,SavePSOsToFile,' + e.Message);
     end;
   end{Try};
   LeaveCriticalSection(CS_PSOFile);

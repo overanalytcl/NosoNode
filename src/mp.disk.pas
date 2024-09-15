@@ -140,7 +140,7 @@ begin
   }
   OutText('✓ Wallet file ok', False, 1);
 
-  FillNodeList;  // Fills the hardcoded seed nodes list
+  PopulateNodeList;  // Fills the hardcoded seed nodes list
 
   if not Fileexists(SummaryFileName) then
     CreateNewSummaryFile(FileExists(BlockDirectory + '0.blk'));
@@ -156,8 +156,8 @@ begin
     CreateOrderIDIndex;
   end;
   if not FileExists(BlockDirectory + '0.blk') then CrearBloqueCero();
-  MyLastBlock := GetMyLastUpdatedBlock;
-  OutText('✓ My last block verified: ' + MyLastBlock.ToString, False, 1);
+  LastBlockIndex := GetMyLastUpdatedBlock;
+  OutText('✓ My last block verified: ' + LastBlockIndex.ToString, False, 1);
 
   UpdateWalletFromSumario();
   OutText('✓ Wallet updated', False, 1);
@@ -174,7 +174,7 @@ end;
 
 {
 // Fills hardcoded seed nodes list
-Procedure FillNodeList(); // 0.2.1Lb2 revisited
+Procedure PopulateNodeList(); // 0.2.1Lb2 revisited
 var
   counter : integer;
   ThisNode : string = '';
@@ -278,14 +278,14 @@ begin
     writeln(FileAdvOptions, '//Download the complete blockchain');
     writeln(FileAdvOptions, 'WO_FullNode ' + BoolToStr(WO_FullNode, True));
     writeln(FileAdvOptions, '//Masternode static IP');
-    writeln(FileAdvOptions, 'MNIP ' + (LocalMN_IP));
+    writeln(FileAdvOptions, 'MNIP ' + (LocalMasternodeIP));
     writeln(FileAdvOptions, '//Masternode port');
-    writeln(FileAdvOptions, 'MNPort ' + (LocalMN_Port));
+    writeln(FileAdvOptions, 'MNPort ' + (LocalMasternodePort));
     writeln(FileAdvOptions, '//Masternode funds address');
-    writeln(FileAdvOptions, 'MNFunds ' + (LocalMN_Funds));
-    if LocalMN_Sign = '' then LocalMN_Sign := GetWallArrIndex(0).Hash;
+    writeln(FileAdvOptions, 'MNFunds ' + (LocalMasternodeFunds));
+    if LocalMasternodeSignature = '' then LocalMasternodeSignature := GetWallArrIndex(0).Hash;
     writeln(FileAdvOptions, '//Masternode sign address');
-    writeln(FileAdvOptions, 'MNSign ' + LocalMN_Sign);
+    writeln(FileAdvOptions, 'MNSign ' + LocalMasternodeSignature);
     writeln(FileAdvOptions, '//Use automatic IP detection for masternode');
     writeln(FileAdvOptions, 'MNAutoIp ' + BoolToStr(MN_AutoIP, True));
     writeln(FileAdvOptions, '');
@@ -393,10 +393,10 @@ begin
         end;
       end;
 
-      if GetParameter(linea, 0) = 'MNIP' then LocalMN_IP := GetParameter(linea, 1);
-      if GetParameter(linea, 0) = 'MNPort' then LocalMN_Port := GetParameter(linea, 1);
-      if GetParameter(linea, 0) = 'MNFunds' then LocalMN_Funds := GetParameter(linea, 1);
-      if GetParameter(linea, 0) = 'MNSign' then LocalMN_Sign := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'MNIP' then LocalMasternodeIP := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'MNPort' then LocalMasternodePort := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'MNFunds' then LocalMasternodeFunds := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'MNSign' then LocalMasternodeSignature := GetParameter(linea, 1);
       if GetParameter(linea, 0) = 'MNAutoIp' then
         MN_AutoIP := StrToBool(GetParameter(linea, 1));
       if GetParameter(linea, 0) = 'WO_FullNode' then
@@ -539,7 +539,7 @@ var
   TimeDuration: Int64;
 begin
   CreateNewSummaryFile(FileExists(BlockDirectory + '0.blk'));
-  for counter := 1 to MylastBlock do
+  for counter := 1 to LastBlockIndex do
   begin
     AddBlockToSumary(counter, False);
     if counter mod 100 = 0 then
@@ -551,7 +551,7 @@ begin
     end;
   end;
   UpdateSummaryChanges;
-  UpdateMyData();
+  UpdateNodeData();
   CreateSumaryIndex;
   TimeDuration := EndPerformance('RebuildSummary');
   ToLog('console', format('Sumary rebuild time: %d ms', [TimeDuration]));
@@ -596,7 +596,7 @@ begin
   if copy(MySumarioHash, 0, 5) = GetConsensus(17) then exit;
   RebuildingSumary := True;
   StartBlock := SummaryLastop + 1;
-  finishblock := Mylastblock;
+  finishblock := LastBlockIndex;
   ToLog('console', 'Complete summary');
   for counter := StartBlock to finishblock do
   begin
@@ -611,7 +611,7 @@ begin
   end;
   SummaryLastop := finishblock;
   RebuildingSumary := False;
-  UpdateMyData();
+  UpdateNodeData();
   ZipSumary;
   ToLog('console', format('Summary completed from %d to %d (%s)',
     [StartBlock - 1, finishblock, Copy(MySumarioHash, 0, 5)]));
@@ -623,7 +623,7 @@ procedure AddBlockToSumary(BlockNumber: Integer; SaveAndUpdate: Boolean = True);
 var
   cont: Integer;
   BlockHeader: BlockHeaderData;
-  ArrayOrders: TBlockOrdersArray;
+  ArrayOrders: TBlockOrders;
   ArrayPos: BlockArraysPos;
   ArrayMNs: BlockArraysPos;
   PosReward: Int64 = 0;
@@ -639,8 +639,8 @@ begin
   if SaveAndUpdate then ResetBlockRecords;
   CreditTo(BlockHeader.AccountMiner, BlockHeader.Reward + BlockHeader.MinerFee,
     BlockNumber);
-  ArrayOrders := Default(TBlockOrdersArray);
-  ArrayOrders := GetBlockTrxs(BlockNumber);
+  ArrayOrders := Default(TBlockOrders);
+  ArrayOrders := GetBlockTransfers(BlockNumber);
   for cont := 0 to length(ArrayOrders) - 1 do
   begin
     if ArrayOrders[cont].OrderType = 'CUSTOM' then

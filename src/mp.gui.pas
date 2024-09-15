@@ -112,7 +112,7 @@ end;
 procedure TFormSlots.GridMSlotsPrepareCanvas(Sender: TObject;
   aCol, aRow: Integer; aState: TGridDrawState);
 begin
-  if ((Arow > 0) and (GetConexIndex(Arow).IsBusy)) then
+  if ((Arow > 0) and (GetConnectionData(Arow).IsBusy)) then
   begin
     (Sender as TStringGrid).Canvas.Brush.Color := clmoneygreen;
   end;
@@ -141,7 +141,7 @@ begin
   GridMSlots.Width := 894;
   GridMSlots.FixedCols := 0;
   GridMSlots.FixedRows := 1;
-  GridMSlots.rowcount := MaxConecciones + 1;
+  GridMSlots.rowcount := MaxConnections + 1;
   GridMSlots.ColCount := 23;
   GridMSlots.ScrollBars := ssVertical;
   GridMSlots.FocusRectVisible := False;
@@ -201,39 +201,39 @@ procedure UpdateSlotsGrid();
 var
   counter: Integer;
   CurrentUTC: Int64;
-  LConex: Tconectiondata;
+  LConex: TConnectionData;
 begin
   if WO_StopGUI then exit;
   BeginPerformance('UpdateSlotsGrid');
   CurrentUTC := UTCTime;
   if CurrentUTC > SlotsLastUpdate then
   begin
-    for counter := 1 to MaxConecciones do
+    for counter := 1 to MaxConnections do
     begin
-      LConex := GetConexIndex(counter);
+      LConex := GetConnectionData(counter);
       GridMSlots.Cells[0, counter] := IntToStr(counter);
-      GridMSlots.Cells[1, counter] := LConex.ip;
-      GridMSlots.Cells[2, counter] := LConex.tipo;
-      GridMSlots.Cells[3, counter] := IntToStr(LConex.Connections);
-      GridMSlots.Cells[4, counter] := LConex.Lastblock;
-      GridMSlots.Cells[5, counter] := copy(LConex.LastblockHash, 0, 5);
-      GridMSlots.Cells[6, counter] := copy(LConex.SumarioHash, 0, 5);
-      GridMSlots.Cells[7, counter] := IntToStr(LConex.Pending);
-      GridMSlots.Cells[8, counter] := IntToStr(LConex.Protocol);
-      GridMSlots.Cells[9, counter] := LConex.Version;
+      GridMSlots.Cells[1, counter] := LConex.IpAddress;
+      GridMSlots.Cells[2, counter] := LConex.ConnectionType;
+      GridMSlots.Cells[3, counter] := IntToStr(LConex.ActiveConnections);
+      GridMSlots.Cells[4, counter] := LConex.LastBlockNumber;
+      GridMSlots.Cells[5, counter] := copy(LConex.LastBlockHash, 0, 5);
+      GridMSlots.Cells[6, counter] := copy(LConex.SummaryHash, 0, 5);
+      GridMSlots.Cells[7, counter] := IntToStr(LConex.PendingOperations);
+      GridMSlots.Cells[8, counter] := IntToStr(LConex.ProtocolVersion);
+      GridMSlots.Cells[9, counter] := LConex.ClientVersion;
       GridMSlots.Cells[10, counter] := IntToStr(LConex.ListeningPort);
-      GridMSlots.Cells[11, counter] := IntToStr(LConex.offset);
-      GridMSlots.Cells[12, counter] := copy(LConex.ResumenHash, 0, 5);
-      GridMSlots.Cells[13, counter] := IntToStr(LConex.ConexStatus);
+      GridMSlots.Cells[11, counter] := IntToStr(LConex.TimeOffset);
+      GridMSlots.Cells[12, counter] := copy(LConex.SummaryBlockHash, 0, 5);
+      GridMSlots.Cells[13, counter] := IntToStr(LConex.ConnectionStatus);
       GridMSlots.Cells[14, counter] :=
-        IntToStr(UTCTime - StrToInt64Def(LConex.lastping, UTCTime));
-      GridMSlots.Cells[15, counter] := LConex.MNsHash;
-      GridMSlots.Cells[16, counter] := IntToStr(LConex.MNsCount);
-      GridMSlots.Cells[17, counter] := LConex.BestHashDiff;
-      GridMSlots.Cells[18, counter] := LConex.MNChecksCount.ToString;
-      GridMSlots.Cells[19, counter] := copy(LConex.GVTsHash, 0, 5);
-      GridMSlots.Cells[20, counter] := LConex.CFGHash;
-      GridMSlots.Cells[21, counter] := copy(LConex.MerkleHash, 0, 5);
+        IntToStr(UTCTime - StrToInt64Def(LConex.LastPingTime, UTCTime));
+      GridMSlots.Cells[15, counter] := LConex.MasternodeShortHash;
+      GridMSlots.Cells[16, counter] := IntToStr(LConex.MasternodeCount);
+      GridMSlots.Cells[17, counter] := LConex.BestHashDifficulty;
+      GridMSlots.Cells[18, counter] := LConex.MasternodesChecksCount.ToString;
+      GridMSlots.Cells[19, counter] := copy(LConex.GVTHash, 0, 5);
+      GridMSlots.Cells[20, counter] := LConex.ConfigHash;
+      GridMSlots.Cells[21, counter] := copy(LConex.MerkleTreeHash, 0, 5);
       GridMSlots.Cells[22, counter] := copy(LConex.PSOHash, 0, 5);
     end;
     SlotsLastUpdate := CurrentUTC;
@@ -246,12 +246,12 @@ var
   counter: Integer;
 begin
   Result := '';
-  for counter := 1 to MaxConecciones do
+  for counter := 1 to MaxConnections do
   begin
-    if ((GetConexIndex(counter).ip <> '') and
-      (GetConexIndex(counter).ConexStatus >= 3)) then
+    if ((GetConnectionData(counter).IpAddress <> '') and
+      (GetConnectionData(counter).ConnectionStatus >= 3)) then
     begin
-      Result := Result + GetConexIndex(counter).ip + ' ';
+      Result := Result + GetConnectionData(counter).IpAddress + ' ';
     end;
   end;
   Trim(Result);
@@ -447,25 +447,25 @@ begin
       '/' + copy(GetConsensus(0), 0, 5);
     form1.DataPanel.Cells[1, 1] := NodeServerInfo;
     form1.DataPanel.Cells[1, 2] :=
-      IntToStr(GetTotalConexiones) + ' (' + IntToStr(MyConStatus) +
+      IntToStr(GetTotalConnections) + ' (' + IntToStr(MyConStatus) +
       ') [' + IntToStr(G_TotalPings) + ']';
     form1.DataPanel.Cells[1, 3] :=
       Format('%s / %s', [copy(GetResumenHash, 0, 5), GetConsensus(5)]);
     form1.DataPanel.Cells[1, 4] :=
       format('%s / %s', [Copy(MySumarioHash, 0, 5), GetConsensus(17)]);
     form1.DataPanel.Cells[1, 5] :=
-      format('%s / %s', [Copy(MyLastBlockHash, 0, 5), copy(GetConsensus(10), 0, 5)]);
-    form1.DataPanel.Cells[1, 6] := format('%d / %s', [MyLastBlock, GetConsensus(2)]);
+      format('%s / %s', [Copy(LastBlockHash, 0, 5), copy(GetConsensus(10), 0, 5)]);
+    form1.DataPanel.Cells[1, 6] := format('%d / %s', [LastBlockIndex, GetConsensus(2)]);
     form1.DataPanel.Cells[1, 7] :=
-      format('(%d)  %d/%s', [length(ArrayCriptoOp), GetPendingCount, GetConsensus(3)]);
+      format('(%d)  %d/%s', [length(ArrayCriptoOp), GetPendingTransactionCount, GetConsensus(3)]);
     form1.DataPanel.Cells[3, 0] :=
       format('[%d - %d] %s / %s', [GEtPSOHeaders.MNsLock, GetPSOHeaders.Count,
       Copy(PSOFileHash, 0, 5), GetConsensus(20)]);
     form1.DataPanel.Cells[3, 1] :=
       Format('[%s] %s Noso', [BlockAge.ToString, Copy(
-      IntToCurrency(GetBlockReward(Mylastblock + 1)), 0, 5)]);
+      IntToCurrency(GetBlockReward(LastBlockIndex + 1)), 0, 5)]);
     form1.DataPanel.Cells[3, 2] :=
-      GEtOutgoingconnections.ToString + '/' + GetClientReadThreads.ToString;
+      GEtOutgoingconnections.ToString + '/' + GetActiveClientReadThreadCount.ToString;
     form1.DataPanel.Cells[3, 3] := Format('%d (%d)', [GetDBLastBlock, GetDBRecords]);
     form1.DataPanel.Cells[3, 4] :=
       format('%s / %s', [Copy(GetCFGHash, 0, 5), GetConsensus(19)]);
@@ -474,7 +474,7 @@ begin
     form1.DataPanel.Cells[3, 6] :=
       format('%s / %s', [Copy(GetMNsHash, 0, 5), GetConsensus(8)]);
     form1.DataPanel.Cells[3, 7] :=
-      format('(%d)  %d/%s (%d)', [GetMNsChecksCount, GetMNsListLength,
+      format('(%d)  %d/%s (%d)', [GetMasternodeCheckCount, GetMNsListLength,
       GetConsensus(9), LengthWaitingMNs]);
     LastUpdateDataPanel := UTCTime;
   end;

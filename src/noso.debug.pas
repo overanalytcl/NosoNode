@@ -65,7 +65,7 @@ function CloseFileProcess(FiType, FiFile, FiPeer: String; TimeStamp: Int64): Int
 function GetFileProcessCopy(): TFileMCopy;
 
 procedure InitDeepDeb(LFileName: String; SysInfo: String = '');
-procedure ToDeepDeb(LLine: String);
+procedure ToDeepDebug(LLine: String);
 function GetDeepDebLine(out LineContent: String): Boolean;
 
 var
@@ -182,7 +182,7 @@ begin
     except
       on E: Exception do
       begin
-        ToDeepDeb('Nosodebug,InitializeLogFile,' + E.Message);
+        ToDeepDebug('Nosodebug,InitializeLogFile,' + E.Message);
         Result := False;
       end;
     end; {Try}
@@ -207,7 +207,7 @@ begin
       Writeln(LFile, TextLine);
     except
       on E: Exception do
-        ToDeepDeb('Nosodebug,SaveTextToDisk,' + E.Message);
+        ToDeepDebug('Nosodebug,SaveTextToDisk,' + E.Message);
     end; {Try}
     Closefile(LFile);
   end
@@ -405,12 +405,12 @@ begin
   if InitializeLogFile(LFileName, SysInfo) then
   begin
     DeepDebFilename := LFileName;
-    //ToDeepDeb(SysInfo);
+    //ToDeepDebug(SysInfo);
   end;
 end;
 
 
-procedure ToDeepDeb(LLine: String);
+procedure ToDeepDebug(LLine: String);
 begin
   EnterCriticalSection(CS_DeepDeb);
   SLDeepDebLog.Add(LLine);

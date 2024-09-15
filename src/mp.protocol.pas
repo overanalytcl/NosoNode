@@ -93,11 +93,11 @@ begin
   ThisData := Default(TOrderData);
   try
     ThisData.OrderID := GetParameter(textline, 1);
-    ThisData.OrderLines := StrToInt(GetParameter(textline, 2));
+    ThisData.OrderLineCount := StrToInt(GetParameter(textline, 2));
     ThisData.OrderType := GetParameter(textline, 3);
     ThisData.TimeStamp := StrToInt64(GetParameter(textline, 4));
     ThisData.reference := GetParameter(textline, 5);
-    ThisData.TrxLine := StrToInt(GetParameter(textline, 6));
+    ThisData.TransferLine := StrToInt(GetParameter(textline, 6));
     ThisData.Sender := GetParameter(textline, 7);
     ThisData.Address := GetParameter(textline, 8);
     ThisData.Receiver := GetParameter(textline, 9);
@@ -135,7 +135,7 @@ begin
 
 end;
 
-// Procesa todas las lineas procedentes de las conexiones
+// Procesa todas las lineas procedentes de las Connections
 procedure ParseProtocolLines();
 var
   contador: Integer = 0;
@@ -147,86 +147,86 @@ var
   ValidMNCheck: String;
   OrderError: Boolean = False;
 begin
-  for contador := 1 to MaxConecciones do
+  for contador := 1 to MaxConnections do
   begin
-    while LengthIncoming(contador) > 0 do
+    while GetIncomingMessageLength(contador) > 0 do
     begin
-      ProcessLine := GetIncoming(contador);
+      ProcessLine := GetIncomingMessage(contador);
       UsedProtocol := StrToIntDef(GetParameter(ProcessLine, 1), 1);
       UsedVersion := GetParameter(ProcessLine, 2);
       PeerTime := GetParameter(ProcessLine, 3);
       LineComando := GetParameter(ProcessLine, 4);
       if ((not IsValidProtocol(ProcessLine)) and
-        (not GetConexIndex(contador).Autentic)) then
+        (not GetConnectionData(contador).IsAuthenticated)) then
         // La linea no es valida y proviene de una conexion no autentificada
       begin
         ToLog('console', 'CONNECTION REJECTED: INVALID PROTOCOL -> ' +
-          GetConexIndex(contador).ip + '->' + ProcessLine); //CONNECTION REJECTED: INVALID PROTOCOL ->
-        UpdateBotData(GetConexIndex(contador).ip);
-        CloseSlot(contador);
+          GetConnectionData(contador).IpAddress + '->' + ProcessLine); //CONNECTION REJECTED: INVALID PROTOCOL ->
+        UpdateBotData(GetConnectionData(contador).IpAddress);
+        CloseConnectionSlot(contador);
       end
       else if UpperCase(LineComando) = 'DUPLICATED' then
       begin
-        ToLog('Console', 'You are already connected to ' + GetConexIndex(contador).ip);
+        ToLog('Console', 'You are already connected to ' + GetConnectionData(contador).IpAddress);
         //CONNECTION REJECTED: INVALID PROTOCOL ->
-        CloseSlot(contador);
+        CloseConnectionSlot(contador);
       end
       else if UpperCase(LineComando) = 'OLDVERSION' then
       begin
         ToLog('Console', 'You need update your node to connect to ' +
-          GetConexIndex(contador).ip); //CONNECTION REJECTED: INVALID PROTOCOL ->
-        CloseSlot(contador);
+          GetConnectionData(contador).IpAddress); //CONNECTION REJECTED: INVALID PROTOCOL ->
+        CloseConnectionSlot(contador);
       end
       else if UpperCase(LineComando) = '$PING' then
-        ProcessPing(ProcessLine, contador, True)                        // Done
+        ProcessPingCommand(ProcessLine, contador, True)                        // Done
       else if UpperCase(LineComando) = '$PONG' then
-        ProcessPing(ProcessLine, contador, False)                       // Done
+        ProcessPingCommand(ProcessLine, contador, False)                       // Done
       else if ((blockage < 10) or (BlockAge > 585)) then
       begin
         continue;
       end
       else if UpperCase(LineComando) = '$GETPENDING' then
-        SendPendingsToPeer(contador)//PTC_SendPending(contador) // Done
+        SendPendingTransactionsToPeer(contador)//PTC_SendPending(contador) // Done
       else if UpperCase(LineComando) = '$GETMNS' then
-        SendMNsListToPeer(contador) //SendMNsList(contador)         // Done
+        SendMasternodeListToPeer(contador) //SendMNsList(contador)         // Done
       else if UpperCase(LineComando) = '$GETRESUMEN' then PTC_SendResumen(contador)
       else if UpperCase(LineComando) = '$LASTBLOCK' then
         PTC_SendBlocks(contador, ProcessLine)
       else if UpperCase(LineComando) = '$CUSTOM' then
       begin
-        if addipcontrol(GetConexIndex(contador).ip) < 100 then
+        if addipcontrol(GetConnectionData(contador).IpAddress) < 100 then
           INC_PTC_Custom(GetOpData(ProcessLine), contador)
         else
         begin
-          UpdateBotData(GetConexIndex(contador).ip);
-          ToLog('console', 'IP spammer: ' + GetConexIndex(contador).ip);
-          CloseSlot(contador);
+          UpdateBotData(GetConnectionData(contador).IpAddress);
+          ToLog('console', 'IP spammer: ' + GetConnectionData(contador).IpAddress);
+          CloseConnectionSlot(contador);
         end;
       end
       else if UpperCase(LineComando) = 'ORDER' then
       begin
-        if addipcontrol(GetConexIndex(contador).ip) < 100 then
+        if addipcontrol(GetConnectionData(contador).IpAddress) < 100 then
           INC_PTC_Order(ProcessLine, contador)
         else
         begin
-          UpdateBotData(GetConexIndex(contador).ip);
-          ToLog('console', 'IP spammer: ' + GetConexIndex(contador).ip);
-          CloseSlot(contador);
+          UpdateBotData(GetConnectionData(contador).IpAddress);
+          ToLog('console', 'IP spammer: ' + GetConnectionData(contador).IpAddress);
+          CloseConnectionSlot(contador);
         end;
       end
       else if UpperCase(LineComando) = 'ADMINMSG' then PTC_AdminMSG(ProcessLine)
       else if UpperCase(LineComando) = '$MNREPO' then AddWaitingMNs(ProcessLine)
       else if UpperCase(LineComando) = '$MNCHECK' then
       begin
-        ValidMNCheck := ValidateMNCheck(ProcessLine);
-        if ValidMNCheck <> '' then outGOingMsjsAdd(GetPTCEcn + ValidMNCheck);
+        ValidMNCheck := ValidateMasternodeCheck(ProcessLine);
+        if ValidMNCheck <> '' then outGOingMsjsAdd(GetProtocolHeader + ValidMNCheck);
         //PTC_MNCheck(ProcessLine)
       end
-      else if UpperCase(LineComando) = '$GETCHECKS' then SendMNChecksToPeer(contador)
+      else if UpperCase(LineComando) = '$GETCHECKS' then SendMasternodeChecksToPeer(contador)
       else if UpperCase(LineComando) = 'GETMNSFILE' then
-        PTC_SendLine(contador, ProtocolLine(MNFILE) + ' $' + LoadMNsFile)
+        PTC_SendLine(contador, GetProtocolLineFromCode(MNFILE) + ' $' + LoadMNsFile)
       else if UpperCase(LineComando) = 'GETCFGDATA' then
-        PTC_SendLine(contador, ProtocolLine(SETCFG) + GetCFGDataStr)
+        PTC_SendLine(contador, GetProtocolLineFromCode(SETCFG) + GetCFGDataStr)
 
       else if UpperCase(LineComando) = 'MNFILE' then
         PTC_ProcessMNFileIncoming(ProcessLine)
@@ -253,15 +253,15 @@ end;
 // Envia una linea a un determinado slot
 procedure PTC_SendLine(Slot: Int64; Message: String);
 begin
-  if ((slot >= 1) and (Slot <= MaxConecciones)) then
+  if ((slot >= 1) and (Slot <= MaxConnections)) then
   begin
-    if ((GetConexIndex(Slot).tipo = 'CLI') and (not GetConexIndex(Slot).IsBusy)) then
+    if ((GetConnectionData(Slot).ConnectionType = 'CLI') and (not GetConnectionData(Slot).IsBusy)) then
     begin
-      TextToSlot(slot, message);
+      AddTextToSlot(slot, message);
     end;
-    if ((GetConexIndex(Slot).tipo = 'SER') and (not GetConexIndex(Slot).IsBusy)) then
+    if ((GetConnectionData(Slot).ConnectionType = 'SER') and (not GetConnectionData(Slot).IsBusy)) then
     begin
-      TextToSlot(slot, message);
+      AddTextToSlot(slot, message);
     end;
   end
   else
@@ -277,13 +277,13 @@ begin
   if Form1.Server.Active then port := Form1.Server.DefaultPort
   else
     port := -1;
-  Result := IntToStr(GetTotalConexiones()) + ' ' + IntToStr(MyLastBlock) + ' ' +
-    MyLastBlockHash + ' ' + MySumarioHash + ' ' +
-    GetPendingCount.ToString + ' ' + GetResumenHash + ' ' +
+  Result := IntToStr(GetTotalConnections()) + ' ' + IntToStr(LastBlockIndex) + ' ' +
+    LastBlockHash + ' ' + MySumarioHash + ' ' +
+    GetPendingTransactionCount.ToString + ' ' + GetResumenHash + ' ' +
     IntToStr(MyConStatus) + ' ' + IntToStr(port) + ' ' +
     copy(GetMNsHash, 0, 5) + ' ' + IntToStr(GetMNsListLength) + ' ' +
     'null' + ' ' + //GetNMSData.Diff
-    GetMNsChecksCount.ToString + ' ' + MyGVTsHash + ' ' +
+    GetMasternodeCheckCount.ToString + ' ' + MyGVTsHash + ' ' +
     Copy(HashMD5String(GetCFGDataStr), 0, 5) + ' ' + Copy(PSOFileHash, 0, 5);
 end;
 
@@ -299,31 +299,31 @@ begin
   LastRequest := UTCTime;
   MemStream := TMemoryStream.Create;
   GetHeadersAsMemStream(MemStream);
-  if GetConexIndex(slot).tipo = 'CLI' then
+  if GetConnectionData(slot).ConnectionType = 'CLI' then
   begin
     try
-      GetConexIndex(slot).context.Connection.IOHandler.WriteLn('RESUMENFILE');
-      GetConexIndex(slot).context.connection.IOHandler.Write(MemStream, 0, True);
+      GetConnectionData(slot).Context.Connection.IOHandler.WriteLn('RESUMENFILE');
+      GetConnectionData(slot).Context.connection.IOHandler.Write(MemStream, 0, True);
     except
       on E: Exception do
       begin
-        Form1.TryCloseServerConnection(GetConexIndex(Slot).context);
+        Form1.TryCloseServerConnection(GetConnectionData(Slot).Context);
         ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz',
           Now) + ' -> ' + 'SERVER: Error sending headers file (' + E.Message + ')');
       end;
     end; {TRY}
   end;
-  if GetConexIndex(slot).tipo = 'SER' then
+  if GetConnectionData(slot).ConnectionType = 'SER' then
   begin
     try
-      CanalCliente[slot].IOHandler.WriteLn('RESUMENFILE');
-      CanalCliente[slot].IOHandler.Write(MemStream, 0, True);
+      ClientChannels[slot].IOHandler.WriteLn('RESUMENFILE');
+      ClientChannels[slot].IOHandler.Write(MemStream, 0, True);
     except
       on E: Exception do
       begin
         ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz',
           Now) + ' -> ' + 'CLIENT: Error sending Headers file (' + E.Message + ')');
-        CloseSlot(slot);
+        CloseConnectionSlot(slot);
       end;
     end;{TRY}
   end;
@@ -340,31 +340,31 @@ begin
   LastRequest := UTCTime;
   MemStream := TMemoryStream.Create;
   GetSummaryAsMemStream(MemStream);
-  if GetConexIndex(slot).tipo = 'CLI' then
+  if GetConnectionData(slot).ConnectionType = 'CLI' then
   begin
     try
-      GetConexIndex(slot).context.Connection.IOHandler.WriteLn('SUMARYFILE');
-      GetConexIndex(slot).context.connection.IOHandler.Write(MemStream, 0, True);
+      GetConnectionData(slot).Context.Connection.IOHandler.WriteLn('SUMARYFILE');
+      GetConnectionData(slot).Context.connection.IOHandler.Write(MemStream, 0, True);
     except
       on E: Exception do
       begin
-        Form1.TryCloseServerConnection(GetConexIndex(Slot).context);
+        Form1.TryCloseServerConnection(GetConnectionData(Slot).Context);
         ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz',
           Now) + ' -> ' + 'SERVER: Error sending sumary file (' + E.Message + ')');
       end;
     end; {TRY}
   end;
-  if GetConexIndex(slot).tipo = 'SER' then
+  if GetConnectionData(slot).ConnectionType = 'SER' then
   begin
     try
-      CanalCliente[slot].IOHandler.WriteLn('SUMARYFILE');
-      CanalCliente[slot].IOHandler.Write(MemStream, 0, True);
+      ClientChannels[slot].IOHandler.WriteLn('SUMARYFILE');
+      ClientChannels[slot].IOHandler.Write(MemStream, 0, True);
     except
       on E: Exception do
       begin
         ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz',
           Now) + ' -> ' + 'CLIENT: Error sending Sumary file (' + E.Message + ')');
-        CloseSlot(slot);
+        CloseConnectionSlot(slot);
       end;
     end;{TRY}
   end;
@@ -377,31 +377,31 @@ var
 begin
   MemStream := TMemoryStream.Create;
   GetPSOsAsMemStream(MemStream);
-  if GetConexIndex(slot).tipo = 'CLI' then
+  if GetConnectionData(slot).ConnectionType = 'CLI' then
   begin
     try
-      GetConexIndex(slot).context.Connection.IOHandler.WriteLn('PSOSFILE');
-      GetConexIndex(slot).context.connection.IOHandler.Write(MemStream, 0, True);
+      GetConnectionData(slot).Context.Connection.IOHandler.WriteLn('PSOSFILE');
+      GetConnectionData(slot).Context.connection.IOHandler.Write(MemStream, 0, True);
     except
       on E: Exception do
       begin
-        Form1.TryCloseServerConnection(GetConexIndex(Slot).context);
+        Form1.TryCloseServerConnection(GetConnectionData(Slot).Context);
         ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz',
           Now) + ' -> ' + 'SERVER: Error sending PSOs file (' + E.Message + ')');
       end;
     end; {TRY}
   end;
-  if GetConexIndex(slot).tipo = 'SER' then
+  if GetConnectionData(slot).ConnectionType = 'SER' then
   begin
     try
-      CanalCliente[slot].IOHandler.WriteLn('PSOSFILE');
-      CanalCliente[slot].IOHandler.Write(MemStream, 0, True);
+      ClientChannels[slot].IOHandler.WriteLn('PSOSFILE');
+      ClientChannels[slot].IOHandler.Write(MemStream, 0, True);
     except
       on E: Exception do
       begin
         ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz',
           Now) + ' -> ' + 'CLIENT: Error sending PSOs file (' + E.Message + ')');
-        CloseSlot(slot);
+        CloseConnectionSlot(slot);
       end;
     end;{TRY}
   end;
@@ -414,29 +414,29 @@ var
 begin
   MemStream := TMemoryStream.Create;
   GetGVTsAsStream(MemStream);
-  if GetConexIndex(slot).tipo = 'CLI' then
+  if GetConnectionData(slot).ConnectionType = 'CLI' then
   begin
     try
-      GetConexIndex(slot).context.Connection.IOHandler.WriteLn('GVTSFILE');
-      GetConexIndex(slot).context.connection.IOHandler.Write(MemStream, 0, True);
+      GetConnectionData(slot).Context.Connection.IOHandler.WriteLn('GVTSFILE');
+      GetConnectionData(slot).Context.connection.IOHandler.Write(MemStream, 0, True);
     except
       on E: Exception do
       begin
-        Form1.TryCloseServerConnection(GetConexIndex(Slot).context);
-        ToDeepDeb('Error sending GVTs file: ' + E.Message);
+        Form1.TryCloseServerConnection(GetConnectionData(Slot).Context);
+        ToDeepDebug('Error sending GVTs file: ' + E.Message);
       end;
     end; {TRY}
   end;
-  if GetConexIndex(slot).tipo = 'SER' then
+  if GetConnectionData(slot).ConnectionType = 'SER' then
   begin
     try
-      CanalCliente[slot].IOHandler.WriteLn('GVTSFILE');
-      CanalCliente[slot].IOHandler.Write(MemStream, 0, True);
+      ClientChannels[slot].IOHandler.WriteLn('GVTSFILE');
+      ClientChannels[slot].IOHandler.Write(MemStream, 0, True);
     except
       on E: Exception do
       begin
-        ToDeepDeb('Error sending GVTs file: ' + E.Message);
-        CloseSlot(slot);
+        ToDeepDebug('Error sending GVTs file: ' + E.Message);
+        CloseConnectionSlot(slot);
       end;
     end;{TRY}
   end;
@@ -482,7 +482,7 @@ var
 begin
   Result := '';
   LastBlock := FirstBlock + 100;
-  if LastBlock > MyLastBlock then LastBlock := MyLastBlock;
+  if LastBlock > LastBlockIndex then LastBlock := LastBlockIndex;
   MyZipFile := TZipper.Create;
   ZipFileName := BlockDirectory + 'Blocks_' + IntToStr(FirstBlock) + '_' +
     IntToStr(LastBlock) + '.zip';
@@ -546,33 +546,33 @@ begin
   end; {TRY}
   if GetFileOk then
   begin
-    if GetConexIndex(Slot).tipo = 'CLI' then
+    if GetConnectionData(Slot).ConnectionType = 'CLI' then
     begin
       try
-        GetConexIndex(Slot).context.Connection.IOHandler.WriteLn('BLOCKZIP');
-        GetConexIndex(Slot).context.connection.IOHandler.Write(MemStream, 0, True);
+        GetConnectionData(Slot).Context.Connection.IOHandler.WriteLn('BLOCKZIP');
+        GetConnectionData(Slot).Context.connection.IOHandler.Write(MemStream, 0, True);
         FileSentOk := True;
       except
         on E: Exception do
         begin
-          Form1.TryCloseServerConnection(GetConexIndex(Slot).context);
+          Form1.TryCloseServerConnection(GetConnectionData(Slot).Context);
           ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz',
             Now) + ' -> ' + 'SERVER: Error sending ZIP blocks file (' + E.Message + ')');
         end;
       end; {TRY}
     end;
-    if GetConexIndex(Slot).tipo = 'SER' then
+    if GetConnectionData(Slot).ConnectionType = 'SER' then
     begin
       try
-        CanalCliente[Slot].IOHandler.WriteLn('BLOCKZIP');
-        CanalCliente[Slot].IOHandler.Write(MemStream, 0, True);
+        ClientChannels[Slot].IOHandler.WriteLn('BLOCKZIP');
+        ClientChannels[Slot].IOHandler.Write(MemStream, 0, True);
         FileSentOk := True;
       except
         on E: Exception do
         begin
           ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz',
             Now) + ' -> ' + 'CLIENT: Error sending ZIP blocks file (' + E.Message + ')');
-          CloseSlot(slot);
+          CloseConnectionSlot(slot);
         end; {TRY}
       end;
     end;
@@ -600,10 +600,10 @@ begin
   if address <> OrderInfo.Address then ErrorCode := 1;
   // La direccion no dispone de fondos
   if GetAddressBalanceIndexed(Address) - GetAddressPendingPays(Address) <
-    GetCustomFee(MyLastBlock) then ErrorCode := 2;
-  if TranxAlreadyPending(OrderInfo.TransferID) then ErrorCode := 3;
+    GetCustomFee(LastBlockIndex) then ErrorCode := 2;
+  if TransactionAlreadyPending(OrderInfo.TransferID) then ErrorCode := 3;
   if OrderInfo.TimeStamp < LastBlockData.TimeStart then ErrorCode := 4;
-  if TrxExistsInLastBlock(OrderInfo.TransferID) then ErrorCode := 5;
+  if TransferExistsInLastBlock(OrderInfo.TransferID) then ErrorCode := 5;
   if AddressAlreadyCustomized(Address) then ErrorCode := 6;
   if AliasAlreadyExists(OrderInfo.Receiver) then ErrorCode := 7;
   if not VerifySignedString('Customize this ' + Address + ' ' + OrderInfo.Receiver,
@@ -611,8 +611,8 @@ begin
   if ErrorCode = 0 then
   begin
     OpData := GetOpData(TextLine); // Eliminar el encabezado
-    AddArrayPoolTXs(OrderInfo);
-    if form1.Server.Active then OutgoingMsjsAdd(GetPTCEcn + opdata);
+    AddTransactionToPool(OrderInfo);
+    if form1.Server.Active then OutgoingMsjsAdd(GetProtocolHeader + opdata);
   end;
   Result := ErrorCode;
 end;
@@ -630,17 +630,17 @@ begin
   if GetAddressBalanceIndexed(Origen) - GetAddressPendingPays(Origen) <
     Order.AmountFee + order.AmountTransferred then
     Result := 1
-  else if TranxAlreadyPending(order.TransferID) then
+  else if TransactionAlreadyPending(order.TransferID) then
     Result := 2
   else if Order.TimeStamp < LastBlockData.TimeStart then
     Result := 3
   else if Order.TimeStamp > LastBlockData.TimeEnd + 600 then
     Result := 4
-  else if TrxExistsInLastBlock(Order.TransferID) then
+  else if TransferExistsInLastBlock(Order.TransferID) then
     Result := 5
   else if not VerifySignedString(IntToStr(order.TimeStamp) + origen +
     order.Receiver + IntToStr(order.AmountTransferred) + IntToStr(order.AmountFee) +
-    IntToStr(order.TrxLine), Order.Signature, Order.Sender) then
+    IntToStr(order.TransferLine), Order.Signature, Order.Sender) then
     Result := 6
   else if Order.AmountTransferred < 0 then
     Result := 7
@@ -735,7 +735,7 @@ begin
       Inc(TotalSent, TrxArray[cont].AmountTransferred);
       Inc(TotalFee, TrxArray[cont].AmountFee);
       GenOrderID := GenOrderID + TrxArray[cont].TransferID;
-      if TranxAlreadyPending(TrxArray[cont].TransferID) then
+      if TransactionAlreadyPending(TrxArray[cont].TransferID) then
       begin
         Proceder := False;
         ErrorCode := 98;
@@ -783,9 +783,9 @@ begin
     if proceder then
     begin
       Textbak := GetOpData(TextLine);
-      Textbak := GetPTCEcn + 'ORDER ' + IntToStr(NumTransfers) + ' ' + Textbak;
+      Textbak := GetProtocolHeader + 'ORDER ' + IntToStr(NumTransfers) + ' ' + Textbak;
       for cont := 0 to NumTransfers - 1 do
-        AddArrayPoolTXs(TrxArray[cont]);
+        AddTransactionToPool(TrxArray[cont]);
       if form1.Server.Active then OutgoingMsjsAdd(Textbak);
       U_DirPanel := True;
       Result := GetParameter(Textbak, 7); // send order ID as result
@@ -822,10 +822,10 @@ begin
   if address <> OrderInfo.Address then ErrorCode := 1;
   // La direccion no dispone de fondos
   if GetAddressBalanceIndexed(Address) - GetAddressPendingPays(Address) <
-    GetCustomFee(MyLastBlock) then ErrorCode := 2;
-  if TranxAlreadyPending(OrderInfo.TransferID) then ErrorCode := 3;
+    GetCustomFee(LastBlockIndex) then ErrorCode := 2;
+  if TransactionAlreadyPending(OrderInfo.TransferID) then ErrorCode := 3;
   if OrderInfo.TimeStamp < LastBlockData.TimeStart then ErrorCode := 4;
-  if TrxExistsInLastBlock(OrderInfo.TransferID) then ErrorCode := 5;
+  if TransferExistsInLastBlock(OrderInfo.TransferID) then ErrorCode := 5;
   if GVTAlreadyTransfered(OrderInfo.Reference) then ErrorCode := 6;
   StrTosign := 'Transfer GVT ' + OrderInfo.Reference + ' ' + OrderInfo.Receiver +
     OrderInfo.TimeStamp.ToString;
@@ -835,8 +835,8 @@ begin
   if ErrorCode = 0 then
   begin
     OpData := GetOpData(TextLine); // remove trx header
-    AddArrayPoolTXs(OrderInfo);
-    if form1.Server.Active then OutgoingMsjsAdd(GetPTCEcn + opdata);
+    AddTransactionToPool(OrderInfo);
+    if form1.Server.Active then OutgoingMsjsAdd(GetProtocolHeader + opdata);
   end;
   Result := ErrorCode;
   if ErrorCode > 0 then
@@ -893,13 +893,13 @@ begin
     if UpperCase(TCommand) = 'ADDNODE' then
     begin
       AddCFGData(TParam, 1);
-      FillNodeList;
+      PopulateNodeList;
       SetNodesArray(GetCFGDataStr(1));
     end;
     if UpperCase(TCommand) = 'DELNODE' then
     begin
       RemoveCFGData(TParam, 1);
-      FillNodeList;
+      PopulateNodeList;
       SetNodesArray(GetCFGDataStr(1));
     end;
     if UpperCase(TCommand) = 'ADDNTP' then AddCFGData(TParam, 2);
@@ -931,7 +931,7 @@ begin
   begin
     SaveCFGToFile(content);
     SetCFGDataStr(content);
-    FillNodeList;
+    PopulateNodeList;
     ToLog('events', 'Noso CFG updated!');
   end
   else
@@ -948,7 +948,7 @@ begin
   if UTCTime < LastRequest + 10 then exit;
   LastRequest := UTCTime;
   Block := StrToIntDef(GetParameter(Linea, 5), 0);
-  PTC_SendLine(slot, ProtocolLine(headupdate) + ' $' + LastHeadersString(Block));
+  PTC_SendLine(slot, GetProtocolLineFromCode(headupdate) + ' $' + LastHeadersString(Block));
 end;
 
 procedure PTC_ProcessMNFileIncoming(LText: String);
@@ -960,7 +960,7 @@ begin
   begin
     //ToLog('console','Received MNs hash match!');
     SaveMNsFile(MNText);
-    FillNodeList;
+    PopulateNodeList;
   end
   else
   begin
@@ -1007,14 +1007,14 @@ begin
   SetResumenHash;
   if copy(GetResumenHash, 0, 5) <> GetConsensus(5) then
   begin
-    ForceCompleteHeadersDownload := True;
+    ForceHeadersDownload := True;
     ToLog('Console', Format('Update headers failed (%d) : %s <> %s',
       [TotalErrors, Copy(GetResumenHash, 0, 5), GetConsensus(5)]));
   end
   else
   begin
     ToLog('Console', 'Headers Updated!');
-    ForceCompleteHeadersDownload := False;
+    ForceHeadersDownload := False;
   end;
 end;
 

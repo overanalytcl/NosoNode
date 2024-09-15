@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, MPForm, MP.Gui, MP.Red, MP.Disk, Noso.Time, MP.Block, MP.Coin,
-  Dialogs, fileutil, Forms, idglobal, strutils, MP.Rpc, DateUtils, Clipbrd, translation,
+  Dialogs, fileutil, Forms, idglobal, StrUtils, MP.Rpc, DateUtils, Clipbrd, translation,
   idContext, Math, MP.SysCheck, Noso.Debug, Noso.General, Noso.Crypto, Noso.Summary,
   Noso.Consensus, Noso.Pso, Noso.WallCon, Noso.Headers, Noso.Block,
   Noso.Config, Noso.Network,
@@ -182,13 +182,13 @@ begin
   end;
 end;
 
-// Elimina el encabezado de una linea de protocolo
+// Elimina el encabezado de una linea de ProtocolVersion
 function GetOpData(textLine: String): String;
 var
   CharPos: Integer;
 begin
   charpos := pos('$', textline);
-  Result := copy(textline, charpos, length(textline));
+  Result := Copy(textline, charpos, Length(textline));
 end;
 
 procedure ParseCommandLine(LineText: String);
@@ -223,9 +223,9 @@ begin
   else if UpperCase(Command) = 'IMPWALLET' then ImportarWallet(LineText)
   else if UpperCase(Command) = 'EXPWALLET' then ExportarWallet(LineText)
   else if UpperCase(Command) = 'RESUMEN' then
-    ShowBlchHead(StrToIntDef(GetParameter(Linetext, 1), MyLastBlock))
+    ShowBlchHead(StrToIntDef(GetParameter(Linetext, 1), LastBlockIndex))
   else if UpperCase(Command) = 'SETDEFAULT' then SetDefaultAddress(LineText)
-  else if UpperCase(Command) = 'LBINFO' then ShowBlockInfo(MyLastBlock)
+  else if UpperCase(Command) = 'LBINFO' then ShowBlockInfo(LastBlockIndex)
   else if UpperCase(Command) = 'TIMESTAMP' then ToLog('console', UTCTimeStr)
   else if UpperCase(Command) = 'UNDOBLOCK' then UndoneLastBlock()  // to be removed
   else if UpperCase(Command) = 'CUSTOMIZE' then CustomizeAddress(LineText)
@@ -265,8 +265,8 @@ begin
   else if UpperCase(Command) = 'HISTORY' then ShowAddressHistory(LineText)
   else if UpperCase(Command) = 'TOTALFEES' then ShowTotalFees()
   else if UpperCase(Command) = 'SUPPLY' then
-    ToLog('console', 'Current supply: ' +
-      IntToCurrency(GetCirculatingSupply(MyLastBlock)))
+    ToLog('console', 'Current supply: ' + IntToCurrency(
+      GetCirculatingSupply(LastBlockIndex)))
   else if UpperCase(Command) = 'GMTS' then showgmts(LineText)
   else if UpperCase(Command) = 'SHOWKEYS' then ShowPrivKey(LineText, True)
   else if UpperCase(Command) = 'SHOWPENDING' then ShowPendingTrxs()
@@ -276,10 +276,10 @@ begin
   else if UpperCase(Command) = 'ZIPSUMARY' then ZipSumary()
   else if UpperCase(Command) = 'GETPOS' then
     ToLog('console', GetPoSPercentage(StrToIntdef(GetParameter(linetext, 1),
-      Mylastblock)).ToString)
+      LastBlockIndex)).ToString)
   else if UpperCase(Command) = 'GETMNS' then
     ToLog('console', GetMasterNodesPercentage(
-      StrToIntdef(GetParameter(linetext, 1), Mylastblock), GetCFGDataStr(0)).ToString)
+      StrToIntdef(GetParameter(linetext, 1), LastBlockIndex), GetCFGDataStr(0)).ToString)
   else if UpperCase(Command) = 'CLOSESTARTON' then WO_CloseStart := True
   else if UpperCase(Command) = 'CLOSESTARTOFF' then WO_CloseStart := False
   else if UpperCase(Command) = 'TT' then DebugTest2(LineText)
@@ -304,7 +304,7 @@ begin
   else if UpperCase(Command) = 'GETDBLB' then ToLog('console', GetDBLastBlock.ToString)
   else if UpperCase(Command) = 'ORDINFO' then OrdInfo(LineText)
   else if UpperCase(Command) = 'GETMULTI' then CreateMultiAddress(LineText)
-  else if UpperCase(Command) = 'DELBOTS' then DeleteBots
+  else if UpperCase(Command) = 'DELBOTS' then RemoveAllBots
 
   // New system
 
@@ -340,7 +340,8 @@ begin
   else if UpperCase(Command) = 'ADDNOSOPAY' then AddCFGData(GetParameter(linetext, 1), 6)
   else if UpperCase(Command) = 'DELNOSOPAY' then
     RemoveCFGData(GetParameter(linetext, 1), 6)
-  else if UpperCase(Command) = 'ISALLSYNCED' then ToLog('console', IsAllsynced.ToString)
+  else if UpperCase(Command) = 'ISALLSYNCED' then
+    ToLog('console', Integer(IsAllSynchronized).ToString)
   else if UpperCase(Command) = 'FREEZED' then Totallocked()
   else if UpperCase(Command) = 'CLEARCFG' then ClearCFGData(GetParameter(linetext, 1))
 
@@ -385,7 +386,7 @@ var
   cont: Integer;
 begin
   AddCRiptoOp(1, '', '');
-  sleep(1);
+  Sleep(1);
 end;
 
 // muestra los nodos
@@ -393,9 +394,9 @@ procedure ShowNodes();
 var
   contador: Integer = 0;
 begin
-  for contador := 0 to NodesListLen - 1 do
-    ToLog('console', IntToStr(contador) + '- ' + NodesIndex(contador).ip +
-      ':' + NodesIndex(contador).port);
+  for contador := 0 to GetNodeListLength - 1 do
+    ToLog('console', IntToStr(contador) + '- ' + GetNodeDataAtIndex(contador).IpAddress +
+      ':' + GetNodeDataAtIndex(contador).Port);
 end;
 
 // muestra los Bots
@@ -403,16 +404,16 @@ procedure ShowBots();
 var
   contador: Integer = 0;
 begin
-  for contador := 0 to length(BotsList) - 1 do
-    ToLog('console', IntToStr(contador) + '- ' + BotsList[contador].ip);
-  ToLog('console', IntToStr(length(BotsList)) + ' bots registered.');  // bots registered
+  for contador := 0 to Length(BotList) - 1 do
+    ToLog('console', IntToStr(contador) + '- ' + BotList[contador].IpAddress);
+  ToLog('console', IntToStr(Length(BotList)) + ' bots registered.');  // bots registered
 end;
 
 // Muestras las opciones del usuario
 procedure ShowUser_Options();
 begin
   ToLog('console', 'Language    : ' + WO_Language);
-  ToLog('console', 'Server Port : ' + LocalMN_Port);
+  ToLog('console', 'Server Port : ' + LocalMasternodePort);
   ToLog('console', 'Wallet      : ' + WalletFilename);
   ToLog('console', 'AutoServer  : ' + BoolToStr(WO_AutoServer, True));
 end;
@@ -477,7 +478,7 @@ begin
   if fileexists(destino + '.pkw') then
   begin
     ToLog('console', 'Error: Can not overwrite existing wallets');
-    exit;
+    Exit;
   end;
   if copyfile(WalletFilename, destino + '.pkw', []) then
   begin
@@ -503,7 +504,7 @@ begin
   begin
     ToLog('console', 'Specified wallet file do not exists.');
     //Specified wallet file do not exists.
-    exit;
+    Exit;
   end;
   assignfile(CarteraFile, Cartera);
   try
@@ -514,7 +515,7 @@ begin
     begin
       closefile(CarteraFile);
       ToLog('console', 'The file is not a valid wallet');
-      exit;
+      Exit;
     end;
     for contador := 0 to filesize(CarteraFile) - 1 do
     begin
@@ -560,8 +561,8 @@ begin
     repeat
       Seek(FileResumen, StartBlock);
       Read(fileresumen, dato);
-      ToLog('console', IntToStr(dato.block) + ' ' + copy(dato.blockhash, 1, 5) +
-        ' ' + copy(dato.SumHash, 1, 5));
+      ToLog('console', IntToStr(dato.block) + ' ' + Copy(dato.blockhash, 1, 5) +
+        ' ' + Copy(dato.SumHash, 1, 5));
       if dato.blockhash = 'MISS' then Inc(Errors);
       if dato.sumhash = 'MISS' then Inc(Errors);
       Inc(StartBlock);
@@ -607,7 +608,7 @@ var
   blnumber: Integer;
 begin
   blnumber := StrToIntDef(GetParameter(linetext, 1), -1);
-  if (blnumber < 0) or (blnumber > MylastBlock) then
+  if (blnumber < 0) or (blnumber > LastBlockIndex) then
     outtext('Invalid block number')
   else
     ShowBlockInfo(blnumber);
@@ -616,7 +617,7 @@ end;
 procedure ShowBlockInfo(numberblock: Integer);
 var
   Header: BlockHeaderData;
-  LOrders: TBlockOrdersArray;
+  LOrders: TBlockOrders;
   LPOSes: BlockArraysPos;
   PosReward: Int64;
   PosCount: Integer;
@@ -644,33 +645,33 @@ begin
     ToLog('console', 'Miner:        ' + Header.AccountMiner);
     ToLog('console', 'Fees:         ' + IntToStr(Header.MinerFee));
     ToLog('console', 'Reward:       ' + IntToStr(Header.Reward));
-    LOrders := GetBlockTrxs(numberblock);
-    if length(LOrders) > 0 then
+    LOrders := GetBlockTransfers(numberblock);
+    if Length(LOrders) > 0 then
     begin
       ToLog('console', 'TRANSACTIONS');
-      for Counter := 0 to length(LOrders) - 1 do
+      for Counter := 0 to Length(LOrders) - 1 do
       begin
         ToLog('console', Format('%-8s %-35s -> %-35s : %s',
           [LOrders[counter].OrderType, LOrders[counter].Sender,
-          LOrders[counter].Receiver,
-          IntToCurrency(LOrders[counter].AmountTransferred)]));
+          LOrders[counter].Receiver, IntToCurrency(
+          LOrders[counter].AmountTransferred)]));
       end;
     end;
     if numberblock > PoSBlockStart then
     begin
       LPoSes := GetBlockPoSes(numberblock);
-      PosReward := StrToInt64Def(LPoSes[length(LPoSes) - 1].address, 0);
-      SetLength(LPoSes, length(LPoSes) - 1);
-      PosCount := length(LPoSes);
+      PosReward := StrToInt64Def(LPoSes[Length(LPoSes) - 1].address, 0);
+      SetLength(LPoSes, Length(LPoSes) - 1);
+      PosCount := Length(LPoSes);
       ToLog('console', Format('PoS Reward: %s  /  Addresses: %d  /  Total: %s',
         [IntToCurrency(PosReward), PosCount, IntToCurrency(PosReward * PosCount)]));
     end;
     if numberblock > MNBlockStart then
     begin
       LPoSes := GetBlockMNs(numberblock);
-      PosReward := StrToInt64Def(LPoSes[length(LPoSes) - 1].address, 0);
-      SetLength(LPoSes, length(LPoSes) - 1);
-      PosCount := length(LPoSes);
+      PosReward := StrToInt64Def(LPoSes[Length(LPoSes) - 1].address, 0);
+      SetLength(LPoSes, Length(LPoSes) - 1);
+      PosCount := Length(LPoSes);
       ToLog('console', Format('MNs Reward: %s  /  Addresses: %d  /  Total: %s',
         [IntToCurrency(PosReward), PosCount, IntToCurrency(PosReward * PosCount)]));
     end;
@@ -698,7 +699,7 @@ begin
     //'Address already have a custom alias'
     procesar := False;
   end;
-  if ((length(AddAlias) < 5) or (length(AddAlias) > 40)) then
+  if ((Length(AddAlias) < 5) or (Length(AddAlias) > 40)) then
   begin
     OutText('Alias must have between 5 and 40 chars', False, 2);
     //'Alias must have between 5 and 40 chars'
@@ -710,7 +711,7 @@ begin
     //'Alias can not be a valid address'
     procesar := False;
   end;
-  if GetWallArrIndex(WallAddIndex(address)).Balance < GetCustomFee(MyLastBlock) then
+  if GetWallArrIndex(WallAddIndex(address)).Balance < GetCustomFee(LastBlockIndex) then
   begin
     ToLog('console', 'Insufficient balance'); //'Insufficient balance'
     procesar := False;
@@ -726,7 +727,7 @@ begin
     ToLog('console', 'Alias already exists');
     procesar := False;
   end;
-  for cont := 1 to length(addalias) do
+  for cont := 1 to Length(addalias) do
   begin
     if pos(addalias[cont], CustomValid) = 0 then
     begin
@@ -742,7 +743,7 @@ begin
     OrderHash := GetOrderHash('1' + currtime + TrfrHash);
     AddCriptoOp(2, 'Customize this ' + address + ' ' + addalias +
       '$' + GetWallArrIndex(WallAddIndex(address)).PrivateKey,
-      ProtocolLine(9) +    // CUSTOM
+      GetProtocolLineFromCode(9) +    // CUSTOM
       OrderHash + ' ' +    // OrderID
       '1' + ' ' +          // OrderLines
       'CUSTOM' + ' ' +     // OrderType
@@ -752,7 +753,7 @@ begin
       GetWallArrIndex(WallAddIndex(address)).PublicKey + ' ' +    // sender
       GetWallArrIndex(WallAddIndex(address)).Hash + ' ' +    // address
       AddAlias + ' ' +     // receiver
-      IntToStr(GetCustomFee(MyLastBlock)) + ' ' +  // Amountfee
+      IntToStr(GetCustomFee(LastBlockIndex)) + ' ' +  // Amountfee
       '0' + ' ' +                         // amount trfr
       '[[RESULT]] ' + TrfrHash);      // trfrhash
   end;
@@ -835,7 +836,7 @@ begin
   if procesar then
   begin
     currtime := UTCTimeStr;
-    Setlength(ArrayTrfrs, 0);
+    SetLength(ArrayTrfrs, 0);
     Contador := form1.DireccionesPAnel.Row - 1;
     OrderHashString := currtime;
     while monto > 0 do
@@ -851,23 +852,23 @@ begin
       GetAddressPendingPays(GetWallArrIndex(contador).Hash) > 0 then
       begin
         trxLinea := TrxLinea + 1;
-        Setlength(ArrayTrfrs, length(arraytrfrs) + 1);
-        ArrayTrfrs[length(arraytrfrs) - 1] :=
+        SetLength(ArrayTrfrs, Length(arraytrfrs) + 1);
+        ArrayTrfrs[Length(arraytrfrs) - 1] :=
           SendFundsFromAddress(GetWallArrIndex(contador).Hash,
           Destination, monto, comision, reference, CurrTime, TrxLinea);
-        comision := comision - ArrayTrfrs[length(arraytrfrs) - 1].AmountFee;
-        monto := monto - ArrayTrfrs[length(arraytrfrs) - 1].AmountTransferred;
-        OrderHashString := OrderHashString + ArrayTrfrs[length(arraytrfrs) -
+        comision := comision - ArrayTrfrs[Length(arraytrfrs) - 1].AmountFee;
+        monto := monto - ArrayTrfrs[Length(arraytrfrs) - 1].AmountTransferred;
+        OrderHashString := OrderHashString + ArrayTrfrs[Length(arraytrfrs) -
           1].TransferID;
       end;
       Inc(contador);
       if contador >= LenWallArr then contador := 0;
       EndPerformance('SendFundsVerify');
     end;
-    for contador := 0 to length(ArrayTrfrs) - 1 do
+    for contador := 0 to Length(ArrayTrfrs) - 1 do
     begin
       ArrayTrfrs[contador].OrderID := GetOrderHash(IntToStr(trxLinea) + OrderHashString);
-      ArrayTrfrs[contador].OrderLines := trxLinea;
+      ArrayTrfrs[contador].OrderLineCount := trxLinea;
     end;
     ResultOrderID := GetOrderHash(IntToStr(trxLinea) + OrderHashString);
     if showOutput then ToLog('console', 'Send to: ' + Destination +
@@ -875,12 +876,12 @@ begin
         IntToCurrency(comisionToShow) + slinebreak + 'Order ID: ' + ResultOrderID);
     Result := ResultOrderID;
 
-    OrderString := GetPTCEcn + 'ORDER ' + IntToStr(trxLinea) + ' $';
-    for contador := 0 to length(ArrayTrfrs) - 1 do
+    OrderString := GetProtocolHeader + 'ORDER ' + IntToStr(trxLinea) + ' $';
+    for contador := 0 to Length(ArrayTrfrs) - 1 do
     begin
       OrderString := orderstring + OrderToString(ArrayTrfrs[contador]) + ' $';
     end;
-    Setlength(orderstring, length(orderstring) - 2);
+    SetLength(orderstring, Length(orderstring) - 2);
     OrderString := StringReplace(OrderString, 'PSK', 'NSLORDER', []);
     ToLog('console', 'Send to Node ' + OrderString);
     Result := SendOrderToNode(OrderString);
@@ -921,22 +922,22 @@ begin
   BeginPerformance('SendGVT');
   GVTNumber := StrToIntDef(GetParameter(Linetext, 1), -1);
   Destination := GetParameter(Linetext, 2);
-  if ((GVTnumber < 0) or (GVTnumber > length(ArrGVTs) - 1)) then
+  if ((GVTnumber < 0) or (GVTnumber > Length(ArrGVTs) - 1)) then
   begin
     if showOutput then ToLog('console', 'Invalid GVT number');
-    exit;
+    Exit;
   end;
   GVTNumStr := ArrGVTs[GVTnumber].number;
   GVTOwner := ArrGVTs[GVTnumber].owner;
   if WallAddIndex(GVTOwner) < 0 then
   begin
     if showOutput then ToLog('console', 'You do not own that GVT');
-    exit;
+    Exit;
   end;
-  if GetAddressAvailable(GVTOwner) < GetCustomFee(MyLastBlock) then
+  if GetAddressAvailable(GVTOwner) < GetCustomFee(LastBlockIndex) then
   begin
     if showOutput then ToLog('console', 'Inssuficient funds');
-    exit;
+    Exit;
   end;
   if not IsValidHashAddress(Destination) then
   begin
@@ -953,7 +954,7 @@ begin
   if GVTOwner = Destination then
   begin
     if showOutput then ToLog('console', 'Can not transfer GVT to same address');
-    exit;
+    Exit;
   end;
   OrderTime := UTCTimeStr;
   TrfrHash := GetTransferHash(OrderTime + GVTOwner + Destination);
@@ -961,7 +962,7 @@ begin
   StrTosign := 'Transfer GVT ' + GVTNumStr + ' ' + Destination + OrderTime;
   Signature := GetStringSigned(StrTosign, GetWallArrIndex(
     WallAddIndex(GVTOwner)).PrivateKey);
-  ResultStr := ProtocolLine(21) + // sndGVT
+  ResultStr := GetProtocolLineFromCode(21) + // sndGVT
     OrderHash + ' ' +     // OrderID
     '1' + ' ' +           // OrderLines
     'SNDGVT' + ' ' +      // OrderType
@@ -971,7 +972,7 @@ begin
     GetWallArrIndex(WallAddIndex(GVTOwner)).PublicKey + ' ' +    // sender
     GetWallArrIndex(WallAddIndex(GVTOwner)).Hash + ' ' +        // address
     Destination + ' ' +   // receiver
-    IntToStr(GetCustomFee(MyLastBlock)) + ' ' +  // Amountfee
+    IntToStr(GetCustomFee(LastBlockIndex)) + ' ' +  // Amountfee
     '0' + ' ' +                         // amount trfr
     Signature + ' ' + TrfrHash;      // trfrhash
   OutgoingMsjsAdd(ResultStr);
@@ -1026,7 +1027,7 @@ begin
   end
   else
   begin
-    LocalMN_Port := NewPort;
+    LocalMasternodePort := NewPort;
     OutText('New listening port: ' + NewPort, False, 2);
   end;
 end;
@@ -1055,10 +1056,10 @@ end;
 
 // Delete bots from server
 {
-Procedure DeleteBots(LineText:String);
+Procedure RemoveAllBots(LineText:String);
 Begin
-  SetLength(BotsList,0);
-  LastBotClear := UTCTimeStr;
+  SetLength(BotList,0);
+  LastBotClearTime := UTCTimeStr;
 End;
 }
 
@@ -1123,7 +1124,7 @@ begin
   FindAllFiles(updatefiles, UpdatesDirectory, '*.zip', False);
   while contador < updatefiles.Count do
   begin
-    version := copy(updatefiles[contador], 18, 8);
+    version := Copy(updatefiles[contador], 18, 8);
     Result := Result + version + ' ';
     Inc(contador);
   end;
@@ -1148,7 +1149,7 @@ begin
   if ((Tversion = MainnetVersion + NodeRelease) and (not overRule)) then
   begin
     ToLog('console', 'Version ' + TVersion + ' already installed');
-    exit;
+    Exit;
   end;
   if GetLastVerZipFile(Tversion, TArch) then
   begin
@@ -1190,7 +1191,7 @@ begin
   if ((Tversion = MainnetVersion + NodeRelease) and (not overRule)) then
   begin
     ToLog('console', 'Version ' + TVersion + ' already installed');
-    exit;
+    Exit;
   end;
   if GetLastVerZipFile(Tversion, TArch) then
   begin
@@ -1224,15 +1225,15 @@ begin
   //Only the Noso developers can do this
   else
   begin
-    mensaje := copy(linetext, 11, length(linetext));
+    mensaje := Copy(linetext, 11, Length(linetext));
     //Mensaje := GetParameter(linetext,1);
     currtime := UTCTimeStr;
     firma := GetStringSigned(currtime + mensaje, GetWallArrIndex(
       WallAddIndex(AdminHash)).PrivateKey);
     hashmsg := HashMD5String(currtime + mensaje + firma);
     mensaje := StringReplace(mensaje, ' ', '_', [rfReplaceAll, rfIgnoreCase]);
-    OutgoingMsjsAdd(GetPTCEcn + 'ADMINMSG ' + currtime + ' ' + mensaje +
-      ' ' + firma + ' ' + hashmsg);
+    OutgoingMsjsAdd(GetProtocolHeader + 'ADMINMSG ' + currtime + ' ' +
+      mensaje + ' ' + firma + ' ' + hashmsg);
     mensaje := StringReplace(mensaje, '_', ' ', [rfReplaceAll, rfIgnoreCase]);
     ToLog('console', 'Directive sent: ' + mensaje);
   end;
@@ -1328,7 +1329,7 @@ begin
     if AnsiContainsStr(GetMN_FileText, addhash) then
       ToLog('console', 'Masternode: Active');
     EnterCriticalSection(CSGVTsArray);
-    for counter := 0 to length(ArrGVTs) - 1 do
+    for counter := 0 to Length(ArrGVTs) - 1 do
     begin
       if ArrGVTs[counter].owner = addhash then
       begin
@@ -1349,7 +1350,7 @@ var
   addtoshow: String;
   counter, contador2: Integer;
   Header: BlockHeaderData;
-  ArrTrxs: TBlockOrdersArray;
+  ArrTrxs: TBlockOrders;
   incomingtrx: Integer = 0;
   minedblocks: Integer = 0;
   inccoins: Int64 = 0;
@@ -1371,10 +1372,10 @@ var
 begin
   BlockCount := StrToIntDef(GetParameter(Linetext, 2), 0);
   if BlockCount = 0 then BlockCount := SecurityBlocks - 1;
-  if BlockCount >= MyLastBlock then BlockCount := MyLastBlock - 1;
+  if BlockCount >= LastBlockIndex then BlockCount := LastBlockIndex - 1;
   TransSL := TStringList.Create;
   addtoshow := GetParameter(LineText, 1);
-  for counter := MyLastBlock downto MyLastBlock - BlockCount do
+  for counter := LastBlockIndex downto LastBlockIndex - BlockCount do
   begin
     if counter mod 10 = 0 then
     begin
@@ -1388,10 +1389,10 @@ begin
       MinedBlocksStr := MinedBlocksStr + Counter.ToString + ' ';
       inccoins := inccoins + header.Reward + header.MinerFee;
     end;
-    ArrTrxs := GetBlockTrxs(counter);
-    if length(ArrTrxs) > 0 then
+    ArrTrxs := GetBlockTransfers(counter);
+    if Length(ArrTrxs) > 0 then
     begin
-      for contador2 := 0 to length(ArrTrxs) - 1 do
+      for contador2 := 0 to Length(ArrTrxs) - 1 do
       begin
         if ArrTrxs[contador2].Receiver = addtoshow then // incoming order
         begin
@@ -1414,9 +1415,9 @@ begin
     if counter >= PoSBlockStart then
     begin
       ArrayPos := GetBlockPoSes(counter);
-      PosReward := StrToIntDef(Arraypos[length(Arraypos) - 1].address, 0);
-      SetLength(ArrayPos, length(ArrayPos) - 1);
-      PosCount := length(ArrayPos);
+      PosReward := StrToIntDef(Arraypos[Length(Arraypos) - 1].address, 0);
+      SetLength(ArrayPos, Length(ArrayPos) - 1);
+      PosCount := Length(ArrayPos);
       for counterpos := 0 to PosCount - 1 do
       begin
         if ArrayPos[counterPos].address = addtoshow then
@@ -1429,7 +1430,7 @@ begin
     end;
   end;
   inbalance := GetAddressBalanceIndexed(addtoshow);
-  ToLog('console', 'Last block : ' + IntToStr(MyLastBlock));
+  ToLog('console', 'Last block : ' + IntToStr(LastBlockIndex));
   ToLog('console', 'Address    : ' + addtoshow);
   ToLog('console', 'INCOMINGS');
   ToLog('console', '  Mined        : ' + IntToStr(minedblocks));
@@ -1460,7 +1461,7 @@ var
   Header: BlockHeaderData;
   totalcoins: Int64 = 0;
 begin
-  for counter := 1 to MyLastBlock do
+  for counter := 1 to LastBlockIndex do
   begin
     Header := LoadBlockDataHeader(counter);
     totalcoins := totalcoins + header.MinerFee;
@@ -1472,7 +1473,7 @@ begin
   end;
   ToLog('console', 'Blockchain total fees: ' + IntToCurrency(totalcoins));
   ToLog('console', 'Block average        : ' +
-    IntToCurrency(totalcoins div MyLastBlock));
+    IntToCurrency(totalcoins div LastBlockIndex));
 end;
 
  // *******************
@@ -1487,16 +1488,16 @@ var
   PosCount, counterPos: Integer;
 begin
   number := StrToIntDef(GetParameter(linetext, 1), 0);
-  if ((number < PoSBlockStart) or (number > MyLastBlock)) then
+  if ((number < PoSBlockStart) or (number > LastBlockIndex)) then
   begin
     ToLog('console', 'Invalid block number: ' + number.ToString);
   end
   else
   begin
     ArrayPos := GetBlockPoSes(number);
-    PosReward := StrToIntDef(Arraypos[length(Arraypos) - 1].address, 0);
-    SetLength(ArrayPos, length(ArrayPos) - 1);
-    PosCount := length(ArrayPos);
+    PosReward := StrToIntDef(Arraypos[Length(Arraypos) - 1].address, 0);
+    SetLength(ArrayPos, Length(ArrayPos) - 1);
+    PosCount := Length(ArrayPos);
     for counterpos := 0 to PosCount - 1 do
       ToLog('console', ArrayPos[counterPos].address + ': ' + IntToCurrency(PosReward));
     ToLog('console', 'Block:   : ' + IntToStr(number));
@@ -1515,16 +1516,16 @@ var
   MNsCount, counterMNs: Integer;
 begin
   number := StrToIntDef(GetParameter(linetext, 1), 0);
-  if ((number < MNBlockStart) or (number > MyLastBlock)) then
+  if ((number < MNBlockStart) or (number > LastBlockIndex)) then
   begin
     ToLog('console', 'Invalid block number: ' + number.ToString);
   end
   else
   begin
     ArrayMNs := GetBlockMNs(number);
-    MNsReward := StrToIntDef(ArrayMNs[length(ArrayMNs) - 1].address, 0);
-    SetLength(ArrayMNs, length(ArrayMNs) - 1);
-    MNSCount := length(ArrayMNs);
+    MNsReward := StrToIntDef(ArrayMNs[Length(ArrayMNs) - 1].address, 0);
+    SetLength(ArrayMNs, Length(ArrayMNs) - 1);
+    MNSCount := Length(ArrayMNs);
     for counterMNs := 0 to MNsCount - 1 do
       ToLog('console', ArrayMNs[counterMNs].address);
     ToLog('console', 'MNs Block : ' + IntToStr(number));
@@ -1564,7 +1565,7 @@ var
 begin
   ShowGVTInfo;
   ToLog('console', 'Existing: ' + Length(arrgvts).ToString);
-  for counter := 0 to length(arrgvts) - 1 do
+  for counter := 0 to Length(arrgvts) - 1 do
     ToLog('console', Format('%.2d %s', [counter, arrgvts[counter].owner]));
   UpdateMyGVTsList;
 end;
@@ -1624,7 +1625,7 @@ begin
   begin
     ToClipboard := ToClipboard + (GetWallArrIndex(contador).Hash) + ',';
   end;
-  Setlength(ToClipboard, length(ToClipboard) - 1);
+  SetLength(ToClipboard, Length(ToClipboard) - 1);
   Clipboard.AsText := ToClipboard;
   ToLog('console', 'Web wallet data copied to clipboard');
 end;
@@ -1727,7 +1728,7 @@ begin
   ToLog('console', 'Verificators : ' + IntToStr(verifis));
   for counter := 0 to verifis - 1 do
     ToLog('console', format('%s %s %d', [ArrayMNsData[counter].ipandport,
-      copy(arrayMNsData[counter].address, 1, 5), ArrayMNsData[counter].age]));
+      Copy(arrayMNsData[counter].address, 1, 5), ArrayMNsData[counter].age]));
 end;
 
 procedure OrdInfo(linetext: String);
@@ -1752,7 +1753,7 @@ var
   DownSpeed: Int64;
   Param: String;
 begin
-  if MyConStatus > 0 then exit;
+  if MyConStatus > 0 then Exit;
   Param := Uppercase(GetParameter(Linetext, 1));
   if param = 'POWER' then
     ToLog('console', Format('Processing       : %d Trx/s', [Sys_HashSpeed]))
@@ -1863,10 +1864,10 @@ begin
   except
   end;{Try}
   ToLog('console', 'Total old: ' + IntToCurrency(totalold));
-  if TotalCoins = GetCirculatingSupply(MyLastBlock) then AsExpected := '✓'
+  if TotalCoins = GetCirculatingSupply(LastBlockIndex) then AsExpected := '✓'
   else
     AsExpected := '(' + IntToCurrency(TotalCoins -
-      GetCirculatingSupply(MyLastBlock)) + ')';
+      GetCirculatingSupply(LastBlockIndex)) + ')';
   ToLog('console', format('Block : %d (short: %d)', [LastRecord, shortadd]));
   ToLog('console', IntToCurrency(Totalcoins) + ' ' + CoinSimbol + ' ' + AsExpected);
   ToLog('console', format('Addresses (%d): %d (%d empty)',
@@ -2011,10 +2012,10 @@ var
   LocalParams: String;
   LOrder: TOrderData;
 begin
-  LocalPArams := '1:' + UTCtimeStr + ';' + '2:' + IntToStr(MyLastBlock) +
+  LocalPArams := '1:' + UTCtimeStr + ';' + '2:' + IntToStr(LastBlockIndex) +
     ';' + '3:1;' + '4:500;' + '5:2016;';
-  AddNewPSO(1, GetWallArrIndex(0).Hash, MyLastBlock + 2016, LocalPArams);
-  SavePSOFileToDisk(MyLastBlock);
+  AddNewPSO(1, GetWallArrIndex(0).Hash, LastBlockIndex + 2016, LocalPArams);
+  SavePSOFileToDisk(LastBlockIndex);
   ToLog('console', 'Added');
 end;
 
@@ -2027,7 +2028,7 @@ begin
   ToLog('console', 'Block: ' + GetPSOHeaders.Block.ToString);
   ToLog('console', 'MNs  : ' + GetPSOHeaders.MNsLock.ToString);
   ToLog('console', 'PSOs : ' + GetPSOHeaders.Count.ToString);
-  for counter := 0 to length(PSOsArray) - 1 do
+  for counter := 0 to Length(PSOsArray) - 1 do
   begin
     ToLog('console', PSOSArray[counter].Mode.ToString + ',' +
       PSOSArray[counter].Hash + ',' + PSOSArray[counter].owner +
@@ -2055,7 +2056,7 @@ end;
 procedure ClearPSOs();
 begin
   EnterCriticalSection(CS_PSOsArray);
-  Setlength(PSOsArray, 0);
+  SetLength(PSOsArray, 0);
   LeaveCriticalSection(CS_PSOsArray);
 end;
 
@@ -2064,7 +2065,7 @@ var
   counter: Integer;
 begin
   EnterCriticalSection(CS_LockedMNs);
-  for counter := 0 to length(MNSLockArray) - 1 do
+  for counter := 0 to Length(MNSLockArray) - 1 do
   begin
     ToLog('console', MNSLockArray[counter].address + ' ' +
       MNSLockArray[counter].expire.ToString());
@@ -2082,10 +2083,10 @@ procedure ShowMNsChecks();
 var
   counter: Integer;
 begin
-  for counter := 0 to length(ArrMNChecks) - 1 do
+  for counter := 0 to Length(MasternodeChecks) - 1 do
   begin
-    ToLog('console', ArrMNChecks[counter].ValidatorIP + ',' +
-      GetValidNodesCountOnCheck(ArrMNChecks[counter].ValidNodes).ToString);
+    ToLog('console', MasternodeChecks[counter].ValidatorIP + ',' +
+      GetValidNodesCountOnCheck(MasternodeChecks[counter].ValidNodes).ToString);
   end;
 
 end;
@@ -2101,7 +2102,7 @@ begin
   FSize := GetHeadersAsMemStream(MyStream);
   ToLog('Console', 'File size: ' + Fsize.ToString());
   SaveStreamAsHeaders(MyStream);
-  UpdateMyData();
+  UpdateNodeData();
   MyStream.Free;
 end;
 

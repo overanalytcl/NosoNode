@@ -19,7 +19,7 @@
 <div class="one_section"><a class="section" href="#PasDoc-Description">Description</a></div><div class="one_section"><a class="section" href="#PasDoc-Uses">Uses</a></div><div class="one_section">Classes, Interfaces, Objects and Records</div><div class="one_section"><a class="section" href="#PasDoc-FuncsProcs">Functions and Procedures</a></div><div class="one_section">Types</div><div class="one_section">Constants</div><div class="one_section">Variables</div></div>
 <span id="PasDoc-Description"></span><h2 class="description">Description</h2>
 <p class="nodescription">This item has no description.</p><span id="PasDoc-Uses"></span><h2 class="uses">Uses</h2>
-<ul class="useslist"><li>Classes</li><li>Clipbrd</li><li>DateUtils</li><li>Dialogs</li><li>fileutil</li><li>Forms</li><li>idContext</li><li>idglobal</li><li>Math</li><li><a href="MP.Block.html">MP.Block</a></li><li><a href="MP.Coin.html">MP.Coin</a></li><li><a href="MP.Disk.html">MP.Disk</a></li><li><a href="MP.Gui.html">MP.Gui</a></li><li><a href="MP.Red.html">MP.Red</a></li><li><a href="MP.Rpc.html">MP.Rpc</a></li><li><a href="MP.SysCheck.html">MP.SysCheck</a></li><li><a href="MPForm.html">MPForm</a></li><li><a href="Noso.Block.html">Noso.Block</a></li><li><a href="Noso.Config.html">Noso.Config</a></li><li><a href="Noso.Consensus.html">Noso.Consensus</a></li><li><a href="Noso.Crypto.html">Noso.Crypto</a></li><li><a href="Noso.Debug.html">Noso.Debug</a></li><li><a href="Noso.General.html">Noso.General</a></li><li><a href="Noso.Gvt.html">Noso.Gvt</a></li><li><a href="Noso.Headers.html">Noso.Headers</a></li><li><a href="Noso.Masternodes.html">Noso.Masternodes</a></li><li><a href="Noso.Network.html">Noso.Network</a></li><li><a href="Noso.Pso.html">Noso.Pso</a></li><li><a href="Noso.Summary.html">Noso.Summary</a></li><li><a href="Noso.Time.html">Noso.Time</a></li><li><a href="Noso.WallCon.html">Noso.WallCon</a></li><li>strutils</li><li>SysUtils</li><li><a href="translation.html">translation</a></li></ul><h2 class="overview">Overview</h2>
+<ul class="useslist"><li>Classes</li><li>Clipbrd</li><li>DateUtils</li><li>Dialogs</li><li>fileutil</li><li>Forms</li><li>idContext</li><li>idglobal</li><li>Math</li><li><a href="MP.Block.html">MP.Block</a></li><li><a href="MP.Coin.html">MP.Coin</a></li><li><a href="MP.Disk.html">MP.Disk</a></li><li><a href="MP.Gui.html">MP.Gui</a></li><li><a href="MP.Red.html">MP.Red</a></li><li><a href="MP.Rpc.html">MP.Rpc</a></li><li><a href="MP.SysCheck.html">MP.SysCheck</a></li><li><a href="MPForm.html">MPForm</a></li><li><a href="Noso.Block.html">Noso.Block</a></li><li><a href="Noso.Config.html">Noso.Config</a></li><li><a href="Noso.Consensus.html">Noso.Consensus</a></li><li><a href="Noso.Crypto.html">Noso.Crypto</a></li><li><a href="Noso.Debug.html">Noso.Debug</a></li><li><a href="Noso.General.html">Noso.General</a></li><li><a href="Noso.Gvt.html">Noso.Gvt</a></li><li><a href="Noso.Headers.html">Noso.Headers</a></li><li><a href="Noso.Masternodes.html">Noso.Masternodes</a></li><li><a href="Noso.Network.html">Noso.Network</a></li><li><a href="Noso.Pso.html">Noso.Pso</a></li><li><a href="Noso.Summary.html">Noso.Summary</a></li><li><a href="Noso.Time.html">Noso.Time</a></li><li><a href="Noso.WallCon.html">Noso.WallCon</a></li><li>StrUtils</li><li>SysUtils</li><li><a href="translation.html">translation</a></li></ul><h2 class="overview">Overview</h2>
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
@@ -337,7 +337,7 @@ Exports a single address credentials of the wallet</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Elimina el encabezado de una linea de <a class="normal" href="Noso.Network.html#Protocolo">protocolo</a></p>
+Elimina el encabezado de una linea de <a class="normal" href="Noso.Network.html#ProtocolVersion">ProtocolVersion</a></p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -440,7 +440,9 @@ Gets a line from <a class="normal" href="MPForm.html#OutgoingMsjs">OutgoingMsjs<
 </tr>
 <tr><td colspan="1">
 <p>
-Procedure <a class="normal" href="Noso.Network.html#DeleteBots">DeleteBots</a>(LineText:String); Begin SetLength(<a class="normal" href="Noso.Network.html#BotsList">BotsList</a>,0); <a class="normal" href="Noso.Network.html#LastBotClear">LastBotClear</a> := <a class="normal" href="Noso.Time.html#UTCTimeStr">UTCTimeStr</a>; End;</p>
+Procedure DeleteBots(LineText:String);
+
+<p>Procedure <a class="normal" href="Noso.Network.html#RemoveAllBots">RemoveAllBots</a>(LineText:String); Begin SetLength(<a class="normal" href="Noso.Network.html#BotList">BotList</a>,0); <a class="normal" href="Noso.Network.html#LastBotClearTime">LastBotClearTime</a> := <a class="normal" href="Noso.Time.html#UTCTimeStr">UTCTimeStr</a>; End;</p>
 </td></tr>
 </table>
 <table class="detail wide_list">

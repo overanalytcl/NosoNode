@@ -102,11 +102,11 @@ function CreateProtocolOrder(BlockN: Integer;
 begin
   Result := Default(TOrderData);
   Result.Block := BlockN;
-  Result.OrderLines := 1;
+  Result.OrderLineCount := 1;
   Result.OrderType := OrType;
   Result.TimeStamp := TimeStamp;
   Result.Reference := 'null';
-  Result.TrxLine := 1;
+  Result.TransferLine := 1;
   Result.Sender := Sender;
   Result.Address := Sender;
   Result.Receiver := receiver;
