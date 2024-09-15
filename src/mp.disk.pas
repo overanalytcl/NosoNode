@@ -184,15 +184,15 @@ var
   SourceStr : String = '';
 Begin
 counter := 0;
-SourceStr := Parameter(GetCFGDataStr,1)+GetVerificatorsText;
+SourceStr := GetParameter(GetCFGDataStr,1)+GetVerificatorsText;
 //ToLog('console',sourcestr);
 SourceStr := StringReplace(SourceStr,':',' ',[rfReplaceAll, rfIgnoreCase]);
 SetLength(ListaNodos,0);
 Repeat
-   ThisNode := parameter(SourceStr,counter);
+   ThisNode := GetParameter(SourceStr,counter);
    ThisNode := StringReplace(ThisNode,';',' ',[rfReplaceAll, rfIgnoreCase]);
-   ThisPort := StrToIntDef(Parameter(ThisNode,1),8080);
-   ThisNode := Parameter(ThisNode,0);
+   ThisPort := StrToIntDef(GetParameter(ThisNode,1),8080);
+   ThisNode := GetParameter(ThisNode,0);
    if thisnode = '' then continuar := false
    else
       begin
@@ -333,51 +333,51 @@ begin
     while not EOF(FileAdvOptions) do
     begin
       readln(FileAdvOptions, linea);
-      if parameter(linea, 0) = 'RPCPort' then
-        RPCPort := StrToIntDef(Parameter(linea, 1), RPCPort);
-      if parameter(linea, 0) = 'RPCPass' then RPCPass := Parameter(linea, 1);
-      if parameter(linea, 0) = 'MaxPeers' then
-        MaxPeersAllow := StrToIntDef(Parameter(linea, 1), MaxPeersAllow);
-      if parameter(linea, 0) = 'PosWarning' then
-        WO_PosWarning := StrToIntDef(Parameter(linea, 1), WO_PosWarning);
-      if parameter(linea, 0) = 'SendReport' then
-        WO_SendReport := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'BlocksDB' then
-        WO_BlockDB := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'PRestart' then
-        WO_PRestart := StrToIntDef(Parameter(linea, 1), 0);
-      if parameter(linea, 0) = 'SkipBlocks' then
-        WO_skipBlocks := StrToBool(Parameter(linea, 1));
+      if GetParameter(linea, 0) = 'RPCPort' then
+        RPCPort := StrToIntDef(GetParameter(linea, 1), RPCPort);
+      if GetParameter(linea, 0) = 'RPCPass' then RPCPass := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'MaxPeers' then
+        MaxPeersAllow := StrToIntDef(GetParameter(linea, 1), MaxPeersAllow);
+      if GetParameter(linea, 0) = 'PosWarning' then
+        WO_PosWarning := StrToIntDef(GetParameter(linea, 1), WO_PosWarning);
+      if GetParameter(linea, 0) = 'SendReport' then
+        WO_SendReport := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'BlocksDB' then
+        WO_BlockDB := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'PRestart' then
+        WO_PRestart := StrToIntDef(GetParameter(linea, 1), 0);
+      if GetParameter(linea, 0) = 'SkipBlocks' then
+        WO_skipBlocks := StrToBool(GetParameter(linea, 1));
 
 
 
-      if parameter(linea, 0) = 'MultiSend' then
-        WO_MultiSend := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'HideEmpty' then
-        WO_HideEmpty := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'RPCFilter' then
-        RPCFilter := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'RPCWhiteList' then RPCWhiteList := Parameter(linea, 1);
-      if parameter(linea, 0) = 'RPCBanned' then RPCBanned := Parameter(linea, 1);
-      if parameter(linea, 0) = 'RPCAuto' then RPCAuto := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'RPCSaveNew' then
-        RPCSaveNew := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'Language' then WO_Language := Parameter(linea, 1);
-      if parameter(linea, 0) = 'Autoserver' then
-        WO_AutoServer := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'PoUpdate' then WO_LastPoUpdate := Parameter(linea, 1);
-      if parameter(linea, 0) = 'Closestart' then
-        WO_CloseStart := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'Autoupdate' then
-        WO_AutoUpdate := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'NoGUI' then WO_StopGUI := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'FormState' then
+      if GetParameter(linea, 0) = 'MultiSend' then
+        WO_MultiSend := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'HideEmpty' then
+        WO_HideEmpty := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'RPCFilter' then
+        RPCFilter := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'RPCWhiteList' then RPCWhiteList := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'RPCBanned' then RPCBanned := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'RPCAuto' then RPCAuto := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'RPCSaveNew' then
+        RPCSaveNew := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'Language' then WO_Language := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'Autoserver' then
+        WO_AutoServer := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'PoUpdate' then WO_LastPoUpdate := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'Closestart' then
+        WO_CloseStart := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'Autoupdate' then
+        WO_AutoUpdate := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'NoGUI' then WO_StopGUI := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'FormState' then
       begin
-        FormState_Top := StrToIntDef(Parameter(linea, 1), 0);
-        FormState_Left := StrToIntDef(Parameter(linea, 2), 0);
-        FormState_Width := StrToIntDef(Parameter(linea, 3), 400);
-        FormState_Heigth := StrToIntDef(Parameter(linea, 4), 560);
-        FormState_Status := StrToIntDef(Parameter(linea, 5), 2);
+        FormState_Top := StrToIntDef(GetParameter(linea, 1), 0);
+        FormState_Left := StrToIntDef(GetParameter(linea, 2), 0);
+        FormState_Width := StrToIntDef(GetParameter(linea, 3), 400);
+        FormState_Heigth := StrToIntDef(GetParameter(linea, 4), 560);
+        FormState_Status := StrToIntDef(GetParameter(linea, 5), 2);
         if FormState_Status = 2 then // Maximized
           form1.WindowState := wsMaximized;
         if FormState_Status = 0 then
@@ -393,14 +393,14 @@ begin
         end;
       end;
 
-      if parameter(linea, 0) = 'MNIP' then LocalMN_IP := Parameter(linea, 1);
-      if parameter(linea, 0) = 'MNPort' then LocalMN_Port := Parameter(linea, 1);
-      if parameter(linea, 0) = 'MNFunds' then LocalMN_Funds := Parameter(linea, 1);
-      if parameter(linea, 0) = 'MNSign' then LocalMN_Sign := Parameter(linea, 1);
-      if parameter(linea, 0) = 'MNAutoIp' then
-        MN_AutoIP := StrToBool(Parameter(linea, 1));
-      if parameter(linea, 0) = 'WO_FullNode' then
-        WO_FullNode := StrToBool(Parameter(linea, 1));
+      if GetParameter(linea, 0) = 'MNIP' then LocalMN_IP := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'MNPort' then LocalMN_Port := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'MNFunds' then LocalMN_Funds := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'MNSign' then LocalMN_Sign := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'MNAutoIp' then
+        MN_AutoIP := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'WO_FullNode' then
+        WO_FullNode := StrToBool(GetParameter(linea, 1));
 
     end;
     Closefile(FileAdvOptions);
@@ -437,8 +437,8 @@ else
    while not eof(archivo) do
       begin
       readln(archivo,linea);
-      if parameter(linea,0) ='Language' then result:=Parameter(linea,1);
-      if parameter(linea,0) ='PoUpdate' then WO_LastPoUpdate:=Parameter(linea,1);
+      if GetParameter(linea,0) ='Language' then result:=GetParameter(linea,1);
+      if GetParameter(linea,0) ='PoUpdate' then WO_LastPoUpdate:=GetParameter(linea,1);
       end;
    Closefile(archivo);
    end;
@@ -657,16 +657,16 @@ begin
     end;
     if ArrayOrders[cont].OrderType = 'TRFR' then
     begin
-      if SummaryValidPay(ArrayOrders[cont].Sender, ArrayOrders[cont].AmmountFee +
-        ArrayOrders[cont].AmmountTrf, blocknumber) then
-        CreditTo(ArrayOrders[cont].Receiver, ArrayOrders[cont].AmmountTrf, BlockNumber)
+      if SummaryValidPay(ArrayOrders[cont].Sender, ArrayOrders[cont].AmountFee +
+        ArrayOrders[cont].AmountTransferred, blocknumber) then
+        CreditTo(ArrayOrders[cont].Receiver, ArrayOrders[cont].AmountTransferred, BlockNumber)
       else
-        SummaryPay(BlockHeader.AccountMiner, ArrayOrders[cont].AmmountFee, blocknumber);
+        SummaryPay(BlockHeader.AccountMiner, ArrayOrders[cont].AmountFee, blocknumber);
     end;
     if ArrayOrders[cont].OrderType = 'PROJCT' then
     begin
-      CreditTo('NpryectdevepmentfundsGE', ArrayOrders[cont].AmmountTrf, BlockNumber);
-      SummaryPay(BlockHeader.AccountMiner, ArrayOrders[cont].AmmountTrf, blocknumber);
+      CreditTo('NpryectdevepmentfundsGE', ArrayOrders[cont].AmountTransferred, BlockNumber);
+      SummaryPay(BlockHeader.AccountMiner, ArrayOrders[cont].AmountTransferred, blocknumber);
     end;
   end;
   setlength(ArrayOrders, 0);

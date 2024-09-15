@@ -827,7 +827,7 @@ var
   LastBlockToCheck: Integer = 0;
   FirstBlockToCheck: Integer;
   TryonIndex: Integer = -1;
-  CopyPendings: array of Torderdata;
+  CopyPendings: array of TOrderData;
 begin
   BeginPerformance('GetOrderDetails');
   resultorder := default(TOrderGroup);
@@ -852,12 +852,12 @@ begin
         else
           resultorder.Sender :=
             resultorder.Sender + format('[%s,%d,%d]',
-            [CopyPendings[counter].Address, CopyPendings[counter].AmmountTrf,
-            CopyPendings[counter].AmmountFee]);
+            [CopyPendings[counter].Address, CopyPendings[counter].AmountTransferred,
+            CopyPendings[counter].AmountFee]);
         resultorder.AmmountTrf :=
-          resultorder.AmmountTrf + CopyPendings[counter].AmmountTrf;
+          resultorder.AmmountTrf + CopyPendings[counter].AmountTransferred;
         resultorder.AmmountFee :=
-          resultorder.AmmountFee + CopyPendings[counter].AmmountFee;
+          resultorder.AmmountFee + CopyPendings[counter].AmountFee;
         resultorder.OrderLines += 1;
         resultorder.OrderType := CopyPendings[counter].OrderType;
         orderfound := True;
@@ -888,12 +888,12 @@ begin
             else
               resultorder.Sender :=
                 resultorder.Sender + format('[%s,%d,%d]',
-                [ArrTrxs[counter2].Address, ArrTrxs[counter2].AmmountTrf,
-                ArrTrxs[counter2].AmmountFee]);
+                [ArrTrxs[counter2].Address, ArrTrxs[counter2].AmountTransferred,
+                ArrTrxs[counter2].AmountFee]);
             resultorder.AmmountTrf :=
-              resultorder.AmmountTrf + ArrTrxs[counter2].AmmountTrf;
+              resultorder.AmmountTrf + ArrTrxs[counter2].AmountTransferred;
             resultorder.AmmountFee :=
-              resultorder.AmmountFee + ArrTrxs[counter2].AmmountFee;
+              resultorder.AmmountFee + ArrTrxs[counter2].AmountFee;
             resultorder.OrderLines += 1;
             resultorder.OrderType := ArrTrxs[counter2].OrderType;
             orderfound := True;
@@ -935,8 +935,8 @@ begin
         if ArrTrxs[counter2].OrderID = orderid then
         begin
           Result := Result + Format('[%s,%d,%d]',
-            [ArrTrxs[counter2].Sender, ArrTrxs[counter2].AmmountTrf,
-            ArrTrxs[counter2].AmmountFee]);
+            [ArrTrxs[counter2].Sender, ArrTrxs[counter2].AmountTransferred,
+            ArrTrxs[counter2].AmountFee]);
           orderfound := True;
         end;
       end;
@@ -962,15 +962,15 @@ begin
     {10}MyLastBlockHash + ' ' +{11}{GetNMSData.Diff}'null' + ' ' +
     {12}IntToStr(LastBlockData.TimeEnd) + ' ' +
     {13}LastBlockData.AccountMiner + ' ' +{14}GetMNsChecksCount.ToString +
-    ' ' +{15}Parameter(LastBlockData.Solution, 2) + ' ' +
-    {16}Parameter(LastBlockData.Solution, 1) + ' ' +{17}copy(
+    ' ' +{15}GetParameter(LastBlockData.Solution, 2) + ' ' +
+    {16}GetParameter(LastBlockData.Solution, 1) + ' ' +{17}copy(
     MySumarioHash, 0, 5) + ' ' +{18}copy(MyGVTsHash, 0, 5) + ' ' +
     {19}Copy(GetCFGHash, 0, 5) + ' ' +{20}copy(PSOFileHash, 0, 5);
 end;
 
 function IsSafeIP(IP: String): Boolean;
 begin
-  if Pos(IP, Parameter(GetCFGDataStr, 1)) > 0 then Result := True
+  if Pos(IP, GetParameter(GetCFGDataStr, 1)) > 0 then Result := True
   else
     Result := False;
 end;

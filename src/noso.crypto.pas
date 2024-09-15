@@ -471,7 +471,7 @@ begin
   SetLength(Addresses, 0);
   repeat
     Inserted := False;
-    ThisSour := Parameter(LocSource, counter);
+    ThisSour := GetParameter(LocSource, counter);
     if thisSour <> '' then
     begin
       if AnsiContainsStr(Existing, ThisSour) then

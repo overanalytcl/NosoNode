@@ -33,7 +33,7 @@ function CreateZipBlockfile(firstblock: Integer): String;
 procedure PTC_SendBlocks(Slot: Integer; TextLine: String);
 procedure INC_PTC_Custom(TextLine: String; connection: Integer);
 function PTC_Custom(TextLine: String): Integer;
-function ValidateTrfr(order: Torderdata; Origen: String): Integer;
+function ValidateTrfr(order: TOrderData; Origen: String): Integer;
 function IsAddressLocked(LAddress: String): Boolean;
 function IsOrderIDAlreadyProcessed(OrderText: String): Boolean;
 procedure INC_PTC_Order(TextLine: String; connection: Integer);
@@ -92,19 +92,19 @@ begin
   Result := True;
   ThisData := Default(TOrderData);
   try
-    ThisData.OrderID := Parameter(textline, 1);
-    ThisData.OrderLines := StrToInt(Parameter(textline, 2));
-    ThisData.OrderType := Parameter(textline, 3);
-    ThisData.TimeStamp := StrToInt64(Parameter(textline, 4));
-    ThisData.reference := Parameter(textline, 5);
-    ThisData.TrxLine := StrToInt(Parameter(textline, 6));
-    ThisData.Sender := Parameter(textline, 7);
-    ThisData.Address := Parameter(textline, 8);
-    ThisData.Receiver := Parameter(textline, 9);
-    ThisData.AmmountFee := StrToInt64(Parameter(textline, 10));
-    ThisData.AmmountTrf := StrToInt64(Parameter(textline, 11));
-    ThisData.Signature := Parameter(textline, 12);
-    ThisData.TrfrID := Parameter(textline, 13);
+    ThisData.OrderID := GetParameter(textline, 1);
+    ThisData.OrderLines := StrToInt(GetParameter(textline, 2));
+    ThisData.OrderType := GetParameter(textline, 3);
+    ThisData.TimeStamp := StrToInt64(GetParameter(textline, 4));
+    ThisData.reference := GetParameter(textline, 5);
+    ThisData.TrxLine := StrToInt(GetParameter(textline, 6));
+    ThisData.Sender := GetParameter(textline, 7);
+    ThisData.Address := GetParameter(textline, 8);
+    ThisData.Receiver := GetParameter(textline, 9);
+    ThisData.AmountFee := StrToInt64(GetParameter(textline, 10));
+    ThisData.AmountTransferred := StrToInt64(GetParameter(textline, 11));
+    ThisData.Signature := GetParameter(textline, 12);
+    ThisData.TransferID := GetParameter(textline, 13);
   except
     ON E: Exception do
     begin
@@ -152,10 +152,10 @@ begin
     while LengthIncoming(contador) > 0 do
     begin
       ProcessLine := GetIncoming(contador);
-      UsedProtocol := StrToIntDef(Parameter(ProcessLine, 1), 1);
-      UsedVersion := Parameter(ProcessLine, 2);
-      PeerTime := Parameter(ProcessLine, 3);
-      LineComando := Parameter(ProcessLine, 4);
+      UsedProtocol := StrToIntDef(GetParameter(ProcessLine, 1), 1);
+      UsedVersion := GetParameter(ProcessLine, 2);
+      PeerTime := GetParameter(ProcessLine, 3);
+      LineComando := GetParameter(ProcessLine, 4);
       if ((not IsValidProtocol(ProcessLine)) and
         (not GetConexIndex(contador).Autentic)) then
         // La linea no es valida y proviene de una conexion no autentificada
@@ -230,7 +230,7 @@ begin
 
       else if UpperCase(LineComando) = 'MNFILE' then
         PTC_ProcessMNFileIncoming(ProcessLine)
-      //SaveMNsFile(ExtractMNsText(ProcessLine))//PTC_MNFile(ProcessLine)
+      //SaveMNsFile(ExtractMasternodesText(ProcessLine))//PTC_MNFile(ProcessLine)
       else if UpperCase(LineComando) = 'SETCFGDATA' then PTC_CFGData(ProcessLine)
 
       else if UpperCase(LineComando) = 'GETHEADUPDATE' then
@@ -530,7 +530,7 @@ begin
   if UTCTime < LastRequest + 10 then exit;
   LastRequest := UTCTime;
   ToLog('Console', '********** DEBUG CHECK **********');
-  FirstBlock := StrToIntDef(Parameter(textline, 5), -1) + 1;
+  FirstBlock := StrToIntDef(GetParameter(textline, 5), -1) + 1;
   ZipFileName := CreateZipBlockfile(FirstBlock);
   MemStream := TMemoryStream.Create;
   try
@@ -601,9 +601,9 @@ begin
   // La direccion no dispone de fondos
   if GetAddressBalanceIndexed(Address) - GetAddressPendingPays(Address) <
     GetCustFee(MyLastBlock) then ErrorCode := 2;
-  if TranxAlreadyPending(OrderInfo.TrfrID) then ErrorCode := 3;
+  if TranxAlreadyPending(OrderInfo.TransferID) then ErrorCode := 3;
   if OrderInfo.TimeStamp < LastBlockData.TimeStart then ErrorCode := 4;
-  if TrxExistsInLastBlock(OrderInfo.TrfrID) then ErrorCode := 5;
+  if TrxExistsInLastBlock(OrderInfo.TransferID) then ErrorCode := 5;
   if AddressAlreadyCustomized(Address) then ErrorCode := 6;
   if AliasAlreadyExists(OrderInfo.Receiver) then ErrorCode := 7;
   if not VerifySignedString('Customize this ' + Address + ' ' + OrderInfo.Receiver,
@@ -624,27 +624,27 @@ begin
 end;
 
 // Verify a transfer
-function ValidateTrfr(order: Torderdata; Origen: String): Integer;
+function ValidateTrfr(order: TOrderData; Origen: String): Integer;
 begin
   Result := 0;
   if GetAddressBalanceIndexed(Origen) - GetAddressPendingPays(Origen) <
-    Order.AmmountFee + order.AmmountTrf then
+    Order.AmountFee + order.AmountTransferred then
     Result := 1
-  else if TranxAlreadyPending(order.TrfrID) then
+  else if TranxAlreadyPending(order.TransferID) then
     Result := 2
   else if Order.TimeStamp < LastBlockData.TimeStart then
     Result := 3
   else if Order.TimeStamp > LastBlockData.TimeEnd + 600 then
     Result := 4
-  else if TrxExistsInLastBlock(Order.TrfrID) then
+  else if TrxExistsInLastBlock(Order.TransferID) then
     Result := 5
   else if not VerifySignedString(IntToStr(order.TimeStamp) + origen +
-    order.Receiver + IntToStr(order.AmmountTrf) + IntToStr(order.AmmountFee) +
+    order.Receiver + IntToStr(order.AmountTransferred) + IntToStr(order.AmountFee) +
     IntToStr(order.TrxLine), Order.Signature, Order.Sender) then
     Result := 6
-  else if Order.AmmountTrf < 0 then
+  else if Order.AmountTransferred < 0 then
     Result := 7
-  else if Order.AmmountFee < 0 then
+  else if Order.AmountFee < 0 then
     Result := 8
   else if not IsValidHashAddress(Origen) then
     Result := 9
@@ -667,7 +667,7 @@ var
   counter: Integer;
 begin
   Result := False;
-  OrderId := parameter(OrderText, 7);
+  OrderId := GetParameter(OrderText, 7);
   EnterCriticalSection(CSIdsProcessed);
   if length(ArrayOrderIDsProcessed) > 0 then
   begin
@@ -694,7 +694,7 @@ end;
 function PTC_Order(TextLine: String): String;
 var
   NumTransfers: Integer;
-  TrxArray: array of Torderdata;
+  TrxArray: array of TOrderData;
   senderTrx: array of String;
   cont: Integer;
   Textbak: String;
@@ -709,11 +709,11 @@ var
 begin
   Result := '';
   try
-    NumTransfers := StrToInt(Parameter(TextLine, 5));
+    NumTransfers := StrToInt(GetParameter(TextLine, 5));
     ToLog('events', format('Order with %d transfers', [Numtransfers]));
     ToLog('events', format('Complete line: %s', [TextLine]));
-    RecOrderId := Parameter(TextLine, 7);
-    GenOrderID := Parameter(TextLine, 5) + Parameter(TextLine, 10);
+    RecOrderId := GetParameter(TextLine, 7);
+    GenOrderID := GetParameter(TextLine, 5) + GetParameter(TextLine, 10);
     Textbak := GetOpData(TextLine);
     if NumTransfers > 30 then
     begin
@@ -732,10 +732,10 @@ begin
         Proceder := False;
         ErrorCode := 96;
       end;
-      Inc(TotalSent, TrxArray[cont].AmmountTrf);
-      Inc(TotalFee, TrxArray[cont].AmmountFee);
-      GenOrderID := GenOrderID + TrxArray[cont].TrfrID;
-      if TranxAlreadyPending(TrxArray[cont].TrfrID) then
+      Inc(TotalSent, TrxArray[cont].AmountTransferred);
+      Inc(TotalFee, TrxArray[cont].AmountFee);
+      GenOrderID := GenOrderID + TrxArray[cont].TransferID;
+      if TranxAlreadyPending(TrxArray[cont].TransferID) then
       begin
         Proceder := False;
         ErrorCode := 98;
@@ -788,7 +788,7 @@ begin
         AddArrayPoolTXs(TrxArray[cont]);
       if form1.Server.Active then OutgoingMsjsAdd(Textbak);
       U_DirPanel := True;
-      Result := Parameter(Textbak, 7); // send order ID as result
+      Result := GetParameter(Textbak, 7); // send order ID as result
     end
     else
     begin
@@ -823,9 +823,9 @@ begin
   // La direccion no dispone de fondos
   if GetAddressBalanceIndexed(Address) - GetAddressPendingPays(Address) <
     GetCustFee(MyLastBlock) then ErrorCode := 2;
-  if TranxAlreadyPending(OrderInfo.TrfrID) then ErrorCode := 3;
+  if TranxAlreadyPending(OrderInfo.TransferID) then ErrorCode := 3;
   if OrderInfo.TimeStamp < LastBlockData.TimeStart then ErrorCode := 4;
-  if TrxExistsInLastBlock(OrderInfo.TrfrID) then ErrorCode := 5;
+  if TrxExistsInLastBlock(OrderInfo.TransferID) then ErrorCode := 5;
   if GVTAlreadyTransfered(OrderInfo.Reference) then ErrorCode := 6;
   StrTosign := 'Transfer GVT ' + OrderInfo.Reference + ' ' + OrderInfo.Receiver +
     OrderInfo.TimeStamp.ToString;
@@ -866,10 +866,10 @@ var
   end;
 
 begin
-  msgtime := parameter(TextLine, 5);
-  mensaje := parameter(TextLine, 6);
-  firma := parameter(TextLine, 7);
-  hashmsg := parameter(TextLine, 8);
+  msgtime := GetParameter(TextLine, 5);
+  mensaje := GetParameter(TextLine, 6);
+  firma := GetParameter(TextLine, 7);
+  hashmsg := GetParameter(TextLine, 8);
   if AnsiContainsStr(MsgsReceived, hashmsg) then errored := True;
   mensaje := StringReplace(mensaje, '_', ' ', [rfReplaceAll, rfIgnoreCase]);
   if not VerifySignedString(msgtime + mensaje, firma, AdminPubKey) then
@@ -885,8 +885,8 @@ begin
   if not errored then
   begin
     MsgsReceived := MsgsReceived + hashmsg;
-    TCommand := Parameter(mensaje, 0);
-    TParam := Parameter(mensaje, 1);
+    TCommand := GetParameter(mensaje, 0);
+    TParam := GetParameter(mensaje, 1);
     if UpperCase(TCommand) = 'UPDATE' then LaunchDirectiveThread('update ' + TParam);
     if UpperCase(TCommand) = 'RESTART' then LaunchDirectiveThread('restart');
     if UpperCase(TCommand) = 'SETMODE' then SetCFGData(TParam, 0);
@@ -947,7 +947,7 @@ var
 begin
   if UTCTime < LastRequest + 10 then exit;
   LastRequest := UTCTime;
-  Block := StrToIntDef(Parameter(Linea, 5), 0);
+  Block := StrToIntDef(GetParameter(Linea, 5), 0);
   PTC_SendLine(slot, ProtocolLine(headupdate) + ' $' + LastHeadersString(Block));
 end;
 
@@ -955,7 +955,7 @@ procedure PTC_ProcessMNFileIncoming(LText: String);
 var
   MNText: String;
 begin
-  MNText := ExtractMNsText(LText);
+  MNText := ExtractMasternodesText(LText);
   if copy(HashMD5String(MNText + #13#10), 1, 5) = GetConsensus(8) then
   begin
     //ToLog('console','Received MNs hash match!');
@@ -986,14 +986,14 @@ begin
   Content := Copy(Linea, Startpos + 1, Length(linea));
   //ToLog('console','Content: '+Linea);
   repeat
-    ThisHeader := Parameter(Content, counter);
+    ThisHeader := GetParameter(Content, counter);
     if thisheader <> '' then
     begin
       Inc(TotalReceived);
       ThisHeader := StringReplace(ThisHeader, ':', ' ', [rfReplaceAll, rfIgnoreCase]);
-      Numero := StrToIntDef(Parameter(ThisHeader, 0), 0);
-      blockhash := Parameter(ThisHeader, 1);
-      sumhash := Parameter(ThisHeader, 2);
+      Numero := StrToIntDef(GetParameter(ThisHeader, 0), 0);
+      blockhash := GetParameter(ThisHeader, 1);
+      sumhash := GetParameter(ThisHeader, 2);
       LastBlockOnSummary := GetHeadersLastBlock();
       if numero = LastBlockOnSummary + 1 then
         AddRecordToHeaders(Numero, blockhash, sumhash)

@@ -15,7 +15,7 @@ function GetAddressIncomingpays(Address: String): Int64;
  //function TrxExistsInLastBlock(trfrhash:String):boolean;
  //function GetLastPendingTime():int64;
  //function AddArrayPoolTXs(order:TOrderData):boolean;
-procedure VerifyIfPendingIsMine(order: Torderdata);
+procedure VerifyIfPendingIsMine(order: TOrderData);
 function AddressAlreadyCustomized(address: String): Boolean;
 function GVTAlreadyTransfered(NumberStr: String): Boolean;
 function AliasAlreadyExists(Addalias: String): Boolean;
@@ -47,7 +47,7 @@ end;
 function GetAddressPendingPays(Address: String): Int64;
 var
   cont: Integer;
-  CopyPendings: array of Torderdata;
+  CopyPendings: array of TOrderData;
 begin
   Result := 0;
   if Address = '' then exit;
@@ -60,7 +60,7 @@ begin
     for cont := 0 to length(CopyPendings) - 1 do
     begin
       if address = CopyPendings[cont].address then
-        Result := Result + CopyPendings[cont].AmmountFee + CopyPendings[cont].AmmountTrf;
+        Result := Result + CopyPendings[cont].AmountFee + CopyPendings[cont].AmountTransferred;
     end;
   end;
   if MyLastBlock >= Update050Block then
@@ -71,7 +71,7 @@ end;
 function GetAddressIncomingpays(Address: String): Int64;
 var
   cont: Integer;
-  CopyPendings: array of Torderdata;
+  CopyPendings: array of TOrderData;
 begin
   Result := 0;
   if GetPendingCount > 0 then
@@ -83,7 +83,7 @@ begin
     for cont := 0 to length(CopyPendings) - 1 do
     begin
       if address = ArrayPoolTXs[cont].receiver then
-        Result := Result + ArrayPoolTXs[cont].AmmountTrf;
+        Result := Result + ArrayPoolTXs[cont].AmountTransferred;
     end;
   end;
 end;
@@ -193,7 +193,7 @@ End;
 }
 
 // Verifica si una orden especifica es del usuario
-procedure VerifyIfPendingIsMine(order: Torderdata);
+procedure VerifyIfPendingIsMine(order: TOrderData);
 var
   DireccionEnvia: String;
   SendIndex: Integer;
@@ -203,13 +203,13 @@ begin
   if SendIndex >= 0 then
   begin
     SetPendingForAddress(SendIndex, GetWallArrIndex(SendIndex).Pending +
-      Order.AmmountFee + order.AmmountTrf);
-    montooutgoing := montooutgoing + Order.AmmountFee + order.AmmountTrf;
+      Order.AmountFee + order.AmountTransferred);
+    montooutgoing := montooutgoing + Order.AmountFee + order.AmountTransferred;
     if not form1.ImageOut.Visible then form1.ImageOut.Visible := True;
   end;
   if WallAddIndex(Order.Receiver) >= 0 then
   begin
-    montoincoming := montoincoming + order.AmmountTrf;
+    montoincoming := montoincoming + order.AmountTransferred;
     if not form1.ImageInc.Visible then form1.ImageInc.Visible := True;
   end;
   U_DirPanel := True;
@@ -277,7 +277,7 @@ function SendFundsFromAddress(Origen, Destino: String; monto, comision: Int64;
   reference, ordertime: String; linea: Integer): TOrderData;
 var
   MontoDisponible, Montotrfr, comisionTrfr: Int64;
-  OrderInfo: Torderdata;
+  OrderInfo: TOrderData;
 begin
   BeginPerformance('SendFundsFromAddress');
   MontoDisponible := GetAddressBalanceIndexed(GetWallArrIndex(WallAddIndex(origen)).Hash) -
@@ -299,12 +299,12 @@ begin
   OrderInfo.Sender := GetWallArrIndex(WallAddIndex(origen)).PublicKey;
   OrderInfo.Address := GetWallArrIndex(WallAddIndex(origen)).Hash;
   OrderInfo.Receiver := Destino;
-  OrderInfo.AmmountFee := ComisionTrfr;
-  OrderInfo.AmmountTrf := montotrfr;
+  OrderInfo.AmountFee := ComisionTrfr;
+  OrderInfo.AmountTransferred := montotrfr;
   OrderInfo.Signature := GetStringSigned(ordertime + origen + destino + IntToStr(montotrfr) +
     IntToStr(comisiontrfr) + IntToStr(linea),
     GetWallArrIndex(WallAddIndex(origen)).PrivateKey);
-  OrderInfo.TrfrID := GetTransferHash(ordertime + origen + destino +
+  OrderInfo.TransferId := GetTransferHash(ordertime + origen + destino +
     IntToStr(monto) + IntToStr(MyLastblock));
   Result := OrderInfo;
   EndPerformance('SendFundsFromAddress');
@@ -332,14 +332,14 @@ begin
       AddIndex := WallAddIndex(DireccionEnvia);
       if AddIndex >= 0 then
       begin
-        MontoOutgoing := MontoOutgoing + ArrayPoolTXs[counter].AmmountFee +
-          ArrayPoolTXs[counter].AmmountTrf;
+        MontoOutgoing := MontoOutgoing + ArrayPoolTXs[counter].AmountFee +
+          ArrayPoolTXs[counter].AmountTransferred;
         SetPendingForAddress(AddIndex, GetWallArrIndex(AdDIndex).Pending +
-          ArrayPoolTXs[counter].AmmountFee + ArrayPoolTXs[counter].AmmountTrf);
-        //WalletArray[WallAddIndex(DireccionEnvia)].Pending:=WalletArray[WallAddIndex(DireccionEnvia)].Pending+ArrayPoolTXs[counter].AmmountFee+ArrayPoolTXs[counter].AmmountTrf;
+          ArrayPoolTXs[counter].AmountFee + ArrayPoolTXs[counter].AmountTransferred);
+        //WalletArray[WallAddIndex(DireccionEnvia)].Pending:=WalletArray[WallAddIndex(DireccionEnvia)].Pending+ArrayPoolTXs[counter].AmountFee+ArrayPoolTXs[counter].AmountTransferred;
       end;
       if WallAddIndex(ArrayPoolTXs[counter].Receiver) >= 0 then
-        MontoIncoming := MontoIncoming + ArrayPoolTXs[counter].AmmountTrf;
+        MontoIncoming := MontoIncoming + ArrayPoolTXs[counter].AmountTransferred;
     end;
     if MontoIncoming > 0 then form1.ImageInc.Visible := True
     else
@@ -421,10 +421,10 @@ var
 begin
   Result := False;
   HostIP := StringReplace(hoststr, ':', ' ', [rfReplaceAll, rfIgnoreCase]);
-  HostIP := parameter(HostIP, 0);
+  HostIP := GetParameter(HostIP, 0);
   whitelisted := StringReplace(RPCWhiteList, ',', ' ', [rfReplaceAll, rfIgnoreCase]);
   repeat
-    thiswhitelist := parameter(whitelisted, counter);
+    thiswhitelist := GetParameter(whitelisted, counter);
     if thiswhitelist = HostIP then Result := True;
     counter += 1;
   until thiswhitelist = '';
@@ -453,8 +453,8 @@ begin
           CopyArrayPoolTXs[counter].OrderType + ',' +
           CopyArrayPoolTXs[counter].Address + ',' +
           CopyArrayPoolTXs[counter].Receiver + ',' +
-          CopyArrayPoolTXs[counter].AmmountTrf.ToString + ',' +
-          CopyArrayPoolTXs[counter].AmmountFee.ToString + ',' +
+          CopyArrayPoolTXs[counter].AmountTransferred.ToString + ',' +
+          CopyArrayPoolTXs[counter].AmountFee.ToString + ',' +
           CopyArrayPoolTXs[counter].Reference
         {+','+CopyArrayPoolTXs[counter].TimeStamp.ToString};
 
@@ -464,8 +464,8 @@ begin
         ThisPending := CopyArrayPoolTXs[counter].OrderType + ',' +
           CopyArrayPoolTXs[counter].Address + ',' +
           CopyArrayPoolTXs[counter].Receiver + ',' +
-          CopyArrayPoolTXs[counter].AmmountTrf.ToString + ',' +
-          CopyArrayPoolTXs[counter].AmmountFee.ToString
+          CopyArrayPoolTXs[counter].AmountTransferred.ToString + ',' +
+          CopyArrayPoolTXs[counter].AmountFee.ToString
         {+','+CopyArrayPoolTXs[counter].TimeStamp.ToString};
       end;
       Result := Result + ThisPending + ' ';

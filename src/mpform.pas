@@ -1404,7 +1404,7 @@ begin
       'NosoNode Error', MB_ICONINFORMATION);
     Halt();
   end;
-  MixTxtFiles([DeepDebLogFilename, ConsoleLogFilename, EventLogFilename,
+  CombineTextFiles([DeepDebLogFilename, ConsoleLogFilename, EventLogFilename,
     ExceptLogFilename, NodeFTPLogFilename, PerformanceFIlename],
     ResumeLogFilename, True);
   InitDeepDeb(DeepDebLogFilename, format('( %s - %s )',
@@ -1432,7 +1432,7 @@ begin
   end;
   TryDeleteFile(ClosedAppFilename);
   InitGUI();
-  GetTimeOffset(PArameter(GetCFGDataStr, 2));
+  GetTimeOffset(GetParameter(GetCFGDataStr, 2));
   OutText('✓ Mainnet time synced', False, 1);
   UpdateMyData();
   OutText(rs0024, False, 1); //'✓ My data updated'
@@ -1639,7 +1639,7 @@ var
   ts: TTextStyle;
   posrequired: Int64;
 begin
-  posrequired := (GetSupply(MyLastBlock + 1) * PosStackCoins) div 10000;
+  posrequired := (GetCirculatingSupply(MyLastBlock + 1) * PosStackCoins) div 10000;
   if (ACol = 1) then
   begin
     ts := (Sender as TStringGrid).Canvas.TextStyle;
@@ -1826,7 +1826,7 @@ begin
   if ((UTCTime mod 3600 = 3590) and (LastBotClear <> UTCTime) and (Form1.Server.Active))
   then DeleteBots;
   if ((UTCTime mod 600 >= 570) and (UTCTime > NosoT_LastUpdate + 599)) then
-    UpdateOffset(PArameter(GetCFGDataStr, 2));
+    UpdateOffset(GetParameter(GetCFGDataStr, 2));
   Form1.Latido.Enabled := True;
 end;
 
@@ -2217,7 +2217,7 @@ begin
   if GoAhead then
   begin
     SetConexIndexBusy(Slot, True);
-    if Parameter(LLine, 0) = 'RESUMENFILE' then
+    if GetParameter(LLine, 0) = 'RESUMENFILE' then
     begin
       MemStream := TMemoryStream.Create;
       DownloadHeaders := True;
@@ -2272,7 +2272,7 @@ begin
       MemStream.Free;
       DownLoadBlocks := False;
     end
-    else if parameter(LLine, 4) = '$GETRESUMEN' then
+    else if GetParameter(LLine, 4) = '$GETRESUMEN' then
     begin
       AddFileProcess('Send', 'Headers', IPUser, GetTickCount64);
       MemStream := TMemoryStream.Create;
@@ -2297,7 +2297,7 @@ begin
       ToLog('nodeftp', 'Uploaded headers to ' + IPUser + ' at ' +
         FTPSpeed.ToString + ' kb/s');
     end
-    else if parameter(LLine, 4) = '$GETSUMARY' then
+    else if GetParameter(LLine, 4) = '$GETSUMARY' then
     begin
       AddFileProcess('Send', 'Summary', IPUser, GetTickCount64);
       MemStream := TMemoryStream.Create;
@@ -2317,7 +2317,7 @@ begin
       ToLog('nodeftp', 'Uploaded Summary to ' + IPUser + ' at ' +
         FTPSpeed.ToString + ' kb/s');
     end
-    else if parameter(LLine, 4) = '$GETPSOS' then
+    else if GetParameter(LLine, 4) = '$GETPSOS' then
     begin
       AddFileProcess('Send', 'PSOs', IPUser, GetTickCount64);
       MemStream := TMemoryStream.Create;
@@ -2337,10 +2337,10 @@ begin
       ToLog('nodeftp', 'Uploaded PSOs to ' + IPUser + ' at ' +
         FTPSpeed.ToString + ' kb/s');
     end
-    else if parameter(LLine, 4) = '$LASTBLOCK' then
+    else if GetParameter(LLine, 4) = '$LASTBLOCK' then
     begin // START SENDING BLOCKS
       AddFileProcess('Send', 'Blocks', IPUser, GetTickCount64);
-      BlockZipName := CreateZipBlockfile(StrToIntDef(parameter(LLine, 5), 0));
+      BlockZipName := CreateZipBlockfile(StrToIntDef(GetParameter(LLine, 5), 0));
       if BlockZipName <> '' then
       begin
         MemStream := TMemoryStream.Create;
@@ -2378,7 +2378,7 @@ begin
       end;
     end // END SENDING BLOCKS
 
-    else if parameter(LLine, 4) = '$GETGVTS' then
+    else if GetParameter(LLine, 4) = '$GETGVTS' then
     begin
       AddFileProcess('Send', 'GVTs', IPUser, GetTickCount64);
       MemStream := TMemoryStream.Create;
@@ -2399,7 +2399,7 @@ begin
         FTPSpeed.ToString + ' kb/s');
     end // SENDING GVTS FILE
 
-    else if parameter(LLine, 0) = 'PSOSFILE' then
+    else if GetParameter(LLine, 0) = 'PSOSFILE' then
     begin
       DownloadPSOs := True;
       MemStream := TMemoryStream.Create;
@@ -2417,7 +2417,7 @@ begin
       LasTimePSOsRequest := 0;
     end
 
-    else if AnsiContainsStr(ValidProtocolCommands, Uppercase(parameter(LLine, 4))) then
+    else if AnsiContainsStr(ValidProtocolCommands, Uppercase(GetParameter(LLine, 4))) then
     begin
       try
         AddToIncoming(slot, LLine);
@@ -2496,39 +2496,39 @@ begin
       GoAhead := False;
     end;
   end{Try};
-  MiIp := Parameter(LLine, 1);
-  Peerversion := Parameter(LLine, 2);
-  PeerUTC := StrToInt64Def(Parameter(LLine, 3), 0);
+  MiIp := GetParameter(LLine, 1);
+  Peerversion := GetParameter(LLine, 2);
+  PeerUTC := StrToInt64Def(GetParameter(LLine, 3), 0);
   if GoAhead then
   begin
-    if parameter(LLine, 0) = 'NODESTATUS' then
+    if GetParameter(LLine, 0) = 'NODESTATUS' then
       TryCloseServerConnection(AContext, 'NODESTATUS ' + GetNodeStatusString)
-    else if parameter(LLine, 0) = 'NSLORDER' then
+    else if GetParameter(LLine, 0) = 'NSLORDER' then
       TryCloseServerConnection(AContext, PTC_Order(LLine))
-    else if parameter(LLine, 0) = 'NSLCUSTOM' then
+    else if GetParameter(LLine, 0) = 'NSLCUSTOM' then
       TryCloseServerConnection(AContext, PTC_Custom(GetOpData(LLine)).ToString)
-    else if parameter(LLine, 0) = 'NSLSENDGVT' then
+    else if GetParameter(LLine, 0) = 'NSLSENDGVT' then
       TryCloseServerConnection(AContext, PTC_SendGVT(LLine).ToString)
-    else if parameter(LLine, 0) = 'GETMIIP' then
+    else if GetParameter(LLine, 0) = 'GETMIIP' then
       TryCloseServerConnection(AContext, IPUser)
-    else if parameter(LLine, 0) = 'MNVER' then
+    else if GetParameter(LLine, 0) = 'MNVER' then
       TryCloseServerConnection(AContext, GetVerificationMNLine(IPUser))
-    else if parameter(LLine, 0) = 'NSLBALANCE' then
+    else if GetParameter(LLine, 0) = 'NSLBALANCE' then
       TryCloseServerConnection(AContext, IntToStr(
-        GetAddressAvailable(parameter(LLine, 1))))
-    else if parameter(LLine, 0) = 'NSLPEND' then
+        GetAddressAvailable(GetParameter(LLine, 1))))
+    else if GetParameter(LLine, 0) = 'NSLPEND' then
       TryCloseServerConnection(AContext, PendingRawInfo(False))
-    else if parameter(LLine, 0) = 'NSLPENDFULL' then
+    else if GetParameter(LLine, 0) = 'NSLPENDFULL' then
       TryCloseServerConnection(AContext, PendingRawInfo)
-    else if parameter(LLine, 0) = 'NSLBLKORD' then
+    else if GetParameter(LLine, 0) = 'NSLBLKORD' then
       TryCloseServerConnection(AContext, GEtNSLBlkOrdInfo(LLine))
-    else if parameter(LLine, 0) = 'NSLTIME' then
+    else if GetParameter(LLine, 0) = 'NSLTIME' then
       TryCloseServerConnection(AContext, UTCTimeStr)
-    else if parameter(LLine, 0) = 'NSLMNS' then
+    else if GetParameter(LLine, 0) = 'NSLMNS' then
       TryCloseServerConnection(AContext, GetMN_FileText)
-    else if parameter(LLine, 0) = 'NSLCFG' then
+    else if GetParameter(LLine, 0) = 'NSLCFG' then
       TryCloseServerConnection(AContext, GetCFGDataStr)
-    else if parameter(LLine, 0) = 'NSLGVT' then
+    else if GetParameter(LLine, 0) = 'NSLGVT' then
     begin
       MemStream := TMemoryStream.Create;
       if GetGVTsAsStream(MemStream) > 0 then GetFileOk := True
@@ -2548,7 +2548,7 @@ begin
       MemStream.Free;
       TryCloseServerConnection(AContext);
     end
-    else if parameter(LLine, 0) = 'GETZIPSUMARY' then
+    else if GetParameter(LLine, 0) = 'GETZIPSUMARY' then
     begin
       MemStream := TMemoryStream.Create;
       if GetZIPSummaryAsMemStream(MemStream) > 0 then GetFileOk := True
@@ -2760,11 +2760,11 @@ procedure TForm1.SBSCMaxOnClick(Sender: TObject);
 begin
   if not WO_MultiSend then
   begin
-    EditSCMont.Text := Int2curr(GetMaximunToSend(GetWalletBalance));
+    EditSCMont.Text := IntToCurrency(GetMaximumToSend(GetWalletBalance));
   end
   else
   begin
-    EditSCMont.Text := Int2Curr(GetMaximunToSend(
+    EditSCMont.Text := IntToCurrency(GetMaximumToSend(
       GetAddressBalanceIndexed(GetWallArrIndex(0).hash)));
   end;
 end;
@@ -2845,7 +2845,7 @@ begin
   if ((StrToInt64Def(StringReplace(EditSCMont.Text, '.', '',
     [rfReplaceAll, rfIgnoreCase]), -1) > 0) and
     (StrToInt64Def(StringReplace(EditSCMont.Text, '.', '', [rfReplaceAll, rfIgnoreCase]),
-    -1) <= GetMaximunToSend(GetWalletBalance))) then
+    -1) <= GetMaximumToSend(GetWalletBalance))) then
   begin
     Form1.imagenes.GetBitmap(17, ImgSCMont.Picture.Bitmap);
   end
@@ -2872,9 +2872,9 @@ begin
     (IsValidHashAddress(EditSCDest.Text)))) and
     (StrToInt64Def(StringReplace(EditSCMont.Text, '.', '', [rfReplaceAll, rfIgnoreCase]),
     -1) > 0) and (StrToInt64Def(StringReplace(EditSCMont.Text, '.',
-    '', [rfReplaceAll, rfIgnoreCase]), -1) <= GetMaximunToSend(GetWalletBalance))) then
+    '', [rfReplaceAll, rfIgnoreCase]), -1) <= GetMaximumToSend(GetWalletBalance))) then
   begin
-    MemoSCCon.Text := Parameter(MemoSCCon.Text, 0);
+    MemoSCCon.Text := GetParameter(MemoSCCon.Text, 0);
     EditSCDest.Enabled := False;
     EditSCMont.Enabled := False;
     MemoSCCon.Enabled := False;
@@ -3318,7 +3318,7 @@ begin
   if ((not G_Launching) and (MemoRPCWhitelist.Text <> RPCWhitelist)) then
   begin
     newlist := trim(MemoRPCWhitelist.Text);
-    newlist := parameter(newlist, 0);
+    newlist := GetParameter(newlist, 0);
     MemoRPCWhitelist.Text := newlist;
     RPCWhitelist := newlist;
     S_AdvOpt := True;
@@ -3333,7 +3333,7 @@ begin
   if ((not G_Launching) and (Memobannedmethods.Text <> RPCBanned)) then
   begin
     newlist := trim(Memobannedmethods.Text);
-    newlist := parameter(newlist, 0);
+    newlist := GetParameter(newlist, 0);
     Memobannedmethods.Text := newlist;
     RPCBanned := newlist;
     S_AdvOpt := True;

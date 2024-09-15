@@ -413,12 +413,12 @@ begin
   Result := '';
   LParams := StringReplace(LParams, ';', ' ', [rfReplaceAll, rfIgnoreCase]);
   repeat
-    ThisItem := Parameter(LParams, Counter);
+    ThisItem := GetParameter(LParams, Counter);
     if ThisItem <> '' then
     begin
       ThisItem := StringReplace(ThisItem, ':', ' ', [rfReplaceAll, rfIgnoreCase]);
-      ILabel := Parameter(ThisItem, 0);
-      IValue := Parameter(ThisItem, 1);
+      ILabel := GetParameter(ThisItem, 0);
+      IValue := GetParameter(ThisItem, 1);
       if ILabel = LValue then Exit(IValue);
     end;
     Inc(counter);

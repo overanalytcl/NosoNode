@@ -110,12 +110,12 @@ begin
   Result.Sender := Sender;
   Result.Address := Sender;
   Result.Receiver := receiver;
-  Result.AmmountFee := 0;
-  Result.AmmountTrf := amount;
+  Result.AmountFee := 0;
+  Result.AmountTransferred := amount;
   Result.Signature := Signature;
-  Result.TrfrID := GetTransferHash(Result.TimeStamp.ToString +
+  Result.TransferID := GetTransferHash(Result.TimeStamp.ToString +
     Sender + Receiver + IntToStr(amount) + IntToStr(BlockN - 1));
-  Result.OrderID := GetOrderHash('1' + Result.TrfrID);
+  Result.OrderID := GetOrderHash('1' + Result.TransferID);
 end;
 
 {$ENDREGION}

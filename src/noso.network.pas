@@ -145,7 +145,7 @@ var
   ArrayOutgoing: array [1..MaxConecciones] of array of String;
   BotsList: array of TBotData;
   ArrayPoolTXs: array of TOrderData;
-  ArrayMultiTXs: array of TMultiOrder;
+  ArrayMultiTXs: array of TMultiOrderData;
   // Donwloading files
   DownloadHeaders: Boolean = False;
   DownloadSumary: Boolean = False;
@@ -271,7 +271,7 @@ begin
     EnterCriticalSection(CSPending);
     for cont := 0 to GetPendingCount - 1 do
     begin
-      if TrxHash = ArrayPoolTXs[cont].TrfrID then
+      if TrxHash = ArrayPoolTXs[cont].TransferId then
       begin
         Result := True;
         break;
@@ -290,9 +290,9 @@ var
 begin
   BeginPerformance('AddArrayPoolTXs');
   if order.TimeStamp < LastBlockData.TimeStart then exit;
-  if TrxExistsInLastBlock(order.TrfrID) then exit;
+  if TrxExistsInLastBlock(order.TransferId) then exit;
   if ((BlockAge > 585) and (order.TimeStamp < LastBlockData.TimeStart + 540)) then exit;
-  if not TranxAlreadyPending(order.TrfrID) then
+  if not TranxAlreadyPending(order.TransferId) then
   begin
     EnterCriticalSection(CSPending);
     while counter < length(ArrayPoolTXs) do
@@ -343,7 +343,7 @@ begin
   ArrayLastBlockTrxs := GetBlockTrxs(MyLastBlock);
   for cont := 0 to length(ArrayLastBlockTrxs) - 1 do
   begin
-    if ArrayLastBlockTrxs[cont].TrfrID = trfrhash then
+    if ArrayLastBlockTrxs[cont].TransferId = trfrhash then
     begin
       Result := True;
       break;
@@ -443,25 +443,25 @@ var
 begin
   NewData := GetConexIndex(Slot);
   NewData.Autentic := True;
-  NewData.Protocol := StrToIntDef(Parameter(LineaDeTexto, 1), 0);
-  NewData.Version := Parameter(LineaDeTexto, 2);
-  NewData.offset := StrToInt64Def(Parameter(LineaDeTexto, 3), UTCTime) - UTCTime;
-  NewData.Connections := StrToIntDef(Parameter(LineaDeTexto, 5), 0);
-  NewData.Lastblock := Parameter(LineaDeTexto, 6);
-  NewData.LastblockHash := Parameter(LineaDeTexto, 7);
-  NewData.SumarioHash := Parameter(LineaDeTexto, 8);
-  NewData.Pending := StrToIntDef(Parameter(LineaDeTexto, 9), 0);
-  NewData.ResumenHash := Parameter(LineaDeTexto, 10);
-  NewData.ConexStatus := StrToIntDef(Parameter(LineaDeTexto, 11), 0);
-  NewData.ListeningPort := StrToIntDef(Parameter(LineaDeTexto, 12), -1);
-  NewData.MNsHash := Parameter(LineaDeTexto, 13);
-  NewData.MNsCount := StrToIntDef(Parameter(LineaDeTexto, 14), 0);
+  NewData.Protocol := StrToIntDef(GetParameter(LineaDeTexto, 1), 0);
+  NewData.Version := GetParameter(LineaDeTexto, 2);
+  NewData.offset := StrToInt64Def(GetParameter(LineaDeTexto, 3), UTCTime) - UTCTime;
+  NewData.Connections := StrToIntDef(GetParameter(LineaDeTexto, 5), 0);
+  NewData.Lastblock := GetParameter(LineaDeTexto, 6);
+  NewData.LastblockHash := GetParameter(LineaDeTexto, 7);
+  NewData.SumarioHash := GetParameter(LineaDeTexto, 8);
+  NewData.Pending := StrToIntDef(GetParameter(LineaDeTexto, 9), 0);
+  NewData.ResumenHash := GetParameter(LineaDeTexto, 10);
+  NewData.ConexStatus := StrToIntDef(GetParameter(LineaDeTexto, 11), 0);
+  NewData.ListeningPort := StrToIntDef(GetParameter(LineaDeTexto, 12), -1);
+  NewData.MNsHash := GetParameter(LineaDeTexto, 13);
+  NewData.MNsCount := StrToIntDef(GetParameter(LineaDeTexto, 14), 0);
   NewData.BestHashDiff := 'null'{15};
-  NewData.MNChecksCount := StrToIntDef(Parameter(LineaDeTexto, 16), 0);
+  NewData.MNChecksCount := StrToIntDef(GetParameter(LineaDeTexto, 16), 0);
   NewData.lastping := UTCTimeStr;
-  NewData.GVTsHash := Parameter(LineaDeTexto, 17);
-  NewData.CFGHash := Parameter(LineaDeTexto, 18);
-  NewData.PSOHash := Parameter(LineaDeTexto, 19);
+  NewData.GVTsHash := GetParameter(LineaDeTexto, 17);
+  NewData.CFGHash := GetParameter(LineaDeTexto, 18);
+  NewData.PSOHash := GetParameter(LineaDeTexto, 19);
   ;
   NewData.MerkleHash := HashMD5String(NewData.Lastblock + copy(
     NewData.ResumenHash, 0, 5) + copy(NewData.MNsHash, 0, 5) +
@@ -478,10 +478,10 @@ procedure ProcessIncomingLine(FSlot: Integer; LLine: String);
 var
   Protocol, PeerVersion, PeerTime, Command: String;
 begin
-  Protocol := Parameter(LLine, 1);
-  PeerVersion := Parameter(LLine, 2);
-  PeerTime := Parameter(LLine, 3);
-  Command := ProCommand(LLine);
+  Protocol := GetParameter(LLine, 1);
+  PeerVersion := GetParameter(LLine, 2);
+  PeerTime := GetParameter(LLine, 3);
+  Command := GetProtocolCommand(LLine);
   if ((not IsValidProtocol(LLine)) and (not GetConexIndex(FSlot).Autentic)) then
   begin
     UpdateBotData(GetConexIndex(Fslot).ip);
@@ -977,7 +977,7 @@ begin
           LastActive := UTCTime;
           UpdateOpenThread(ThreadName, UTCTime);
           CanalCliente[FSlot].ReadTimeout := 10000;
-          if Parameter(LLine, 0) = 'RESUMENFILE' then
+          if GetParameter(LLine, 0) = 'RESUMENFILE' then
           begin
             DownloadHeaders := True;
             MemStream := TMemoryStream.Create;
@@ -996,7 +996,7 @@ begin
             DownloadHeaders := False;
           end
 
-          else if Parameter(LLine, 0) = 'SUMARYFILE' then
+          else if GetParameter(LLine, 0) = 'SUMARYFILE' then
           begin
             DownloadSumary := True;
             MemStream := TMemoryStream.Create;
@@ -1016,7 +1016,7 @@ begin
             DownloadSumary := False;
           end
 
-          else if Parameter(LLine, 0) = 'PSOSFILE' then
+          else if GetParameter(LLine, 0) = 'PSOSFILE' then
           begin
             DownloadPSOs := True;
             MemStream := TMemoryStream.Create;
@@ -1035,7 +1035,7 @@ begin
             MemStream.Free;
             DownloadPSOs := False;
           end
-          else if Parameter(LLine, 0) = 'GVTSFILE' then
+          else if GetParameter(LLine, 0) = 'GVTSFILE' then
           begin
             DownloadGVTs := True;
             MemStream := TMemoryStream.Create;
@@ -1054,7 +1054,7 @@ begin
             DownloadGVTs := False;
           end
 
-          else if Parameter(LLine, 0) = 'BLOCKZIP' then
+          else if GetParameter(LLine, 0) = 'BLOCKZIP' then
           begin
             DownLoadBlocks := True;
             MemStream := TMemoryStream.Create;
@@ -1235,15 +1235,15 @@ var
   SourceStr: String = '';
 begin
   counter := 0;
-  SourceStr := Parameter(GetCFGDataStr, 1) + GetVerificatorsText;
+  SourceStr := GetParameter(GetCFGDataStr, 1) + GetVerificatorsText;
   SourceStr := StringReplace(SourceStr, ':', ' ', [rfReplaceAll, rfIgnoreCase]);
   EnterCriticalSection(CSNodesList);
   SetLength(NodesList, 0);
   repeat
-    ThisNode := parameter(SourceStr, counter);
+    ThisNode := GetParameter(SourceStr, counter);
     ThisNode := StringReplace(ThisNode, ';', ' ', [rfReplaceAll, rfIgnoreCase]);
-    ThisPort := StrToIntDef(Parameter(ThisNode, 1), 8080);
-    ThisNode := Parameter(ThisNode, 0);
+    ThisPort := StrToIntDef(GetParameter(ThisNode, 1), 8080);
+    ThisNode := GetParameter(ThisNode, 0);
     if thisnode = '' then continuar := False
     else
     begin

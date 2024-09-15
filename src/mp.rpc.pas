@@ -59,7 +59,7 @@ procedure SetRPCPort(LineText: String);
 var
   Value: Integer;
 begin
-  Value := StrToIntDef(parameter(LineText, 1), 0);
+  Value := StrToIntDef(GetParameter(LineText, 1), 0);
   if ((Value <= 0) or (Value > 65535)) then
   begin
     ToLog('console', 'Invalid value');
@@ -230,7 +230,7 @@ var
 begin
   resultado := TJSONObject.Create;
   MyString := StringReplace(MyString, #127, ' ', [rfReplaceAll, rfIgnoreCase]);
-  objecttype := parameter(mystring, 0);
+  objecttype := GetParameter(mystring, 0);
   if objecttype = 'test' then
   begin
     resultado.Add('result', 'testok');
@@ -245,34 +245,34 @@ begin
   end
   else if objecttype = 'balance' then
   begin
-    resultado.Add('valid', StrToBool(parameter(mystring, 1)));
-    resultado.Add('address', TJSONString.Create(parameter(mystring, 2)));
-    if parameter(mystring, 3) = 'null' then resultado.Add('alias', TJSONNull.Create)
+    resultado.Add('valid', StrToBool(GetParameter(mystring, 1)));
+    resultado.Add('address', TJSONString.Create(GetParameter(mystring, 2)));
+    if GetParameter(mystring, 3) = 'null' then resultado.Add('alias', TJSONNull.Create)
     else
-      resultado.Add('alias', parameter(mystring, 3));
-    resultado.Add('balance', TJSONInt64Number.Create(StrToInt64(parameter(mystring, 4))));
-    resultado.Add('incoming', TJSONInt64Number.Create(StrToInt64(parameter(mystring, 5))));
-    resultado.Add('outgoing', TJSONInt64Number.Create(StrToInt64(parameter(mystring, 6))));
+      resultado.Add('alias', GetParameter(mystring, 3));
+    resultado.Add('balance', TJSONInt64Number.Create(StrToInt64(GetParameter(mystring, 4))));
+    resultado.Add('incoming', TJSONInt64Number.Create(StrToInt64(GetParameter(mystring, 5))));
+    resultado.Add('outgoing', TJSONInt64Number.Create(StrToInt64(GetParameter(mystring, 6))));
   end
   else if objecttype = 'orderinfo' then
   begin
-    resultado.Add('valid', StrToBool(parameter(mystring, 1)));
-    if StrToBool(parameter(mystring, 1)) then
+    resultado.Add('valid', StrToBool(GetParameter(mystring, 1)));
+    if StrToBool(GetParameter(mystring, 1)) then
     begin
       orderobject := TJSONObject.Create;
-      orderobject.Add('orderid', parameter(mystring, 2));
-      orderobject.Add('timestamp', StrToInt64(parameter(mystring, 3)));
-      orderobject.Add('block', StrToInt64(parameter(mystring, 4)));
-      orderobject.Add('type', parameter(mystring, 5));
-      orderobject.Add('trfrs', StrToInt(parameter(mystring, 6)));
-      orderobject.Add('receiver', parameter(mystring, 7));
-      orderobject.Add('amount', StrToInt64(parameter(mystring, 8)));
-      orderobject.Add('fee', StrToInt64(parameter(mystring, 9)));
-      if parameter(mystring, 10) = 'null' then
+      orderobject.Add('orderid', GetParameter(mystring, 2));
+      orderobject.Add('timestamp', StrToInt64(GetParameter(mystring, 3)));
+      orderobject.Add('block', StrToInt64(GetParameter(mystring, 4)));
+      orderobject.Add('type', GetParameter(mystring, 5));
+      orderobject.Add('trfrs', StrToInt(GetParameter(mystring, 6)));
+      orderobject.Add('receiver', GetParameter(mystring, 7));
+      orderobject.Add('amount', StrToInt64(GetParameter(mystring, 8)));
+      orderobject.Add('fee', StrToInt64(GetParameter(mystring, 9)));
+      if GetParameter(mystring, 10) = 'null' then
         orderobject.Add('reference', TJSONNull.Create)
       else
-        orderobject.Add('reference', parameter(mystring, 10));
-      orderobject.Add('sender', parameter(mystring, 11));
+        orderobject.Add('reference', GetParameter(mystring, 10));
+      orderobject.Add('sender', GetParameter(mystring, 11));
       resultado.Add('order', orderobject);
     end
     else
@@ -280,30 +280,30 @@ begin
   end
   else if objecttype = 'blockinfo' then
   begin
-    resultado.Add('valid', StrToBool(parameter(mystring, 1)));
-    resultado.Add('number', StrToIntDef(parameter(mystring, 2), -1));
-    resultado.Add('timestart', StrToInt64Def(parameter(mystring, 3), -1));
-    resultado.Add('timeend', StrToInt64Def(parameter(mystring, 4), -1));
-    resultado.Add('timetotal', StrToIntDef(parameter(mystring, 5), -1));
-    resultado.Add('last20', StrToIntDef(parameter(mystring, 6), -1));
-    resultado.Add('totaltransactions', StrToIntDef(parameter(mystring, 7), -1));
-    resultado.Add('difficulty', StrToIntDef(parameter(mystring, 8), -1));
-    resultado.Add('target', parameter(mystring, 9));
-    resultado.Add('solution', parameter(mystring, 10));
-    resultado.Add('lastblockhash', parameter(mystring, 11));
-    resultado.Add('nextdifficult', StrToIntDef(parameter(mystring, 12), -1));
-    resultado.Add('miner', parameter(mystring, 13));
-    resultado.Add('feespaid', StrToInt64Def(parameter(mystring, 14), -1));
-    resultado.Add('reward', StrToInt64Def(parameter(mystring, 15), -1));
-    resultado.Add('hash', parameter(mystring, 16));
+    resultado.Add('valid', StrToBool(GetParameter(mystring, 1)));
+    resultado.Add('number', StrToIntDef(GetParameter(mystring, 2), -1));
+    resultado.Add('timestart', StrToInt64Def(GetParameter(mystring, 3), -1));
+    resultado.Add('timeend', StrToInt64Def(GetParameter(mystring, 4), -1));
+    resultado.Add('timetotal', StrToIntDef(GetParameter(mystring, 5), -1));
+    resultado.Add('last20', StrToIntDef(GetParameter(mystring, 6), -1));
+    resultado.Add('totaltransactions', StrToIntDef(GetParameter(mystring, 7), -1));
+    resultado.Add('difficulty', StrToIntDef(GetParameter(mystring, 8), -1));
+    resultado.Add('target', GetParameter(mystring, 9));
+    resultado.Add('solution', GetParameter(mystring, 10));
+    resultado.Add('lastblockhash', GetParameter(mystring, 11));
+    resultado.Add('nextdifficult', StrToIntDef(GetParameter(mystring, 12), -1));
+    resultado.Add('miner', GetParameter(mystring, 13));
+    resultado.Add('feespaid', StrToInt64Def(GetParameter(mystring, 14), -1));
+    resultado.Add('reward', StrToInt64Def(GetParameter(mystring, 15), -1));
+    resultado.Add('hash', GetParameter(mystring, 16));
   end
   else if objecttype = 'pendingorders' then
   begin
     counter := 1;
     ordersarray := TJSONArray.Create;
-    while parameter(mystring, counter) <> '' do
+    while GetParameter(mystring, counter) <> '' do
     begin
-      ordersarray.Add(parameter(mystring, counter));
+      ordersarray.Add(GetParameter(mystring, counter));
       Inc(Counter);
     end;
     resultado.Add('pendings', ordersarray);
@@ -312,9 +312,9 @@ begin
   begin
     counter := 1;
     ordersarray := TJSONArray.Create;
-    while parameter(mystring, counter) <> '' do
+    while GetParameter(mystring, counter) <> '' do
     begin
-      ordersarray.Add(parameter(mystring, counter));
+      ordersarray.Add(GetParameter(mystring, counter));
       Inc(Counter);
     end;
     resultado.Add('lockedmns', ordersarray);
@@ -323,9 +323,9 @@ begin
   begin
     counter := 1;
     ordersarray := TJSONArray.Create;
-    while parameter(mystring, counter) <> '' do
+    while GetParameter(mystring, counter) <> '' do
     begin
-      ordersarray.Add(parameter(mystring, counter));
+      ordersarray.Add(GetParameter(mystring, counter));
       Inc(Counter);
     end;
     resultado.Add('peers', ordersarray);
@@ -333,41 +333,41 @@ begin
 
   else if objecttype = 'gvtinfo' then
   begin
-    resultado.Add('available', StrToIntDef(parameter(mystring, 1), 0));
-    resultado.Add('buy', StrToInt64Def(parameter(mystring, 2), 0));
-    resultado.Add('sell', StrToInt64Def(parameter(mystring, 3), 0));
+    resultado.Add('available', StrToIntDef(GetParameter(mystring, 1), 0));
+    resultado.Add('buy', StrToInt64Def(GetParameter(mystring, 2), 0));
+    resultado.Add('sell', StrToInt64Def(GetParameter(mystring, 3), 0));
   end
 
   else if objecttype = 'mainnetinfo' then
   begin
-    resultado.Add('lastblock', StrToIntDef(parameter(mystring, 1), 0));
-    resultado.Add('lastblockhash', parameter(mystring, 2));
-    resultado.Add('headershash', parameter(mystring, 3));
-    resultado.Add('sumaryhash', parameter(mystring, 4));
-    resultado.Add('pending', StrToInt(parameter(mystring, 5)));
-    resultado.Add('supply', StrToInt64Def(parameter(mystring, 6), 0));
+    resultado.Add('lastblock', StrToIntDef(GetParameter(mystring, 1), 0));
+    resultado.Add('lastblockhash', GetParameter(mystring, 2));
+    resultado.Add('headershash', GetParameter(mystring, 3));
+    resultado.Add('sumaryhash', GetParameter(mystring, 4));
+    resultado.Add('pending', StrToInt(GetParameter(mystring, 5)));
+    resultado.Add('supply', StrToInt64Def(GetParameter(mystring, 6), 0));
   end
   else if objecttype = 'blockorder' then
   begin
-    resultado.Add('valid', StrToBool(parameter(mystring, 1)));
-    resultado.Add('block', StrToIntDef(parameter(mystring, 2), -1));
-    blockorders := StrToIntDef(parameter(mystring, 3), 0);
+    resultado.Add('valid', StrToBool(GetParameter(mystring, 1)));
+    resultado.Add('block', StrToIntDef(GetParameter(mystring, 2), -1));
+    blockorders := StrToIntDef(GetParameter(mystring, 3), 0);
     ordersarray := TJSONArray.Create;
     if blockorders > 0 then
     begin
       for counter := 0 to blockorders - 1 do
       begin
         orderobject := TJSONObject.Create;
-        orderobject.Add('orderid', parameter(mystring, 4 + (counter * 10)));
-        orderobject.Add('timestamp', StrToIntDef(parameter(mystring, 5 + (counter * 10)), 0));
-        orderobject.Add('block', StrToIntDef(parameter(mystring, 6 + (counter * 10)), 0));
-        orderobject.Add('type', parameter(mystring, 7 + (counter * 10)));
-        orderobject.Add('trfrs', StrToIntDef(parameter(mystring, 8 + (counter * 10)), 0));
-        orderobject.Add('receiver', parameter(mystring, 9 + (counter * 10)));
-        orderobject.Add('amount', StrToInt64Def(parameter(mystring, 10 + (counter * 10)), 0));
-        orderobject.Add('fee', StrToIntDef(parameter(mystring, 11 + (counter * 10)), 0));
-        orderobject.Add('reference', parameter(mystring, 12 + (counter * 10)));
-        orderobject.Add('sender', parameter(mystring, 13 + (counter * 10)));
+        orderobject.Add('orderid', GetParameter(mystring, 4 + (counter * 10)));
+        orderobject.Add('timestamp', StrToIntDef(GetParameter(mystring, 5 + (counter * 10)), 0));
+        orderobject.Add('block', StrToIntDef(GetParameter(mystring, 6 + (counter * 10)), 0));
+        orderobject.Add('type', GetParameter(mystring, 7 + (counter * 10)));
+        orderobject.Add('trfrs', StrToIntDef(GetParameter(mystring, 8 + (counter * 10)), 0));
+        orderobject.Add('receiver', GetParameter(mystring, 9 + (counter * 10)));
+        orderobject.Add('amount', StrToInt64Def(GetParameter(mystring, 10 + (counter * 10)), 0));
+        orderobject.Add('fee', StrToIntDef(GetParameter(mystring, 11 + (counter * 10)), 0));
+        orderobject.Add('reference', GetParameter(mystring, 12 + (counter * 10)));
+        orderobject.Add('sender', GetParameter(mystring, 13 + (counter * 10)));
         ordersarray.Add(orderobject);
       end;
     end;
@@ -375,83 +375,83 @@ begin
   end
   else if objecttype = 'blockmns' then
   begin
-    resultado.Add('valid', StrToBool(parameter(mystring, 1)));
-    resultado.Add('block', StrToIntDef(parameter(mystring, 2), -1));
-    resultado.Add('count', StrToIntDef(parameter(mystring, 3), -1));
-    resultado.Add('reward', StrToInt64Def(parameter(mystring, 4), -1));
-    resultado.Add('total', StrToInt64Def(parameter(mystring, 5), -1));
-    resultado.Add('addresses', parameter(mystring, 6));
+    resultado.Add('valid', StrToBool(GetParameter(mystring, 1)));
+    resultado.Add('block', StrToIntDef(GetParameter(mystring, 2), -1));
+    resultado.Add('count', StrToIntDef(GetParameter(mystring, 3), -1));
+    resultado.Add('reward', StrToInt64Def(GetParameter(mystring, 4), -1));
+    resultado.Add('total', StrToInt64Def(GetParameter(mystring, 5), -1));
+    resultado.Add('addresses', GetParameter(mystring, 6));
   end
   else if objecttype = 'getmasternodes' then
   begin
-    resultado.Add('block', StrToIntDef(parameter(mystring, 1), -1));
-    resultado.Add('count', StrToIntDef(parameter(mystring, 2), -1));
-    resultado.Add('nodes', parameter(mystring, 3));
+    resultado.Add('block', StrToIntDef(GetParameter(mystring, 1), -1));
+    resultado.Add('count', StrToIntDef(GetParameter(mystring, 2), -1));
+    resultado.Add('nodes', GetParameter(mystring, 3));
   end
   else if objecttype = 'newaddressfull' then
   begin
-    resultado.Add('hash', parameter(mystring, 1));
-    resultado.Add('public', parameter(mystring, 2));
-    resultado.Add('private', parameter(mystring, 3));
+    resultado.Add('hash', GetParameter(mystring, 1));
+    resultado.Add('public', GetParameter(mystring, 2));
+    resultado.Add('private', GetParameter(mystring, 3));
   end
   else if objecttype = 'newaddress' then
   begin
-    //resultado.Add('valid',StrToBool(parameter(mystring,1)));
-    Newaddresses := StrToIntDef(parameter(mystring, 2), 1);
+    //resultado.Add('valid',StrToBool(GetParameter(mystring,1)));
+    Newaddresses := StrToIntDef(GetParameter(mystring, 2), 1);
     //resultado.Add('number',Newaddresses);
     ordersarray := TJSONArray.Create;
     for counter := 1 to Newaddresses do
     begin
-      ordersarray.Add(parameter(mystring, 2 + counter));
+      ordersarray.Add(GetParameter(mystring, 2 + counter));
     end;
     resultado.Add('addresses', ordersarray);
   end
   else if objecttype = 'checkcertificate' then
   begin
-    if parameter(mystring, 1) = 'True' then
+    if GetParameter(mystring, 1) = 'True' then
     begin
       resultado.Add('valid', True);
-      resultado.Add('address', parameter(mystring, 2));
-      resultado.Add('signtime', StrToInt64(parameter(mystring, 3)));
+      resultado.Add('address', GetParameter(mystring, 2));
+      resultado.Add('signtime', StrToInt64(GetParameter(mystring, 3)));
     end
     else
       resultado.Add('valid', False);
   end
   else if objecttype = 'sendfunds' then
   begin
-    if parameter(mystring, 1) = 'ERROR' then
+    if GetParameter(mystring, 1) = 'ERROR' then
     begin
       resultado.Add('valid', False);
-      resultado.add('result', StrToIntDef(parameter(mystring, 2), -1));
+      resultado.add('result', StrToIntDef(GetParameter(mystring, 2), -1));
     end
     else
     begin
       resultado.Add('valid', True);
-      resultado.Add('result', parameter(mystring, 1));
+      resultado.Add('result', GetParameter(mystring, 1));
     end;
   end
   else if objecttype = 'islocaladdress' then
   begin
-    resultado.Add('result', StrToBool(parameter(mystring, 1)));
+    resultado.Add('result', StrToBool(GetParameter(mystring, 1)));
   end
 
   else if objecttype = 'setdefault' then
   begin
-    resultado.Add('result', StrToBool(parameter(mystring, 1)));
+    resultado.Add('result', StrToBool(GetParameter(mystring, 1)));
   end
 
   else if objecttype = 'walletbalance' then
   begin
-    resultado.Add('balance', StrToInt64(parameter(mystring, 1)));
+    resultado.Add('balance', StrToInt64(GetParameter(mystring, 1)));
   end
   else if objecttype = 'submitorder' then
   begin
-    resultado.Add('result', StrToBool(parameter(mystring, 1)));
+    resultado.Add('result', StrToBool(GetParameter(mystring, 1)));
   end
   else if objecttype = 'submitorderwr' then
   begin
-    resultado.Add('result', StrToBool(parameter(mystring, 1)));
-    resultado.Add('response', StringReplace(parameter(mystring, 2), '_',
+    resultado.Add('result', StrToBool(GetParameter(mystring, 1)));
+    resultado.Add('response', StringReplace(GetParameter(mystring, 2), '_',
       ' ', [rfReplaceAll, rfIgnoreCase]));
   end;
 
@@ -574,7 +574,7 @@ begin
   if NosoPParams <> '' then
   begin
     repeat
-      ThisAddress := parameter(NosoPParams, counter);
+      ThisAddress := GetParameter(NosoPParams, counter);
       if ThisAddress <> '' then
       begin
         if IsValidHashAddress(ThisAddress) then
@@ -656,7 +656,7 @@ begin
   if NosoPParams <> '' then
   begin
     repeat
-      thisblock := parameter(NosoPParams, counter);
+      thisblock := GetParameter(NosoPParams, counter);
       if thisblock <> '' then
       begin
         if ((StrToIntDef(thisblock, -1) >= 0) and
@@ -681,7 +681,7 @@ begin
   BeginPerformance('RPC_Mainnetinfo');
   Result := format('mainnetinfo'#127'%s'#127'%s'#127'%s'#127'%s'#127'%s'#127'%d',
     [GetConsensus(2), Copy(GetConsensus(10), 0, 5), copy(GetConsensus(15), 0, 5),
-    copy(GetConsensus(17), 0, 5), GetConsensus(3), GetSupply(
+    copy(GetConsensus(17), 0, 5), GetConsensus(3), GetCirculatingSupply(
     StrToIntDef(GetConsensus(2), 0))]);
   EndPerformance('RPC_Mainnetinfo');
 end;
@@ -738,10 +738,10 @@ var
       begin
         if arrayords[cont].OrderID = order.OrderID then
         begin
-          arrayords[cont].AmmountTrf := arrayords[cont].AmmountTrf + order.AmmountTrf;
-          arrayords[cont].AmmountFee := arrayords[cont].AmmountFee + order.AmmountFee;
+          arrayords[cont].AmmountTrf := arrayords[cont].AmmountTrf + order.AmountTransferred;
+          arrayords[cont].AmmountFee := arrayords[cont].AmmountFee + order.AmountFee;
           arrayords[cont].Sender := arrayords[cont].Sender +
-            format('[%s,%d,%d]', [order.Address, order.AmmountTrf, order.AmmountFee]);
+            format('[%s,%d,%d]', [order.Address, order.AmountTransferred, order.AmountFee]);
           arrayords[cont].OrderLines += 1;
           existed := True;
           break;
@@ -757,14 +757,14 @@ var
       arrayords[length(arrayords) - 1].OrderType := order.OrderType;
       arrayords[length(arrayords) - 1].OrderLines := 1;
       arrayords[length(arrayords) - 1].Receiver := order.Receiver;
-      arrayords[length(arrayords) - 1].AmmountTrf := order.AmmountTrf;
-      arrayords[length(arrayords) - 1].AmmountFee := order.AmmountFee;
+      arrayords[length(arrayords) - 1].AmmountTrf := order.AmountTransferred;
+      arrayords[length(arrayords) - 1].AmmountFee := order.AmountFee;
       arrayords[length(arrayords) - 1].Reference := order.Reference;
       if order.OrderLines = 1 then
         arrayords[length(arrayords) - 1].Sender := order.Sender
       else
         arrayords[length(arrayords) - 1].Sender := arrayords[length(arrayords) - 1].Sender +
-          format('[%s,%d,%d]', [order.Address, order.AmmountTrf, order.AmmountFee]);
+          format('[%s,%d,%d]', [order.Address, order.AmountTransferred, order.AmountFee]);
     end;
   end;
 
@@ -819,18 +819,18 @@ begin
   BeginPerformance('RPC_Masternodes');
   Result := '';
   Source := GetMN_FileText;
-  Block := parameter(Source, 0);
+  Block := GetParameter(Source, 0);
   repeat
-    ThisData := parameter(Source, counter);
+    ThisData := GetParameter(Source, counter);
     if thisData <> '' then
     begin
       ThisData := StringReplace(ThisData, ':', ' ', [rfReplaceAll]);
-      ipandport := Parameter(ThisData, 0);
+      ipandport := GetParameter(ThisData, 0);
       ipandport := StringReplace(ipandport, ';', ' ', [rfReplaceAll]);
-      ip := Parameter(ipandport, 0);
-      port := Parameter(ipandport, 1);
-      address := Parameter(ThisData, 1);
-      age := Parameter(ThisData, 2);
+      ip := GetParameter(ipandport, 0);
+      port := GetParameter(ipandport, 1);
+      address := GetParameter(ThisData, 1);
+      age := GetParameter(ThisData, 2);
       nodes := nodes + format('[%s,%s,%s,%s]', [ip, port, address, age]);
       Inc(Total);
     end;
@@ -936,7 +936,7 @@ end;
 function RPC_ValidateAddress(NosoPParams: String): String;
 begin
   BeginPerformance('RPC_NewAddressFull');
-  if VerifyAddressOnDisk(Parameter(NosoPParams, 0)) then
+  if VerifyAddressOnDisk(GetParameter(NosoPParams, 0)) then
     Result := 'islocaladdress'#127'True'
   else
     Result := 'islocaladdress'#127'False';
@@ -948,7 +948,7 @@ var
   address: String;
 begin
   BeginPerformance('RPC_SetDefault');
-  address := Parameter(NosoPParams, 0);
+  address := GetParameter(NosoPParams, 0);
   if SetDefaultAddress('SETDEFAULT ' + Address) then Result := 'setdefault'#127'True'
   else
     Result := 'setdefault'#127'False';
@@ -974,7 +974,7 @@ var
 begin
   BeginPerformance('RPC_CheckCertificate');
   Result := 'checkcertificate'#127;
-  cert := Parameter(NosoPParams, 0);
+  cert := GetParameter(NosoPParams, 0);
   Address := CheckCertificate(cert, SignTime);
   if Address <> '' then
   begin
@@ -1011,20 +1011,20 @@ var
   ErrorCode: Integer;
 begin
   BeginPerformance('RPC_SendFunds');
-  destination := Parameter(NosoPParams, 0);
-  amount := StrToInt64Def(Parameter(NosoPParams, 1), 0);
-  reference := Parameter(NosoPParams, 2);
+  destination := GetParameter(NosoPParams, 0);
+  amount := StrToInt64Def(GetParameter(NosoPParams, 1), 0);
+  reference := GetParameter(NosoPParams, 2);
   if reference = '' then reference := 'null';
-  //ToLog('console','Send to '+destination+' '+int2curr(amount)+' with reference: '+reference);
+  //ToLog('console','Send to '+destination+' '+IntToCurrency(amount)+' with reference: '+reference);
   Resultado := SendFunds('sendto ' + destination + ' ' + IntToStr(amount) + ' ' + Reference);
-  if ((Resultado <> '') and (Parameter(Resultado, 0) <> 'ERROR') and
+  if ((Resultado <> '') and (GetParameter(Resultado, 0) <> 'ERROR') and
     (copy(resultado, 0, 2) = 'OR')) then
   begin
     Result := 'sendfunds'#127 + resultado;
   end
-  else if (Parameter(Resultado, 0) = 'ERROR') then
+  else if (GetParameter(Resultado, 0) = 'ERROR') then
   begin
-    ErrorCode := StrToIntDef(Parameter(Resultado, 1), 0);
+    ErrorCode := StrToIntDef(GetParameter(Resultado, 1), 0);
     Result := 'sendfunds'#127 + 'ERROR'#127 + IntToStr(ErrorCode);
   end
   else

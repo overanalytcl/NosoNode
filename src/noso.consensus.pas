@@ -193,8 +193,8 @@ begin
       [rfReplaceAll, rfIgnoreCase]);
     ThisNode.Data := ReadedLine;
     ThisNode.ConStr := ConHash;
-    ThisNode.Peers := StrToIntDef(Parameter(ReadedLine, 1), 0);
-    ThisNode.Block := StrToIntDef(Parameter(ReadedLine, 2), 0);
+    ThisNode.Peers := StrToIntDef(GetParameter(ReadedLine, 1), 0);
+    ThisNode.Block := StrToIntDef(GetParameter(ReadedLine, 2), 0);
     reached := True;
   end
   else
@@ -218,10 +218,10 @@ end;
 function GetConHash(ILine: String): String;
 begin
   Result := '';
-  Result := HashMD5String(Parameter(ILine, 2) + copy(Parameter(ILine, 5), 0, 5) +
-    copy(Parameter(ILine, 8), 0, 5) + copy(Parameter(ILine, 10), 0, 5) +
-    copy(Parameter(ILine, 17), 0, 5) + copy(Parameter(ILine, 18), 0, 5) +
-    copy(Parameter(ILine, 19), 0, 5));
+  Result := HashMD5String(GetParameter(ILine, 2) + copy(GetParameter(ILine, 5), 0, 5) +
+    copy(GetParameter(ILine, 8), 0, 5) + copy(GetParameter(ILine, 10), 0, 5) +
+    copy(GetParameter(ILine, 17), 0, 5) + copy(GetParameter(ILine, 18), 0, 5) +
+    copy(GetParameter(ILine, 19), 0, 5));
 end;
 
 {Gets a random ip and port node}
@@ -254,9 +254,9 @@ begin
     MyArray[counter] := StringReplace(MyArray[counter], ';', ' ',
       [rfReplaceAll, rfIgnoreCase]);
     Setlength(NodesArray, length(NodesArray) + 1);
-    NodesArray[length(NodesArray) - 1].host := Parameter(MyArray[counter], 0);
+    NodesArray[length(NodesArray) - 1].host := GetParameter(MyArray[counter], 0);
     NodesArray[length(NodesArray) - 1].port :=
-      StrToIntDef(Parameter(MyArray[counter], 1), 8080);
+      StrToIntDef(GetParameter(MyArray[counter], 1), 8080);
     NodesArray[length(NodesArray) - 1].Data := '';
     NodesArray[length(NodesArray) - 1].ConStr := '';
     NodesArray[length(NodesArray) - 1].Block := 0;
@@ -358,8 +358,8 @@ begin
   SetLength(ArrayCon, 0);
   for counter := 0 to high(NodesArray) do
   begin
-    if Parameter(NodesArray[counter].Data, 0) <> '' then
-      AddValue(Parameter(NodesArray[counter].Data, 0));
+    if GetParameter(NodesArray[counter].Data, 0) <> '' then
+      AddValue(GetParameter(NodesArray[counter].Data, 0));
   end;
   ConHash := GetHighest;
   if conhash = '' then
@@ -390,9 +390,9 @@ begin
     SetLength(ArrayCon, 0);
     for counter := 0 to high(NodesArray) do
     begin
-      if Parameter(NodesArray[counter].Data, 0) = ConHash then
+      if GetParameter(NodesArray[counter].Data, 0) = ConHash then
       begin
-        AddValue(Parameter(NodesArray[counter].Data, paramnumber));
+        AddValue(GetParameter(NodesArray[counter].Data, paramnumber));
         if ParamNumber = 1 then Inc(ValidNodes);
       end;
     end;

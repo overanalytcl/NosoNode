@@ -101,7 +101,7 @@
 <td class="itemcode"><code>procedure <strong><a href="MP.Protocol.html#PTC_SendUpdateHeaders-Integer-String-">PTC_SendUpdateHeaders</a></strong>(Slot: Integer; Linea: String);</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="MP.Protocol.html#ValidateTrfr-Torderdata-String-">ValidateTrfr</a></strong>(order: <a href="Noso.General.TOrderData.html">Torderdata</a>; Origen: String): Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="MP.Protocol.html#ValidateTrfr-TOrderData-String-">ValidateTrfr</a></strong>(order: <a href="Noso.General.TOrderData.html">TOrderData</a>; Origen: String): Integer;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>function <strong><a href="MP.Protocol.html#ZipHeaders">ZipHeaders</a></strong>(): Boolean;</code></td>
@@ -214,7 +214,7 @@ Elimina la operacion cripto</p>
 </tr>
 <tr><td colspan="1">
 <p>
-function <a class="normal" href="Noso.Network.html#GetPTCEcn">GetPTCEcn</a>():String;</p>
+function <a class="normal" href="Noso.Network.html#GetPTCEcn">GetPTCEcn</a>():String; convierte los datos de la cadena en una order</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -223,7 +223,7 @@ function <a class="normal" href="Noso.Network.html#GetPTCEcn">GetPTCEcn</a>():St
 </tr>
 <tr><td colspan="1">
 <p>
-Procedure <a class="normal" href="Noso.Network.html#ClearOutTextToSlot-Integer-">ClearOutTextToSlot</a>(slot:integer); Function <a class="normal" href="Noso.Network.html#GetTextToSlot-Integer-">GetTextToSlot</a>(slot:integer):string; Procedure <a class="normal" href="Noso.Network.html#ProcessPing-String-Integer-Boolean-">ProcessPing</a>(LineaDeTexto: string; Slot: integer; Responder:boolean);</p>
+Procedure <a class="normal" href="Noso.Network.html#ClearOutTextToSlot-Integer-">ClearOutTextToSlot</a>(slot:integer); Function <a class="normal" href="Noso.Network.html#GetTextToSlot-Integer-">GetTextToSlot</a>(slot:integer):string; Procedure <a class="normal" href="Noso.Network.html#ProcessPing-String-Integer-Boolean-">ProcessPing</a>(LineaDeTexto: string; Slot: integer; Responder:boolean); Devuelve la informacion contenida en un <a class="normal" href="MP.Protocol.html#Ping">ping</a></p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -232,7 +232,7 @@ Procedure <a class="normal" href="Noso.Network.html#ClearOutTextToSlot-Integer-"
 </tr>
 <tr><td colspan="1">
 <p>
-function <a class="normal" href="Noso.General.html#GetStringFromOrder-Torderdata-">GetStringFromOrder</a>(order:<a class="normal" href="Noso.General.TOrderData.html">Torderdata</a>):String;</p>
+function <a class="normal" href="Noso.General.html#GetStringFromOrder-TOrderData-">GetStringFromOrder</a>(order:<a class="normal" href="Noso.General.TOrderData.html">Torderdata</a>):String; devuelve una cadena con los datos de la cabecera de un bloque</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -276,7 +276,7 @@ function <a class="normal" href="Noso.General.html#GetStringFromOrder-Torderdata
 </tr>
 <tr><td colspan="1">
 <p>
-Function <a class="normal" href="Noso.Network.html#ProtocolLine-Integer-">ProtocolLine</a>(tipo:integer):String;</p>
+Function <a class="normal" href="Noso.Network.html#ProtocolLine-Integer-">ProtocolLine</a>(tipo:integer):String; Procesa todas las lineas procedentes de las <a class="normal" href="Noso.Network.html#Conexiones">conexiones</a></p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -354,7 +354,7 @@ Send Zipped blocks to peer</p>
 </tr>
 <tr><td colspan="1">
 <p>
-function <a class="normal" href="Noso.Network.html#IsValidProtocol-String-">IsValidProtocol</a>(line:String):Boolean;</p>
+function <a class="normal" href="Noso.Network.html#IsValidProtocol-String-">IsValidProtocol</a>(line:String):Boolean; Envia una linea a un determinado slot</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -370,7 +370,7 @@ function <a class="normal" href="Noso.Network.html#IsValidProtocol-String-">IsVa
 </tr>
 <tr><td colspan="1">
 <p>
-procedure PTC_SendPending(Slot:int64);</p>
+procedure PTC_SendPending(Slot:int64); Send headers file to peer</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -391,7 +391,7 @@ Procedure PTC_SendMNsList(slot:integer);</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ValidateTrfr-Torderdata-String-"></span><code>function <strong>ValidateTrfr</strong>(order: <a href="Noso.General.TOrderData.html">Torderdata</a>; Origen: String): Integer;</code></td>
+<td class="itemcode"><span id="ValidateTrfr-TOrderData-String-"></span><code>function <strong>ValidateTrfr</strong>(order: <a href="Noso.General.TOrderData.html">TOrderData</a>; Origen: String): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
 <p>

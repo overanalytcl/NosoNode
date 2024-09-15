@@ -47,12 +47,12 @@ begin
   Result.Sender := 'COINBASE';
   Result.Address := 'COINBASE';
   Result.Receiver := 'NpryectdevepmentfundsGE';
-  Result.AmmountFee := 0;
-  Result.AmmountTrf := amount;
+  Result.AmountFee := 0;
+  Result.AmountTransferred := amount;
   Result.Signature := 'COINBASE';
-  Result.TrfrID := GetTransferHash(Result.TimeStamp.ToString +
+  Result.TransferId := GetTransferHash(Result.TimeStamp.ToString +
     'COINBASE' + 'NpryectdevepmentfundsGE' + IntToStr(amount) + IntToStr(MyLastblock));
-  Result.OrderID := {GetOrderHash(}'1' + Result.TrfrID{)};
+  Result.OrderID := {GetOrderHash(}'1' + Result.TransferID{)};
 end;
 
 function CreateNosoPayOrder(number: Integer; AddSend, AddReceive: String;
@@ -68,12 +68,12 @@ begin
   Result.Sender := AddSend;
   Result.Address := AddSend;
   Result.Receiver := AddReceive;
-  Result.AmmountFee := 0;
-  Result.AmmountTrf := amount;
+  Result.AmountFee := 0;
+  Result.AmountTransferred := amount;
   Result.Signature := 'Directive';
-  Result.TrfrID := GetTransferHash(Result.TimeStamp.ToString + 'TRFR' +
+  Result.TransferId := GetTransferHash(Result.TimeStamp.ToString + 'TRFR' +
     AddSend + IntToStr(amount) + IntToStr(MyLastblock));
-  Result.OrderID := GetOrderHash('1' + Result.TrfrID);
+  Result.OrderID := GetOrderHash('1' + Result.TransferId);
 end;
 
 // Build the default block 0
@@ -182,7 +182,7 @@ begin
       ExistsInLastBlock := False;
       for count2 := 0 to length(ArrayLastBlockTrxs) - 1 do
       begin
-        if ArrayLastBlockTrxs[count2].TrfrID = ArrayPoolTXs[contador].TrfrID then
+        if ArrayLastBlockTrxs[count2].TransferId = ArrayPoolTXs[contador].TransferId then
         begin
           ExistsInLastBlock := True;
           break;
@@ -202,7 +202,7 @@ begin
         if IsCustomizacionValid(OperationAddress, ArrayPoolTXs[contador].Receiver,
           numero) then
         begin
-          minerfee := minerfee + ArrayPoolTXs[contador].AmmountFee;
+          minerfee := minerfee + ArrayPoolTXs[contador].AmountFee;
           ArrayPoolTXs[contador].Block := numero;
           ArrayPoolTXs[contador].Sender := OperationAddress;
           insert(ArrayPoolTXs[contador], ListaOrdenes, length(listaordenes));
@@ -212,12 +212,12 @@ begin
       if ArrayPoolTXs[contador].OrderType = 'TRFR' then
       begin
         OperationAddress := ArrayPoolTXs[contador].Address;
-        if SummaryValidPay(OperationAddress, ArrayPoolTXs[contador].AmmountFee +
-          ArrayPoolTXs[contador].AmmountTrf, numero) then
+        if SummaryValidPay(OperationAddress, ArrayPoolTXs[contador].AmountFee +
+          ArrayPoolTXs[contador].AmountTransferred, numero) then
         begin
-          minerfee := minerfee + ArrayPoolTXs[contador].AmmountFee;
+          minerfee := minerfee + ArrayPoolTXs[contador].AmountFee;
           CreditTo(ArrayPoolTXs[contador].Receiver,
-            ArrayPoolTXs[contador].AmmountTrf, numero);
+            ArrayPoolTXs[contador].AmountTransferred, numero);
           ArrayPoolTXs[contador].Block := numero;
           ArrayPoolTXs[contador].Sender := OperationAddress;
           insert(ArrayPoolTXs[contador], ListaOrdenes, length(listaordenes));
@@ -229,13 +229,13 @@ begin
       begin
         OperationAddress := GetAddressFromPublicKey(ArrayPoolTXs[contador].Sender);
         if GetAddressBalanceIndexed(OperationAddress) <
-          ArrayPoolTXs[contador].AmmountFee then continue;
+          ArrayPoolTXs[contador].AmountFee then continue;
         if ChangeGVTOwner(StrToIntDef(ArrayPoolTXs[contador].Reference, 100),
           OperationAddress, ArrayPoolTXs[contador].Receiver) = 0 then
         begin
-          minerfee := minerfee + ArrayPoolTXs[contador].AmmountFee;
+          minerfee := minerfee + ArrayPoolTXs[contador].AmountFee;
           Inc(GVTsTransfered);
-          SummaryValidPay(OperationAddress, ArrayPoolTXs[contador].AmmountFee, numero);
+          SummaryValidPay(OperationAddress, ArrayPoolTXs[contador].AmountFee, numero);
           ArrayPoolTXs[contador].Block := numero;
           ArrayPoolTXs[contador].Sender := OperationAddress;
           insert(ArrayPoolTXs[contador], ListaOrdenes, length(listaordenes));
@@ -248,14 +248,14 @@ begin
       NosoPayData := GetCFGDataStr(6);
       NosoPayData := StringReplace(NosoPayData, ':', '', [rfReplaceAll, rfIgnoreCase]);
       NosoPayData := StringReplace(NosoPayData, ',', ' ', [rfReplaceAll, rfIgnoreCase]);
-      NPDBlock := StrToIntdef(Parameter(NosoPayData, 0), 0);
+      NPDBlock := StrToIntdef(GetParameter(NosoPayData, 0), 0);
       if NPDBlock = numero then
       begin
-        NPDSource := Parameter(NosoPayData, 1);
-        NPDTarget := Parameter(NosoPayData, 2);
+        NPDSource := GetParameter(NosoPayData, 1);
+        NPDTarget := GetParameter(NosoPayData, 2);
         if ((IsValidHashAddress(NPDTarget)) and (IsValidHashAddress(NPDSource))) then
         begin
-          NPDAmount := StrToInt64def(Parameter(NosoPayData, 3), 0);
+          NPDAmount := StrToInt64def(GetParameter(NosoPayData, 3), 0);
           if NPDAmount > 0 then
           begin
             if SummaryValidPay(NPDSource, NPDamount, NPDBlock) then
@@ -308,7 +308,7 @@ begin
       PosTotalReward := 0;
       if numero < PosBlockEnd then
       begin
-        PosRequired := (GetSupply(numero) * PosStackCoins) div 10000;
+        PosRequired := (GetCirculatingSupply(numero) * PosStackCoins) div 10000;
         PoScount := length(PoSAddressess);
         PosTotalReward := ((GetBlockReward(Numero) + MinerFee) *
           GetPoSPercentage(Numero)) div 10000;
@@ -335,11 +335,11 @@ begin
       Contador := 1;
       repeat
         begin
-          ThisParam := Parameter(MNsFileText, contador);
+          ThisParam := GetParameter(MNsFileText, contador);
           if ThisParam <> '' then
           begin
             ThisParam := StringReplace(ThisParam, ':', ' ', [rfReplaceAll]);
-            ThisParam := Parameter(ThisParam, 1);
+            ThisParam := GetParameter(ThisParam, 1);
             SetLength(MNsAddressess, length(MNsAddressess) + 1);
             MNsAddressess[length(MNsAddressess) - 1].address := ThisParam;
           end;
@@ -349,7 +349,7 @@ begin
 
       MNsCount := Length(MNsAddressess);
       MNsTotalReward := ((GetBlockReward(Numero) + MinerFee) *
-        GetMNsPercentage(Numero, GetCFGDataStr(0))) div 10000;
+        GetMasterNodesPercentage(Numero, GetCFGDataStr(0))) div 10000;
       if MNsCount > 0 then MNsReward := MNsTotalReward div MNsCount
       else
         MNsReward := 0;
@@ -752,7 +752,7 @@ var
 begin
   BeginPErformance('GEtNSLBlkOrdInfo');
   Result := 'NSLBLKORD ';
-  ParamBlock := UpperCase(Parameter(LineText, 1));
+  ParamBlock := UpperCase(GetParameter(LineText, 1));
   if paramblock = 'LAST' then BlkNumber := MyLastBlock
   else
     BlkNumber := StrToIntDef(ParamBlock, -1);
@@ -771,7 +771,7 @@ begin
         if OrdersArray[cont].OrderType = 'TRFR' then
         begin
           ThisOrder := ThisOrder + OrdersArray[Cont].Sender + ':' +
-            OrdersArray[Cont].Receiver + ':' + OrdersArray[Cont].AmmountTrf.ToString +
+            OrdersArray[Cont].Receiver + ':' + OrdersArray[Cont].AmountTransferred.ToString +
             ':' + OrdersArray[Cont].Reference + ':' + OrdersArray[Cont].OrderID + ' ';
         end;
       end;

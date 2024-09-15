@@ -220,14 +220,14 @@ begin
     TCPClient.Free;
     if success then
     begin
-      WasPositive := StrToBoolDef(Parameter(Linea, 0), False);
-      if ((WasPositive) and (Parameter(Linea, 1) = CurrSynctus)) then
+      WasPositive := StrToBoolDef(GetParameter(Linea, 0), False);
+      if ((WasPositive) and (GetParameter(Linea, 1) = CurrSynctus)) then
       begin
         EnterCriticalSection(CSVerNodes);
         VerifiedNodes := VerifiedNodes + Ip + ';' + Port.ToString + ':';
         LeaveCriticalSection(CSVerNodes);
       end
-      else if ((WasPositive) and (Parameter(Linea, 1) <> CurrSynctus)) then
+      else if ((WasPositive) and (GetParameter(Linea, 1) <> CurrSynctus)) then
       begin
         // Wrong synctus returned
       end
@@ -236,7 +236,7 @@ begin
         // Was not possitive
       end;
     end;
-    if Parameter(Linea, 3) <> LocalMN_IP then Inc(UnconfirmedIPs);
+    if GetParameter(Linea, 3) <> LocalMN_IP then Inc(UnconfirmedIPs);
   except
     on E: Exception do
     begin
@@ -336,7 +336,7 @@ var
   counter: Integer;
 begin
   Result := False;
-  ThisIP := parameter(OrderText, 5);
+  ThisIP := GetParameter(OrderText, 5);
   EnterCriticalSection(CSMNsIPProc);
   if length(ArrayIPsProcessed) > 0 then
   begin
@@ -459,15 +459,15 @@ var
 begin
   Result := True;
   ToMNode := Default(TMNode);
-  ToMNode.Ip := Parameter(StringData, 1);
-  ToMNode.Port := StrToIntDef(Parameter(StringData, 2), -1);
-  ToMNode.Sign := Parameter(StringData, 3);
-  ToMNode.Fund := Parameter(StringData, 4);
-  ToMNode.First := StrToIntDef(Parameter(StringData, 5), -1);
-  ToMNode.Last := StrToIntDef(Parameter(StringData, 6), -1);
-  ToMNode.Total := StrToIntDef(Parameter(StringData, 7), -1);
-  ToMNode.Validations := StrToIntDef(Parameter(StringData, 8), -1);
-  ToMNode.hash := Parameter(StringData, 9);
+  ToMNode.Ip := GetParameter(StringData, 1);
+  ToMNode.Port := StrToIntDef(GetParameter(StringData, 2), -1);
+  ToMNode.Sign := GetParameter(StringData, 3);
+  ToMNode.Fund := GetParameter(StringData, 4);
+  ToMNode.First := StrToIntDef(GetParameter(StringData, 5), -1);
+  ToMNode.Last := StrToIntDef(GetParameter(StringData, 6), -1);
+  ToMNode.Total := StrToIntDef(GetParameter(StringData, 7), -1);
+  ToMNode.Validations := StrToIntDef(GetParameter(StringData, 8), -1);
+  ToMNode.hash := GetParameter(StringData, 9);
   if not IsValidIP(ToMNode.Ip) then Result := False
   else if ((ToMNode.Port < 0) or (ToMNode.Port > 65535)) then ErrCode := 1
   else if not IsValidHashAddress(ToMNode.Sign) then ErrCode := 2
@@ -572,9 +572,9 @@ begin
     IPIndex := 0;
     repeat
       begin
-        ThisIP := Parameter(NodesString, IPIndex);
+        ThisIP := GetParameter(NodesString, IPIndex);
         ThisIP := StringReplace(ThisIP, ';', ' ', [rfReplaceAll]);
-        ThisIP := Parameter(ThisIP, 0);
+        ThisIP := GetParameter(ThisIP, 0);
         if ThisIP <> '' then
         begin
           AddCheckToIP(ThisIP);
@@ -611,7 +611,7 @@ begin
   IPIndex := 0;
   repeat
     begin
-      ThisIP := Parameter(StringNodes, IPIndex);
+      ThisIP := GetParameter(StringNodes, IPIndex);
       if ThisIP <> '' then Inc(Result);
       Inc(IPIndex);
     end;
@@ -622,12 +622,12 @@ end;
 function GetMNCheckFromString(Linea: String): TMNCheck;
 begin
   Result := Default(TMNCheck);
-  Result.ValidatorIP := Parameter(Linea, 5);
-  Result.Block := StrToIntDef(Parameter(Linea, 6), 0);
-  Result.SignAddress := Parameter(Linea, 7);
-  Result.PubKey := Parameter(Linea, 8);
-  Result.ValidNodes := Parameter(Linea, 9);
-  Result.Signature := Parameter(Linea, 10);
+  Result.ValidatorIP := GetParameter(Linea, 5);
+  Result.Block := StrToIntDef(GetParameter(Linea, 6), 0);
+  Result.SignAddress := GetParameter(Linea, 7);
+  Result.PubKey := GetParameter(Linea, 8);
+  Result.ValidNodes := GetParameter(Linea, 9);
+  Result.Signature := GetParameter(Linea, 10);
 end;
 
 // Clears all the MNS checks
@@ -752,7 +752,7 @@ var
   counter: Integer;
 begin
   Result := False;
-  DataSource := Parameter(DataSource, 5);
+  DataSource := GetParameter(DataSource, 5);
   EnterCriticalSection(CSReceivedMNs);
   for counter := 0 to length(ArrReceivedMNs) - 1 do
   begin
@@ -876,13 +876,13 @@ begin
     SetLength(ArrayMNsData, 0);
     SetLength(TempArray, 0);
     repeat
-      ThisData := Parameter(Tvalue, counter);
+      ThisData := GetParameter(Tvalue, counter);
       if ThisData <> '' then
       begin
         ThisData := StringReplace(ThisData, ':', ' ', [rfReplaceAll]);
-        ThisMN.ipandport := Parameter(ThisData, 0);
-        ThisMN.address := Parameter(ThisData, 1);
-        ThisMN.age := StrToIntDef(Parameter(ThisData, 2), 1);
+        ThisMN.ipandport := GetParameter(ThisData, 0);
+        ThisMN.address := GetParameter(ThisData, 1);
+        ThisMN.age := StrToIntDef(GetParameter(ThisData, 2), 1);
         Insert(ThisMN, TempArray, length(TempArray));
       end;
       Inc(counter);

@@ -294,7 +294,7 @@ begin
   begin
     form1.Direccionespanel.Cells[0, contador + 1] := GetWallArrIndex(contador).Hash;
     form1.Direccionespanel.Cells[1, contador + 1] :=
-      Int2Curr(GetWallArrIndex(contador).Balance);
+      IntToCurrency(GetWallArrIndex(contador).Balance);
   end;
 
   // Nodes Grid
@@ -463,7 +463,7 @@ begin
       Copy(PSOFileHash, 0, 5), GetConsensus(20)]);
     form1.DataPanel.Cells[3, 1] :=
       Format('[%s] %s Noso', [BlockAge.ToString, Copy(
-      Int2curr(GetBlockReward(Mylastblock + 1)), 0, 5)]);
+      IntToCurrency(GetBlockReward(Mylastblock + 1)), 0, 5)]);
     form1.DataPanel.Cells[3, 2] :=
       GEtOutgoingconnections.ToString + '/' + GetClientReadThreads.ToString;
     form1.DataPanel.Cells[3, 3] := Format('%d (%d)', [GetDBLastBlock, GetDBRecords]);
@@ -519,10 +519,10 @@ begin
         form1.Direccionespanel.Cells[0, form1.Direccionespanel.RowCount - 1] :=
           GetWallArrIndex(contador).Hash;
       form1.Direccionespanel.Cells[1, form1.Direccionespanel.RowCount - 1] :=
-        Int2Curr(GetAddressBalanceIndexed(GetWallArrIndex(contador).hash) -
+        IntToCurrency(GetAddressBalanceIndexed(GetWallArrIndex(contador).hash) -
         GetWallArrIndex(contador).pending);
     end;
-    form1.LabelBigBalance.Caption := Int2Curr(GetWalletBalance) + ' ' + CoinSimbol;
+    form1.LabelBigBalance.Caption := IntToCurrency(GetWalletBalance) + ' ' + CoinSimbol;
     form1.Direccionespanel.Cells[0, 0] := format(rs0514, [LEnWallArr]);  //'Address'
     U_DirPanel := False;
     EndPerformance('UpdateDirPanel');
@@ -550,11 +550,11 @@ var
 begin
   if Sender = form1.ImageInc then
   begin
-    form1.ImageInc.Hint := 'Incoming: ' + Int2curr(MontoIncoming);
+    form1.ImageInc.Hint := 'Incoming: ' + IntToCurrency(MontoIncoming);
   end;
   if Sender = form1.ImageOut then
   begin
-    form1.ImageOut.Hint := 'Outgoing: ' + Int2curr(MontoOutgoing);
+    form1.ImageOut.Hint := 'Outgoing: ' + IntToCurrency(MontoOutgoing);
   end;
 end;
 

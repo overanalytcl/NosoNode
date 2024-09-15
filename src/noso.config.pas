@@ -130,7 +130,7 @@ begin
   EnterCriticalSection(CS_CFGData);
   if LParam < 0 then Result := NosoCFGString
   else
-    Result := Parameter(NosoCFGString, LParam);
+    Result := GetParameter(NosoCFGString, LParam);
   LeaveCriticalSection(CS_CFGData);
 end;
 
@@ -152,7 +152,7 @@ begin
   LCFGStr := GetCFGDataStr();
   SetLength(LArrString, 0);
   repeat
-    ThisData := Parameter(LCFGStr, counter);
+    ThisData := GetParameter(LCFGStr, counter);
     if ThisData <> '' then
       Insert(ThisData, LArrString, LEngth(LArrString));
     Inc(Counter);
@@ -187,7 +187,7 @@ begin
   LCFGStr := GetCFGDataStr();
   SetLength(LArrString, 0);
   repeat
-    ThisData := Parameter(LCFGStr, counter);
+    ThisData := GetParameter(LCFGStr, counter);
     if ThisData <> '' then
     begin
       Insert(ThisData, LArrString, LEngth(LArrString));
@@ -221,7 +221,7 @@ begin
   LCFGStr := GetCFGDataStr();
   SetLength(LArrString, 0);
   repeat
-    ThisData := Parameter(LCFGStr, counter);
+    ThisData := GetParameter(LCFGStr, counter);
     if ThisData <> '' then
     begin
       Insert(ThisData, LArrString, LEngth(LArrString));

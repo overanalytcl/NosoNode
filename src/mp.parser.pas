@@ -197,7 +197,7 @@ var
   Counter: Integer;
   LItem: TSummaryData;
 begin
-  Command := Parameter(Linetext, 0);
+  Command := GetParameter(Linetext, 0);
   if not AnsiContainsStr(HideCommands, Uppercase(command)) then
     ToLog('Console', '>> ' + Linetext);
   if UpperCase(Command) = 'VER' then ToLog('console', MainnetVersion + NodeRelease)
@@ -215,7 +215,7 @@ begin
   else if UpperCase(Command) = 'NEWADDRESS' then NuevaDireccion(linetext)
   else if UpperCase(Command) = 'USEROPTIONS' then ShowUser_Options()
   else if UpperCase(Command) = 'BALANCE' then
-    ToLog('console', Int2Curr(GetWalletBalance) + ' ' + CoinSimbol)
+    ToLog('console', IntToCurrency(GetWalletBalance) + ' ' + CoinSimbol)
   else if UpperCase(Command) = 'CONNECTTO' then ConnectTo(Linetext)
   else if UpperCase(Command) = 'AUTOSERVERON' then AutoServerON()
   else if UpperCase(Command) = 'AUTOSERVEROFF' then AutoServerOFF()
@@ -223,7 +223,7 @@ begin
   else if UpperCase(Command) = 'IMPWALLET' then ImportarWallet(LineText)
   else if UpperCase(Command) = 'EXPWALLET' then ExportarWallet(LineText)
   else if UpperCase(Command) = 'RESUMEN' then
-    ShowBlchHead(StrToIntDef(Parameter(Linetext, 1), MyLastBlock))
+    ShowBlchHead(StrToIntDef(GetParameter(Linetext, 1), MyLastBlock))
   else if UpperCase(Command) = 'SETDEFAULT' then SetDefaultAddress(LineText)
   else if UpperCase(Command) = 'LBINFO' then ShowBlockInfo(MyLastBlock)
   else if UpperCase(Command) = 'TIMESTAMP' then ToLog('console', UTCTimeStr)
@@ -234,11 +234,11 @@ begin
   else if UpperCase(Command) = 'HALVING' then ShowHalvings()
   else if UpperCase(Command) = 'SETPORT' then SetServerPort(LineText)
   else if UpperCase(Command) = 'SHA256' then
-    ToLog('console', HashSha256String(Parameter(LineText, 1)))
+    ToLog('console', HashSha256String(GetParameter(LineText, 1)))
   else if UpperCase(Command) = 'MD5' then
-    ToLog('console', HashMD5String(Parameter(LineText, 1)))
+    ToLog('console', HashMD5String(GetParameter(LineText, 1)))
   else if UpperCase(Command) = 'MD160' then
-    ToLog('console', HashMD160String(Parameter(LineText, 1)))
+    ToLog('console', HashMD160String(GetParameter(LineText, 1)))
   else if UpperCase(Command) = 'CLEAR' then form1.Memoconsola.Lines.Clear
   else if UpperCase(Command) = 'TP' then TestParser(LineText)
   else if UpperCase(Command) = 'BLOCK' then ParseShowBlockInfo(LineText)
@@ -254,18 +254,18 @@ begin
   else if UpperCase(Command) = 'GETBETA' then RunGetBeta(LineText)
   else if UpperCase(Command) = 'RESTOREBLOCKCHAIN' then RestoreBlockChain()
   else if UpperCase(Command) = 'RESTORESUMARY' then
-    RestoreSumary(StrToIntDef(Parameter(LineText, 1), 0))
+    RestoreSumary(StrToIntDef(GetParameter(LineText, 1), 0))
   //else if UpperCase(Command) = 'REQSUM' then RequestSumary()
   else if UpperCase(Command) = 'SAVEADV' then CreateADV(True)
   else if UpperCase(Command) = 'ORDER' then ShowOrderDetails(LineText)
   else if UpperCase(Command) = 'ORDERSOURCES' then
-    ToLog('console', GetOrderSources(Parameter(LineText, 1)))
+    ToLog('console', GetOrderSources(GetParameter(LineText, 1)))
   else if UpperCase(Command) = 'EXPORTADDRESS' then ExportAddress(LineText)
   else if UpperCase(Command) = 'ADDRESS' then ShowAddressInfo(LineText)
   else if UpperCase(Command) = 'HISTORY' then ShowAddressHistory(LineText)
   else if UpperCase(Command) = 'TOTALFEES' then ShowTotalFees()
   else if UpperCase(Command) = 'SUPPLY' then
-    ToLog('console', 'Current supply: ' + Int2Curr(GetSupply(MyLastBlock)))
+    ToLog('console', 'Current supply: ' + IntToCurrency(GetCirculatingSupply(MyLastBlock)))
   else if UpperCase(Command) = 'GMTS' then showgmts(LineText)
   else if UpperCase(Command) = 'SHOWKEYS' then ShowPrivKey(LineText, True)
   else if UpperCase(Command) = 'SHOWPENDING' then ShowPendingTrxs()
@@ -274,16 +274,16 @@ begin
   else if UpperCase(Command) = 'CHECKUPDATES' then ToLog('console', GetLastRelease)
   else if UpperCase(Command) = 'ZIPSUMARY' then ZipSumary()
   else if UpperCase(Command) = 'GETPOS' then
-    ToLog('console', GetPoSPercentage(StrToIntdef(Parameter(linetext, 1),
+    ToLog('console', GetPoSPercentage(StrToIntdef(GetParameter(linetext, 1),
       Mylastblock)).ToString)
   else if UpperCase(Command) = 'GETMNS' then
-    ToLog('console', GetMNsPercentage(StrToIntdef(Parameter(linetext, 1), Mylastblock),
+    ToLog('console', GetMasterNodesPercentage(StrToIntdef(GetParameter(linetext, 1), Mylastblock),
       GetCFGDataStr(0)).ToString)
   else if UpperCase(Command) = 'CLOSESTARTON' then WO_CloseStart := True
   else if UpperCase(Command) = 'CLOSESTARTOFF' then WO_CloseStart := False
   else if UpperCase(Command) = 'TT' then DebugTest2(LineText)
   else if UpperCase(Command) = 'BASE58SUM' then
-    ToLog('console', BMB58resumen(parameter(linetext, 1)))
+    ToLog('console', BMB58resumen(GetParameter(linetext, 1)))
   else if UpperCase(Command) = 'PENDING' then ToLog('console', PendingRawInfo)
   else if UpperCase(Command) = 'HEADSIZE' then
     ToLog('console', GetHeadersHeigth.ToString)
@@ -317,8 +317,8 @@ begin
   else if UpperCase(Command) = 'NOSOCFG' then ToLog('console', GetCFGDataStr)
   else if UpperCase(Command) = 'FUNDS' then
     ToLog('console', 'Project funds ' + lineEnding + 'NpryectdevepmentfundsGE: ' +
-      Int2curr(GetAddressAvailable('NpryectdevepmentfundsGE')) + lineEnding +
-      'NPrjectPrtcRandmJacptE5: ' + Int2curr(
+      IntToCurrency(GetAddressAvailable('NpryectdevepmentfundsGE')) + lineEnding +
+      'NPrjectPrtcRandmJacptE5: ' + IntToCurrency(
       GetAddressAvailable('NPrjectPrtcRandmJacptE5')))
   else if UpperCase(Command) = 'SUMINDEXSIZE' then
     ToLog('console', IntToStr(SumIndexLength))
@@ -330,25 +330,25 @@ begin
   else if UpperCase(Command) = 'BLOCKPOS' then ShowBlockPos(LineText)
   else if UpperCase(Command) = 'BLOCKMNS' then ShowBlockMNs(LineText)
   else if UpperCase(Command) = 'MYIP' then ToLog('console', GetMiIP)
-  else if UpperCase(Command) = 'SETMODE' then SetCFGData(parameter(linetext, 1), 0)
-  else if UpperCase(Command) = 'ADDNODE' then AddCFGData(parameter(linetext, 1), 1)
-  else if UpperCase(Command) = 'DELNODE' then RemoveCFGData(parameter(linetext, 1), 1)
-  else if UpperCase(Command) = 'ADDPOOL' then AddCFGData(parameter(linetext, 1), 3)
-  else if UpperCase(Command) = 'DELPOOL' then RemoveCFGData(parameter(linetext, 1), 3)
+  else if UpperCase(Command) = 'SETMODE' then SetCFGData(GetParameter(linetext, 1), 0)
+  else if UpperCase(Command) = 'ADDNODE' then AddCFGData(GetParameter(linetext, 1), 1)
+  else if UpperCase(Command) = 'DELNODE' then RemoveCFGData(GetParameter(linetext, 1), 1)
+  else if UpperCase(Command) = 'ADDPOOL' then AddCFGData(GetParameter(linetext, 1), 3)
+  else if UpperCase(Command) = 'DELPOOL' then RemoveCFGData(GetParameter(linetext, 1), 3)
   else if UpperCase(Command) = 'RESTORECFG' then RestoreCFGData()
-  else if UpperCase(Command) = 'ADDNOSOPAY' then AddCFGData(parameter(linetext, 1), 6)
-  else if UpperCase(Command) = 'DELNOSOPAY' then RemoveCFGData(parameter(linetext, 1), 6)
+  else if UpperCase(Command) = 'ADDNOSOPAY' then AddCFGData(GetParameter(linetext, 1), 6)
+  else if UpperCase(Command) = 'DELNOSOPAY' then RemoveCFGData(GetParameter(linetext, 1), 6)
   else if UpperCase(Command) = 'ISALLSYNCED' then ToLog('console', IsAllsynced.ToString)
   else if UpperCase(Command) = 'FREEZED' then Totallocked()
-  else if UpperCase(Command) = 'CLEARCFG' then ClearCFGData(parameter(linetext, 1))
+  else if UpperCase(Command) = 'CLEARCFG' then ClearCFGData(GetParameter(linetext, 1))
 
   else if UpperCase(Command) = 'ADDFROMPUB' then
-    ToLog('console', GetAddressFromPublicKey(parameter(linetext, 1)))
+    ToLog('console', GetAddressFromPublicKey(GetParameter(linetext, 1)))
 
   // 0.4.0
   else if UpperCase(Command) = 'CONSENSUS' then ShowConsensus()
   else if UpperCase(Command) = 'VALIDATE' then
-    ToLog('console', BoolToStr(VerifyAddressOnDisk(parameter(linetext, 1)), True))
+    ToLog('console', BoolToStr(VerifyAddressOnDisk(GetParameter(linetext, 1)), True))
   // P2P
   else if UpperCase(Command) = 'PEERS' then
     ToLog('console', 'Server list: ' + IntToStr(form1.ClientsCount) +
@@ -360,7 +360,7 @@ begin
   else if UpperCase(Command) = 'RPCOFF' then SetRPCOff()
 
   // PSO
-  else if UpperCase(Command) = 'NEWPSO' then TestNewPSO(parameter(linetext, 1))
+  else if UpperCase(Command) = 'NEWPSO' then TestNewPSO(GetParameter(linetext, 1))
   else if UpperCase(Command) = 'LISTPSOS' then GetPSOs()
   else if UpperCase(Command) = 'CLEARPSOS' then CLEARPSOS()
   else if UpperCase(Command) = 'SHOWPSOS' then ShowMNsLocked()
@@ -433,8 +433,8 @@ procedure ConnectTo(LineText: String);
 var
   Ip, Port: String;
 begin
-  Ip := Parameter(Linetext, 1);
-  Port := Parameter(Linetext, 2);
+  Ip := GetParameter(Linetext, 1);
+  Port := GetParameter(Linetext, 2);
   if StrToIntDef(Port, -1) = -1 then Port := '8080';
   ConnectClient(ip, port);
 end;
@@ -463,14 +463,14 @@ begin
     ToLog('console', GetWallArrIndex(contador).Hash);
   end;
   ToLog('console', IntToStr(LenWallArr) + ' addresses.');
-  ToLog('console', Int2Curr(GetWalletBalance) + ' ' + CoinSimbol);
+  ToLog('console', IntToCurrency(GetWalletBalance) + ' ' + CoinSimbol);
 end;
 
 procedure ExportarWallet(LineText: String);
 var
   destino: String = '';
 begin
-  destino := Parameter(linetext, 1);
+  destino := GetParameter(linetext, 1);
   destino := StringReplace(destino, '*', ' ', [rfReplaceAll, rfIgnoreCase]);
   if fileexists(destino + '.pkw') then
   begin
@@ -495,7 +495,7 @@ var
   Contador: Integer = 0;
   Nuevos: Integer = 0;
 begin
-  Cartera := Parameter(linetext, 1);
+  Cartera := GetParameter(linetext, 1);
   Cartera := StringReplace(Cartera, '*', ' ', [rfReplaceAll, rfIgnoreCase]);
   if not FileExists(cartera) then
   begin
@@ -582,7 +582,7 @@ var
   OldData, NewData: walletData;
 begin
   Result := False;
-  Address := Parameter(linetext, 1);
+  Address := GetParameter(linetext, 1);
   index := WallAddIndex(Address);
   if ((index < 0) or (index > LenWallArr - 1)) then
     OutText('Invalid address.', False, 2)  //'Invalid address number.'
@@ -604,7 +604,7 @@ procedure ParseShowBlockInfo(LineText: String);
 var
   blnumber: Integer;
 begin
-  blnumber := StrToIntDef(Parameter(linetext, 1), -1);
+  blnumber := StrToIntDef(GetParameter(linetext, 1), -1);
   if (blnumber < 0) or (blnumber > MylastBlock) then
     outtext('Invalid block number')
   else
@@ -650,7 +650,7 @@ begin
       begin
         ToLog('console', Format('%-8s %-35s -> %-35s : %s',
           [LOrders[counter].OrderType, LOrders[counter].Sender,
-          LOrders[counter].Receiver, int2curr(LOrders[counter].AmmountTrf)]));
+          LOrders[counter].Receiver, IntToCurrency(LOrders[counter].AmountTransferred)]));
       end;
     end;
     if numberblock > PoSBlockStart then
@@ -660,7 +660,7 @@ begin
       SetLength(LPoSes, length(LPoSes) - 1);
       PosCount := length(LPoSes);
       ToLog('console', Format('PoS Reward: %s  /  Addresses: %d  /  Total: %s',
-        [int2curr(PosReward), PosCount, int2curr(PosReward * PosCount)]));
+        [IntToCurrency(PosReward), PosCount, IntToCurrency(PosReward * PosCount)]));
     end;
     if numberblock > MNBlockStart then
     begin
@@ -669,7 +669,7 @@ begin
       SetLength(LPoSes, length(LPoSes) - 1);
       PosCount := length(LPoSes);
       ToLog('console', Format('MNs Reward: %s  /  Addresses: %d  /  Total: %s',
-        [int2curr(PosReward), PosCount, int2curr(PosReward * PosCount)]));
+        [IntToCurrency(PosReward), PosCount, IntToCurrency(PosReward * PosCount)]));
     end;
   end
   else
@@ -682,8 +682,8 @@ var
   cont: Integer;
   procesar: Boolean = True;
 begin
-  address := Parameter(linetext, 1);
-  AddAlias := Parameter(linetext, 2);
+  address := GetParameter(linetext, 1);
+  AddAlias := GetParameter(linetext, 2);
   if WallAddIndex(address) < 0 then
   begin
     ToLog('console', 'Invalid address');  //'Invalid address'
@@ -769,7 +769,7 @@ var
   montoToShow, comisionToShow: Int64;
   contador: Integer;
   Restante: Int64;
-  ArrayTrfrs: array of Torderdata;
+  ArrayTrfrs: array of TOrderData;
   currtime: String;
   TrxLinea: Integer = 0;
   OrderHashString: String;
@@ -783,9 +783,9 @@ var
 begin
   Result := '';
   BeginPerformance('SendFunds');
-  Destination := Parameter(Linetext, 1);
-  amount := Parameter(Linetext, 2);
-  reference := Parameter(Linetext, 3);
+  Destination := GetParameter(Linetext, 1);
+  amount := GetParameter(Linetext, 2);
+  reference := GetParameter(Linetext, 3);
   if ((Destination = '') or (amount = '')) then
   begin
     if showOutput then ToLog('console', 'Invalid parameters.'); //'Invalid parameters.'
@@ -824,7 +824,7 @@ begin
     if Restante > CoinsAvailable then
     begin
       if showOutput then ToLog('console', 'Insufficient funds. Needed: ' +
-          Int2curr(Monto + comision));//'Insufficient funds. Needed: '
+          IntToCurrency(Monto + comision));//'Insufficient funds. Needed: '
       Procesar := False;
     end;
   end;
@@ -852,9 +852,9 @@ begin
         ArrayTrfrs[length(arraytrfrs) - 1] :=
           SendFundsFromAddress(GetWallArrIndex(contador).Hash,
           Destination, monto, comision, reference, CurrTime, TrxLinea);
-        comision := comision - ArrayTrfrs[length(arraytrfrs) - 1].AmmountFee;
-        monto := monto - ArrayTrfrs[length(arraytrfrs) - 1].AmmountTrf;
-        OrderHashString := OrderHashString + ArrayTrfrs[length(arraytrfrs) - 1].TrfrID;
+        comision := comision - ArrayTrfrs[length(arraytrfrs) - 1].AmountFee;
+        monto := monto - ArrayTrfrs[length(arraytrfrs) - 1].AmountTransferred;
+        OrderHashString := OrderHashString + ArrayTrfrs[length(arraytrfrs) - 1].TransferID;
       end;
       Inc(contador);
       if contador >= LenWallArr then contador := 0;
@@ -867,8 +867,8 @@ begin
     end;
     ResultOrderID := GetOrderHash(IntToStr(trxLinea) + OrderHashString);
     if showOutput then ToLog('console', 'Send to: ' + Destination +
-        slinebreak + 'Send ' + Int2Curr(montoToShow) + ' fee ' +
-        Int2Curr(comisionToShow) + slinebreak + 'Order ID: ' + ResultOrderID);
+        slinebreak + 'Send ' + IntToCurrency(montoToShow) + ' fee ' +
+        IntToCurrency(comisionToShow) + slinebreak + 'Order ID: ' + ResultOrderID);
     Result := ResultOrderID;
 
     OrderString := GetPTCEcn + 'ORDER ' + IntToStr(trxLinea) + ' $';
@@ -915,8 +915,8 @@ var
 begin
   Result := '';
   BeginPerformance('SendGVT');
-  GVTNumber := StrToIntDef(Parameter(Linetext, 1), -1);
-  Destination := Parameter(Linetext, 2);
+  GVTNumber := StrToIntDef(GetParameter(Linetext, 1), -1);
+  Destination := GetParameter(Linetext, 2);
   if ((GVTnumber < 0) or (GVTnumber > length(ArrGVTs) - 1)) then
   begin
     if showOutput then ToLog('console', 'Invalid GVT number');
@@ -998,14 +998,14 @@ begin
     reward := InitialReward div (2 ** contador);
     MarketCap := marketcap + (reward * BlockHalvingInterval);
     Texto := Format('From block %7d until %7d : %11s',
-      [block1, block2, Int2curr(reward)]);
-    //Texto :='From block '+IntToStr(block1)+' until '+IntToStr(block2)+': '+Int2curr(reward); //'From block '+' until '
+      [block1, block2, IntToCurrency(reward)]);
+    //Texto :='From block '+IntToStr(block1)+' until '+IntToStr(block2)+': '+IntToCurrency(reward); //'From block '+' until '
     ToLog('console', Texto);
   end;
-  ToLog('console', 'And then ' + int2curr(0)); //'And then '
+  ToLog('console', 'And then ' + IntToCurrency(0)); //'And then '
   MarketCap := MarketCap + PremineAmount - InitialReward;
   // descuenta una recompensa inicial x bloque 0
-  ToLog('console', 'Final supply: ' + int2curr(MarketCap)); //'Final supply: '
+  ToLog('console', 'Final supply: ' + IntToCurrency(MarketCap)); //'Final supply: '
 end;
 
 // cambia el puerto de escucha
@@ -1015,7 +1015,7 @@ var
 begin
   ToLog('console', 'Deprecated');
   Exit;
-  NewPort := parameter(linetext, 1);
+  NewPort := GetParameter(linetext, 1);
   if ((StrToIntDef(NewPort, 0) < 1) or (StrToIntDef(NewPort, 0) > 65535)) then
   begin
     ToLog('console', 'Invalid Port');
@@ -1034,11 +1034,11 @@ var
   continuar: Boolean;
   parametro: String;
 begin
-  ToLog('console', Parameter(linetext, 0));
+  ToLog('console', GetParameter(linetext, 0));
   continuar := True;
   repeat
     begin
-      parametro := Parameter(linetext, contador);
+      parametro := GetParameter(linetext, contador);
       if parametro = '' then continuar := False
       else
       begin
@@ -1069,7 +1069,7 @@ var
   Direccion, Pubkey, privkey, currtime, Certificate: String;
   AddIndex: Integer;
 begin
-  direccion := parameter(linetext, 1);
+  direccion := GetParameter(linetext, 1);
   AddIndex := WallAddIndex(direccion);
   if ((AddIndex < 0) or (direccion = '')) then
   begin
@@ -1090,7 +1090,7 @@ var
   Data, firmtime, Address, Lalias: String;
 begin
   BeginPerformance('CheckOwnerHash');
-  Data := parameter(LineText, 1);
+  Data := GetParameter(LineText, 1);
   Address := CheckCertificate(Data, firmtime);
   if Address <> '' then
   begin
@@ -1134,9 +1134,9 @@ var
   TArch: String;
   overRule: Boolean = False;
 begin
-  Tversion := parameter(linea, 1);
-  if Tversion = '' then Tversion := Parameter(GetLastRelease, 0);
-  TArch := Uppercase(parameter(linea, 2));
+  Tversion := GetParameter(linea, 1);
+  if Tversion = '' then Tversion := GetParameter(GetLastRelease, 0);
+  TArch := Uppercase(GetParameter(linea, 2));
   if TArch = '' then TArch := GetOS;
   ToLog('console', Format('Trying upgrade to version %s (%s)', [TVersion, TArch]));
   if ansicontainsstr(linea, ' /or') then overRule := True;
@@ -1176,9 +1176,9 @@ var
   TArch: String;
   overRule: Boolean = False;
 begin
-  Tversion := parameter(linea, 1);
-  if Tversion = '' then Tversion := Parameter(GetLastRelease, 1);
-  TArch := Uppercase(parameter(linea, 2));
+  Tversion := GetParameter(linea, 1);
+  if Tversion = '' then Tversion := GetParameter(GetLastRelease, 1);
+  TArch := Uppercase(GetParameter(linea, 2));
   if TArch = '' then TArch := GetOS;
   ToLog('console', Format('Trying Install beta %s (%s)', [TVersion, TArch]));
   if ansicontainsstr(linea, ' /or') then overRule := True;
@@ -1221,7 +1221,7 @@ begin
   else
   begin
     mensaje := copy(linetext, 11, length(linetext));
-    //Mensaje := parameter(linetext,1);
+    //Mensaje := GetParameter(linetext,1);
     currtime := UTCTimeStr;
     firma := GetStringSigned(currtime + mensaje, GetWallArrIndex(
       WallAddIndex(AdminHash)).PrivateKey);
@@ -1240,7 +1240,7 @@ var
   orderdetails: String;
   ThisOrderdata: TOrderGroup;
 begin
-  orderid := parameter(LineText, 1);
+  orderid := GetParameter(LineText, 1);
   ThisOrderdata := GetOrderDetails(orderid);
   if thisorderdata.AmmountTrf <= 0 then
     ToLog('console', 'Order not found')
@@ -1254,8 +1254,8 @@ begin
     ToLog('console', 'Trfrs    : ' + IntToStr(ThisOrderdata.OrderLines));
     ToLog('console', 'sender   : ' + ThisOrderdata.Sender);
     ToLog('console', 'Receiver : ' + ThisOrderdata.receiver);
-    ToLog('console', 'Ammount  : ' + Int2curr(ThisOrderdata.AmmountTrf));
-    ToLog('console', 'Fee      : ' + Int2curr(ThisOrderdata.AmmountFee));
+    ToLog('console', 'Ammount  : ' + IntToCurrency(ThisOrderdata.AmmountTrf));
+    ToLog('console', 'Fee      : ' + IntToCurrency(ThisOrderdata.AmmountFee));
     ToLog('console', 'Reference: ' + ThisOrderdata.reference);
   end;
 end;
@@ -1267,7 +1267,7 @@ var
   newfile: file of WalletData;
   Data: WalletData;
 begin
-  addresshash := parameter(LineText, 1);
+  addresshash := GetParameter(LineText, 1);
   if WallAddIndex(addresshash) >= 0 then
   begin
     Assignfile(newfile, 'tempwallet.pkw');
@@ -1291,7 +1291,7 @@ var
   OwnedGVTs: String = '';
   LRecord: TSummaryData;
 begin
-  addtoshow := parameter(LineText, 1);
+  addtoshow := GetParameter(LineText, 1);
   if IsValidHashAddress(addtoshow) then
   begin
     addhash := addtoshow;
@@ -1315,12 +1315,12 @@ begin
     pending := GetAddressPendingPays(addhash);
     ToLog('console', 'Address   : ' + addhash + slinebreak +
       'Alias     : ' + AddAlias + slinebreak +
-      format('Summary   : %s (%d)', [Int2curr(onsumary), sumposition]) +
+      format('Summary   : %s (%d)', [IntToCurrency(onsumary), sumposition]) +
       slinebreak +
-      //'Sumary    : '+Int2curr(onsumary)+slinebreak+
-      'Incoming  : ' + Int2Curr(GetAddressIncomingpays(AddHash)) +
-      slinebreak + 'Outgoing  : ' + Int2curr(pending) + slinebreak +
-      'Available : ' + int2curr(onsumary - pending));
+      //'Sumary    : '+IntToCurrency(onsumary)+slinebreak+
+      'Incoming  : ' + IntToCurrency(GetAddressIncomingpays(AddHash)) +
+      slinebreak + 'Outgoing  : ' + IntToCurrency(pending) + slinebreak +
+      'Available : ' + IntToCurrency(onsumary - pending));
     if AnsiContainsStr(GetMN_FileText, addhash) then
       ToLog('console', 'Masternode: Active');
     EnterCriticalSection(CSGVTsArray);
@@ -1365,11 +1365,11 @@ var
   sumpool3: Int64 = 0;
   sumpool4: Int64 = 0;
 begin
-  BlockCount := StrToIntDef(Parameter(Linetext, 2), 0);
+  BlockCount := StrToIntDef(GetParameter(Linetext, 2), 0);
   if BlockCount = 0 then BlockCount := SecurityBlocks - 1;
   if BlockCount >= MyLastBlock then BlockCount := MyLastBlock - 1;
   TransSL := TStringList.Create;
-  addtoshow := parameter(LineText, 1);
+  addtoshow := GetParameter(LineText, 1);
   for counter := MyLastBlock downto MyLastBlock - BlockCount do
   begin
     if counter mod 10 = 0 then
@@ -1392,17 +1392,17 @@ begin
         if ArrTrxs[contador2].Receiver = addtoshow then // incoming order
         begin
           incomingtrx += 1;
-          inccoins := inccoins + ArrTrxs[contador2].AmmountTrf;
+          inccoins := inccoins + ArrTrxs[contador2].AmountTransferred;
           transSL.Add(IntToStr(Counter) + '] ' + ArrTrxs[contador2].Sender +
-            '<-- ' + Int2curr(ArrTrxs[contador2].AmmountTrf));
+            '<-- ' + IntToCurrency(ArrTrxs[contador2].AmountTransferred));
         end;
         if ArrTrxs[contador2].Sender = addtoshow then // outgoing order
         begin
           outgoingtrx += 1;
-          outcoins := outcoins + ArrTrxs[contador2].AmmountTrf +
-            ArrTrxs[contador2].AmmountFee;
+          outcoins := outcoins + ArrTrxs[contador2].AmountTransferred +
+            ArrTrxs[contador2].AmountFee;
           transSL.Add(IntToStr(Counter) + '] ' + ArrTrxs[contador2].Receiver +
-            '--> ' + Int2curr(ArrTrxs[contador2].AmmountTrf));
+            '--> ' + IntToCurrency(ArrTrxs[contador2].AmountTransferred));
         end;
       end;
     end;
@@ -1431,14 +1431,14 @@ begin
   ToLog('console', '  Mined        : ' + IntToStr(minedblocks));
   ToLog('console', '  Mined blocks : ' + MinedBlocksStr);
   ToLog('console', '  Transactions : ' + IntToStr(incomingtrx));
-  ToLog('console', '  Coins        : ' + Int2Curr(inccoins));
+  ToLog('console', '  Coins        : ' + IntToCurrency(inccoins));
   ToLog('console', '  PoS Payments : ' + IntToStr(PosPAyments));
-  ToLog('console', '  PoS Earnings : ' + Int2Curr(PosEarnings));
+  ToLog('console', '  PoS Earnings : ' + IntToCurrency(PosEarnings));
   ToLog('console', 'OUTGOINGS');
   ToLog('console', '  Transactions : ' + IntToStr(outgoingtrx));
-  ToLog('console', '  Coins        : ' + Int2Curr(outcoins));
-  ToLog('console', 'TOTAL  : ' + Int2Curr(inccoins - outcoins + PoSearnings));
-  ToLog('console', 'SUMARY : ' + Int2Curr(inbalance));
+  ToLog('console', '  Coins        : ' + IntToCurrency(outcoins));
+  ToLog('console', 'TOTAL  : ' + IntToCurrency(inccoins - outcoins + PoSearnings));
+  ToLog('console', 'SUMARY : ' + IntToCurrency(inbalance));
   ToLog('console', '');
   ToLog('console', 'Transactions');
   while TransSL.Count > 0 do
@@ -1466,8 +1466,8 @@ begin
       application.ProcessMessages;
     end;
   end;
-  ToLog('console', 'Blockchain total fees: ' + Int2curr(totalcoins));
-  ToLog('console', 'Block average        : ' + Int2curr(totalcoins div MyLastBlock));
+  ToLog('console', 'Blockchain total fees: ' + IntToCurrency(totalcoins));
+  ToLog('console', 'Block average        : ' + IntToCurrency(totalcoins div MyLastBlock));
 end;
 
  // *******************
@@ -1481,7 +1481,7 @@ var
   PosReward: Int64;
   PosCount, counterPos: Integer;
 begin
-  number := StrToIntDef(parameter(linetext, 1), 0);
+  number := StrToIntDef(GetParameter(linetext, 1), 0);
   if ((number < PoSBlockStart) or (number > MyLastBlock)) then
   begin
     ToLog('console', 'Invalid block number: ' + number.ToString);
@@ -1493,11 +1493,11 @@ begin
     SetLength(ArrayPos, length(ArrayPos) - 1);
     PosCount := length(ArrayPos);
     for counterpos := 0 to PosCount - 1 do
-      ToLog('console', ArrayPos[counterPos].address + ': ' + int2curr(PosReward));
+      ToLog('console', ArrayPos[counterPos].address + ': ' + IntToCurrency(PosReward));
     ToLog('console', 'Block:   : ' + IntToStr(number));
     ToLog('console', 'Addresses: ' + IntToStr(PosCount));
-    ToLog('console', 'Reward   : ' + int2curr(PosReward));
-    ToLog('console', 'Total    : ' + int2curr(PosCount * PosReward));
+    ToLog('console', 'Reward   : ' + IntToCurrency(PosReward));
+    ToLog('console', 'Total    : ' + IntToCurrency(PosCount * PosReward));
     SetLength(ArrayPos, 0);
   end;
 end;
@@ -1509,7 +1509,7 @@ var
   MNsReward: Int64;
   MNsCount, counterMNs: Integer;
 begin
-  number := StrToIntDef(parameter(linetext, 1), 0);
+  number := StrToIntDef(GetParameter(linetext, 1), 0);
   if ((number < MNBlockStart) or (number > MyLastBlock)) then
   begin
     ToLog('console', 'Invalid block number: ' + number.ToString);
@@ -1524,8 +1524,8 @@ begin
       ToLog('console', ArrayMNs[counterMNs].address);
     ToLog('console', 'MNs Block : ' + IntToStr(number));
     ToLog('console', 'Addresses : ' + IntToStr(MNsCount));
-    ToLog('console', 'Reward    : ' + int2curr(MNsReward));
-    ToLog('console', 'Total     : ' + int2curr(MNsCount * MNsReward));
+    ToLog('console', 'Reward    : ' + IntToCurrency(MNsReward));
+    ToLog('console', 'Total     : ' + IntToCurrency(MNsCount * MNsReward));
     SetLength(ArrayMNs, 0);
   end;
 end;
@@ -1535,8 +1535,8 @@ var
   monto: Int64;
   gmts, fee: Int64;
 begin
-  monto := StrToInt64Def(Parameter(LineText, 1), 0);
-  gmts := GetMaximunToSend(monto);
+  monto := StrToInt64Def(GetParameter(LineText, 1), 0);
+  gmts := GetMaximumToSend(monto);
   fee := monto - gmts;
   if fee < 1000000{MinimunFee} then fee := 1000000{MinimunFee};
   if monto <= 1000000{MinimunFee} then
@@ -1544,9 +1544,9 @@ begin
     gmts := 0;
     fee := 0;
   end;
-  ToLog('console', 'Ammount         : ' + Int2Curr(monto));
-  ToLog('console', 'Maximun to send : ' + Int2Curr(gmts));
-  ToLog('console', 'Fee paid        : ' + Int2Curr(fee));
+  ToLog('console', 'Ammount         : ' + IntToCurrency(monto));
+  ToLog('console', 'Maximun to send : ' + IntToCurrency(gmts));
+  ToLog('console', 'Fee paid        : ' + IntToCurrency(fee));
   if gmts + fee = monto then ToLog('console', '✓ Match')
   else
     ToLog('console', '✗ Error');
@@ -1570,7 +1570,7 @@ var
   sumposition: Integer;
 begin
   Result := '';
-  addtoshow := parameter(linea, 1);
+  addtoshow := GetParameter(linea, 1);
   sumposition := WallAddIndex(addtoshow);
   if sumposition < 0 then
   begin
@@ -1590,7 +1590,7 @@ var
   monto: Integer;
   contador: Integer;
 begin
-  numero := StrToIntDef(Parameter(linetext, 1), 0);
+  numero := StrToIntDef(GetParameter(linetext, 1), 0);
   if ((numero < 1) or (numero > 1000)) then
     Outtext('Range must be 1-1000')
   else
@@ -1630,7 +1630,7 @@ var
   addtoshow: String = '';
   Resultado: String = '';
 begin
-  addtoshow := parameter(linea, 1);
+  addtoshow := GetParameter(linea, 1);
   sumposition := WallAddIndex(addtoshow);
   if sumposition < 0 then
   begin
@@ -1660,17 +1660,17 @@ var
   ErrorCode: Integer = 0;
   errorMessage: String = '';
 begin
-  FromAddress := Parameter(LineText, 1);
+  FromAddress := GetParameter(LineText, 1);
   if UPPERCASE(FromAddress) = 'DEF' then FromAddress := GetWallArrIndex(0).Hash;
-  if UPPERCASE(Parameter(linetext, 2)) = 'MAX' then
-    Amount := GetMaximunToSend(GetAddressAvailable(FromAddress))
+  if UPPERCASE(GetParameter(linetext, 2)) = 'MAX' then
+    Amount := GetMaximumToSend(GetAddressAvailable(FromAddress))
   else
-    Amount := StrToInt64Def(Parameter(linetext, 2), 0);
-  Market := UpperCase(Parameter(LineText, 3));
-  Price := StrToInt64Def(Parameter(linetext, 4), 0);
+    Amount := StrToInt64Def(GetParameter(linetext, 2), 0);
+  Market := UpperCase(GetParameter(LineText, 3));
+  Price := StrToInt64Def(GetParameter(linetext, 4), 0);
   TotalPost := amount * price div 100000000;
-  PayAddress := Parameter(LineText, 5);
-  Duration := StrToInt64Def(Parameter(LineText, 6), 100);
+  PayAddress := GetParameter(LineText, 5);
+  Duration := StrToInt64Def(GetParameter(LineText, 6), 100);
   if duration > 1000 then duration := 1000;
   Feetramos := duration div 100;
   if duration mod 100 > 0 then feetramos += 1;
@@ -1696,14 +1696,14 @@ begin
   begin
     ToLog('console', 'Post Exchange Offer');
     ToLog('console', 'From Address: ' + FromAddress);
-    ToLog('console', 'Ammount     : ' + Int2Curr(amount) + ' ' + CoinSimbol);
+    ToLog('console', 'Ammount     : ' + IntToCurrency(amount) + ' ' + CoinSimbol);
     ToLog('console', 'Market      : ' + Market);
-    ToLog('console', 'Price       : ' + Int2Curr(price) + ' ' + Market);
-    ToLog('console', 'Total       : ' + Int2Curr(TotalPost) + ' ' + Market);
+    ToLog('console', 'Price       : ' + IntToCurrency(price) + ' ' + Market);
+    ToLog('console', 'Total       : ' + IntToCurrency(TotalPost) + ' ' + Market);
     ToLog('console', 'Pay to      : ' + PayAddress);
     ToLog('console', 'Duration    : ' + IntToStr(Duration) + ' blocks');
     ToLog('console', 'Fee         : (' + IntToStr(Feetramos) + ') ' +
-      Int2Curr(FeeTotal) + ' ' + CoinSimbol);
+      IntToCurrency(FeeTotal) + ' ' + CoinSimbol);
 
   end;
 
@@ -1730,12 +1730,12 @@ var
   LOrder: TOrderData;
 begin
   beginperformance('ordinfo');
-  if GetOrderFromDB(parameter(linetext, 1), LOrder) then
+  if GetOrderFromDB(GetParameter(linetext, 1), LOrder) then
   begin
     ToLog('console', Lorder.Block.ToString);
     ToLog('console', Lorder.Sender);
     ToLog('console', Lorder.receiver);
-    ToLog('console', Lorder.AmmountTrf.ToString);
+    ToLog('console', Lorder.AmountTransferred.ToString);
   end
   else
     ToLog('console', 'Order not found');
@@ -1748,7 +1748,7 @@ var
   Param: String;
 begin
   if MyConStatus > 0 then exit;
-  Param := Uppercase(Parameter(Linetext, 1));
+  Param := Uppercase(GetParameter(Linetext, 1));
   if param = 'POWER' then
     ToLog('console', Format('Processing       : %d Trx/s', [Sys_HashSpeed]))
   else if param = 'MEM' then
@@ -1773,7 +1773,7 @@ var
 begin
   sourcestr := GetCFGDataStr(5);
   repeat
-    Thisadd := Parameter(sourcestr, counter, ':');
+    Thisadd := GetParameter(sourcestr, counter, ':');
     if thisadd <> '' then
     begin
       ThisBal := GetAddressBalanceIndexed(ThisAdd);
@@ -1784,11 +1784,11 @@ begin
       else
         MNMsg := '';
       ToLog('console', format('%-35s : %15s  [%5d] %s',
-        [thisadd, int2curr(ThisBal), LastOP, MNMsg]));
+        [thisadd, IntToCurrency(ThisBal), LastOP, MNMsg]));
     end;
     Inc(counter);
   until thisadd = '';
-  ToLog('console', format('Freezed %d : %s', [Count, int2curr(Total)]));
+  ToLog('console', format('Freezed %d : %s', [Count, IntToCurrency(Total)]));
 end;
 
 {ShowsSummary file info}
@@ -1857,20 +1857,20 @@ begin
     CloseFile(SumFile);
   except
   end;{Try}
-  ToLog('console', 'Total old: ' + int2curr(totalold));
-  if TotalCoins = GetSupply(MyLastBlock) then AsExpected := '✓'
+  ToLog('console', 'Total old: ' + IntToCurrency(totalold));
+  if TotalCoins = GetCirculatingSupply(MyLastBlock) then AsExpected := '✓'
   else
-    AsExpected := '(' + Int2curr(TotalCoins - GetSupply(MyLastBlock)) + ')';
+    AsExpected := '(' + IntToCurrency(TotalCoins - GetCirculatingSupply(MyLastBlock)) + ')';
   ToLog('console', format('Block : %d (short: %d)', [LastRecord, shortadd]));
-  ToLog('console', Int2Curr(Totalcoins) + ' ' + CoinSimbol + ' ' + AsExpected);
+  ToLog('console', IntToCurrency(Totalcoins) + ' ' + CoinSimbol + ' ' + AsExpected);
   ToLog('console', format('Addresses (%d): %d (%d empty)',
     [NegativeCount, currpos, EmptyCount]));
   ToLog('console', format('>= 10500      : %d (%s Noso)',
-    [NodeAddresses, int2curr(NodeAmount)]));
+    [NodeAddresses, IntToCurrency(NodeAmount)]));
   ToLog('console', format('105 - 10500   : %d (%s Noso)',
-    [SNAddresses, int2curr(SNAmount)]));
+    [SNAddresses, IntToCurrency(SNAmount)]));
   ToLog('console', format('<105          : %d (%s Noso)',
-    [NanoAddresses, int2curr(NanoAmount)]));
+    [NanoAddresses, IntToCurrency(NanoAmount)]));
   ToLog('console', format('Nano          : %d ', [NanoAddres]));
 end;
 
@@ -1895,8 +1895,8 @@ var
   PubKey, PrivKey: String;
 begin
   Newadd := Default(WalletData);
-  NewAdd.PublicKey := parameter(inputline, 1);
-  NewAdd.PrivateKey := parameter(inputline, 2);
+  NewAdd.PublicKey := GetParameter(inputline, 1);
+  NewAdd.PrivateKey := GetParameter(inputline, 2);
   NewAdd.Hash := GetAddressFromPublickey(NewAdd.PublicKey);
   InsertToWallArr(NewAdd);
   S_Wallet := True;
@@ -1913,7 +1913,7 @@ var
   Fails1: Integer = 0;
 begin
   BeginPerformance('TestHashGeneration');
-  for counter := 1 to StrToIntDef(Parameter(inputline, 1), 100) do
+  for counter := 1 to StrToIntDef(GetParameter(inputline, 1), 100) do
   begin
     NewAddress := Default(WalletData);
     NewAddress.Hash := GenerateNewAddress(PubKey, PriKey);
@@ -1939,7 +1939,7 @@ var
   pubkey: String;
   hashold, hashnew, hashfuture: String;
 begin
-  pubkey := parameter(inputline, 1);
+  pubkey := GetParameter(inputline, 1);
   hashold := GetAddressFromPublicKey(pubkey);
   hashnew := NewGetAddressFromPublicKey(pubkey);
   hashfuture := FutureGetAddressFromPublicKey(pubkey);
@@ -1962,10 +1962,10 @@ var
   ErrorMsg: String = '';
   NewAddress: WalletData;
 begin
-  AddType := parameter(Inputline, 1);
+  AddType := GetParameter(Inputline, 1);
   AddType := StringReplace(AddType, ',', ' ', [rfReplaceAll, rfIgnoreCase]);
-  AddsNeeded := StrToIntDef(Parameter(AddType, 0), -1);
-  AddsTotal := StrToIntDef(Parameter(AddType, 1), -1);
+  AddsNeeded := StrToIntDef(GetParameter(AddType, 0), -1);
+  AddsTotal := StrToIntDef(GetParameter(AddType, 1), -1);
   if Addtype = '' then ErrorMsg := 'getmulti needed,total list,of,addresses';
   if ((AddsTotal < 2) or (AddsTotal > 7)) then
     ErrorMsg := 'Wrong number of total addresses';
@@ -1976,7 +1976,7 @@ begin
     ToLog('Console', ErrorMsg);
     Exit;
   end;
-  Source := parameter(Inputline, 2);
+  Source := GetParameter(Inputline, 2);
   if not GetMultiSource(Source, AddsTotal, FullSource) then
   begin
     ToLog('Console', 'Error: ' + FullSource);
@@ -2036,12 +2036,12 @@ var
 begin
   Availables := CountAvailableGVTs;
   ToLog('console', format('Available: %d', [Availables]));
-  ToLog('console', 'Buy  : ' + Int2Curr(GetGVTPrice(Availables)));
-  ToLog('console', 'Sell : ' + Int2Curr(GetGVTPrice(Availables, True)));
+  ToLog('console', 'Buy  : ' + IntToCurrency(GetGVTPrice(Availables)));
+  ToLog('console', 'Sell : ' + IntToCurrency(GetGVTPrice(Availables, True)));
   Exit;
   for counter := 40 downto 1 do
   begin
-    ToLog('console', counter.tostring + ' : ' + Int2curr(GetGVTPrice(counter)));
+    ToLog('console', counter.tostring + ' : ' + IntToCurrency(GetGVTPrice(counter)));
   end;
 
 end;
