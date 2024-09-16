@@ -50,7 +50,7 @@
 <span id="PasDoc-FuncsProcs"></span><h3 class="summary">Functions and Procedures</h3>
 <table class="summary wide_list">
 <tr class="list">
-<td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#AddIncomingMessage-Integer-String-">AddIncomingMessage</a></strong>(Index: Integer; Message: String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#AddIncomingMessage-Integer-String-">AddIncomingMessage</a></strong>(const SlotIndex: Integer; const IncomingMessage: String);</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#AddTextToSlot-Integer-String-">AddTextToSlot</a></strong>(const Slot: Integer; const Text: String);</code></td>
@@ -59,7 +59,7 @@
 <td class="itemcode"><code>function <strong><a href="Noso.Network.html#AddTransactionToPool-TOrderData-">AddTransactionToPool</a></strong>(const Order: <a href="Noso.General.TOrderData.html">TOrderData</a>): Boolean;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.Network.html#BotExists-String-">BotExists</a></strong>(BotIp: String): Boolean;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.Network.html#BotExists-String-">BotExists</a></strong>(const BotIp: String): Boolean;</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#ClearAllPendingTransactions">ClearAllPendingTransactions</a></strong>();</code></td>
@@ -68,7 +68,7 @@
 <td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#ClearElements">ClearElements</a></strong>();</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#ClearIncomingMessages-Integer-">ClearIncomingMessages</a></strong>(Index: Integer);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#ClearIncomingMessages-Integer-">ClearIncomingMessages</a></strong>(SlotIndex: Integer);</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#ClearOutgoingTextForSlot-Integer-">ClearOutgoingTextForSlot</a></strong>(const Slot: Integer);</code></td>
@@ -92,13 +92,13 @@
 <td class="itemcode"><code>function <strong><a href="Noso.Network.html#GetConnectionData-Integer-">GetConnectionData</a></strong>(const Slot: Integer): <a href="Noso.Network.TConnectionData.html">TConnectionData</a>;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.Network.html#GetIncomingMessage-Integer-">GetIncomingMessage</a></strong>(Index: Integer): String;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.Network.html#GetIncomingMessage-Integer-">GetIncomingMessage</a></strong>(const SlotIndex: Integer): String;</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>function <strong><a href="Noso.Network.html#GetIncomingMessageLength-Integer-">GetIncomingMessageLength</a></strong>(Index: Integer): Integer;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.Network.html#GetIncomingMessageLength-Integer-">GetIncomingMessageLength</a></strong>(const SlotIndex: Integer): Integer;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>function <strong><a href="Noso.Network.html#GetNodeDataAtIndex-Integer-">GetNodeDataAtIndex</a></strong>(Index: Integer): <a href="Noso.Network.TNodeData.html">TNodeData</a>;</code></td>
+<td class="itemcode"><code>function <strong><a href="Noso.Network.html#GetNodeDataAtIndex-Integer-">GetNodeDataAtIndex</a></strong>(const Index: Integer): <a href="Noso.Network.TNodeData.html">TNodeData</a>;</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>function <strong><a href="Noso.Network.html#GetNodeListLength">GetNodeListLength</a></strong>(): Integer;</code></td>
@@ -179,7 +179,7 @@
 <td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#SendPendingTransactionsToPeer-Int64-">SendPendingTransactionsToPeer</a></strong>(const Slot: Int64);</code></td>
 </tr>
 <tr class="list2">
-<td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#SetConnectionBusy-Integer-Boolean-">SetConnectionBusy</a></strong>(const Slot: Integer; Value: Boolean);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#SetConnectionBusy-Integer-Boolean-">SetConnectionBusy</a></strong>(const Slot: Integer; Busy: Boolean);</code></td>
 </tr>
 <tr class="list">
 <td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#SetConnectionData-Integer-TConnectionData-">SetConnectionData</a></strong>(const Slot: Integer; const Data: <a href="Noso.Network.TConnectionData.html">TConnectionData</a>);</code></td>
@@ -194,7 +194,7 @@
 <td class="itemcode"><code>function <strong><a href="Noso.Network.html#TransferExistsInLastBlock-String-">TransferExistsInLastBlock</a></strong>(const TransferHash: String): Boolean;</code></td>
 </tr>
 <tr class="list">
-<td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#UpdateBotData-String-">UpdateBotData</a></strong>(BotIP: String);</code></td>
+<td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#UpdateBotData-String-">UpdateBotData</a></strong>(const BotIP: String);</code></td>
 </tr>
 <tr class="list2">
 <td class="itemcode"><code>procedure <strong><a href="Noso.Network.html#UpdateConnectionLastPing-Integer-String-">UpdateConnectionLastPing</a></strong>(const Slot: Integer; Value: String);</code></td>
@@ -387,17 +387,39 @@
 <h3 class="detail">Functions and Procedures</h3>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="AddIncomingMessage-Integer-String-"></span><code>procedure <strong>AddIncomingMessage</strong>(Index: Integer; Message: String);</code></td>
+<td class="itemcode"><span id="AddIncomingMessage-Integer-String-"></span><code>procedure <strong>AddIncomingMessage</strong>(const SlotIndex: Integer; const IncomingMessage: String);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Adds an incoming message to the message queue for the given connection slot.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>SlotIndex</dt>
+<dd>Index of the connection slot.</dd>
+<dt>IncomingMessage</dt>
+<dd>String The incoming message to be added.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="AddTextToSlot-Integer-String-"></span><code>procedure <strong>AddTextToSlot</strong>(const Slot: Integer; const Text: String);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Adds a text message to the outgoing message queue for the given slot.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The slot index to which the text message will be added.</dd>
+<dt>Text</dt>
+<dd>The text message to add to the slot's outgoing message queue.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -405,9 +427,7 @@
 </tr>
 <tr><td colspan="1">
 <p>
-Adds a new transaction to the pending pool in a thread-safe manner.</p>
-<p>
-
+Adds a new transaction to the pending pool in a thread-safe manner.
 
 <p>The function finds the correct insertion position based on timestamps and order IDs.
 
@@ -422,10 +442,20 @@ Adds a new transaction to the pending pool in a thread-safe manner.</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="BotExists-String-"></span><code>function <strong>BotExists</strong>(BotIp: String): Boolean;</code></td>
+<td class="itemcode"><span id="BotExists-String-"></span><code>function <strong>BotExists</strong>(const BotIp: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Checks if a bot with the given IP address exists in the bot list.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>BotIP</dt>
+<dd>The IP address of the bot to check.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the bot exists, <code>False</code> otherwise.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -445,31 +475,60 @@ Clears all pending transactions.</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="ClearIncomingMessages-Integer-"></span><code>procedure <strong>ClearIncomingMessages</strong>(Index: Integer);</code></td>
+<td class="itemcode"><span id="ClearIncomingMessages-Integer-"></span><code>procedure <strong>ClearIncomingMessages</strong>(SlotIndex: Integer);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Clears all incoming messages from the message queue for the given connection slot.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>SlotIndex</dt>
+<dd>Index of the connection slot.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="ClearOutgoingTextForSlot-Integer-"></span><code>procedure <strong>ClearOutgoingTextForSlot</strong>(const Slot: Integer);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Clears all outgoing text messages for the given slot.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The slot index for which the outgoing messages will be cleared.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="CloseConnectionSlot-Integer-"></span><code>procedure <strong>CloseConnectionSlot</strong>(const Slot: Integer);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Closes the connection for the specified slot.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The index of the connection slot.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="DecrementClientReadThreadCount"></span><code>procedure <strong>DecrementClientReadThreadCount</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Decrements the active client read thread count.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -493,7 +552,12 @@ Generates a masternode verification line for a given masternode IP. The verifica
 <td class="itemcode"><span id="GetActiveClientReadThreadCount"></span><code>function <strong>GetActiveClientReadThreadCount</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Retrieves the current number of active client read threads.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">Number of active client read threads.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -501,50 +565,108 @@ Generates a masternode verification line for a given masternode IP. The verifica
 </tr>
 <tr><td colspan="1">
 <p>
-returns the number of active <a class="normal" href="Noso.Network.html#Connections">connections</a></p>
-</td></tr>
+Retrieves the current number of active client <a class="normal" href="Noso.Network.html#Connections">connections</a> to the node server.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The number of active client <a class="normal" href="Noso.Network.html#Connections">connections</a>.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="GetConnectionData-Integer-"></span><code>function <strong>GetConnectionData</strong>(const Slot: Integer): <a href="Noso.Network.TConnectionData.html">TConnectionData</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Retrieves the connection data for the given slot.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The index of the connection slot.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The connection data for the slot, or a default value if the slot is invalid.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetIncomingMessage-Integer-"></span><code>function <strong>GetIncomingMessage</strong>(Index: Integer): String;</code></td>
+<td class="itemcode"><span id="GetIncomingMessage-Integer-"></span><code>function <strong>GetIncomingMessage</strong>(const SlotIndex: Integer): String;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Retrieves and removes the first incoming message from the message queue for the given connection slot.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>SlotIndex</dt>
+<dd>Index of the connection slot.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">String The incoming message. If no messages are available, returns an empty string.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetIncomingMessageLength-Integer-"></span><code>function <strong>GetIncomingMessageLength</strong>(Index: Integer): Integer;</code></td>
+<td class="itemcode"><span id="GetIncomingMessageLength-Integer-"></span><code>function <strong>GetIncomingMessageLength</strong>(const SlotIndex: Integer): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Retrieves the number of incoming messages in the message queue for the given connection slot.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>SlotIndex</dt>
+<dd>Index of the connection slot.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The number of incoming messages.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="GetNodeDataAtIndex-Integer-"></span><code>function <strong>GetNodeDataAtIndex</strong>(Index: Integer): <a href="Noso.Network.TNodeData.html">TNodeData</a>;</code></td>
+<td class="itemcode"><span id="GetNodeDataAtIndex-Integer-"></span><code>function <strong>GetNodeDataAtIndex</strong>(const Index: Integer): <a href="Noso.Network.TNodeData.html">TNodeData</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Retrieves the node data at the specified index from the node list.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Index</dt>
+<dd>The index of the node data to retrieve.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The node data at the specified index, or a default value if the index is out of bounds.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="GetNodeListLength"></span><code>function <strong>GetNodeListLength</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Returns the length of the node list.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The length of the node list.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="GetOutgoingTextForSlot-Integer-"></span><code>function <strong>GetOutgoingTextForSlot</strong>(const Slot: Integer): String;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Retrieves and removes the first outgoing text message for the given slot.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The slot index from which to retrieve the outgoing message.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The first message for the slot, or an empty string if no messages exist.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -552,9 +674,7 @@ returns the number of active <a class="normal" href="Noso.Network.html#Connectio
 </tr>
 <tr><td colspan="1">
 <p>
-Return the number of pending transactions.</p>
-<p>
-
+Return the number of pending transactions.
 
 <p></p>
 <h6 class="description_section">Returns</h6>
@@ -566,11 +686,9 @@ Return the number of pending transactions.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Generates a <a class="normal" href="MP.Protocol.html#Ping">ping</a> string.</p>
-<p>
+Generates a <a class="normal" href="MP.Protocol.html#Ping">ping</a> string.
 
-
-<p>Generates a <a class="normal" href="MP.Protocol.html#Ping">ping</a> string containing details about the current node's state, including <a class="normal" href="Noso.Network.html#Connections">connections</a>, last block, and transaction information.
+<p>A <a class="normal" href="MP.Protocol.html#Ping">ping</a> string contains details about the current node's state, including <a class="normal" href="Noso.Network.html#Connections">connections</a>, last block, and transaction information.
 
 <p></p>
 <h6 class="description_section">Returns</h6>
@@ -582,9 +700,7 @@ Generates a <a class="normal" href="MP.Protocol.html#Ping">ping</a> string.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Returns the protocol header.</p>
-<p>
-
+Returns the protocol header.
 
 <p>The protocol header is of the form &quot;PSK P MN U&quot;, where P is the protocol version (currently 2), M is the Mainnet version (0.4.4), N is the node release (Ab7) and U is <a class="normal" href="Noso.Time.html#UTCTimeStr">UTCTimeStr</a>. For instance, a valid header is: &quot;PSK 2 0.4.4Ab7 1726431338&quot;.
 
@@ -598,9 +714,7 @@ Returns the protocol header.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Generates a specific protocol line based on the provided code.</p>
-<p>
-
+Generates a specific protocol line based on the provided code.
 
 <p>The protocol line varies according to the command type represented by the code.
 
@@ -619,9 +733,9 @@ Generates a specific protocol line based on the provided code.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-** Retrieves the current synchronization status of the node as a formatted string. This status is a combination of the last block index, resumen hash, summary hash, and last block hash.
+Retrieves the current synchronization status of the node as a formatted string. This status is a combination of the last block index, resumen hash, summary hash, and last block hash.
 
-<p> *</p>
+<p></p>
 <h6 class="description_section">Returns</h6>
 <p class="return">A string representing the synchronization status.</p></td></tr>
 </table>
@@ -630,7 +744,12 @@ Generates a specific protocol line based on the provided code.</p>
 <td class="itemcode"><span id="GetTotalConnections"></span><code>function <strong>GetTotalConnections</strong>(): Integer;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Retrieves the total number of active <a class="normal" href="Noso.Network.html#Connections">connections</a>.
+
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">The count of active <a class="normal" href="Noso.Network.html#Connections">connections</a>.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -638,7 +757,7 @@ Generates a specific protocol line based on the provided code.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Procedure ProcessLine(LLine:String;)</p>
+Increments the active client read thread count.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -653,7 +772,9 @@ Procedure ProcessLine(LLine:String;)</p>
 <td class="itemcode"><span id="InitializeNodeServer"></span><code>procedure <strong>InitializeNodeServer</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Initializes the node server with the necessary configurations and event handlers. This sets up the TCP server but does not activate it.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -663,9 +784,7 @@ Procedure ProcessLine(LLine:String;)</p>
 <p>
 Checks if the local node is fully synchronized with the <a class="normal" href="Noso.Consensus.html#Consensus">consensus</a> network.
 
-<p></p>
-<h6 class="description_section">Returns</h6>
-<p class="return">A <a class="normal" href="Noso.Network.html#TSyncStatus">TSyncStatus</a> representing the synchronization status: </p>
+<p> </p>
 
 <ul class="paragraph_spacing">
   <li><p><a class="normal" href="Noso.Network.html#ssSynchronized">ssSynchronized</a> (0) - Fully synchronized.</p></li>
@@ -675,21 +794,43 @@ Checks if the local node is fully synchronized with the <a class="normal" href="
   <li><p><a class="normal" href="Noso.Network.html#ssResumenHashMismatch">ssResumenHashMismatch</a> (4) - Resumen hash mismatch.</p></li>
 </ul>
 
-<p></p></td></tr>
+<p></p>
+<h6 class="description_section">Returns</h6>
+<p class="return">A <a class="normal" href="Noso.Network.html#TSyncStatus">TSyncStatus</a> representing the synchronization status:</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="IsNodeValidator-String-"></span><code>function <strong>IsNodeValidator</strong>(const Ip: String): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Checks if the given IP belongs to a node validator.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Ip</dt>
+<dd>The IP address of the node.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the IP is a seed node, otherwise <code>False</code>.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="IsSlotConnected-Integer-"></span><code>function <strong>IsSlotConnected</strong>(const Slot: Integer): Boolean;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Checks if the specified slot is currently connected.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The index of the connection slot.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">True if the slot is connected, otherwise False.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -697,9 +838,7 @@ Checks if the local node is fully synchronized with the <a class="normal" href="
 </tr>
 <tr><td colspan="1">
 <p>
-Checks if the current line is a valid protocol line (if it starts with PSK or NOS)</p>
-<p>
-
+Checks if the current line is a valid protocol line (if it starts with PSK or NOS).
 
 <p> </p>
 <h6 class="description_section">Parameters</h6>
@@ -715,7 +854,9 @@ Checks if the current line is a valid protocol line (if it starts with PSK or NO
 <td class="itemcode"><span id="PopulateNodeList"></span><code>procedure <strong>PopulateNodeList</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Populates the node list by extracting <a class="normal" href="MP.Protocol.html#Nodes">nodes</a> from configuration data and verificators text. Each node is parsed from a string and added to the list with its IP address and port.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -723,9 +864,7 @@ Checks if the current line is a valid protocol line (if it starts with PSK or NO
 </tr>
 <tr><td colspan="1">
 <p>
-Processes an incoming command from the peer, such as <a class="normal" href="MP.Protocol.html#Ping">ping</a>, <a class="normal" href="MP.Protocol.html#Pong">pong</a>, or transaction requests.</p>
-<p>
-
+Processes an incoming command from the peer, such as <a class="normal" href="MP.Protocol.html#Ping">ping</a>, <a class="normal" href="MP.Protocol.html#Pong">pong</a>, or transaction requests.
 
 <p>If the protocol is invalid or the peer is not authenticated, the connection is closed.
 
@@ -745,9 +884,7 @@ Processes an incoming command from the peer, such as <a class="normal" href="MP.
 </tr>
 <tr><td colspan="1">
 <p>
-Processes a <a class="normal" href="MP.Protocol.html#Ping">ping</a> command received from a peer.</p>
-<p>
-
+Processes a <a class="normal" href="MP.Protocol.html#Ping">ping</a> command received from a peer.
 
 <p>It extracts the peer's data from the line, authenticates the peer, and optionally sends a <a class="normal" href="MP.Protocol.html#Pong">pong</a> response if ShouldRespond is True.
 
@@ -768,14 +905,27 @@ Processes a <a class="normal" href="MP.Protocol.html#Ping">ping</a> command rece
 <td class="itemcode"><span id="RemoveAllBots"></span><code>procedure <strong>RemoveAllBots</strong>();</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Removes all bots from the bot list and resets the bot clear time.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="ReserveConnectionSlot-Integer-Boolean-"></span><code>procedure <strong>ReserveConnectionSlot</strong>(const Slot: Integer; IsReserved: Boolean);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Reserves or releases a connection slot by marking its type.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The index of the connection slot.</dd>
+<dt>IsReserved</dt>
+<dd>Boolean indicating if the slot should be reserved.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -783,8 +933,18 @@ Processes a <a class="normal" href="MP.Protocol.html#Ping">ping</a> command rece
 </tr>
 <tr><td colspan="1">
 <p>
-Get stream from client</p>
-</td></tr>
+Retrieves a stream of data from the specified client context.
+
+<p>  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AContext</dt>
+<dd>The client context to read the stream from.</dd>
+<dt>Stream</dt>
+<dd>The memory stream to store the received data.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the stream was successfully retrieved, otherwise <code>False</code>.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -792,7 +952,16 @@ Get stream from client</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Trys to close a server connection safely</p>
+Safely closes the connection with a client, optionally sending a final message before disconnecting.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AContext</dt>
+<dd>The client context to disconnect.</dd>
+<dt>CloseMessage</dt>
+<dd>An optional message to send to the client before closing the connection.</dd>
+</dl>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -833,8 +1002,18 @@ Sends the current list of masternodes to the specified peer. Each masternode's d
 </tr>
 <tr><td colspan="1">
 <p>
-Try message to client safely</p>
-</td></tr>
+Sends a message to the specified client context in a safe manner.
+
+<p>  </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>AContext</dt>
+<dd>The client context to send the message to.</dd>
+<dt>Message</dt>
+<dd>The message to be sent.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return"><code>True</code> if the message was successfully sent, otherwise <code>False</code>.</p></td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -842,9 +1021,7 @@ Try message to client safely</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Sends pending transactions to the specified peer slot.</p>
-<p>
-
+Sends pending transactions to the specified peer slot.
 
 <p>It copies the pending transaction pool safely, and then sends each transaction to the peer based on its type.
 
@@ -858,24 +1035,55 @@ Sends pending transactions to the specified peer slot.</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="SetConnectionBusy-Integer-Boolean-"></span><code>procedure <strong>SetConnectionBusy</strong>(const Slot: Integer; Value: Boolean);</code></td>
+<td class="itemcode"><span id="SetConnectionBusy-Integer-Boolean-"></span><code>procedure <strong>SetConnectionBusy</strong>(const Slot: Integer; Busy: Boolean);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Marks the connection slot as busy or not busy.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The index of the connection slot.</dd>
+<dt>Busy</dt>
+<dd>Boolean indicating whether the slot is busy.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="SetConnectionData-Integer-TConnectionData-"></span><code>procedure <strong>SetConnectionData</strong>(const Slot: Integer; const Data: <a href="Noso.Network.TConnectionData.html">TConnectionData</a>);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Sets the connection data for the given slot.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The index of the connection slot.</dd>
+<dt>Data</dt>
+<dd>The connection data to be set for the slot.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="StartConnectionThread-Integer-"></span><code>procedure <strong>StartConnectionThread</strong>(const Slot: Integer);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Starts a read thread for the given connection slot.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The index of the connection slot.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -883,9 +1091,9 @@ Sends pending transactions to the specified peer slot.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Checks if a transaction with the given hash already exists in the pending pool.</p>
-<p>
- <dl class="tag note"><dt><strong>Note</strong></dt><dd>The function is thread-safe and locks the critical section during the search.</dd></dl>
+Checks if a transaction with the given hash already exists in the pending pool.
+
+<p><dl class="tag note"><dt><strong>Note</strong></dt><dd>The function is thread-safe and locks the critical section during the search.</dd></dl>
 
 <p> </p>
 <h6 class="description_section">Parameters</h6>
@@ -902,9 +1110,7 @@ Checks if a transaction with the given hash already exists in the pending pool.<
 </tr>
 <tr><td colspan="1">
 <p>
-Checks if a transfer with the given hash exists in the last block.</p>
-<p>
-
+Checks if a transfer with the given hash exists in the last block.
 
 <p> </p>
 <h6 class="description_section">Parameters</h6>
@@ -917,17 +1123,37 @@ Checks if a transfer with the given hash exists in the last block.</p>
 </table>
 <table class="detail wide_list">
 <tr class="list">
-<td class="itemcode"><span id="UpdateBotData-String-"></span><code>procedure <strong>UpdateBotData</strong>(BotIP: String);</code></td>
+<td class="itemcode"><span id="UpdateBotData-String-"></span><code>procedure <strong>UpdateBotData</strong>(const BotIP: String);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Updates the bot information in the bot list if the bot exists. If the bot does not exist, it adds a new entry.
+
+<p></p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>BotIP</dt>
+<dd>String The IP address of the bot to update.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="UpdateConnectionLastPing-Integer-String-"></span><code>procedure <strong>UpdateConnectionLastPing</strong>(const Slot: Integer; Value: String);</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Updates the last <a class="normal" href="MP.Protocol.html#Ping">ping</a> time for the given connection slot.
+
+<p> </p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Slot</dt>
+<dd>The index of the connection slot.</dd>
+<dt>Value</dt>
+<dd>The timestamp of the last <a class="normal" href="MP.Protocol.html#Ping">ping</a>.</dd>
+</dl>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -935,7 +1161,7 @@ Checks if a transfer with the given hash exists in the last block.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Updates local data hashes</p>
+Updates the node data by recalculating hashes and block data. Also determines whether to force a headers download.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -944,8 +1170,22 @@ Updates local data hashes</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Verify if a validation report is correct</p>
-</td></tr>
+Validates the provided masternode check report.</p>
+<p>
+
+
+<p>Verifies various aspects of the report including validator, block index, signature, and address consistency.
+
+<p> 
+
+<p>Verify if a validation report is correct</p>
+<h6 class="description_section">Parameters</h6>
+<dl class="parameters">
+<dt>Line</dt>
+<dd>The masternode check report as a string.</dd>
+</dl>
+<h6 class="description_section">Returns</h6>
+<p class="return">The validated report information if successful, or an empty string if validation fails.</p></td></tr>
 </table>
 <h3 class="detail">Types</h3>
 <table class="detail wide_list">
@@ -962,35 +1202,45 @@ Type representing a 15-character block number.</p>
 <td class="itemcode"><span id="TConnectionChannelList"></span><code><strong>TConnectionChannelList</strong> = array [1..<a href="Noso.Network.html#MaxConnections">MaxConnections</a>] of TIdTCPClient;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+A list of TCP client channels (<a class="normal" href="Noso.Network.html#Connections">connections</a>) for each client slot.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="TConnectionCriticalSectionList"></span><code><strong>TConnectionCriticalSectionList</strong> = array[1..<a href="Noso.Network.html#MaxConnections">MaxConnections</a>] of TRTLCriticalSection;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+A list of critical sections for synchronizing access to connection-specific resources.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="TConnectionList"></span><code><strong>TConnectionList</strong> = array [1..<a href="Noso.Network.html#MaxConnections">MaxConnections</a>] of <a href="Noso.Network.TConnectionData.html">TConnectionData</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+A list that holds connection data for each client connection slot.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="TConnectionOutgoingMessagesList"></span><code><strong>TConnectionOutgoingMessagesList</strong> = array [1..<a href="Noso.Network.html#MaxConnections">MaxConnections</a>] of <a href="Noso.General.html#TStringArray">TStringArray</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+An array of outgoing message lists, one per connection slot.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="TConnectionStringListArray"></span><code><strong>TConnectionStringListArray</strong> = array [1..<a href="Noso.Network.html#MaxConnections">MaxConnections</a>] of TStringList;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+An array of TStringList objects for holding incoming messages for each connection slot.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -1055,7 +1305,9 @@ Type representing a UTC timestamp.</p>
 <td class="itemcode"><span id="TTimestampInteger"></span><code><strong>TTimestampInteger</strong> = Int64;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+A type representing timestamps as integers. Used for tracking times in milliseconds since the epoch.</p>
+</td></tr>
 </table>
 <h3 class="detail">Constants</h3>
 <table class="detail wide_list">
@@ -1063,21 +1315,27 @@ Type representing a UTC timestamp.</p>
 <td class="itemcode"><span id="MainnetVersion"></span><code><strong>MainnetVersion</strong> = '0.4.4';</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+The main net version.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="MaxConnections"></span><code><strong>MaxConnections</strong> = 99;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Maximum number of <a class="normal" href="Noso.Network.html#Connections">connections</a> allowed.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="ProtocolVersion"></span><code><strong>ProtocolVersion</strong> = 2;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+The protocol version used in communication between clients and servers.</p>
+</td></tr>
 </table>
 <h3 class="detail">Variables</h3>
 <table class="detail wide_list">
@@ -1085,35 +1343,45 @@ Type representing a UTC timestamp.</p>
 <td class="itemcode"><span id="ActiveClientReadThreads"></span><code><strong>ActiveClientReadThreads</strong>: Integer = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+The count of active client read threads.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="BotList"></span><code><strong>BotList</strong>: specialize TArray&lt;<a href="Noso.Network.TBotData.html">TBotData</a>&gt;;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+A list of bot-related data, representing known bot <a class="normal" href="MP.Protocol.html#Nodes">nodes</a>.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="ClientChannels"></span><code><strong>ClientChannels</strong>: <a href="Noso.Network.html#TConnectionChannelList">TConnectionChannelList</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Holds the TCP client channels for each connection slot, indexed by connection slot.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="Connections"></span><code><strong>Connections</strong>: <a href="Noso.Network.html#TConnectionList">TConnectionList</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Holds the connection data for each client, indexed by connection slot.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="CSBotList"></span><code><strong>CSBotList</strong>: TRTLCriticalSection;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Critical section for managing access to the bot list.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -1121,7 +1389,7 @@ Type representing a UTC timestamp.</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Critical sections</p>
+Critical section for managing access to client read threads.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -1129,98 +1397,126 @@ Critical sections</p>
 <td class="itemcode"><span id="CSConnections"></span><code><strong>CSConnections</strong>: TRTLCriticalSection;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Critical section for managing access to the <a class="normal" href="Noso.Network.html#Connections">connections</a> list.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="CSIncomingMessages"></span><code><strong>CSIncomingMessages</strong>: <a href="Noso.Network.html#TConnectionCriticalSectionList">TConnectionCriticalSectionList</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Critical sections for synchronizing access to incoming messages for each connection slot.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="CSMultiOrderTransactions"></span><code><strong>CSMultiOrderTransactions</strong>: TRTLCriticalSection;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Critical section for managing access to the multi-order transactions pool.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="CSNodeList"></span><code><strong>CSNodeList</strong>: TRTLCriticalSection;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Critical section for managing access to the node list.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="CSOutgoingMessages"></span><code><strong>CSOutgoingMessages</strong>: <a href="Noso.Network.html#TConnectionCriticalSectionList">TConnectionCriticalSectionList</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Critical sections for synchronizing access to outgoing messages for each connection slot.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="CSPendingTransactions"></span><code><strong>CSPendingTransactions</strong>: TRTLCriticalSection;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Critical section for managing access to the pending transactions pool.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="DownloadingBlocks"></span><code><strong>DownloadingBlocks</strong>: Boolean = False;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Indicates whether the blocks are currently being downloaded.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="DownloadingGVTs"></span><code><strong>DownloadingGVTs</strong>: Boolean = False;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Indicates whether the GVTs are currently being downloaded.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="DownloadingHeaders"></span><code><strong>DownloadingHeaders</strong>: Boolean = False;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Indicates whether the headers are currently being downloaded.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="DownloadingPSOs"></span><code><strong>DownloadingPSOs</strong>: Boolean = False;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Indicates whether the PSOs are currently being downloaded.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="DownloadingSummary"></span><code><strong>DownloadingSummary</strong>: Boolean = False;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Indicates whether the summary is currently being downloaded.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="ForceHeadersDownload"></span><code><strong>ForceHeadersDownload</strong>: Boolean = False;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Indicates whether to force a download of the headers.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastAccountSummaryRequestTime"></span><code><strong>LastAccountSummaryRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the account summary request was made.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastBestHashRequestTime"></span><code><strong>LastBestHashRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the best hash request was made.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -1228,7 +1524,7 @@ Critical sections</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Local information</p>
+Data for the last block processed by the node.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -1236,7 +1532,9 @@ Local information</p>
 <td class="itemcode"><span id="LastBlockHash"></span><code><strong>LastBlockHash</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+The hash of the last processed block.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -1244,7 +1542,7 @@ Local information</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Local data hashes</p>
+The last block index that was processed.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -1252,84 +1550,108 @@ Local data hashes</p>
 <td class="itemcode"><span id="LastBlockRequestTime"></span><code><strong>LastBlockRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the block request was made.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastBotClearTime"></span><code><strong>LastBotClearTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the bot list was cleared.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastGVTsRequestTime"></span><code><strong>LastGVTsRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the GVTs request was made.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastMasternodeCheckRequestTime"></span><code><strong>LastMasternodeCheckRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the masternode check request was made.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastMasternodeHashRequestTime"></span><code><strong>LastMasternodeHashRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the masternode hash request was made.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastMasternodeListRequestTime"></span><code><strong>LastMasternodeListRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the masternode list request was made.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastMasternodeVerificationTime"></span><code><strong>LastMasternodeVerificationTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the masternode verification was performed.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastPendingTransactionsRequestTime"></span><code><strong>LastPendingTransactionsRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time pending transactions were requested.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastPSOsRequestTime"></span><code><strong>LastPSOsRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the PSOs request was made.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="LastSummaryRequestTime"></span><code><strong>LastSummaryRequestTime</strong>: <a href="Noso.Network.html#TTimestampInteger">TTimestampInteger</a> = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Timestamp for the last time the summary request was made.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="MasternodeVerificationCount"></span><code><strong>MasternodeVerificationCount</strong>: Integer = 0;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Count of masternode verification processes completed.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="MultiOrderTransactionsPool"></span><code><strong>MultiOrderTransactionsPool</strong>: specialize TArray&lt;<a href="Noso.General.TMultiOrderData.html">TMultiOrderData</a>&gt;;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+A pool of multi-order transactions awaiting processing.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
@@ -1337,7 +1659,7 @@ Local data hashes</p>
 </tr>
 <tr><td colspan="1">
 <p>
-<a class="normal" href="MP.Protocol.html#Nodes">nodes</a> list</p>
+A list of known <a class="normal" href="MP.Protocol.html#Nodes">nodes</a> in the network.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -1346,7 +1668,7 @@ Local data hashes</p>
 </tr>
 <tr><td colspan="1">
 <p>
-Node server</p>
+The TCP server instance for managing node-to-node communications.</p>
 </td></tr>
 </table>
 <table class="detail wide_list">
@@ -1354,28 +1676,36 @@ Node server</p>
 <td class="itemcode"><span id="OutgoingMessages"></span><code><strong>OutgoingMessages</strong>: <a href="Noso.Network.html#TConnectionOutgoingMessagesList">TConnectionOutgoingMessagesList</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Holds the outgoing messages for each connection slot, indexed by connection slot.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="PendingTransactionsPool"></span><code><strong>PendingTransactionsPool</strong>: specialize TArray&lt;<a href="Noso.General.TOrderData.html">TOrderData</a>&gt;;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+A pool of pending transactions awaiting processing.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="PublicIPAddress"></span><code><strong>PublicIPAddress</strong>: String = '';</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+The public IP address of the current node.</p>
+</td></tr>
 </table>
 <table class="detail wide_list">
 <tr class="list">
 <td class="itemcode"><span id="SlotTextLines"></span><code><strong>SlotTextLines</strong>: <a href="Noso.Network.html#TConnectionStringListArray">TConnectionStringListArray</a>;</code></td>
 </tr>
 <tr><td colspan="1">
-<p class="nodescription">This item has no description.</p></td></tr>
+<p>
+Holds the incoming text lines for each connection slot, indexed by connection slot.</p>
+</td></tr>
 </table>
 <hr><span class="appinfo"><em>Generated by <a href="https://pasdoc.github.io/">PasDoc 0.16.0-snapshot</a>. </em>
 </span>

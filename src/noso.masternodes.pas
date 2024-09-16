@@ -35,7 +35,7 @@ type
     ValidatorIP: String;
     Block: Integer;
     SignAddress: String;
-    PubKey: String;
+    PublicKey: String;
     ValidNodes: String;
     Signature: String;
   end;
@@ -625,7 +625,7 @@ begin
   Result.ValidatorIP := GetParameter(Linea, 5);
   Result.Block := StrToIntDef(GetParameter(Linea, 6), 0);
   Result.SignAddress := GetParameter(Linea, 7);
-  Result.PubKey := GetParameter(Linea, 8);
+  Result.PublicKey := GetParameter(Linea, 8);
   Result.ValidNodes := GetParameter(Linea, 9);
   Result.Signature := GetParameter(Linea, 10);
 end;
@@ -667,7 +667,7 @@ end;
 function FormatMasternodeCheck(Data: TMNCheck): String;
 begin
   Result := Data.ValidatorIP + ' ' + IntToStr(Data.Block) + ' ' +
-    Data.SignAddress + ' ' + Data.PubKey + ' ' + Data.ValidNodes + ' ' + Data.Signature;
+    Data.SignAddress + ' ' + Data.PublicKey + ' ' + Data.ValidNodes + ' ' + Data.Signature;
 end;
 
 function IsMyMNCheckDone(): Boolean;
