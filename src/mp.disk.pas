@@ -104,8 +104,8 @@ begin
   //LoadMNsFile;
   OutText('✓ Masternodes file ok', False, 1);
 
-  if not FileExists(GVTsFilename) then CreateGVTsFile;
-  GetGVTsFileData;
+  if not FileExists(GVTFilename) then CreateGVTFile;
+  LoadGVTsFileData;
   OutText('✓ GVTs file ok', False, 1);
 
   SetCFGFilename('NOSODATA' + DirectorySeparator + CFGFilename);
@@ -699,7 +699,7 @@ begin
     TryCopyFile(SummaryFileName, MarksDirectory + BlockNumber.tostring + '.bak');
   if GVTsTrfer > 0 then
   begin
-    SaveGVTs;
+    SaveGVTsAsData;
     UpdateMyGVTsList;
   end;
   U_DirPanel := True;

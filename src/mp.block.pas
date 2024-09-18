@@ -162,10 +162,10 @@ begin
     CreateSumaryBackup();
 
     // Generate GVT copy
-    EnterCriticalSection(CSGVTsArray);
-    trydeletefile(GVTsFilename + '.bak');
-    copyfile(GVTsFilename, GVTsFilename + '.bak');
-    LeaveCriticalSection(CSGVTsArray);
+    EnterCriticalSection(GVTArrayLock);
+    trydeletefile(GVTFilename + '.bak');
+    copyfile(GVTFilename, GVTFilename + '.bak');
+    LeaveCriticalSection(GVTArrayLock);
 
     // Processs pending orders
     EnterCriticalSection(CSPendingTransactions);
@@ -281,7 +281,7 @@ begin
     end;
     if GVTsTransfered > 0 then
     begin
-      SaveGVTs;
+      SaveGVTsAsData;
       UpdateMyGVTsList;
     end;
     try
@@ -700,11 +700,11 @@ begin
 
   CreateSumaryIndex;
   // recover GVTs file
-  EnterCriticalSection(CSGVTsArray);
-  trydeletefile(GVTsFilename);
-  copyfile(GVTsFilename + '.bak', GVTsFilename);
-  LeaveCriticalSection(CSGVTsArray);
-  GetGVTsFileData();
+  EnterCriticalSection(GVTArrayLock);
+  trydeletefile(GVTFilename);
+  copyfile(GVTFilename + '.bak', GVTFilename);
+  LeaveCriticalSection(GVTArrayLock);
+  LoadGVTsFileData();
   UpdateMyGVTsList;
 
   // Actualizar la cartera

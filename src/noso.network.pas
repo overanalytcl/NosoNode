@@ -87,7 +87,7 @@ type
     @member MasternodeCount The number of masternodes connected.
     @member BestHashDifficulty The best hash difficulty found.
     @member MasternodeChecksCount The number of checks performed on masternodes.
-    @member GVTHash The hash of the GVT.
+    @member GVTHashMD5 The hash of the GVT.
     @member ConfigurationHash The hash of the configuration file.
     @member MerkleTreeHash The hash of the Merkle tree.
     @member PSOHash The hash of the Proof of Stake (PoS) state.
@@ -878,7 +878,7 @@ begin
     [GetTotalConnections(), LastBlockIndex, LastBlockHash, MySumarioHash,
     GetPendingTransactionCount(), GetSummaryFileHash, MyConStatus, Port,
     Copy(GetMNsHash, 0, 5), GetMNsListLength, GetMasternodeCheckCount(),
-    MyGVTsHash, Copy(HashMD5String(GetCFGDataStr), 0, 5), Copy(PSOFileHash, 0, 5)]);
+    GVTHashMD5, Copy(HashMD5String(GetCFGDataStr), 0, 5), Copy(PSOFileHash, 0, 5)]);
 end;
 
 function GetProtocolLineFromCode(const Code: Integer): String;
@@ -1597,7 +1597,7 @@ begin
               IsSaved := GetStreamFromClient(FSlot, Stream) and
                 SaveStreamAsGVTs(Stream);
               if IsSaved then
-                GetGVTsFileData()
+                LoadGVTsFileData()
               else
                 ShouldTerminate := True;
             finally

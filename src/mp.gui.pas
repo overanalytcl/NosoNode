@@ -470,7 +470,7 @@ begin
     form1.DataPanel.Cells[3, 4] :=
       format('%s / %s', [Copy(GetCFGHash, 0, 5), GetConsensus(19)]);
     form1.DataPanel.Cells[3, 5] :=
-      format('%s / %s', [Copy(MyGVTsHash, 0, 5), GetConsensus(18)]);
+      format('%s / %s', [Copy(GVTHashMD5, 0, 5), GetConsensus(18)]);
     form1.DataPanel.Cells[3, 6] :=
       format('%s / %s', [Copy(GetMNsHash, 0, 5), GetConsensus(8)]);
     form1.DataPanel.Cells[3, 7] :=
@@ -578,18 +578,18 @@ var
   Owned: Integer = 0;
 begin
   form1.GVTsGrid.RowCount := 1;
-  EnterCriticalSection(CSGVTsArray);
-  for counter := 0 to length(ArrGVTs) - 1 do
+  EnterCriticalSection(GVTArrayLock);
+  for counter := 0 to length(GVTArray) - 1 do
   begin
-    if WallAddIndex(ArrGVTs[counter].owner) >= 0 then
+    if WallAddIndex(GVTArray[counter].Owner) >= 0 then
     begin
       form1.GVTsGrid.RowCount := form1.GVTsGrid.RowCount + 1;
-      form1.GVTsGrid.Cells[0, form1.GVTsGrid.RowCount - 1] := ArrGVTs[counter].number;
-      form1.GVTsGrid.Cells[1, form1.GVTsGrid.RowCount - 1] := ArrGVTs[counter].owner;
+      form1.GVTsGrid.Cells[0, form1.GVTsGrid.RowCount - 1] := GVTArray[counter].Number;
+      form1.GVTsGrid.Cells[1, form1.GVTsGrid.RowCount - 1] := GVTArray[counter].Owner;
       Inc(Owned);
     end;
   end;
-  LeaveCriticalSection(CSGVTsArray);
+  LeaveCriticalSection(GVTArrayLock);
   Form1.TabGVTs.TabVisible := Owned > 0;
 end;
 

@@ -218,7 +218,7 @@ type
        end;
   }
   {
-  TGVT = packed record
+  TGovernanceToken = packed record
        number   : string[2];
        owner    : string[32];
        Hash     : string[64];
@@ -702,7 +702,7 @@ var
   LastBlockIndex     : integer = 0;
   LastBlockHash : String = '';
   CurrentSummaryFileHash   : String = '';
-  MyGVTsHash      : string = '';
+  GVTHashMD5      : string = '';
   MyCFGHash       : string = '';
   PublicIPAddress      : String = '';
   MyMNsHash       : String = '';
@@ -753,7 +753,7 @@ var
   CSCriptoThread: TRTLCriticalSection;
   CSClosingApp: TRTLCriticalSection;
   //CSClientReadThreads : TRTLCriticalSection;
-  //CSGVTsArray   : TRTLCriticalSection;
+  //GVTArrayLock   : TRTLCriticalSection;
   CSNosoCFGStr: TRTLCriticalSection;
 
   //MNs system
@@ -796,7 +796,7 @@ var
   AdvOptionsFilename: String = 'NOSODATA' + DirectorySeparator + 'advopt.txt';
   {MasterNodesFilename : string= 'NOSODATA'+DirectorySeparator+'masternodes.txt';}
   ZipHeadersFileName: String = 'NOSODATA' + DirectorySeparator + 'blchhead.zip';
-  {GVTsFilename        : string= 'NOSODATA'+DirectorySeparator+'gvts.psk';}
+  {GVTFilename        : string= 'NOSODATA'+DirectorySeparator+'gvts.psk';}
   ClosedAppFilename: String = 'NOSODATA' + DirectorySeparator + 'LOGS' +
     DirectorySeparator + 'proclo.dat';
   RPCBakDirectory: String = 'NOSODATA' + DirectorySeparator +
@@ -2385,7 +2385,7 @@ begin
     begin
       AddFileProcess('Send', 'GVTs', IPUser, GetTickCount64);
       MemStream := TMemoryStream.Create;
-      FTPSize := GetGVTsAsStream(MemStream);
+      FTPSize := GetGVTAsStream(MemStream);
       if FTPSize > 0 then
       begin
         try
@@ -2535,13 +2535,13 @@ begin
     else if GetParameter(LLine, 0) = 'NSLGVT' then
     begin
       MemStream := TMemoryStream.Create;
-      if GetGVTsAsStream(MemStream) > 0 then GetFileOk := True
+      if GetGVTAsStream(MemStream) > 0 then GetFileOk := True
       else
         GetFileOk := False;
       if GetFileOk then
       begin
         try
-          Acontext.Connection.IOHandler.WriteLn('GVTFILE ' + Copy(MyGVTsHash, 0, 5));
+          Acontext.Connection.IOHandler.WriteLn('GVTFILE ' + Copy(GVTHashMD5, 0, 5));
           Acontext.connection.IOHandler.Write(MemStream, 0, True);
         except
           on E: Exception do

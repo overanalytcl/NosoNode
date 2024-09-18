@@ -283,7 +283,7 @@ begin
     IntToStr(MyConStatus) + ' ' + IntToStr(port) + ' ' +
     copy(GetMNsHash, 0, 5) + ' ' + IntToStr(GetMNsListLength) + ' ' +
     'null' + ' ' + //GetNMSData.Diff
-    GetMasternodeCheckCount.ToString + ' ' + MyGVTsHash + ' ' +
+    GetMasternodeCheckCount.ToString + ' ' + GVTHashMD5 + ' ' +
     Copy(HashMD5String(GetCFGDataStr), 0, 5) + ' ' + Copy(PSOFileHash, 0, 5);
 end;
 
@@ -413,7 +413,7 @@ var
   MemStream: TMemoryStream;
 begin
   MemStream := TMemoryStream.Create;
-  GetGVTsAsStream(MemStream);
+  GetGVTAsStream(MemStream);
   if GetConnectionData(slot).ConnectionType = 'CLI' then
   begin
     try

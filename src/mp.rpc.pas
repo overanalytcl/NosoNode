@@ -962,7 +962,7 @@ begin
   StartPerformanceMeasurement('RPC_GVTInfo');
   available := CountAvailableGVTs;
   Result := 'gvtinfo'#127 + IntToStr(available) + #127 + IntToStr(
-    GetGVTPrice(Available)) + #127 + IntToStr(GetGVTPrice(Available, True));
+    CalculateGVTPrice(Available)) + #127 + IntToStr(CalculateGVTPrice(Available, True));
   StopPerformanceMeasurement('RPC_GVTInfo');
 end;
 

@@ -922,13 +922,13 @@ begin
   StartPerformanceMeasurement('SendGVT');
   GVTNumber := StrToIntDef(GetParameter(Linetext, 1), -1);
   Destination := GetParameter(Linetext, 2);
-  if ((GVTnumber < 0) or (GVTnumber > Length(ArrGVTs) - 1)) then
+  if ((GVTnumber < 0) or (GVTnumber > Length(GVTArray) - 1)) then
   begin
     if showOutput then ToLog('console', 'Invalid GVT number');
     Exit;
   end;
-  GVTNumStr := ArrGVTs[GVTnumber].number;
-  GVTOwner := ArrGVTs[GVTnumber].owner;
+  GVTNumStr := GVTArray[GVTnumber].Number;
+  GVTOwner := GVTArray[GVTnumber].Owner;
   if WallAddIndex(GVTOwner) < 0 then
   begin
     if showOutput then ToLog('console', 'You do not own that GVT');
@@ -1328,15 +1328,15 @@ begin
       'Available : ' + IntToCurrency(onsumary - pending));
     if AnsiContainsStr(GetMN_FileText, addhash) then
       ToLog('console', 'Masternode: Active');
-    EnterCriticalSection(CSGVTsArray);
-    for counter := 0 to Length(ArrGVTs) - 1 do
+    EnterCriticalSection(GVTArrayLock);
+    for counter := 0 to Length(GVTArray) - 1 do
     begin
-      if ArrGVTs[counter].owner = addhash then
+      if GVTArray[counter].Owner = addhash then
       begin
         OwnedGVTs := OwnedGVTs + counter.ToString + ' ';
       end;
     end;
-    LeaveCriticalSection(CSGVTsArray);
+    LeaveCriticalSection(GVTArrayLock);
     OwnedGVTs := Trim(OwnedGVTs);
     if OwnedGVTs <> '' then
       ToLog('console', 'GVTs      : ' + OwnedGVTs);
@@ -1564,9 +1564,9 @@ var
   counter: Integer;
 begin
   ShowGVTInfo;
-  ToLog('console', 'Existing: ' + Length(arrgvts).ToString);
-  for counter := 0 to Length(arrgvts) - 1 do
-    ToLog('console', Format('%.2d %s', [counter, arrgvts[counter].owner]));
+  ToLog('console', 'Existing: ' + Length(GVTArray).ToString);
+  for counter := 0 to Length(GVTArray) - 1 do
+    ToLog('console', Format('%.2d %s', [counter, GVTArray[counter].Owner]));
   UpdateMyGVTsList;
 end;
 
@@ -2043,12 +2043,12 @@ var
 begin
   Availables := CountAvailableGVTs;
   ToLog('console', format('Available: %d', [Availables]));
-  ToLog('console', 'Buy  : ' + IntToCurrency(GetGVTPrice(Availables)));
-  ToLog('console', 'Sell : ' + IntToCurrency(GetGVTPrice(Availables, True)));
+  ToLog('console', 'Buy  : ' + IntToCurrency(CalculateGVTPrice(Availables)));
+  ToLog('console', 'Sell : ' + IntToCurrency(CalculateGVTPrice(Availables, True)));
   Exit;
   for counter := 40 downto 1 do
   begin
-    ToLog('console', counter.tostring + ' : ' + IntToCurrency(GetGVTPrice(counter)));
+    ToLog('console', counter.tostring + ' : ' + IntToCurrency(CalculateGVTPrice(counter)));
   end;
 
 end;

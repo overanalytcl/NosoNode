@@ -673,7 +673,7 @@ begin
   end;
 
   // Update GVTs file
-  if ((GetConsensus(18) <> Copy(MyGVTsHash, 0, 5)) and
+  if ((GetConsensus(18) <> Copy(GVTHashMD5, 0, 5)) and
     (LastGVTsRequestTime + 5 < UTCTime) and (GetConsensus(18) <> '') and
     (not DownloadingGVTs)) then
   begin
@@ -964,7 +964,7 @@ begin
     {13}LastBlockData.AccountMiner + ' ' +{14}GetMasternodeCheckCount.ToString +
     ' ' +{15}GetParameter(LastBlockData.Solution, 2) + ' ' +
     {16}GetParameter(LastBlockData.Solution, 1) + ' ' +{17}copy(
-    MySumarioHash, 0, 5) + ' ' +{18}copy(MyGVTsHash, 0, 5) + ' ' +
+    MySumarioHash, 0, 5) + ' ' +{18}copy(GVTHashMD5, 0, 5) + ' ' +
     {19}Copy(GetCFGHash, 0, 5) + ' ' +{20}copy(PSOFileHash, 0, 5);
 end;
 
