@@ -786,7 +786,7 @@ var
   SendersString: String = '';
 begin
   Result := '';
-  BeginPerformance('SendFunds');
+  StartPerformanceMeasurement('SendFunds');
   Destination := GetParameter(Linetext, 1);
   amount := GetParameter(Linetext, 2);
   reference := GetParameter(Linetext, 3);
@@ -841,7 +841,7 @@ begin
     OrderHashString := currtime;
     while monto > 0 do
     begin
-      BeginPerformance('SendFundsVerify');
+      StartPerformanceMeasurement('SendFundsVerify');
       if AnsiContainsstr(SendersString, GetWallArrIndex(contador).Hash) then
       begin
         ToLog('console', 'Duplicated address on order');
@@ -863,7 +863,7 @@ begin
       end;
       Inc(contador);
       if contador >= LenWallArr then contador := 0;
-      EndPerformance('SendFundsVerify');
+      StopPerformanceMeasurement('SendFundsVerify');
     end;
     for contador := 0 to Length(ArrayTrfrs) - 1 do
     begin
@@ -887,7 +887,7 @@ begin
     Result := SendOrderToNode(OrderString);
     //ToLog('console','Node result: '+result);
     OutgoingMsjsAdd(OrderString);
-    EndPerformance('SendFunds');
+    StopPerformanceMeasurement('SendFunds');
   end // End procesar
   else
   begin
@@ -919,7 +919,7 @@ var
   DestinationRecord: TSummaryData;
 begin
   Result := '';
-  BeginPerformance('SendGVT');
+  StartPerformanceMeasurement('SendGVT');
   GVTNumber := StrToIntDef(GetParameter(Linetext, 1), -1);
   Destination := GetParameter(Linetext, 2);
   if ((GVTnumber < 0) or (GVTnumber > Length(ArrGVTs) - 1)) then
@@ -983,7 +983,7 @@ begin
     ToLog('console', 'Order: ' + OrderHash);
     //ToLog('console',StrToSign);
   end;
-  EndPerformance('SendGVT');
+  StopPerformanceMeasurement('SendGVT');
 end;
 
 // Muestra la escala de halvings
@@ -1094,7 +1094,7 @@ procedure CheckOwnerHash(LineText: String);
 var
   Data, firmtime, Address, Lalias: String;
 begin
-  BeginPerformance('CheckOwnerHash');
+  StartPerformanceMeasurement('CheckOwnerHash');
   Data := GetParameter(LineText, 1);
   Address := CheckCertificate(Data, firmtime);
   if Address <> '' then
@@ -1109,7 +1109,7 @@ begin
   begin
     ToLog('console', 'Invalid verification');
   end;
-  EndPerformance('CheckOwnerHash');
+  StopPerformanceMeasurement('CheckOwnerHash');
 end;
 
 // devuelve una cadena con los updates disponibles
@@ -1735,7 +1735,7 @@ procedure OrdInfo(linetext: String);
 var
   LOrder: TOrderData;
 begin
-  beginperformance('ordinfo');
+  StartPerformanceMeasurement('ordinfo');
   if GetOrderFromDB(GetParameter(linetext, 1), LOrder) then
   begin
     ToLog('console', Lorder.Block.ToString);
@@ -1745,7 +1745,7 @@ begin
   end
   else
     ToLog('console', 'Order not found');
-  Endperformance('ordinfo');
+  StopPerformanceMeasurement('ordinfo');
 end;
 
 procedure ShowSystemInfo(Linetext: String);
@@ -1919,7 +1919,7 @@ var
   Correct: Integer = 0;
   Fails1: Integer = 0;
 begin
-  BeginPerformance('TestHashGeneration');
+  StartPerformanceMeasurement('TestHashGeneration');
   for counter := 1 to StrToIntDef(GetParameter(inputline, 1), 100) do
   begin
     NewAddress := Default(WalletData);
@@ -1938,7 +1938,7 @@ begin
     if counter mod 1000 = 0 then ToLog('console', format('Tested: %d', [counter]));
   end;
   ToLog('console', format('Correct: %d // Fails : %d ', [Correct, Fails1]));
-  ToLog('console', format('%d ms', [EndPerformance('TestHashGeneration')]));
+  ToLog('console', format('%d ms', [StopPerformanceMeasurement('TestHashGeneration')]));
 end;
 
 procedure CompareHashes(inputline: String);

@@ -236,7 +236,7 @@ function CreateOrderIDIndex(): Boolean;
 var
   ThisData: TDBRecord;
 begin
-  BeginPerformance('CreateOrderIDIndex');
+  StartPerformanceMeasurement('CreateOrderIDIndex');
   SetLength(OrderIDIndex, 0, 0);
   SetLength(OrderIDIndex, 100000);
   try
@@ -254,7 +254,7 @@ begin
 
     end;
   end;
-  EndPerformance('CreateOrderIDIndex');
+  StopPerformanceMeasurement('CreateOrderIDIndex');
 end;
 
 // Returns the array of integer of the specified index value

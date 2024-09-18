@@ -88,7 +88,7 @@ function GetOrderFromString(textLine: String; out ThisData: TOrderData): Boolean
 var
   orderinfo: TOrderData;
 begin
-  BeginPerformance('GetOrderFromString');
+  StartPerformanceMeasurement('GetOrderFromString');
   Result := True;
   ThisData := Default(TOrderData);
   try
@@ -113,7 +113,7 @@ begin
       Result := False;
     end;
   end;{TRY}
-  EndPerformance('GetOrderFromString');
+  StopPerformanceMeasurement('GetOrderFromString');
 end;
 
 // devuelve una cadena con los datos de la cabecera de un bloque

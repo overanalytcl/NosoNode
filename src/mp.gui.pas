@@ -204,7 +204,7 @@ var
   LConex: TConnectionData;
 begin
   if WO_StopGUI then exit;
-  BeginPerformance('UpdateSlotsGrid');
+  StartPerformanceMeasurement('UpdateSlotsGrid');
   CurrentUTC := UTCTime;
   if CurrentUTC > SlotsLastUpdate then
   begin
@@ -238,7 +238,7 @@ begin
     end;
     SlotsLastUpdate := CurrentUTC;
   end;
-  EndPerformance('UpdateSlotsGrid');
+  StopPerformanceMeasurement('UpdateSlotsGrid');
 end;
 
 function GetConnectedPeers(): String;
@@ -340,43 +340,43 @@ const
   LastUpdateDataPanel: Int64 = 0;
 var
   contador: Integer = 0;
-  LocalProcesses: TProcessCopy;
-  FileProcs: TFileMCopy;
+  LocalProcesses: TThreadManagerArray;
+  FileProcs: TFileManagerArray;
   LConsensus: TNodeConsensus;
   LPSOs: TPSOsArray;
 begin
   if WO_StopGUI then exit;
-  BeginPerformance('UpdateGUITime');
+  StartPerformanceMeasurement('UpdateGUITime');
   //Update Monitor Grid
   if ((form1.PCMonitor.ActivePage = Form1.TabMonitorMonitor) and
     (LastUpdateMonitor <> UTCTime)) then
   begin
-    BeginPerformance('UpdateGUIMonitor');
-    if length(ArrPerformance) > 0 then
+    StartPerformanceMeasurement('UpdateGUIMonitor');
+    if length(PerformanceStats) > 0 then
     begin
-      Form1.SG_Performance.RowCount := Length(ArrPerformance) + 1;
-      for contador := 0 to high(ArrPerformance) do
+      Form1.SG_Performance.RowCount := Length(PerformanceStats) + 1;
+      for contador := 0 to high(PerformanceStats) do
       begin
         try
-          Form1.SG_Performance.Cells[0, contador + 1] := ArrPerformance[contador].tag;
+          Form1.SG_Performance.Cells[0, contador + 1] := PerformanceStats[contador].Tag;
           Form1.SG_Performance.Cells[1, contador + 1] :=
-            IntToStr(ArrPerformance[contador].Count);
+            IntToStr(PerformanceStats[contador].Count);
           Form1.SG_Performance.Cells[2, contador + 1] :=
-            IntToStr(ArrPerformance[contador].max);
+            IntToStr(PerformanceStats[contador].MaxTime);
           Form1.SG_Performance.Cells[3, contador + 1] :=
-            IntToStr(ArrPerformance[contador].Average);
+            IntToStr(PerformanceStats[contador].AverageTime);
         except
           on E: Exception do
           begin
             ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
               ' -> ' + format('Error showing ArrPerformance data(%s): %s',
-              [ArrPerformance[contador].tag, E.Message]));
+              [PerformanceStats[contador].Tag, E.Message]));
           end;
         end;
       end;
     end;
     LastUpdateMonitor := UTCTime;
-    EndPerformance('UpdateGUIMonitor');
+    StopPerformanceMeasurement('UpdateGUIMonitor');
   end;
 
   if LastUpdateProcesses <> UTCTime then
@@ -388,9 +388,9 @@ begin
       //Form1.SG_FileProcs.Cells[0,0]:=Format('Thread [%d]',[length(LocalProcesses)]);
       for contador := 0 to High(FileProcs) do
       begin
-        Form1.SG_FileProcs.Cells[0, contador + 1] := FileProcs[contador].FiType;
-        Form1.SG_FileProcs.Cells[1, contador + 1] := FileProcs[contador].FiFile;
-        Form1.SG_FileProcs.Cells[2, contador + 1] := FileProcs[contador].FiPeer;
+        Form1.SG_FileProcs.Cells[0, contador + 1] := FileProcs[contador].FileType;
+        Form1.SG_FileProcs.Cells[1, contador + 1] := FileProcs[contador].FileName;
+        Form1.SG_FileProcs.Cells[2, contador + 1] := FileProcs[contador].Peer;
       end;
     end;
   end;
@@ -405,11 +405,11 @@ begin
         Format('Thread [%d]', [length(LocalProcesses)]);
       for contador := 0 to High(LocalProcesses) do
       begin
-        Form1.SG_OpenThreads.Cells[0, contador + 1] := LocalPRocesses[contador].ThName;
+        Form1.SG_OpenThreads.Cells[0, contador + 1] := LocalPRocesses[contador].ThreadName;
         Form1.SG_OpenThreads.Cells[1, contador + 1] :=
-          TimeSinceStamp(LocalPRocesses[contador].ThStart);
+          TimeSinceStamp(LocalPRocesses[contador].StartTime);
         Form1.SG_OpenThreads.Cells[2, contador + 1] :=
-          TimeSinceStamp(LocalPRocesses[contador].ThLast);
+          TimeSinceStamp(LocalPRocesses[contador].LastActiveTime);
       end;
     end;
   end;
@@ -505,7 +505,7 @@ begin
   end;
   if U_DirPanel then
   begin
-    BeginPerformance('UpdateDirPanel');
+    StartPerformanceMeasurement('UpdateDirPanel');
     form1.Direccionespanel.RowCount := 1;
     for contador := 0 to LenWallArr - 1 do
     begin
@@ -525,9 +525,9 @@ begin
     form1.LabelBigBalance.Caption := IntToCurrency(GetWalletBalance) + ' ' + CoinSimbol;
     form1.Direccionespanel.Cells[0, 0] := format(rs0514, [LEnWallArr]);  //'Address'
     U_DirPanel := False;
-    EndPerformance('UpdateDirPanel');
+    StopPerformanceMeasurement('UpdateDirPanel');
   end;
-  EndPerformance('UpdateGUITime');
+  StopPerformanceMeasurement('UpdateGUITime');
 end;
 
 // Actualiza la informacion de la label info

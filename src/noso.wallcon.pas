@@ -192,7 +192,7 @@ var
   ThisData: WalletData;
 begin
   Result := 0;
-  BeginPerformance('ImportAddressesFromBackup');
+  StartPerformanceMeasurement('ImportAddressesFromBackup');
   BakFiles := TStringList.Create;
   try
     FindAllFiles(BakFiles, BakFolder, '*.pkw', True);
@@ -213,7 +213,7 @@ begin
     end;
   end;
   BakFiles.Free;
-  EndPerformance('ImportAddressesFromBackup');
+  StopPerformanceMeasurement('ImportAddressesFromBackup');
 end;
 
 // Saves an address info to a specific file

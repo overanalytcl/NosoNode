@@ -569,7 +569,7 @@ var
   valid: String;
   LRecord: TSummaryData;
 begin
-  BeginPerformance('RPC_AddressBalance');
+  StartPerformanceMeasurement('RPC_AddressBalance');
   Result := '';
   if NosoPParams <> '' then
   begin
@@ -612,7 +612,7 @@ begin
     until ThisAddress = '';
     trim(Result);
   end;
-  EndPerformance('RPC_AddressBalance');
+  StopPerformanceMeasurement('RPC_AddressBalance');
 end;
 
 function RPC_OrderInfo(NosoPParams: String): String;
@@ -620,7 +620,7 @@ var
   thisOr: TOrderGroup;
   validID: String = 'true';
 begin
-  BeginPerformance('RPC_OrderInfo');
+  StartPerformanceMeasurement('RPC_OrderInfo');
   ToLog('events', TimeToStr(now) + 'GetOrderDetails requested: ' + NosoPParams);
   NosoPParams := Trim(NosoPParams);
   ThisOr := Default(TOrderGroup);
@@ -643,7 +643,7 @@ begin
     thisor.timestamp, thisor.block, thisor.OrderType,
     thisor.OrderLines, thisor.Receiver, thisor.AmmountTrf,
     thisor.AmmountFee, thisor.reference, thisor.Sender]);
-  EndPerformance('RPC_OrderInfo');
+  StopPerformanceMeasurement('RPC_OrderInfo');
 end;
 
 function RPC_Blockinfo(NosoPParams: String): String;
@@ -651,7 +651,7 @@ var
   thisblock: String;
   counter: Integer = 0;
 begin
-  BeginPerformance('RPC_Blockinfo');
+  StartPerformanceMeasurement('RPC_Blockinfo');
   Result := '';
   if NosoPParams <> '' then
   begin
@@ -673,50 +673,50 @@ begin
     until thisblock = '';
     trim(Result);
   end;
-  EndPerformance('RPC_Blockinfo');
+  StopPerformanceMeasurement('RPC_Blockinfo');
 end;
 
 function RPC_Mainnetinfo(NosoPParams: String): String;
 begin
-  BeginPerformance('RPC_Mainnetinfo');
+  StartPerformanceMeasurement('RPC_Mainnetinfo');
   Result := format('mainnetinfo'#127'%s'#127'%s'#127'%s'#127'%s'#127'%s'#127'%d',
     [GetConsensus(2), Copy(GetConsensus(10), 0, 5), copy(GetConsensus(15), 0, 5),
     copy(GetConsensus(17), 0, 5), GetConsensus(3), GetCirculatingSupply(
     StrToIntDef(GetConsensus(2), 0))]);
-  EndPerformance('RPC_Mainnetinfo');
+  StopPerformanceMeasurement('RPC_Mainnetinfo');
 end;
 
 function RPC_PendingOrders(NosoPParams: String): String;
 var
   LData: String;
 begin
-  BeginPerformance('RPC_PendingOrders');
+  StartPerformanceMeasurement('RPC_PendingOrders');
   LData := PendingRawInfo;
   LData := StringReplace(LData, ' ', #127, [rfReplaceAll, rfIgnoreCase]);
   Result := format('pendingorders'#127'%s', [LData]);
-  EndPerformance('RPC_PendingOrders');
+  StopPerformanceMeasurement('RPC_PendingOrders');
 end;
 
 function RPC_LockedMNs(NosoPParams: String): String;
 var
   LData: String;
 begin
-  BeginPerformance('RPC_LockedMNs');
+  StartPerformanceMeasurement('RPC_LockedMNs');
   LData := LockedMNsRawString;
   LData := StringReplace(LData, ' ', #127, [rfReplaceAll, rfIgnoreCase]);
   Result := format('lockedmns'#127'%s', [LData]);
-  EndPerformance('RPC_LockedMNs');
+  StopPerformanceMeasurement('RPC_LockedMNs');
 end;
 
 function RPC_GetPeers(NosoPParams: String): String;
 var
   LData: String;
 begin
-  BeginPerformance('RPC_GetPeers');
+  StartPerformanceMeasurement('RPC_GetPeers');
   LData := GetConnectedPeers;
   LData := StringReplace(LData, ' ', #127, [rfReplaceAll, rfIgnoreCase]);
   Result := format('peers'#127'%s', [LData]);
-  EndPerformance('RPC_GetPeers');
+  StopPerformanceMeasurement('RPC_GetPeers');
 end;
 
 function RPC_BlockOrders(NosoPParams: String): String;
@@ -769,7 +769,7 @@ var
   end;
 
 begin
-  BeginPerformance('RPC_BlockOrders');
+  StartPerformanceMeasurement('RPC_BlockOrders');
   Result := '';
   setlength(arrayOrds, 0);
   blocknumber := StrToIntDef(NosoPParams, -1);
@@ -803,7 +803,7 @@ begin
       Result := Result + '0'#127;
     trim(Result);
   end;
-  EndPerformance('RPC_BlockOrders');
+  StopPerformanceMeasurement('RPC_BlockOrders');
 end;
 
 function RPC_Masternodes(NosoPParams: String): String;
@@ -816,7 +816,7 @@ var
   Total: Integer = 0;
   IpAndport, Ip, port, address, age: String;
 begin
-  BeginPerformance('RPC_Masternodes');
+  StartPerformanceMeasurement('RPC_Masternodes');
   Result := '';
   Source := GetMN_FileText;
   Block := GetParameter(Source, 0);
@@ -838,7 +838,7 @@ begin
   until thisdata = '';
   Result := 'getmasternodes'#127 + Block + #127 + IntToStr(Total) + #127 + Nodes;
   //Tolog('console',result);
-  EndPerformance('RPC_Masternodes');
+  StopPerformanceMeasurement('RPC_Masternodes');
 end;
 
 function RPC_Blockmns(NosoPParams: String): String;
@@ -850,7 +850,7 @@ var
   counter: Integer;
   AddressesString: String = '';
 begin
-  BeginPerformance('RPC_Blockmns');
+  StartPerformanceMeasurement('RPC_Blockmns');
   Result := '';
   blocknumber := StrToIntDef(NosoPParams, -1);
   if ((blocknumber < 48010) or (blocknumber > LastBlockIndex)) then
@@ -870,17 +870,17 @@ begin
     Result := 'blockmns'#127'true'#127 + blocknumber.ToString + #127 + MNSCount.ToString + #127 +
       MNsReward.ToString + #127 + TotalPAid.ToString + #127 + AddressesString;
   end;
-  EndPerformance('RPC_Blockmns');
+  StopPerformanceMeasurement('RPC_Blockmns');
 end;
 
 function RPC_WalletBalance(NosoPParams: String): String;
 var
   LData: Int64;
 begin
-  BeginPerformance('RPC_WalletBalance');
+  StartPerformanceMeasurement('RPC_WalletBalance');
   LData := GetWalletBalance;
   Result := format('walletbalance'#127'%d', [LData]);
-  EndPerformance('RPC_WalletBalance');
+  StopPerformanceMeasurement('RPC_WalletBalance');
 end;
 
 function RPC_NewAddress(NosoPParams: String): String;
@@ -890,7 +890,7 @@ var
   NewAddress: WalletData;
   PubKey, PriKey: String;
 begin
-  BeginPerformance('RPC_NewAddress');
+  StartPerformanceMeasurement('RPC_NewAddress');
   TotalNumber := StrToIntDef(NosoPParams, 1);
   if TotalNumber > 100 then TotalNumber := 100;
   Result := 'newaddress'#127'true'#127 + IntToStr(TotalNumber) + #127;
@@ -908,7 +908,7 @@ begin
   trim(Result);
   S_Wallet := True;
   U_DirPanel := True;
-  EndPerformance('RPC_NewAddress');
+  StopPerformanceMeasurement('RPC_NewAddress');
 end;
 
 function RPC_NewAddressFull(NosoPParams: String): String;
@@ -917,7 +917,7 @@ var
   NewAddress: WalletData;
   PubKey, PriKey: String;
 begin
-  BeginPerformance('RPC_NewAddressFull');
+  StartPerformanceMeasurement('RPC_NewAddressFull');
   Result := 'newaddressfull'#127;
   NewAddress := Default(WalletData);
   NewAddress.Hash := GenerateNewAddress(PubKey, PriKey);
@@ -930,40 +930,40 @@ begin
   trim(Result);
   S_Wallet := True;
   U_DirPanel := True;
-  EndPerformance('RPC_NewAddressFull');
+  StopPerformanceMeasurement('RPC_NewAddressFull');
 end;
 
 function RPC_ValidateAddress(NosoPParams: String): String;
 begin
-  BeginPerformance('RPC_NewAddressFull');
+  StartPerformanceMeasurement('RPC_NewAddressFull');
   if VerifyAddressOnDisk(GetParameter(NosoPParams, 0)) then
     Result := 'islocaladdress'#127'True'
   else
     Result := 'islocaladdress'#127'False';
-  EndPerformance('RPC_NewAddressFull');
+  StopPerformanceMeasurement('RPC_NewAddressFull');
 end;
 
 function RPC_SetDefault(NosoPParams: String): String;
 var
   address: String;
 begin
-  BeginPerformance('RPC_SetDefault');
+  StartPerformanceMeasurement('RPC_SetDefault');
   address := GetParameter(NosoPParams, 0);
   if SetDefaultAddress('SETDEFAULT ' + Address) then Result := 'setdefault'#127'True'
   else
     Result := 'setdefault'#127'False';
-  EndPerformance('RPC_SetDefault');
+  StopPerformanceMeasurement('RPC_SetDefault');
 end;
 
 function RPC_GVTInfo(NosoPParams: String): String;
 var
   available: Int64;
 begin
-  BeginPerformance('RPC_GVTInfo');
+  StartPerformanceMeasurement('RPC_GVTInfo');
   available := CountAvailableGVTs;
   Result := 'gvtinfo'#127 + IntToStr(available) + #127 + IntToStr(
     GetGVTPrice(Available)) + #127 + IntToStr(GetGVTPrice(Available, True));
-  EndPerformance('RPC_GVTInfo');
+  StopPerformanceMeasurement('RPC_GVTInfo');
 end;
 
 function RPC_CheckCertificate(NosoPParams: String): String;
@@ -972,7 +972,7 @@ var
   SignTime: String;
   Address: String;
 begin
-  BeginPerformance('RPC_CheckCertificate');
+  StartPerformanceMeasurement('RPC_CheckCertificate');
   Result := 'checkcertificate'#127;
   cert := GetParameter(NosoPParams, 0);
   Address := CheckCertificate(cert, SignTime);
@@ -984,14 +984,14 @@ begin
   begin
     Result := Result + 'False';
   end;
-  EndPerformance('RPC_CheckCertificate');
+  StopPerformanceMeasurement('RPC_CheckCertificate');
 end;
 
 function RPC_SubmitOrder(NosoPParams: String; waitresponse: Boolean = False): String;
 var
   ResultLine: String;
 begin
-  BeginPerformance('RPC_SubmitOrder');
+  StartPerformanceMeasurement('RPC_SubmitOrder');
   //ToLog('Console',NosoPParams);
   ResultLine := SendOrderToNode(NosoPParams);
   ResultLine := StringReplace(ResultLine, ' ', '_', [rfReplaceAll, rfIgnoreCase]);
@@ -1000,7 +1000,7 @@ begin
   begin
     Result := 'submitorderwr'#127'True'#127 + ResultLine;
   end;
-  EndPerformance('RPC_SubmitOrder');
+  StopPerformanceMeasurement('RPC_SubmitOrder');
 end;
 
 function RPC_SendFunds(NosoPParams: String): String;
@@ -1010,7 +1010,7 @@ var
   resultado: String;
   ErrorCode: Integer;
 begin
-  BeginPerformance('RPC_SendFunds');
+  StartPerformanceMeasurement('RPC_SendFunds');
   destination := GetParameter(NosoPParams, 0);
   amount := StrToInt64Def(GetParameter(NosoPParams, 1), 0);
   reference := GetParameter(NosoPParams, 2);
@@ -1031,7 +1031,7 @@ begin
   begin
     Result := 'sendfunds'#127 + 'ERROR'#127 + '999';
   end;
-  EndPerformance('RPC_SendFunds');
+  StopPerformanceMeasurement('RPC_SendFunds');
 end;
 
 

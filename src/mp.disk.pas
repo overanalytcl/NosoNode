@@ -235,7 +235,7 @@ End;
 // Creates/Saves Advopt file
 procedure CreateADV(saving: Boolean);
 begin
-  BeginPerformance('CreateADV');
+  StartPerformanceMeasurement('CreateADV');
   try
     Assignfile(FileAdvOptions, AdvOptionsFilename);
     rewrite(FileAdvOptions);
@@ -319,7 +319,7 @@ begin
       ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
         ' -> ' + 'Error creating/saving AdvOpt file: ' + E.Message);
   end;
-  EndPerformance('CreateADV');
+  StopPerformanceMeasurement('CreateADV');
 end;
 
 // Loads Advopt values
@@ -553,7 +553,7 @@ begin
   UpdateSummaryChanges;
   UpdateNodeData();
   CreateSumaryIndex;
-  TimeDuration := EndPerformance('RebuildSummary');
+  TimeDuration := StopPerformanceMeasurement('RebuildSummary');
   ToLog('console', format('Sumary rebuild time: %d ms', [TimeDuration]));
 end;
 

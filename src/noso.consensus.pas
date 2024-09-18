@@ -335,7 +335,7 @@ var
   end;
 
 begin
-  BeginPerformance('CalculateConsensus');
+  StartPerformanceMeasurement('CalculateConsensus');
   RunningConsensus := True;
   SetLength(Result, 0);
   if NodesList <> '' then SetNodesArray(NodesList);
@@ -381,7 +381,7 @@ begin
     Css_Completed := False;
     RunningConsensus := False;
     Dec(LastConsensusTime, 50);
-    EndPerformance('CalculateConsensus');
+    StopPerformanceMeasurement('CalculateConsensus');
     exit;
   end;
   insert(ConHash, Result, 0);
@@ -418,7 +418,7 @@ begin
 
   Css_Completed := True;
   RunningConsensus := False;
-  EndPerformance('CalculateConsensus');
+  StopPerformanceMeasurement('CalculateConsensus');
 end;
 
 function GetConsensus(LData: Integer = 0): String;

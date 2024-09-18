@@ -146,7 +146,7 @@ var
   insertar : boolean = false;
   resultado : integer = 0;
 Begin
-BeginPerformance('AddArrayPoolTXs');
+StartPerformanceMeasurement('AddArrayPoolTXs');
 //if order.OrderType='FEE' then exit;
 if order.TimeStamp < LastBlockData.TimeStart then exit;
 if TransferExistsInLastBlock(order.TrfrID) then exit;
@@ -188,7 +188,7 @@ if not TransactionAlreadyPending(order.TrfrID) then
    result := true;
    VerifyIfPendingIsMine(order);
    end;
-EndPerformance('AddArrayPoolTXs');
+StopPerformanceMeasurement('AddArrayPoolTXs');
 End;
 }
 
@@ -279,7 +279,7 @@ var
   MontoDisponible, Montotrfr, comisionTrfr: Int64;
   OrderInfo: TOrderData;
 begin
-  BeginPerformance('SendFundsFromAddress');
+  StartPerformanceMeasurement('SendFundsFromAddress');
   MontoDisponible := GetAddressBalanceIndexed(GetWallArrIndex(WallAddIndex(origen)).Hash) -
     GetAddressPendingPays(Origen);
   if MontoDisponible > comision then ComisionTrfr := Comision
@@ -307,7 +307,7 @@ begin
   OrderInfo.TransferId := GetTransferHash(ordertime + origen + destino +
     IntToStr(monto) + IntToStr(LastBlockIndex));
   Result := OrderInfo;
-  EndPerformance('SendFundsFromAddress');
+  StopPerformanceMeasurement('SendFundsFromAddress');
 end;
 
 // verifica si en las transaccione pendientes hay alguna de nuestra cartera

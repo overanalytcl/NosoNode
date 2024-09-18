@@ -207,7 +207,7 @@ end;
 function GetHeadersAsMemStream(var LMs: TMemoryStream): Int64;
 begin
   Result := 0;
-  BeginPerformance('GetHeadersAsMemStream');
+  StartPerformanceMeasurement('GetHeadersAsMemStream');
   EnterCriticalSection(CS_HeadersFile);
   try
     LMs.LoadFromFile(ResumenFilename);
@@ -220,7 +220,7 @@ begin
     end;
   end;
   LeaveCriticalSection(CS_HeadersFile);
-  EndPerformance('GetHeadersAsMemStream');
+  StopPerformanceMeasurement('GetHeadersAsMemStream');
 end;
 
 // Save a provided stream as the headers file

@@ -135,7 +135,7 @@ begin
   end;
   if AnsiContainsStr(GetCFGDataStr(0), 'EMPTY') then ClearAllPendingTransactions;
   BuildingBlock := Numero;
-  BeginPerformance('BuildNewBlock');
+  StartPerformanceMeasurement('BuildNewBlock');
   if ((numero > 0) and (Timestamp < lastblockdata.TimeEnd)) then
   begin
     ToLog('console', 'New block ' + IntToStr(numero) + ' : Invalid timestamp');
@@ -169,7 +169,7 @@ begin
 
     // Processs pending orders
     EnterCriticalSection(CSPendingTransactions);
-    BeginPerformance('NewBLOCK_PENDING');
+    StartPerformanceMeasurement('NewBLOCK_PENDING');
     ArrayLastBlockTrxs := Default(TBlockOrders);
     ArrayLastBlockTrxs := GetBlockTransfers(LastBlockIndex);
     ResetBlockRecords;
@@ -295,11 +295,11 @@ begin
       end;
     end; {TRY}
     SetLength(IgnoredTrxs, 0);
-    EndPerformance('NewBLOCK_PENDING');
+    StopPerformanceMeasurement('NewBLOCK_PENDING');
     LeaveCriticalSection(CSPendingTransactions);
 
     //PoS payment
-    BeginPerformance('NewBLOCK_PoS');
+    StartPerformanceMeasurement('NewBLOCK_PoS');
     if numero >= PoSBlockStart then
     begin
       SetLength(PoSAddressess, 0);
@@ -319,9 +319,9 @@ begin
           CreditTo(PoSAddressess[contador].address, PosReward, numero);
       end;
     end;
-    EndPerformance('NewBLOCK_PoS');
+    StopPerformanceMeasurement('NewBLOCK_PoS');
     // Masternodes processing
-    BeginPerformance('NewBLOCK_MNs');
+    StartPerformanceMeasurement('NewBLOCK_MNs');
     CreditMNVerifications();
     MNsFileText := GetMNsAddresses(LastBlockIndex);
     SaveMNsFile(MNsFileText);
@@ -360,7 +360,7 @@ begin
         CreditTo(MNsAddressess[contador].address, MNsReward, numero);
         if AddLockedMM(MNsAddressess[contador].address, numero) then Inc(NewMNs);
       end;
-      EndPerformance('NewBLOCK_MNs');
+      StopPerformanceMeasurement('NewBLOCK_MNs');
     end;// End of MNS payment procecessing
 
     // ***END MASTERNODES PROCESSING***
@@ -375,9 +375,9 @@ begin
     // Update summary lastblock
     CreditTo(AdminHash, 0, numero);
     // Save summary file
-    BeginPerformance('NewBLOCK_SaveSum');
+    StartPerformanceMeasurement('NewBLOCK_SaveSum');
     UpdateSummaryChanges();
-    EndPerformance('NewBLOCK_SaveSum');
+    StopPerformanceMeasurement('NewBLOCK_SaveSum');
     SummaryLastop := numero;
     // Limpiar las pendientes
     ClearWallPendings;
@@ -442,7 +442,7 @@ begin
     ExpiredMNs := ClearExpiredLockedMNs(numero);
     SavePSOFileToDisk(Numero);
     OutText(format('Block built: %d (%d ms) MNs: + %d / - %d',
-      [numero, EndPerformance('BuildNewBlock'), NewMNs, ExpiredMNs]), True);
+      [numero, StopPerformanceMeasurement('BuildNewBlock'), NewMNs, ExpiredMNs]), True);
   end
   else
   begin
@@ -543,7 +543,7 @@ var
   counter: Integer;
 begin
   Result := True;
-  BeginPerformance('GuardarBloque');
+  StartPerformanceMeasurement('GuardarBloque');
   NumeroOrdenes := Cabezera.TrxTotales;
   MemStream := TMemoryStream.Create;
   try
@@ -575,7 +575,7 @@ begin
     end;
   end{Try};
   MemStream.Free;
-  EndPerformance('GuardarBloque');
+  StopPerformanceMeasurement('GuardarBloque');
 end;
 
 function GetBlockPoSes(BlockNumber: Integer): BlockArraysPos;
@@ -750,7 +750,7 @@ var
   Cont: Integer;
   ThisOrder: String = '';
 begin
-  BeginPErformance('GEtNSLBlkOrdInfo');
+  StartPerformanceMeasurement('GEtNSLBlkOrdInfo');
   Result := 'NSLBLKORD ';
   ParamBlock := UpperCase(GetParameter(LineText, 1));
   if paramblock = 'LAST' then BlkNumber := LastBlockIndex
@@ -779,7 +779,7 @@ begin
     Result := Result + ThisOrder;
     Result := Trim(Result);
   end;
-  EndPErformance('GEtNSLBlkOrdInfo');
+  StopPerformanceMeasurement('GEtNSLBlkOrdInfo');
 end;
 
 end. // END UNIT

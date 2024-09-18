@@ -360,11 +360,11 @@ function GetTotalConnections():integer;
 var
   counter:integer;
 Begin
-  BeginPerformance('GetTotalConexiones');
+  StartPerformanceMeasurement('GetTotalConexiones');
   result := 0;
   for counter := 1 to MaxConnections do
     if IsSlotConnected(Counter) then result := result + 1;
-  EndPerformance('GetTotalConexiones');
+  StopPerformanceMeasurement('GetTotalConexiones');
 End;
 }
 
@@ -829,7 +829,7 @@ var
   TryonIndex: Integer = -1;
   CopyPendings: array of TOrderData;
 begin
-  BeginPerformance('GetOrderDetails');
+  StartPerformanceMeasurement('GetOrderDetails');
   resultorder := default(TOrderGroup);
   Result := resultorder;
   if GetPendingTransactionCount > 0 then
@@ -909,7 +909,7 @@ begin
     end;
   end;
   Result := resultorder;
-  EndPerformance('GetOrderDetails');
+  StopPerformanceMeasurement('GetOrderDetails');
 end;
 
 function GetOrderSources(orderid: String): String;

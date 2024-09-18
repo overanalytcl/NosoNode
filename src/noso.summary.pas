@@ -294,7 +294,7 @@ var
   Opened: Boolean = False;
   Closed: Boolean = False;
 begin
-  beginperformance('CreateSumaryIndex');
+  StartPerformanceMeasurement('CreateSumaryIndex');
   AssignFile(SumFile, SummaryFileName);
   EnterCriticalSection(CS_SumIndex);
   SetLength(SumaryIndex, 0, 0);
@@ -316,7 +316,7 @@ begin
   end;{Try}
   LeaveCriticalSection(CS_SummaryDisk);
   LeaveCriticalSection(CS_SumIndex);
-  Result := EndPerformance('CreateSumaryIndex');
+  Result := StopPerformanceMeasurement('CreateSumaryIndex');
   SummaryLastop := ReadSumaryRecordFromDisk(0).LastOp;
   SetSummaryHash;
 end;

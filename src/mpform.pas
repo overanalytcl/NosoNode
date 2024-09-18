@@ -867,7 +867,7 @@ begin
     GetLogLine('nodeftp', lastlogline);
     // Deep debug
     repeat
-    until not GetDeepDebLine(lastlogline);
+    until not GetDeepDebugLine(lastlogline);
   end;
 end;
 
@@ -1410,9 +1410,9 @@ begin
   CombineTextFiles([DeepDebLogFilename, ConsoleLogFilename, EventLogFilename,
     ExceptLogFilename, NodeFTPLogFilename, PerformanceFIlename],
     ResumeLogFilename, True);
-  InitDeepDeb(DeepDebLogFilename, format('( %s - %s )',
+  InitializeDeepDebug(DeepDebLogFilename, format('( %s - %s )',
     [MainnetVersion + NodeRelease, OSVersion]));
-  NosoDebug_UsePerformance := True;
+  EnablePerformanceLogging := True;
   UpdateLogsThread := TUpdateLogs.Create(True);
   UpdateLogsThread.FreeOnTerminate := True;
   UpdateLogsThread.Start;
@@ -1802,24 +1802,24 @@ begin
       {GetNMSData.Miner}'NpryectdevepmentfundsGE',{GetNMSData.Hash}'!!!!!!!!!100000000');
     MasternodeVerificationCount := 0;
   end;
-  BeginPerformance('ActualizarGUI');
+  StartPerformanceMeasurement('ActualizarGUI');
   ActualizarGUI();
-  EndPerformance('ActualizarGUI');
-  BeginPerformance('SaveUpdatedFiles');
+  StopPerformanceMeasurement('ActualizarGUI');
+  StartPerformanceMeasurement('SaveUpdatedFiles');
   SaveUpdatedFiles();
-  EndPerformance('SaveUpdatedFiles');
-  BeginPerformance('ProcesarLineas');
+  StopPerformanceMeasurement('SaveUpdatedFiles');
+  StartPerformanceMeasurement('ProcesarLineas');
   ProcesarLineas();
-  EndPerformance('ProcesarLineas');
-  BeginPerformance('LeerLineasDeClientes');
+  StopPerformanceMeasurement('ProcesarLineas');
+  StartPerformanceMeasurement('LeerLineasDeClientes');
   LeerLineasDeClientes();
-  EndPerformance('LeerLineasDeClientes');
-  BeginPerformance('ParseProtocolLines');
+  StopPerformanceMeasurement('LeerLineasDeClientes');
+  StartPerformanceMeasurement('ParseProtocolLines');
   ParseProtocolLines();
-  EndPerformance('ParseProtocolLines');
-  BeginPerformance('VerifyConnectionStatus');
+  StopPerformanceMeasurement('ParseProtocolLines');
+  StartPerformanceMeasurement('VerifyConnectionStatus');
   VerifyConnectionStatus();
-  EndPerformance('VerifyConnectionStatus');
+  StopPerformanceMeasurement('VerifyConnectionStatus');
   if G_CloseRequested then CloseeAppSafely();
   if FormSlots.Visible then UpdateSlotsGrid();
   Inc(ConnectedRotor);
@@ -1931,7 +1931,7 @@ begin
   LeaveCriticalSection(CSClosingApp);
   if GoAhead then
   begin
-    PerformanceToFile(PerformanceFilename);
+    LogPerformanceToFile(PerformanceFilename);
     EarlyRestart := form1.Server.Active;
     Form1.Latido.Enabled := False; // Stopped the latido
     form1.RestartTimer.Enabled := False;

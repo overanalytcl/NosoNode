@@ -268,7 +268,7 @@ var
   WaitCycles: Integer = 0;
   DataLine: String;
 begin
-  BeginPerformance('RunMNVerification');
+  StartPerformanceMeasurement('RunMNVerification');
   Result := '';
   CurrSynctus := LocSynctus;
   SetLocalIP(LocalIP);
@@ -306,7 +306,7 @@ begin
   end;
   Result := LocalIP + ' ' + Block.ToString + ' ' + LocalMasternodeSignature +
     ' ' + publicK + ' ' + VerifiedNodes + ' ' + GetStringSigned(VerifiedNodes, privateK);
-  EndPerformance('RunMNVerification');
+  StopPerformanceMeasurement('RunMNVerification');
 end;
 
 {$REGION MNsList handling}
@@ -871,7 +871,7 @@ var
   Added: Boolean = False;
   VerificatorsCount: Integer;
 begin
-  BeginPerformance('FillMNsArray');
+  StartPerformanceMeasurement('FillMNsArray');
   try
     SetLength(ArrayMNsData, 0);
     SetLength(TempArray, 0);
@@ -911,7 +911,7 @@ begin
     on E: Exception do
       ToDeepDebug('Nosomasternodes,FillMNsArray,' + E.Message);
   end;
-  EndPerformance('FillMNsArray');
+  StopPerformanceMeasurement('FillMNsArray');
 end;
 
 function GetVerificatorsText(): String;

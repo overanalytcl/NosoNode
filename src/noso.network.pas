@@ -775,7 +775,7 @@ var
   i, InsertPos: Integer;
   Transaction: TOrderData;
 begin
-  BeginPerformance('AddTransactionToPool');
+  StartPerformanceMeasurement('AddTransactionToPool');
   Result := False;
 
   if (Order.TimeStamp < LastBlockData.TimeStart) or
@@ -808,7 +808,7 @@ begin
     LeaveCriticalSection(CSPendingTransactions);
   end;
 
-  EndPerformance('AddTransactionToPool');
+  StopPerformanceMeasurement('AddTransactionToPool');
 end;
 
 
@@ -1187,7 +1187,7 @@ procedure CloseConnectionSlot(const Slot: Integer);
 begin
   if (Slot < Low(ClientChannels)) or (Slot > High(ClientChannels)) then Exit;
 
-  BeginPerformance('CloseConnectionSlot');
+  StartPerformanceMeasurement('CloseConnectionSlot');
   try
     if GetConnectionData(Slot).ConnectionType = 'CLI' then
     begin
@@ -1206,14 +1206,14 @@ begin
       ToDeepDebug('NosoNetwork,CloseConnectionSlot,' + E.Message);
   end;
   SetConnectionData(Slot, Default(TConnectionData));
-  EndPerformance('CloseConnectionSlot');
+  StopPerformanceMeasurement('CloseConnectionSlot');
 end;
 
 function GetTotalConnections(): Integer;
 var
   Slot: Integer;
 begin
-  BeginPerformance('GetTotalConnections');
+  StartPerformanceMeasurement('GetTotalConnections');
   Result := 0;
 
   for Slot := 1 to MaxConnections do
@@ -1222,7 +1222,7 @@ begin
       Inc(Result);
   end;
 
-  EndPerformance('GetTotalConnections');
+  StopPerformanceMeasurement('GetTotalConnections');
 end;
 
 function IsSlotConnected(const Slot: Integer): Boolean;
@@ -1460,15 +1460,15 @@ var
   IncomingLine: String;
   Stream: TMemoryStream;
   IsBufferAvailable, ShouldTerminate, IsSaved: Boolean;
-  OutgoingLine, ThreadID: String;
+  OutgoingLine, ReadThreadID: String;
   LastActivityTime: Int64;
 begin
-  ThreadID := Format('ReadClient %d %s', [FSlot, UTCTimeStr]);
+  ReadThreadID := Format('ReadClient %d %s', [FSlot, UTCTimeStr]);
   ClientChannels[FSlot].ReadTimeout := 1000;
   ClientChannels[FSlot].IOHandler.MaxLineLength := MaxInt;
 
   IncrementClientReadThreadCount;
-  AddNewOpenThread(ThreadID, UTCTime);
+  AddNewOpenThread(ReadThreadID, UTCTime);
   LastActivityTime := UTCTime;
 
   repeat
@@ -1523,7 +1523,7 @@ begin
         if IncomingLine <> '' then
         begin
           LastActivityTime := UTCTime;
-          UpdateOpenThread(ThreadID, UTCTime);
+          UpdateOpenThread(ReadThreadID, UTCTime);
           ClientChannels[FSlot].ReadTimeout := 10000;
 
           // RESUMENFILE
@@ -1556,7 +1556,7 @@ begin
               if IsSaved then
               begin
                 UpdateNodeData();
-                CreateSummaryIndex();
+                CreateSumaryIndex();
               end
               else
                 ShouldTerminate := True;
@@ -1660,7 +1660,7 @@ begin
   // Cleanup after thread termination
   CloseConnectionSlot(FSlot);
   DecrementClientReadThreadCount;
-  CloseOpenThread(ThreadID);
+  CloseOpenThread(ReadThreadID);
 end;
 
 procedure IncrementClientReadThreadCount();
