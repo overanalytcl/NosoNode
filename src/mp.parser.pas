@@ -287,7 +287,7 @@ begin
     ToLog('console', BMB58resumen(GetParameter(linetext, 1)))
   else if UpperCase(Command) = 'PENDING' then ToLog('console', PendingRawInfo)
   else if UpperCase(Command) = 'HEADSIZE' then
-    ToLog('console', GetHeadersHeigth.ToString)
+    ToLog('console', GetHeadersCount.ToString)
   else if UpperCase(Command) = 'NEWFROMKEYS' then NewAddressFromKeys(LineText)
   else if UpperCase(Command) = 'TESTHASH' then TestHashGeneration(LineText)
   else if UpperCase(Command) = 'COMPARE' then CompareHashes(LineText)
@@ -546,7 +546,7 @@ end;
 
 procedure ShowBlchHead(number: Integer);
 var
-  Dato: ResumenData;
+  Dato: TBlockSummary;
   Found: Boolean = False;
   StartBlock: Integer = 0;
   counter: Integer = 100000;
@@ -556,25 +556,25 @@ begin
   StartBlock := number - 10;
   if StartBlock < 0 then StartBlock := 0;
   try
-    assignfile(FileResumen, ResumenFilename);
-    reset(FileResumen);
+    assignfile(SummaryFile, SummaryFilename);
+    reset(SummaryFile);
     repeat
-      Seek(FileResumen, StartBlock);
-      Read(fileresumen, dato);
-      ToLog('console', IntToStr(dato.block) + ' ' + Copy(dato.blockhash, 1, 5) +
+      Seek(SummaryFile, StartBlock);
+      Read(SummaryFile, dato);
+      ToLog('console', IntToStr(dato.BlockNumber) + ' ' + Copy(dato.BlockHash, 1, 5) +
         ' ' + Copy(dato.SumHash, 1, 5));
-      if dato.blockhash = 'MISS' then Inc(Errors);
+      if dato.BlockHash = 'MISS' then Inc(Errors);
       if dato.sumhash = 'MISS' then Inc(Errors);
       Inc(StartBlock);
-    until EOF(fileresumen);
-    closefile(FileResumen);
+    until EOF(SummaryFile);
+    closefile(SummaryFile);
     ProperlyClosed := True;
     ToLog('Console', 'Errors : ' + Errors.ToString);
   except
     ON E: Exception do
       ToLog('console', 'Error: ' + E.Message)
   end;{TRY}
-  if not ProperlyClosed then closefile(FileResumen);
+  if not ProperlyClosed then closefile(SummaryFile);
 end;
 
 // Cambiar la primera direccion de la wallet
@@ -2099,9 +2099,9 @@ var
   Fsize: Int64;
 begin
   MyStream := TMemoryStream.Create;
-  FSize := GetHeadersAsMemStream(MyStream);
+  FSize := GetHeadersAsMemoryStream(MyStream);
   ToLog('Console', 'File size: ' + Fsize.ToString());
-  SaveStreamAsHeaders(MyStream);
+  SaveMemoryStreamAsHeaders(MyStream);
   UpdateNodeData();
   MyStream.Free;
 end;

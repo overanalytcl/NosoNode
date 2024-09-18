@@ -876,7 +876,7 @@ begin
 
   Result := Format('%d %d %s %s %d %s %d %d %s %d null %d %s %s %s',
     [GetTotalConnections(), LastBlockIndex, LastBlockHash, MySumarioHash,
-    GetPendingTransactionCount(), GetResumenHash, MyConStatus, Port,
+    GetPendingTransactionCount(), GetSummaryFileHash, MyConStatus, Port,
     Copy(GetMNsHash, 0, 5), GetMNsListLength, GetMasternodeCheckCount(),
     MyGVTsHash, Copy(HashMD5String(GetCFGDataStr), 0, 5), Copy(PSOFileHash, 0, 5)]);
 end;
@@ -1043,7 +1043,7 @@ begin
   if Copy(MySumarioHash, 0, 5) <> GetConsensus(cSumHash) then
     Result := ssSummaryHashMismatch;
 
-  if Copy(GetResumenHash, 0, 5) <> GetConsensus(cHeaders) then
+  if Copy(GetSummaryFileHash, 0, 5) <> GetConsensus(cHeaders) then
     Result := ssResumenHashMismatch;
 end;
 
@@ -1052,7 +1052,7 @@ begin
   Result := '';
 
   try
-    Result := Format('%d%s%s%s', [LastBlockIndex, Copy(GetResumenHash, 1, 3),
+    Result := Format('%d%s%s%s', [LastBlockIndex, Copy(GetSummaryFileHash, 1, 3),
       Copy(MySumarioHash, 1, 3), Copy(LastBlockHash, 1, 3)]);
   except
     on E: Exception do
@@ -1241,9 +1241,9 @@ procedure UpdateNodeData();
 begin
   LastBlockHash := HashMD5File(BlockDirectory + IntToStr(LastBlockIndex) + '.blk');
   LastBlockData := LoadBlockDataHeader(LastBlockIndex);
-  SetResumenHash;
+  SetSummaryFileHash;
 
-  if GetResumenHash = GetConsensus(5) then
+  if GetSummaryFileHash = GetConsensus(5) then
     ForceHeadersDownload := False;
 end;
 
@@ -1533,7 +1533,7 @@ begin
             Stream := TMemoryStream.Create;
             try
               IsSaved := GetStreamFromClient(FSlot, Stream) and
-                SaveStreamAsHeaders(Stream);
+                SaveMemoryStreamAsHeaders(Stream);
               if IsSaved then
                 UpdateNodeData()
               else

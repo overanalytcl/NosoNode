@@ -431,7 +431,7 @@ begin
     SetMNsHash;
     // Actualizar el arvhivo de cabeceras
     AddRecordToHeaders(Numero, LastBlockHash, MySumarioHash);
-    SetResumenHash;
+    SetSummaryFileHash;
     if ((Numero > 0) and (form1.Server.Active)) then
     begin
       OutgoingMsjsAdd(GetProtocolLineFromCode(ping));
@@ -710,14 +710,14 @@ begin
   // Actualizar la cartera
   UpdateWalletFromSumario();
   // actualizar el archivo de cabeceras
-  RemoveHeadersLastRecord;
+  RemoveLastHeaderRecord;
   // Borrar archivo del ultimo bloque
   trydeletefile(BlockDirectory + IntToStr(LastBlockIndex) + '.blk');
   // Actualizar mi informacion
   LastBlockIndex := GetMyLastUpdatedBlock;
   LastBlockHash := HashMD5File(BlockDirectory + IntToStr(LastBlockIndex) + '.blk');
   LastBlockData := LoadBlockDataHeader(LastBlockIndex);
-  SetResumenHAsh;
+  SetSummaryFileHash;
   ToLog('console', '****************************');
   ToLog('console', 'Block undone: ' + IntToStr(blocknumber)); //'Block undone: '
   ToLog('console', '****************************');

@@ -193,7 +193,7 @@
         <PackageName Value="LCL"/>
       </Item4>
     </RequiredPackages>
-    <Units Count="29">
+    <Units Count="30">
       <Unit0>
         <Filename Value="Noso.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -340,6 +340,11 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MPForm"/>
       </Unit28>
+      <Unit29>
+        <Filename Value="src\noso.types.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Noso.Types"/>
+      </Unit29>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

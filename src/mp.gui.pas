@@ -450,7 +450,7 @@ begin
       IntToStr(GetTotalConnections) + ' (' + IntToStr(MyConStatus) +
       ') [' + IntToStr(G_TotalPings) + ']';
     form1.DataPanel.Cells[1, 3] :=
-      Format('%s / %s', [copy(GetResumenHash, 0, 5), GetConsensus(5)]);
+      Format('%s / %s', [copy(GetSummaryFileHash, 0, 5), GetConsensus(5)]);
     form1.DataPanel.Cells[1, 4] :=
       format('%s / %s', [Copy(MySumarioHash, 0, 5), GetConsensus(17)]);
     form1.DataPanel.Cells[1, 5] :=

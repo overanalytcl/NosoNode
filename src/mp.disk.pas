@@ -91,7 +91,7 @@ var
   defseeds: String = '';
 begin
   SetHeadersFileName('NOSODATA' + DirectorySeparator + 'blchhead.nos');
-  //if not Fileexists(ResumenFilename) then CreateHeadersFile();
+  //if not Fileexists(SummaryFilename) then CreateHeadersFile();
   OutText('✓ Headers file ok', False, 1);
 
   if not FileExists(AdvOptionsFilename) then CreateADV(False)
@@ -770,7 +770,7 @@ begin
   //setlength(CriptoOpsTIPO,0);
   deletefile(SummaryFileName);
   deletefile(SummaryFileName + '.bak');
-  deletefile(ResumenFilename);
+  deletefile(SummaryFilename);
   if DeleteDirectory(BlockDirectory, True) then
     RemoveDir(BlockDirectory);
   ProcessLinesAdd('restart');

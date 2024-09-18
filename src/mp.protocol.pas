@@ -279,7 +279,7 @@ begin
     port := -1;
   Result := IntToStr(GetTotalConnections()) + ' ' + IntToStr(LastBlockIndex) + ' ' +
     LastBlockHash + ' ' + MySumarioHash + ' ' +
-    GetPendingTransactionCount.ToString + ' ' + GetResumenHash + ' ' +
+    GetPendingTransactionCount.ToString + ' ' + GetSummaryFileHash + ' ' +
     IntToStr(MyConStatus) + ' ' + IntToStr(port) + ' ' +
     copy(GetMNsHash, 0, 5) + ' ' + IntToStr(GetMNsListLength) + ' ' +
     'null' + ' ' + //GetNMSData.Diff
@@ -298,7 +298,7 @@ begin
   if UTCTime < LastRequest + 10 then exit;
   LastRequest := UTCTime;
   MemStream := TMemoryStream.Create;
-  GetHeadersAsMemStream(MemStream);
+  GetHeadersAsMemoryStream(MemStream);
   if GetConnectionData(slot).ConnectionType = 'CLI' then
   begin
     try
@@ -454,13 +454,13 @@ begin
   MyZipFile.FileName := ZipHeadersFileName;
   try
     {$IFDEF WINDOWS}
-   archivename:= StringReplace(ResumenFilename,'\','/',[rfReplaceAll]);
+   archivename:= StringReplace(SummaryFilename,'\','/',[rfReplaceAll]);
     {$ENDIF}
     {$IFDEF UNIX}
    archivename:= ResumenFilename;
     {$ENDIF}
     archivename := StringReplace(archivename, 'NOSODATA', 'data', [rfReplaceAll]);
-    MyZipFile.Entries.AddFileEntry(ResumenFilename, archivename);
+    MyZipFile.Entries.AddFileEntry(SummaryFilename, archivename);
     MyZipFile.ZipAllFiles;
     Result := True;
   except
@@ -948,7 +948,7 @@ begin
   if UTCTime < LastRequest + 10 then exit;
   LastRequest := UTCTime;
   Block := StrToIntDef(GetParameter(Linea, 5), 0);
-  PTC_SendLine(slot, GetProtocolLineFromCode(headupdate) + ' $' + LastHeadersString(Block));
+  PTC_SendLine(slot, GetProtocolLineFromCode(headupdate) + ' $' + GetHeadersAsStringFromBlock(Block));
 end;
 
 procedure PTC_ProcessMNFileIncoming(LText: String);
@@ -981,7 +981,7 @@ var
   TotalErrors: Integer = 0;
   TotalReceived: Integer = 0;
 begin
-  if GetResumenHash = GetConsensus(5) then exit;
+  if GetSummaryFileHash = GetConsensus(5) then exit;
   startpos := Pos('$', Linea);
   Content := Copy(Linea, Startpos + 1, Length(linea));
   //ToLog('console','Content: '+Linea);
@@ -994,7 +994,7 @@ begin
       Numero := StrToIntDef(GetParameter(ThisHeader, 0), 0);
       blockhash := GetParameter(ThisHeader, 1);
       sumhash := GetParameter(ThisHeader, 2);
-      LastBlockOnSummary := GetHeadersLastBlock();
+      LastBlockOnSummary := GetLastHeaderBlock();
       if numero = LastBlockOnSummary + 1 then
         AddRecordToHeaders(Numero, blockhash, sumhash)
       else
@@ -1004,12 +1004,12 @@ begin
     end;
     Inc(counter);
   until ThisHeader = '';
-  SetResumenHash;
-  if copy(GetResumenHash, 0, 5) <> GetConsensus(5) then
+  SetSummaryFileHash;
+  if copy(GetSummaryFileHash, 0, 5) <> GetConsensus(5) then
   begin
     ForceHeadersDownload := True;
     ToLog('Console', Format('Update headers failed (%d) : %s <> %s',
-      [TotalErrors, Copy(GetResumenHash, 0, 5), GetConsensus(5)]));
+      [TotalErrors, Copy(GetSummaryFileHash, 0, 5), GetConsensus(5)]));
   end
   else
   begin

@@ -1,10 +1,5 @@
+/// Standalone unit to control headers file.
 unit Noso.Headers;
-
-{
-nosoHeaders 1.1
-Jan 31th, 2024
-Stand alone unit to control headers file.
-}
 
 {$mode ObjFPC}{$H+}
 
@@ -14,273 +9,354 @@ uses
   Classes, SysUtils, Noso.Debug, Noso.Crypto, Noso.General;
 
 type
+  /// <summary>
+  /// Record to hold summary data for a block
+  /// </summary>
+  TBlockSummary = packed record
+    /// <summary>
+    /// The current block number.
+    /// </summary>
+    BlockNumber: Integer;
 
-  ResumenData = packed record
-    block: Integer;
-    blockhash: String[32];
+    /// <summary>
+    /// The block's hash.
+    /// </summary>
+    BlockHash: String[32];
+
+    /// <summary>
+    /// The sum hash.
+    /// </summary>
     SumHash: String[32];
   end;
 
-procedure SetResumenHash();
-function GetResumenHash(): String;
-function SetHeadersFileName(Filename: String): Boolean;
+/// <summary>
+/// Sets the hash of the summary file to reflect the current file state.
+/// </summary>
+procedure SetSummaryFileHash();
+
+/// <summary>
+/// Retrieves the current hash of the summary file.
+/// </summary>
+/// <returns>The hash of the summary file.</returns>
+function GetSummaryFileHash(): String;
+
+/// <summary>
+/// Sets the path and name of the headers file.
+/// </summary>
+/// <param name="Filename">The path and name of the headers file.</param>
+/// <returns>@true if the file name was set successfully; otherwise, @false.</returns>
+function SetHeadersFileName(const Filename: String): Boolean;
+
+/// <summary>
+/// Creates a new headers file or overwrites an existing one.
+/// </summary>
+/// <returns>@true if the headers file was created successfully; otherwise, @false.</returns>
 function CreateHeadersFile(): Boolean;
-function AddRecordToHeaders(BlockNumber: Int64; BlockHash, SumHash: String): Boolean;
-function RemoveHeadersLastRecord(): Boolean;
-function GetHeadersHeigth(): Integer;
-function GetHeadersLastBlock(): Integer;
-function GetHeadersAsMemStream(var LMs: TMemoryStream): Int64;
-function SaveStreamAsHeaders(var LStream: TMemoryStream): Boolean;
-function LastHeadersString(FromBlock: Integer): String;
 
+/// <summary>
+/// Adds a new record to the headers file.
+/// </summary>
+/// <param name="BlockNumber">The block number to be added.</param>
+/// <param name="BlockHash">The hash of the block.</param>
+/// <param name="SumHash">The sum hash associated with the block.</param>
+/// <returns>@true if the record was added successfully; otherwise, @false.</returns>
+function AddRecordToHeaders(const BlockNumber: Int64;
+  const BlockHash, SumHash: String): Boolean;
 
+/// <summary>
+/// Removes the last record from the headers file.
+/// </summary>
+/// <returns>@true if the record was removed successfully; otherwise, @false.</returns>
+function RemoveLastHeaderRecord(): Boolean;
+
+/// <summary>
+/// Retrieves the number of records in the headers file.
+/// </summary>
+/// <returns>The number of records in the headers file.</returns>
+function GetHeadersCount(): Integer;
+
+/// <summary>
+/// Retrieves the block number of the last record in the headers file.
+/// </summary>
+/// <returns>The block number of the last record.</returns>
+function GetLastHeaderBlock(): Integer;
+
+/// <summary>
+/// Loads the headers file into a memory stream.
+/// </summary>
+/// <param name="Stream">The memory stream to load the headers into.</param>
+/// <returns>The size of the loaded headers in bytes.</returns>
+function GetHeadersAsMemoryStream(var Stream: TMemoryStream): Int64;
+
+/// <summary>
+/// Saves the contents of a memory stream as the headers file.
+/// </summary>
+/// <param name="Stream">The memory stream containing the headers data.</param>
+/// <returns>@true if the stream was saved successfully; otherwise, @false.</returns>
+function SaveMemoryStreamAsHeaders(var Stream: TMemoryStream): Boolean;
+
+/// <summary>
+/// Retrieves headers data as a string starting from a specified block.
+/// </summary>
+/// <param name="FromBlock">The block number from which to start retrieving headers.</param>
+/// <returns>A string representing the headers data from the specified block.</returns>
+function GetHeadersAsStringFromBlock(FromBlock: Integer): String;
 
 var
-  FileResumen: file of ResumenData;
-  MyResumenHash: String = '';
-  ResumenFilename: String = {'NOSODATA'+DirectorySeparator+}'blchhead.nos';
-  CS_HeadersFile: TRTLCriticalSection;
+  /// <summary>
+  /// The file handle for the summary file.
+  /// </summary>
+  SummaryFile: file of TBlockSummary;
+
+  /// <summary>
+  /// The current hash of the summary file.
+  /// </summary>
+  CurrentSummaryFileHash: String = '';
+
+  /// <summary>
+  /// The path and name of the summary file.
+  /// </summary>
+  SummaryFilename: String = {'NOSODATA'+DirectorySeparator+}'blchhead.nos';
+
+  /// <summary>
+  /// Critical section for synchronizing access to the headers file.
+  /// </summary>
+  HeadersFileCriticalSection: TRTLCriticalSection;
 
 implementation
 
 {$REGION Headers file access}
 
-// Sets the hash value
-procedure SetResumenHash();
+procedure SetSummaryFileHash();
 begin
-  EnterCriticalSection(CS_HeadersFile);
-  MyResumenHash := HashMD5File(ResumenFilename);
-  LeaveCriticalSection(CS_HeadersFile);
+  EnterCriticalSection(HeadersFileCriticalSection);
+  try
+    CurrentSummaryFileHash := HashMD5File(SummaryFilename);
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
+  end;
 end;
 
-// Returns the hash of the file
-function GetResumenHash(): String;
+function GetSummaryFileHash(): String;
 begin
-  EnterCriticalSection(CS_HeadersFile);
-  Result := MyResumenHash;
-  LeaveCriticalSection(CS_HeadersFile);
+  EnterCriticalSection(HeadersFileCriticalSection);
+  try
+    Result := CurrentSummaryFileHash;
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
+  end;
 end;
 
-// Sets the headers file path and name
-function SetHeadersFileName(Filename: String): Boolean;
+function SetHeadersFileName(const Filename: String): Boolean;
 begin
   Result := True;
-  ResumenFilename := Filename;
-  assignfile(FileResumen, ResumenFilename);
-  if not Fileexists(ResumenFilename) then CreateEmptyFile(ResumenFilename);
-  SetResumenHash();
+  SummaryFilename := Filename;
+  AssignFile(SummaryFile, SummaryFilename);
+
+  if not FileExists(SummaryFilename) then
+    CreateEmptyFile(SummaryFilename);
+
+  SetSummaryFileHash();
 end;
 
-// Creates a headers file. If it already exists, rewrite a new empty one.
 function CreateHeadersFile(): Boolean;
 var
-  MyStream: TMemoryStream;
+  TempStream: TMemoryStream;
 begin
   Result := True;
-  MyStream := TMemoryStream.Create;
-  EnterCriticalSection(CS_HeadersFile);
+  TempStream := TMemoryStream.Create;
+  EnterCriticalSection(HeadersFileCriticalSection);
   try
-    MYStream.SaveToFile(ResumenFilename);
-  except
-    ON E: Exception do
-    begin
-      Result := False;
-      ToDeepDebug('NosoHeaders,CreateHeadersFile,' + E.Message);
+    try
+      TempStream.SaveToFile(SummaryFilename);
+    except
+      on E: Exception do
+      begin
+        Result := False;
+        ToDeepDebug('NosoHeaders,CreateHeadersFile,' + E.Message);
+      end;
     end;
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
+    TempStream.Free;
   end;
-  LeaveCriticalSection(CS_HeadersFile);
-  MyStream.Free;
 end;
 
-function AddRecordToHeaders(BlockNumber: Int64; BlockHash, SumHash: String): Boolean;
+function AddRecordToHeaders(const BlockNumber: Int64;
+  const BlockHash, SumHash: String): Boolean;
 var
-  NewData: ResumenData;
-  Opened: Boolean = False;
-  PorperlyClosed: Boolean = False;
+  BlockSummary: TBlockSummary;
 begin
   Result := True;
-  NewData := Default(ResumenData);
-  NewData.block := BlockNumber;
-  NewData.blockhash := BlockHash;
-  NewData.SumHash := SumHash;
-  filemode := 2;
-  EnterCriticalSection(CS_HeadersFile);
+  BlockSummary.BlockNumber := BlockNumber;
+  BlockSummary.BlockHash := BlockHash;
+  BlockSummary.SumHash := SumHash;
+  FileMode := fmOpenWrite;
+  EnterCriticalSection(HeadersFileCriticalSection);
   try
-    reset(FileResumen);
-    Opened := True;
-    seek(fileResumen, filesize(fileResumen));
-    Write(fileResumen, NewData);
-    closefile(FileResumen);
-    PorperlyClosed := True;
-  except
-    ON E: Exception do
-    begin
-      ToDeepDebug('NosoHeaders,AddRecordToHeaders,' + E.Message);
-      Result := False;
+    try
+      Reset(SummaryFile);
+      Seek(SummaryFile, FileSize(SummaryFile));
+      Write(SummaryFile, BlockSummary);
+    except
+      on E: Exception do
+      begin
+        Result := False;
+        ToDeepDebug('NosoHeaders,AddRecordToHeaders,' + E.Message);
+      end;
     end;
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
   end;
-  if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
-  LeaveCriticalSection(CS_HeadersFile);
 end;
 
-function RemoveHeadersLastRecord(): Boolean;
-var
-  Opened: Boolean = False;
-  PorperlyClosed: Boolean = False;
+function RemoveLastHeaderRecord(): Boolean;
 begin
   Result := True;
-  filemode := 2;
-  EnterCriticalSection(CS_HeadersFile);
+  FileMode := fmOpenWrite;
+  EnterCriticalSection(HeadersFileCriticalSection);
   try
-    reset(FileResumen);
-    Opened := True;
-    seek(fileResumen, filesize(fileResumen) - 1);
-    truncate(fileResumen);
-    closefile(FileResumen);
-    PorperlyClosed := True;
-  except
-    ON E: Exception do
-    begin
-      ToDeepDebug('NosoHeaders,RemoveHeadersLastRecord,' + E.Message);
-      Result := False;
+    try
+      Reset(SummaryFile);
+      Seek(SummaryFile, FileSize(SummaryFile) - 1);
+      Truncate(SummaryFile);
+    except
+      on E: Exception do
+      begin
+        Result := False;
+        ToDeepDebug('NosoHeaders,RemoveLastHeaderRecord,' + E.Message);
+      end;
     end;
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
   end;
-  if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
-  LeaveCriticalSection(CS_HeadersFile);
 end;
 
-function GetHeadersHeigth(): Integer;
-var
-  Opened: Boolean = False;
-  PorperlyClosed: Boolean = False;
+function GetHeadersCount(): Integer;
 begin
   Result := -1;
-  EnterCriticalSection(CS_HeadersFile);
+  EnterCriticalSection(HeadersFileCriticalSection);
   try
-    reset(FileResumen);
-    Opened := True;
-    Result := filesize(fileResumen) - 1;
-    closefile(FileResumen);
-    PorperlyClosed := True;
-  except
-    on E: Exception do
-    begin
-      ToDeepDebug('NosoHeaders,GetHeadersHeigth,' + E.Message);
+    try
+      Reset(SummaryFile);
+      Result := FileSize(SummaryFile);
+    except
+      on E: Exception do
+      begin
+        ToDeepDebug('NosoHeaders,GetHeadersCount,' + E.Message);
+      end;
     end;
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
   end;
-  if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
-  LeaveCriticalSection(CS_HeadersFile);
 end;
 
-// Returns the block number of the last record on headers
-function GetHeadersLastBlock(): Integer;
+function GetLastHeaderBlock(): Integer;
 var
-  ThisData: ResumenData;
-  Opened: Boolean = False;
-  PorperlyClosed: Boolean = False;
+  LastRecord: TBlockSummary;
 begin
   Result := 0;
-  ThisData := Default(ResumenData);
-  EnterCriticalSection(CS_HeadersFile);
+  EnterCriticalSection(HeadersFileCriticalSection);
   try
-    reset(FileResumen);
-    Opened := True;
-    if filesize(FileResumen) > 0 then
-    begin
-      seek(fileResumen, filesize(FileResumen) - 1);
-      Read(fileResumen, ThisData);
-      Result := ThisData.block;
+    try
+      Reset(SummaryFile);
+      if FileSize(SummaryFile) > 0 then
+      begin
+        Seek(SummaryFile, FileSize(SummaryFile) - 1);
+        Read(SummaryFile, LastRecord);
+        Result := LastRecord.BlockNumber;
+      end;
+    except
+      on E: Exception do
+      begin
+        ToDeepDebug('NosoHeaders,GetLastHeaderBlock,' + E.Message);
+      end;
     end;
-    CloseFile(FileResumen);
-    PorperlyClosed := True;
-  except
-    on E: Exception do
-    begin
-      ToDeepDebug('NosoHeaders,GetHeadersLastBlock,' + E.Message);
-    end;
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
   end;
-  if ((opened) and (not PorperlyClosed)) then closefile(FileResumen);
-  LeaveCriticalSection(CS_HeadersFile);
 end;
 
-// Returns the headers file as a STREAM
-function GetHeadersAsMemStream(var LMs: TMemoryStream): Int64;
+function GetHeadersAsMemoryStream(var Stream: TMemoryStream): Int64;
 begin
   Result := 0;
-  StartPerformanceMeasurement('GetHeadersAsMemStream');
-  EnterCriticalSection(CS_HeadersFile);
+  StartPerformanceMeasurement('GetHeadersAsMemoryStream');
+  EnterCriticalSection(HeadersFileCriticalSection);
   try
-    LMs.LoadFromFile(ResumenFilename);
-    Result := LMs.Size;
-    LMs.Position := 0;
-  except
-    ON E: Exception do
-    begin
-      ToDeepDebug('NosoHeaders,GetHeadersAsMemStream,' + E.Message);
+    try
+      Stream.LoadFromFile(SummaryFilename);
+      Result := Stream.Size;
+      Stream.Position := 0;
+    except
+      on E: Exception do
+      begin
+        ToDeepDebug('NosoHeaders,GetHeadersAsMemoryStream,' + E.Message);
+      end;
     end;
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
+    StopPerformanceMeasurement('GetHeadersAsMemoryStream');
   end;
-  LeaveCriticalSection(CS_HeadersFile);
-  StopPerformanceMeasurement('GetHeadersAsMemStream');
 end;
 
-// Save a provided stream as the headers file
-function SaveStreamAsHeaders(var LStream: TMemoryStream): Boolean;
+function SaveMemoryStreamAsHeaders(var Stream: TMemoryStream): Boolean;
 begin
   Result := False;
-  EnterCriticalSection(CS_HeadersFile);
+  EnterCriticalSection(HeadersFileCriticalSection);
   try
-    LStream.SaveToFile(ResumenFilename);
-    Result := True;
-  except
-    ON E: Exception do
-    begin
-      ToDeepDebug('NosoHeaders,SaveStreamAsHeaders,' + E.Message);
+    try
+      Stream.SaveToFile(SummaryFilename);
+      Result := True;
+    except
+      on E: Exception do
+      begin
+        ToDeepDebug('NosoHeaders,SaveMemoryStreamAsHeaders,' + E.Message);
+      end;
     end;
-  end{Try};
-  LeaveCriticalSection(CS_HeadersFile);
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
+  end;
 end;
 
-// Returns the string for headers updates
-function LastHeadersString(FromBlock: Integer): String;
+function GetHeadersAsStringFromBlock(FromBlock: Integer): String;
 var
-  ThisData: ResumenData;
-  Opened: Boolean = False;
-  PorperlyClosed: Boolean = False;
+  CurrentRecord: TBlockSummary;
 begin
   Result := '';
-  if FromBlock < GetHeadersLastBlock - 1008 then exit;
-  EnterCriticalSection(CS_HeadersFile);
+
+  if FromBlock < GetLastHeaderBlock() - 1008 then
+    Exit;
+
+  EnterCriticalSection(HeadersFileCriticalSection);
   try
-    reset(FileResumen);
-    Opened := True;
-    ThisData := Default(ResumenData);
-    seek(fileResumen, FromBlock - 100);
-    while not EOF(fileResumen) do
-    begin
-      Read(fileResumen, ThisData);
-      Result := Result + ThisData.block.ToString + ':' + ThisData.blockhash +
-        ':' + ThisData.SumHash + ' ';
+    try
+      Reset(SummaryFile);
+      Seek(SummaryFile, FromBlock - 100);
+      while not EOF(SummaryFile) do
+      begin
+        Read(SummaryFile, CurrentRecord);
+        Result := Result + Format('%d:%s:%s ',
+          [CurrentRecord.BlockNumber, CurrentRecord.BlockHash, CurrentRecord.SumHash]);
+      end;
+    except
+      on E: Exception do
+      begin
+        ToDeepDebug('NosoHeaders,GetHeadersAsStringFromBlock,' + E.Message);
+      end;
     end;
-    closefile(FileResumen);
-    PorperlyClosed := True;
-  except
-    on E: Exception do
-    begin
-      ToDeepDebug('NosoHeaders,LastHeadersString,' + E.Message);
-    end;
+  finally
+    LeaveCriticalSection(HeadersFileCriticalSection);
+    Result := Trim(Result);
   end;
-  //if ( (opened) and (not PorperlyClosed) ) then closefile(FileResumen);
-  LeaveCriticalSection(CS_HeadersFile);
-  Result := Trim(Result);
 end;
 
 {$ENDREGION}
 
 initialization
-  InitCriticalSection(CS_HeadersFile);
-  assignfile(FileResumen, ResumenFilename);
+  InitCriticalSection(HeadersFileCriticalSection);
+  AssignFile(SummaryFile, SummaryFilename);
 
 finalization
-  DoneCriticalSection(CS_HeadersFile);
+  DoneCriticalSection(HeadersFileCriticalSection);
 
 end.

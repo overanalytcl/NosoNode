@@ -493,7 +493,7 @@ begin
     if ((MyConStatus = 2) and (STATUS_Connected) and
       (IntToStr(LastBlockIndex) = Getconsensus(2)) and
       (copy(MySumarioHash, 0, 5) = GetConsensus(17)) and
-      (copy(GetResumenHash, 0, 5) = GetConsensus(5))) then
+      (copy(GetSummaryFileHash, 0, 5) = GetConsensus(5))) then
     begin
       GetValidSlotForSeed(ValidSlot);
       ClearReceivedOrdersIDs;
@@ -593,7 +593,7 @@ begin
   end;
 
   // *** update headers
-  if Copy(GetResumenhash, 0, 5) <> GetConsensus(cHeaders) then  // Request headers
+  if Copy(GetSummaryFileHash, 0, 5) <> GetConsensus(cHeaders) then  // Request headers
   begin
     ClearAllPendingTransactions;
     ClearMNsChecks();
@@ -624,7 +624,7 @@ begin
   end;
 
   // *** Update blocks
-  if ((Copy(GetResumenhash, 0, 5) = GetConsensus(5)) and (LastBlockIndex < NLBV)) then
+  if ((Copy(GetSummaryFileHash, 0, 5) = GetConsensus(5)) and (LastBlockIndex < NLBV)) then
     // request up to 100 blocks
   begin
     ClearAllPendingTransactions;
@@ -651,7 +651,7 @@ begin
   end;
 
   // Update summary
-  if ((copy(GetResumenhash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
+  if ((copy(GetSummaryFileHash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
     (MySumarioHash <> GetConsensus(17)) {and (SummaryLastop < LastBlockIndex)}) then
   begin  // complete or download summary
     if (SummaryLastop + (2 * SumMarkInterval) < LastBlockIndex) then
@@ -726,7 +726,7 @@ begin
   end;
 
   // Blockchain status issues starts here
-  if ((copy(GetResumenhash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
+  if ((copy(GetSummaryFileHash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
     (copy(MySumarioHash, 0, 5) <> GetConsensus(17)) and
     (SummaryLastop = LastBlockIndex) and (LastSummaryRequestTime + 5 < UTCTime)) then
   begin
@@ -739,14 +739,14 @@ begin
       LastSummaryRequestTime := UTCTime;
     end;
   end
-  else if ((LastBlockIndex = NLBV) and ((copy(GetResumenhash, 0, 5) <> GetConsensus(5)) or
+  else if ((LastBlockIndex = NLBV) and ((copy(GetSummaryFileHash, 0, 5) <> GetConsensus(5)) or
     (LastBlockHash <> GetConsensus(10)))) then
   begin
     ToLog('console', LastBlockHash + ' ' + LastBlockHash);
     UndoneLastBlock();
   end
   // Update headers
-  else if ((copy(GetResumenhash, 0, 5) <> GetConsensus(5)) and
+  else if ((copy(GetSummaryFileHash, 0, 5) <> GetConsensus(5)) and
     (NLBV = LastBlockIndex) and (LastBlockHash = GetConsensus(10)) and
     (copy(MySumarioHash, 0, 5) = GetConsensus(17)) and (not DownloadingHeaders)) then
   begin
@@ -956,7 +956,7 @@ begin
   //           20{PSOHash}
   Result := {1}IntToStr(GetTotalConnections) + ' ' +{2}IntToStr(LastBlockIndex) + ' ' +
     {3}GetPendingTransactionCount.ToString + ' ' +
-    {4}IntToStr(UTCTime - EngineLastUpdate) + ' ' +{5}copy(GetResumenHash, 0, 5) + ' ' +
+    {4}IntToStr(UTCTime - EngineLastUpdate) + ' ' +{5}copy(GetSummaryFileHash, 0, 5) + ' ' +
     {6}MainnetVersion + NodeRelease + ' ' +{7}UTCTimeStr + ' ' +{8}copy(
     GetMnsHash, 0, 5) + ' ' +{9}GetMNsListLength.ToString + ' ' +
     {10}LastBlockHash + ' ' +{11}{GetNMSData.Diff}'null' + ' ' +

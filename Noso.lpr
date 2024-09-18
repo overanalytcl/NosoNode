@@ -26,7 +26,7 @@ uses
   Noso.Network,
   Noso.Gvt,
   Noso.Masternodes,
-  Noso.IP.Control;
+  Noso.IP.Control, Noso.Types;
 
   {$R *.res}
 

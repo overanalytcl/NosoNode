@@ -139,7 +139,7 @@ type
   end;
 
   {
-  ResumenData = Packed Record
+  TBlockSummary = Packed Record
      block : integer;
      blockhash : string[32];
      SumHash : String[32];
@@ -701,7 +701,7 @@ var
   //MySumarioHash : String = '';
   LastBlockIndex     : integer = 0;
   LastBlockHash : String = '';
-  MyResumenHash   : String = '';
+  CurrentSummaryFileHash   : String = '';
   MyGVTsHash      : string = '';
   MyCFGHash       : string = '';
   PublicIPAddress      : String = '';
@@ -2236,8 +2236,8 @@ begin
       end; {TRY}
       if GetfileOk then
       begin
-        if SaveStreamAsHeaders(MemStream) then
-          ToLog('console', Format(rs0047, [copy(HashMD5File(ResumenFilename), 1, 5)]));
+        if SaveMemoryStreamAsHeaders(MemStream) then
+          ToLog('console', Format(rs0047, [copy(HashMD5File(SummaryFilename), 1, 5)]));
         //'Headers file received'
       end;
       UpdateNodeData();
@@ -2279,7 +2279,7 @@ begin
     begin
       AddFileProcess('Send', 'Headers', IPUser, GetTickCount64);
       MemStream := TMemoryStream.Create;
-      FTPSize := GetHeadersAsMemStream(MemStream);
+      FTPSize := GetHeadersAsMemoryStream(MemStream);
       if FTPSize > 0 then
       begin
         try
