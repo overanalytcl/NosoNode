@@ -114,7 +114,7 @@ uses
 // Adds a line to ProcessLines thread safe
 procedure ProcessLinesAdd(const ALine: String);
 begin
-  EnterCriticalSection(CSProcessLines);
+  EnterCriticalSection(ProcessLinesLock);
   try
     ProcessLines.Add(ALine);
   except
@@ -122,13 +122,13 @@ begin
       ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
         ' -> ' + 'Error on PROCESSLINESADD: ' + E.Message);
   end; {TRY}
-  LeaveCriticalSection(CSProcessLines);
+  LeaveCriticalSection(ProcessLinesLock);
 end;
 
 // Adds a line to OutgoingMsjs thread safe
 procedure OutgoingMsjsAdd(const ALine: String);
 begin
-  EnterCriticalSection(CSOutgoingMsjs);
+  EnterCriticalSection(OutgoingMsjsLock);
   try
     OutgoingMsjs.Add(ALine);
   except
@@ -136,7 +136,7 @@ begin
       ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
         ' -> ' + 'Error on OutgoingMsjsAdd: ' + E.Message);
   end{Try};
-  LeaveCriticalSection(CSOutgoingMsjs);
+  LeaveCriticalSection(OutgoingMsjsLock);
 end;
 
 // Gets a line from OutgoingMsjs thread safe
@@ -145,7 +145,7 @@ var
   Linea: String;
 begin
   Linea := '';
-  EnterCriticalSection(CSOutgoingMsjs);
+  EnterCriticalSection(OutgoingMsjsLock);
   try
     Linea := OutgoingMsjs[0];
     OutgoingMsjs.Delete(0);
@@ -154,7 +154,7 @@ begin
       ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
         ' -> ' + 'Error extracting outgoing line: ' + E.Message);
   end{Try};
-  LeaveCriticalSection(CSOutgoingMsjs);
+  LeaveCriticalSection(OutgoingMsjsLock);
   Result := linea;
 end;
 
@@ -166,7 +166,7 @@ begin
     ParseCommandLine(ProcessLines[0]);
     if ProcessLines.Count > 0 then
     begin
-      EnterCriticalSection(CSProcessLines);
+      EnterCriticalSection(ProcessLinesLock);
       try
         ProcessLines.Delete(0);
       except
@@ -177,7 +177,7 @@ begin
           halt(0);
         end;
       end;
-      LeaveCriticalSection(CSProcessLines);
+      LeaveCriticalSection(ProcessLinesLock);
     end;
   end;
 end;
@@ -2055,22 +2055,22 @@ end;
 
 procedure ClearPSOs();
 begin
-  EnterCriticalSection(CS_PSOsArray);
+  EnterCriticalSection(PSOsArrayLock);
   SetLength(PSOsArray, 0);
-  LeaveCriticalSection(CS_PSOsArray);
+  LeaveCriticalSection(PSOsArrayLock);
 end;
 
 procedure ShowMNsLocked();
 var
   counter: Integer;
 begin
-  EnterCriticalSection(CS_LockedMNs);
+  EnterCriticalSection(LockedMNsLock);
   for counter := 0 to Length(MNSLockArray) - 1 do
   begin
     ToLog('console', MNSLockArray[counter].address + ' ' +
       MNSLockArray[counter].expire.ToString());
   end;
-  LeaveCriticalSection(CS_LockedMNs);
+  LeaveCriticalSection(LockedMNsLock);
 end;
 
 procedure ShowConsensusStats();

@@ -644,31 +644,31 @@ var
   ActiveClientReadThreads: Integer = 0;
 
   { Critical section for managing access to client read threads. }
-  CSClientReadThreads: TRTLCriticalSection;
+  ClientReadThreadsLock: TRTLCriticalSection;
 
   { Critical sections for synchronizing access to incoming messages for each connection slot. }
-  CSIncomingMessages: TConnectionCriticalSectionList;
+  IncomingMessagesLock: TConnectionCriticalSectionList;
 
   { Critical sections for synchronizing access to outgoing messages for each connection slot. }
-  CSOutgoingMessages: TConnectionCriticalSectionList;
+  OutgoingMessagesLock: TConnectionCriticalSectionList;
 
   { Critical section for managing access to the connections list. }
-  CSConnections: TRTLCriticalSection;
+  ConnectionsLock: TRTLCriticalSection;
 
   { Critical section for managing access to the bot list. }
-  CSBotList: TRTLCriticalSection;
+  BotListLock: TRTLCriticalSection;
 
   { Critical section for managing access to the pending transactions pool. }
-  CSPendingTransactions: TRTLCriticalSection;
+  PendingTransactionsLock: TRTLCriticalSection;
 
   { Critical section for managing access to the multi-order transactions pool. }
-  CSMultiOrderTransactions: TRTLCriticalSection;
+  MultiOrderTransactionsLock: TRTLCriticalSection;
 
   { A list of known nodes in the network. }
   NodeList: specialize TArray<TNodeData>;
 
   { Critical section for managing access to the node list. }
-  CSNodeList: TRTLCriticalSection;
+  NodeListLock: TRTLCriticalSection;
 
   { The TCP server instance for managing node-to-node communications. }
   NodeServer: TIdTCPServer;
@@ -680,21 +680,21 @@ uses
 
 function GetPendingTransactionCount(): Integer;
 begin
-  EnterCriticalSection(CSPendingTransactions);
+  EnterCriticalSection(PendingTransactionsLock);
   try
     Result := Length(PendingTransactionsPool);
   finally
-    LeaveCriticalSection(CSPendingTransactions);
+    LeaveCriticalSection(PendingTransactionsLock);
   end;
 end;
 
 procedure ClearAllPendingTransactions();
 begin
-  EnterCriticalSection(CSPendingTransactions);
+  EnterCriticalSection(PendingTransactionsLock);
   try
     SetLength(PendingTransactionsPool, 0);
   finally
-    LeaveCriticalSection(CSPendingTransactions);
+    LeaveCriticalSection(PendingTransactionsLock);
   end;
 end;
 
@@ -710,11 +710,11 @@ begin
   Header := GetProtocolHeader;
   TextOrder := Header + 'ORDER ';
 
-  EnterCriticalSection(CSPendingTransactions);
+  EnterCriticalSection(PendingTransactionsLock);
   try
     PendingTransactionsCopy := Copy(PendingTransactionsPool);
   finally
-    LeaveCriticalSection(CSPendingTransactions);
+    LeaveCriticalSection(PendingTransactionsLock);
   end;
 
   for i := 0 to High(PendingTransactionsCopy) do
@@ -727,7 +727,7 @@ begin
         AddTextToSlot(Slot, Header + '$' + Line);
 
       'TRFR':
-      begin
+      begin                                     \
         if Transaction.TransferLine = 1 then
           TextOrder := Format('%s%d ', [TextOrder, Transaction.OrderLineCount]);
 
@@ -754,7 +754,7 @@ begin
   Result := False;
   if GetPendingTransactionCount > 0 then
   begin
-    EnterCriticalSection(CSPendingTransactions);
+    EnterCriticalSection(PendingTransactionsLock);
     try
       for i := 0 to GetPendingTransactionCount - 1 do
         if Hash = PendingTransactionsPool[i].TransferId then
@@ -764,7 +764,7 @@ begin
         end;
 
     finally
-      LeaveCriticalSection(CSPendingTransactions);
+      LeaveCriticalSection(PendingTransactionsLock);
     end;
   end;
 
@@ -783,7 +783,7 @@ begin
     ((BlockAge > 585) and (Order.TimeStamp < LastBlockData.TimeStart + 540)) or
     TransactionAlreadyPending(Order.TransferId) then Exit;
 
-  EnterCriticalSection(CSPendingTransactions);
+  EnterCriticalSection(PendingTransactionsLock);
   try
     InsertPos := Length(PendingTransactionsPool);
 
@@ -805,7 +805,7 @@ begin
     Insert(Order, PendingTransactionsPool, InsertPos);
     Result := True;
   finally
-    LeaveCriticalSection(CSPendingTransactions);
+    LeaveCriticalSection(PendingTransactionsLock);
   end;
 
   StopPerformanceMeasurement('AddTransactionToPool');
@@ -833,21 +833,21 @@ end;
 
 function GetMultiTransferCount(): Integer;
 begin
-  EnterCriticalSection(CSMultiOrderTransactions);
+  EnterCriticalSection(MultiOrderTransactionsLock);
   try
     Result := Length(MultiOrderTransactionsPool);
   finally
-    LeaveCriticalSection(CSMultiOrderTransactions);
+    LeaveCriticalSection(MultiOrderTransactionsLock);
   end;
 end;
 
 procedure ClearAllMultiTransfers();
 begin
-  EnterCriticalSection(CSMultiOrderTransactions);
+  EnterCriticalSection(MultiOrderTransactionsLock);
   try
     SetLength(MultiOrderTransactionsPool, 0);
   finally
-    LeaveCriticalSection(CSMultiOrderTransactions);
+    LeaveCriticalSection(MultiOrderTransactionsLock);
   end;
 end;
 
@@ -876,8 +876,8 @@ begin
 
   Result := Format('%d %d %s %s %d %s %d %d %s %d null %d %s %s %s',
     [GetTotalConnections(), LastBlockIndex, LastBlockHash, ComputeSummaryHash,
-    GetPendingTransactionCount(), GetSummaryFileHash, MyConStatus, Port,
-    Copy(GetMNsHash, 0, 5), GetMNsListLength, GetMasternodeCheckCount(),
+    GetPendingTransactionCount(), GetSummaryFileHash, MyConStatus,
+    Port, Copy(GetMNsHash, 0, 5), GetMNsListLength, GetMasternodeCheckCount(),
     GVTHashMD5, Copy(HashMD5String(GetCFGDataStr), 0, 5), Copy(PSOFileHash, 0, 5)]);
 end;
 
@@ -1001,7 +1001,7 @@ var
 begin
   if GetMasternodeCheckCount > 0 then
   begin
-    EnterCriticalSection(CSMNsChecks);
+    EnterCriticalSection(MNsChecksLock);
     try
       for i := 0 to Length(MasternodeChecks) - 1 do
       begin
@@ -1012,7 +1012,7 @@ begin
         AddTextToSlot(PeerSlot, MasternodeCheckString);
       end;
     finally
-      LeaveCriticalSection(CSMNsChecks);
+      LeaveCriticalSection(MNsChecksLock);
     end;
   end;
 end;
@@ -1065,11 +1065,11 @@ begin
   if (Slot < Low(OutgoingMessages)) or (Slot > High(OutgoingMessages)) then
     Exit;
 
-  EnterCriticalSection(CSOutgoingMessages[Slot]);
+  EnterCriticalSection(OutgoingMessagesLock[Slot]);
   try
     SetLength(OutgoingMessages[Slot], 0);
   finally
-    LeaveCriticalSection(CSOutgoingMessages[Slot]);
+    LeaveCriticalSection(OutgoingMessagesLock[Slot]);
   end;
 end;
 
@@ -1079,7 +1079,7 @@ begin
 
   if (Slot < Low(OutgoingMessages)) or (Slot > High(OutgoingMessages)) then Exit;
 
-  EnterCriticalSection(CSOutgoingMessages[Slot]);
+  EnterCriticalSection(OutgoingMessagesLock[Slot]);
   try
     if Length(OutgoingMessages[Slot]) > 0 then
     begin
@@ -1087,7 +1087,7 @@ begin
       Delete(OutgoingMessages[Slot], 0, 1);
     end
   finally
-    LeaveCriticalSection(CSOutgoingMessages[Slot]);
+    LeaveCriticalSection(OutgoingMessagesLock[Slot]);
   end;
 end;
 
@@ -1095,12 +1095,12 @@ procedure AddTextToSlot(const Slot: Integer; const Text: String);
 begin
   if (Slot < Low(OutgoingMessages)) or (Slot > High(OutgoingMessages)) then Exit;
 
-  EnterCriticalSection(CSOutgoingMessages[Slot]);
+  EnterCriticalSection(OutgoingMessagesLock[Slot]);
   try
     SetLength(OutgoingMessages[Slot], Length(OutgoingMessages[Slot]) + 1);
     OutgoingMessages[Slot][High(OutgoingMessages[Slot])] := Text;
   finally
-    LeaveCriticalSection(CSOutgoingMessages[Slot]);
+    LeaveCriticalSection(OutgoingMessagesLock[Slot]);
   end;
 end;
 
@@ -1109,11 +1109,11 @@ begin
   Result := Default(TConnectionData);
   if (Slot < Low(Connections)) or (Slot > High(Connections)) then Exit;
 
-  EnterCriticalSection(CSConnections);
+  EnterCriticalSection(ConnectionsLock);
   try
     Result := Connections[Slot];
   finally
-    LeaveCriticalSection(CSConnections);
+    LeaveCriticalSection(ConnectionsLock);
   end;
 end;
 
@@ -1121,11 +1121,11 @@ procedure SetConnectionData(const Slot: Integer; const Data: TConnectionData);
 begin
   if (Slot < Low(Connections)) or (Slot > High(Connections)) then Exit;
 
-  EnterCriticalSection(CSConnections);
+  EnterCriticalSection(ConnectionsLock);
   try
     Connections[Slot] := Data;
   finally
-    LeaveCriticalSection(CSConnections);
+    LeaveCriticalSection(ConnectionsLock);
   end;
 end;
 
@@ -1133,11 +1133,11 @@ procedure SetConnectionBusy(const Slot: Integer; Busy: Boolean);
 begin
   if (Slot < Low(Connections)) or (Slot > High(Connections)) then Exit;
 
-  EnterCriticalSection(CSConnections);
+  EnterCriticalSection(ConnectionsLock);
   try
     Connections[Slot].IsBusy := Busy;
   finally
-    LeaveCriticalSection(CSConnections);
+    LeaveCriticalSection(ConnectionsLock);
   end;
 end;
 
@@ -1145,11 +1145,11 @@ procedure UpdateConnectionLastPing(const Slot: Integer; Value: String);
 begin
   if (Slot < Low(Connections)) or (Slot > High(Connections)) then Exit;
 
-  EnterCriticalSection(CSConnections);
+  EnterCriticalSection(ConnectionsLock);
   try
     Connections[Slot].LastPingTime := Value;
   finally
-    LeaveCriticalSection(CSConnections);
+    LeaveCriticalSection(ConnectionsLock);
   end;
 end;
 
@@ -1161,11 +1161,11 @@ begin
 
   Status := IfThen(IsReserved, 'RES', '');
 
-  EnterCriticalSection(CSConnections);
+  EnterCriticalSection(ConnectionsLock);
   try
     Connections[Slot].ConnectionType := Status;
   finally
-    LeaveCriticalSection(CSConnections);
+    LeaveCriticalSection(ConnectionsLock);
   end;
 end;
 
@@ -1173,13 +1173,13 @@ procedure StartConnectionThread(const Slot: Integer);
 begin
   if (Slot < Low(Connections)) or (Slot > High(Connections)) then Exit;
 
-  EnterCriticalSection(CSConnections);
+  EnterCriticalSection(ConnectionsLock);
   try
     Connections[Slot].ReadThread := TClientReadThread.Create(True, Slot);
     Connections[Slot].ReadThread.FreeOnTerminate := True;
     Connections[Slot].ReadThread.Start;
   finally
-    LeaveCriticalSection(CSConnections);
+    LeaveCriticalSection(ConnectionsLock);
   end;
 end;
 
@@ -1339,7 +1339,12 @@ function RetrieveStreamFromClient(AContext: TIdContext;
   out Stream: TMemoryStream): Boolean;
 begin
   Result := False;
-  Stream.Clear;
+
+  if Assigned(Stream) then
+    Stream.Clear
+  else
+    Stream := TMemoryStream.Create;
+
   try
     AContext.Connection.IOHandler.ReadStream(Stream);
     Result := True;
@@ -1424,7 +1429,12 @@ end;
 function GetStreamFromClient(const Slot: Integer; out Stream: TMemoryStream): Boolean;
 begin
   Result := False;
-  Stream.Clear;
+
+  if Assigned(Stream) then
+    Stream.Clear
+  else
+    Stream := TMemoryStream.Create;
+
   try
     ClientChannels[Slot].IOHandler.ReadStream(Stream);
     Result := True;
@@ -1665,41 +1675,41 @@ end;
 
 procedure IncrementClientReadThreadCount();
 begin
-  EnterCriticalSection(CSClientReadThreads);
+  EnterCriticalSection(ClientReadThreadsLock);
   try
     Inc(ActiveClientReadThreads);
   finally
-    LeaveCriticalSection(CSClientReadThreads);
+    LeaveCriticalSection(ClientReadThreadsLock);
   end;
 end;
 
 procedure DecrementClientReadThreadCount();
 begin
-  EnterCriticalSection(CSClientReadThreads);
+  EnterCriticalSection(ClientReadThreadsLock);
   try
     Dec(ActiveClientReadThreads);
   finally
-    LeaveCriticalSection(CSClientReadThreads);
+    LeaveCriticalSection(ClientReadThreadsLock);
   end;
 end;
 
 function GetActiveClientReadThreadCount(): Integer;
 begin
-  EnterCriticalSection(CSClientReadThreads);
+  EnterCriticalSection(ClientReadThreadsLock);
   try
     Result := ActiveClientReadThreads;
   finally
-    LeaveCriticalSection(CSClientReadThreads);
+    LeaveCriticalSection(ClientReadThreadsLock);
   end;
 end;
 
 procedure AddIncomingMessage(const SlotIndex: Integer; const IncomingMessage: String);
 begin
-  EnterCriticalSection(CSIncomingMessages[SlotIndex]);
+  EnterCriticalSection(IncomingMessagesLock[SlotIndex]);
   try
     SlotTextLines[SlotIndex].Add(IncomingMessage);
   finally
-    LeaveCriticalSection(CSIncomingMessages[SlotIndex]);
+    LeaveCriticalSection(IncomingMessagesLock[SlotIndex]);
   end;
 end;
 
@@ -1708,33 +1718,33 @@ begin
   Result := '';
   if GetIncomingMessageLength(SlotIndex) > 0 then
   begin
-    EnterCriticalSection(CSIncomingMessages[SlotIndex]);
+    EnterCriticalSection(IncomingMessagesLock[SlotIndex]);
     try
       Result := SlotTextLines[SlotIndex][0];
       SlotTextLines[SlotIndex].Delete(0);
     finally
-      LeaveCriticalSection(CSIncomingMessages[SlotIndex]);
+      LeaveCriticalSection(IncomingMessagesLock[SlotIndex]);
     end;
   end;
 end;
 
 function GetIncomingMessageLength(const SlotIndex: Integer): Integer;
 begin
-  EnterCriticalSection(CSIncomingMessages[SlotIndex]);
+  EnterCriticalSection(IncomingMessagesLock[SlotIndex]);
   try
     Result := SlotTextLines[SlotIndex].Count;
   finally
-    LeaveCriticalSection(CSIncomingMessages[SlotIndex]);
+    LeaveCriticalSection(IncomingMessagesLock[SlotIndex]);
   end;
 end;
 
 procedure ClearIncomingMessages(SlotIndex: Integer);
 begin
-  EnterCriticalSection(CSIncomingMessages[SlotIndex]);
+  EnterCriticalSection(IncomingMessagesLock[SlotIndex]);
   try
     SlotTextLines[SlotIndex].Clear;
   finally
-    LeaveCriticalSection(CSIncomingMessages[SlotIndex]);
+    LeaveCriticalSection(IncomingMessagesLock[SlotIndex]);
   end;
 end;
 
@@ -1747,7 +1757,7 @@ begin
   if IsSeedNode(BotIP) then Exit;
 
   BotFound := False;
-  EnterCriticalSection(CSBotList);
+  EnterCriticalSection(BotListLock);
   try
     for Index := 0 to High(BotList) do
     begin
@@ -1766,18 +1776,18 @@ begin
       BotList[High(BotList)].LastRefused := UTCTime;
     end;
   finally
-    LeaveCriticalSection(CSBotList);
+    LeaveCriticalSection(BotListLock);
   end;
 end;
 
 procedure RemoveAllBots();
 begin
-  EnterCriticalSection(CSBotList);
+  EnterCriticalSection(BotListLock);
   try
     SetLength(BotList, 0);
     LastBotClearTime := UTCTime;
   finally
-    LeaveCriticalSection(CSBotList);
+    LeaveCriticalSection(BotListLock);
   end;
 end;
 
@@ -1787,7 +1797,7 @@ var
 begin
   Result := False;
 
-  EnterCriticalSection(CSBotList);
+  EnterCriticalSection(BotListLock);
   try
     for Index := 0 to High(BotList) do
     begin
@@ -1798,7 +1808,7 @@ begin
       end;
     end;
   finally
-    LeaveCriticalSection(CSBotList);
+    LeaveCriticalSection(BotListLock);
   end;
 end;
 
@@ -1816,7 +1826,7 @@ begin
   SourceStr := GetParameter(GetCFGDataStr, 1) + GetVerificatorsText;
   SourceStr := StringReplace(SourceStr, ':', ' ', [rfReplaceAll, rfIgnoreCase]);
 
-  EnterCriticalSection(CSNodeList);
+  EnterCriticalSection(NodeListLock);
   try
     SetLength(NodeList, 0);
 
@@ -1840,17 +1850,17 @@ begin
       end;
     until not IsValidNode;
   finally
-    LeaveCriticalSection(CSNodeList);
+    LeaveCriticalSection(NodeListLock);
   end;
 end;
 
 function GetNodeListLength(): Integer;
 begin
-  EnterCriticalSection(CSNodeList);
+  EnterCriticalSection(NodeListLock);
   try
     Result := Length(NodeList);
   finally
-    LeaveCriticalSection(CSNodeList);
+    LeaveCriticalSection(NodeListLock);
   end;
 end;
 
@@ -1861,11 +1871,11 @@ begin
   if (Index < 0) or (Index >= GetNodeListLength) then
     Exit;
 
-  EnterCriticalSection(CSNodeList);
+  EnterCriticalSection(NodeListLock);
   try
     Result := NodeList[Index];
   finally
-    LeaveCriticalSection(CSNodeList);
+    LeaveCriticalSection(NodeListLock);
   end;
 end;
 
@@ -1873,12 +1883,12 @@ procedure InitializeElements();
 var
   ConnectionIndex: Integer;
 begin
-  InitCriticalSection(CSClientReadThreads);
-  InitCriticalSection(CSConnections);
-  InitCriticalSection(CSBotList);
-  InitCriticalSection(CSPendingTransactions);
-  InitCriticalSection(CSMultiOrderTransactions);
-  InitCriticalSection(CSNodeList);
+  InitCriticalSection(ClientReadThreadsLock);
+  InitCriticalSection(ConnectionsLock);
+  InitCriticalSection(BotListLock);
+  InitCriticalSection(PendingTransactionsLock);
+  InitCriticalSection(MultiOrderTransactionsLock);
+  InitCriticalSection(NodeListLock);
 
   SetLength(BotList, 0);
   SetLength(PendingTransactionsPool, 0);
@@ -1887,8 +1897,8 @@ begin
 
   for ConnectionIndex := 1 to MaxConnections do
   begin
-    InitCriticalSection(CSIncomingMessages[ConnectionIndex]);
-    InitCriticalSection(CSOutgoingMessages[ConnectionIndex]);
+    InitCriticalSection(IncomingMessagesLock[ConnectionIndex]);
+    InitCriticalSection(OutgoingMessagesLock[ConnectionIndex]);
 
     // Create string lists for incoming messages
     SlotTextLines[ConnectionIndex] := TStringList.Create;
@@ -1905,17 +1915,17 @@ procedure ClearElements();
 var
   ConnectionIndex: Integer;
 begin
-  DoneCriticalSection(CSClientReadThreads);
-  DoneCriticalSection(CSConnections);
-  DoneCriticalSection(CSBotList);
-  DoneCriticalSection(CSMultiOrderTransactions);
-  DoneCriticalSection(CSNodeList);
+  DoneCriticalSection(ClientReadThreadsLock);
+  DoneCriticalSection(ConnectionsLock);
+  DoneCriticalSection(BotListLock);
+  DoneCriticalSection(MultiOrderTransactionsLock);
+  DoneCriticalSection(NodeListLock);
 
   for ConnectionIndex := 1 to MaxConnections do
   begin
     // Release critical sections for message handling
-    DoneCriticalSection(CSIncomingMessages[ConnectionIndex]);
-    DoneCriticalSection(CSOutgoingMessages[ConnectionIndex]);
+    DoneCriticalSection(IncomingMessagesLock[ConnectionIndex]);
+    DoneCriticalSection(OutgoingMessagesLock[ConnectionIndex]);
 
     // Free the string lists for incoming messages
     SlotTextLines[ConnectionIndex].Free;

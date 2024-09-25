@@ -445,12 +445,12 @@ begin
     NumeroConexiones := GetTotalConnections;
     if NumeroConexiones = 0 then  // Desconectado
     begin
-      EnterCriticalSection(CSCriptoThread);
+      EnterCriticalSection(CriptoThreadLock);
       SetLength(ArrayCriptoOp, 0); // Delete operations from crypto thread
-      LeaveCriticalSection(CSCriptoThread);
-      EnterCriticalSection(CSIdsProcessed);
+      LeaveCriticalSection(CriptoThreadLock);
+      EnterCriticalSection(IdsProcessedLock);
       Setlength(ArrayOrderIDsProcessed, 0); // clear processed Orders
-      LeaveCriticalSection(CSIdsProcessed);
+      LeaveCriticalSection(IdsProcessedLock);
       ClearMNsChecks();
       ClearMNsList();
       MyConStatus := 0;
@@ -834,10 +834,10 @@ begin
   Result := resultorder;
   if GetPendingTransactionCount > 0 then
   begin
-    EnterCriticalSection(CSPendingTransactions);
+    EnterCriticalSection(PendingTransactionsLock);
     SetLength(CopyPendings, 0);
     CopyPendings := copy(PendingTransactionsPool, 0, length(PendingTransactionsPool));
-    LeaveCriticalSection(CSPendingTransactions);
+    LeaveCriticalSection(PendingTransactionsLock);
     for counter := 0 to length(CopyPendings) - 1 do
     begin
       if CopyPendings[counter].OrderID = orderid then
@@ -1118,9 +1118,9 @@ end;
 
 procedure ClearReceivedOrdersIDs();
 begin
-  EnterCriticalSection(CSIdsProcessed);
+  EnterCriticalSection(IdsProcessedLock);
   Setlength(ArrayOrderIDsProcessed, 0); // clear processed Orders
-  LeaveCriticalSection(CSIdsProcessed);
+  LeaveCriticalSection(IdsProcessedLock);
 end;
 
 // Sends a order to the mainnet

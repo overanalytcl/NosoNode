@@ -99,7 +99,7 @@ function GetVerificatorsText(): String;
 var
   MasterNodesFilename: String = '';
   MNFileHandler: textfile;
-  CSMNsFile: TRTLCriticalSection;
+  MNsFileLock: TRTLCriticalSection;
 
   MNsListCopy: array of TMnode;
   CurrSynctus: String;
@@ -112,33 +112,33 @@ var
   UnconfirmedIPs: Integer;
 
   MyMNsHash: String = '';
-  CS_MNsHash: TRTLCriticalSection;
+  MNsHashLock: TRTLCriticalSection;
 
   VerifiedNodes: String;
-  CSVerNodes: TRTLCriticalSection;
+  VerifiedNodesLock: TRTLCriticalSection;
 
   OpenVerificators: Integer;
-  CSVerifyThread: TRTLCriticalSection;
+  VerifyThreadLock: TRTLCriticalSection;
 
   MNsList: array of TMnode;
-  CSMNsList: TRTLCriticalSection;
+  MNsListLock: TRTLCriticalSection;
 
   ArrayIPsProcessed: array of String;
-  CSMNsIPProc: TRTLCriticalSection;
+  MNsIPProcLock: TRTLCriticalSection;
 
   MasternodeChecks: array of TMNCheck;
-  CSMNsChecks: TRTLCriticalSection;
+  MNsChecksLock: TRTLCriticalSection;
 
   ArrayMNsData: array of TMNsData;
 
   MN_FileText: String = '';
-  CSMN_FileText: TRTLCriticalSection;
+  MN_FileTextLock: TRTLCriticalSection;
 
   ArrWaitMNs: array of String;
-  CSWaitingMNs: TRTLCriticalSection;
+  WaitingMNsLock: TRTLCriticalSection;
 
   ArrReceivedMNs: array of String;
-  CSReceivedMNs: TRTLCriticalSection;
+  ReceivedMNsLock: TRTLCriticalSection;
 
 implementation
 
@@ -223,9 +223,9 @@ begin
       WasPositive := StrToBoolDef(GetParameter(Linea, 0), False);
       if ((WasPositive) and (GetParameter(Linea, 1) = CurrSynctus)) then
       begin
-        EnterCriticalSection(CSVerNodes);
+        EnterCriticalSection(VerifiedNodesLock);
         VerifiedNodes := VerifiedNodes + Ip + ';' + Port.ToString + ':';
-        LeaveCriticalSection(CSVerNodes);
+        LeaveCriticalSection(VerifiedNodesLock);
       end
       else if ((WasPositive) and (GetParameter(Linea, 1) <> CurrSynctus)) then
       begin
@@ -244,17 +244,17 @@ begin
         ' -> ' + 'CRITICAL MNs VERIFICATION (' + Ip + '): ' + E.Message);
     end;
   end{BIG TRY};
-  EnterCriticalSection(CSVerifyThread);
+  EnterCriticalSection(VerifyThreadLock);
   Dec(OpenVerificators);
-  LeaveCriticalSection(CSVerifyThread);
+  LeaveCriticalSection(VerifyThreadLock);
   CloseOpenThread('VerifyMN ' + FSlot.ToString);
 end;
 
 function VerifyThreadsCount: Integer;
 begin
-  EnterCriticalSection(CSVerifyThread);
+  EnterCriticalSection(VerifyThreadLock);
   Result := OpenVerificators;
-  LeaveCriticalSection(CSVerifyThread);
+  LeaveCriticalSection(VerifyThreadLock);
 end;
 
 {$ENDREGION ThreadVerificator}
@@ -274,9 +274,9 @@ begin
   SetLocalIP(LocalIP);
   VerifiedNodes := '';
   setlength(MNsListCopy, 0);
-  EnterCriticalSection(CSMNsList);
+  EnterCriticalSection(MNsListLock);
   MNsListCopy := copy(MNsList, 0, length(MNsList));
-  LeaveCriticalSection(CSMNsList);
+  LeaveCriticalSection(MNsListLock);
   UnconfirmedIPs := 0;
   for counter := 0 to length(MNsListCopy) - 1 do
   begin
@@ -289,9 +289,9 @@ begin
       ThisThread.Start;
     end;
   end;
-  EnterCriticalSection(CSVerifyThread);
+  EnterCriticalSection(VerifyThreadLock);
   OpenVerificators := Launched;
-  LeaveCriticalSection(CSVerifyThread);
+  LeaveCriticalSection(VerifyThreadLock);
   repeat
     sleep(100);
     Inc(WaitCycles);
@@ -300,9 +300,9 @@ begin
   //ToDeepDebug(Format('Unconfirmed IPs: %d',[UnconfirmedIPs ]));
   if VerifyThreadsCount > 0 then
   begin
-    EnterCriticalSection(CSVerifyThread);
+    EnterCriticalSection(VerifyThreadLock);
     OpenVerificators := 0;
-    LeaveCriticalSection(CSVerifyThread);
+    LeaveCriticalSection(VerifyThreadLock);
   end;
   Result := LocalIP + ' ' + Block.ToString + ' ' + LocalMasternodeSignature +
     ' ' + publicK + ' ' + VerifiedNodes + ' ' + GetStringSigned(VerifiedNodes, privateK);
@@ -314,19 +314,19 @@ end;
 // Returns the count of reported MNs
 function GetMNsListLength(): Integer;
 begin
-  EnterCriticalSection(CSMNsList);
+  EnterCriticalSection(MNsListLock);
   Result := Length(MNsList);
-  LeaveCriticalSection(CSMNsList);
+  LeaveCriticalSection(MNsListLock);
 end;
 
 procedure ClearMNsList();
 begin
-  EnterCriticalSection(CSMNsList);
+  EnterCriticalSection(MNsListLock);
   SetLength(MNsList, 0);
-  LeaveCriticalSection(CSMNsList);
-  EnterCriticalSection(CSMNsIPProc);
+  LeaveCriticalSection(MNsListLock);
+  EnterCriticalSection(MNsIPProcLock);
   Setlength(ArrayIPsProcessed, 0);
-  LeaveCriticalSection(CSMNsIPProc);
+  LeaveCriticalSection(MNsIPProcLock);
 end;
 
 // Verify if an IP was already processed
@@ -337,7 +337,7 @@ var
 begin
   Result := False;
   ThisIP := GetParameter(OrderText, 5);
-  EnterCriticalSection(CSMNsIPProc);
+  EnterCriticalSection(MNsIPProcLock);
   if length(ArrayIPsProcessed) > 0 then
   begin
     for counter := 0 to length(ArrayIPsProcessed) - 1 do
@@ -350,14 +350,14 @@ begin
     end;
   end;
   if Result = False then Insert(ThisIP, ArrayIPsProcessed, length(ArrayIPsProcessed));
-  LeaveCriticalSection(CSMNsIPProc);
+  LeaveCriticalSection(MNsIPProcLock);
 end;
 
 procedure ClearMNIPProcessed();
 begin
-  EnterCriticalSection(CSMNsIPProc);
+  EnterCriticalSection(MNsIPProcLock);
   Setlength(ArrayIPsProcessed, 0);
-  LeaveCriticalSection(CSMNsIPProc);
+  LeaveCriticalSection(MNsIPProcLock);
 end;
 
 function IsMyMNListed(LocalIP: String): Boolean;
@@ -367,7 +367,7 @@ begin
   Result := False;
   if GetMNsListLength > 0 then
   begin
-    EnterCriticalSection(CSMNsList);
+    EnterCriticalSection(MNsListLock);
     for counter := 0 to length(MNsList) - 1 do
     begin
       if MNsList[counter].Ip = LocalIP then
@@ -376,7 +376,7 @@ begin
         break;
       end;
     end;
-    LeaveCriticalSection(CSMNsList);
+    LeaveCriticalSection(MNsListLock);
   end;
 end;
 
@@ -387,7 +387,7 @@ begin
   Result := True;
   if GetMNsListLength > 0 then
   begin
-    EnterCriticalSection(CSMNsList);
+    EnterCriticalSection(MNsListLock);
     for counter := 0 to length(MNsList) - 1 do
     begin
       if ((ThisNode.Ip = MNsList[counter].Ip) or
@@ -403,7 +403,7 @@ begin
         break;
       end;
     end;
-    LeaveCriticalSection(CSMNsList);
+    LeaveCriticalSection(MNsListLock);
   end;
 end;
 
@@ -422,7 +422,7 @@ begin
   begin
     if IsLegitNewNode(NewNode, block) then
     begin
-      EnterCriticalSection(CSMNsList);
+      EnterCriticalSection(MNsListLock);
       if Length(MNsList) = 0 then
         Insert(NewNode, MNsList, 0)
       else
@@ -438,7 +438,7 @@ begin
         end;
         if not Added then Insert(NewNode, MNsList, Length(MNsList));
       end;
-      LeaveCriticalSection(CSMNsList);
+      LeaveCriticalSection(MNsListLock);
       Result := reportinfo;
     end
     else
@@ -503,14 +503,14 @@ begin
   SetLength(LDataArray, 0);
   if GetMNsListLength > 0 then
   begin
-    EnterCriticalSection(CSMNsList);
+    EnterCriticalSection(MNsListLock);
     for counter := 0 to length(MNsList) - 1 do
     begin
       ThisLine := GetStringFromMN(MNsList[counter]);
       Insert(ThisLine, LDataArray, length(LDataArray));
     end;
     Result := True;
-    LeaveCriticalSection(CSMNsList);
+    LeaveCriticalSection(MNsListLock);
   end;
 end;
 
@@ -524,7 +524,7 @@ var
 begin
   MinValidations := (GetMasternodeCheckCount div 2) - 1;
   Resultado := Block.ToString + ' ';
-  EnterCriticalSection(CSMNsList);
+  EnterCriticalSection(MNsListLock);
   for counter := 0 to length(MNsList) - 1 do
   begin
     if MNsList[counter].Validations >= MinValidations then
@@ -534,7 +534,7 @@ begin
         MNsList[counter].Port.ToString + ':' + MNsList[counter].Fund + AddAge + ' ';
     end;
   end;
-  LeaveCriticalSection(CSMNsList);
+  LeaveCriticalSection(MNsListLock);
   SetLength(Resultado, Length(Resultado) - 1);
   Result := Resultado;
 end;
@@ -562,8 +562,8 @@ var
   end;
 
 begin
-  EnterCriticalSection(CSMNsList);
-  EnterCriticalSection(CSMNsChecks);
+  EnterCriticalSection(MNsListLock);
+  EnterCriticalSection(MNsChecksLock);
   for counter := 0 to length(MasternodeChecks) - 1 do
   begin
     NodesString := MasternodeChecks[counter].ValidNodes;
@@ -585,8 +585,8 @@ begin
     until ThisIP = '';
     //ToLog('Console',MasternodeChecks[counter].ValidatorIP+': '+Checknodes.ToString);
   end;
-  LeaveCriticalSection(CSMNsChecks);
-  LeaveCriticalSection(CSMNsList);
+  LeaveCriticalSection(MNsChecksLock);
+  LeaveCriticalSection(MNsListLock);
 end;
 
 {$ENDREGION MNsList handling}
@@ -596,9 +596,9 @@ end;
 // Returns the number of MNs checks
 function GetMasternodeCheckCount(): Integer;
 begin
-  EnterCriticalSection(CSMNsChecks);
+  EnterCriticalSection(MNsChecksLock);
   Result := Length(MasternodeChecks);
-  LeaveCriticalSection(CSMNsChecks);
+  LeaveCriticalSection(MNsChecksLock);
 end;
 
 function GetValidNodesCountOnCheck(StringNodes: String): Integer;
@@ -633,9 +633,9 @@ end;
 // Clears all the MNS checks
 procedure ClearMNsChecks();
 begin
-  EnterCriticalSection(CSMNsChecks);
+  EnterCriticalSection(MNsChecksLock);
   SetLength(MasternodeChecks, 0);
-  LeaveCriticalSection(CSMNsChecks);
+  LeaveCriticalSection(MNsChecksLock);
 end;
 
 // Verify if an IP already sent a verification
@@ -644,7 +644,7 @@ var
   Counter: Integer;
 begin
   Result := False;
-  EnterCriticalSection(CSMNsChecks);
+  EnterCriticalSection(MNsChecksLock);
   for counter := 0 to length(MasternodeChecks) - 1 do
   begin
     if MasternodeChecks[counter].ValidatorIP = IP then
@@ -653,15 +653,15 @@ begin
       break;
     end;
   end;
-  LeaveCriticalSection(CSMNsChecks);
+  LeaveCriticalSection(MNsChecksLock);
 end;
 
 // Adds a new MNCheck
 procedure AddMNCheck(ThisData: TMNCheck);
 begin
-  EnterCriticalSection(CSMNsChecks);
+  EnterCriticalSection(MNsChecksLock);
   Insert(ThisData, MasternodeChecks, Length(MasternodeChecks));
-  LeaveCriticalSection(CSMNsChecks);
+  LeaveCriticalSection(MNsChecksLock);
 end;
 
 function FormatMasternodeCheck(Data: TMNCheck): String;
@@ -675,7 +675,7 @@ var
   counter: Integer;
 begin
   Result := False;
-  EnterCriticalSection(CSMNsChecks);
+  EnterCriticalSection(MNsChecksLock);
   for counter := 0 to length(MasternodeChecks) - 1 do
   begin
     if MasternodeChecks[counter].ValidatorIP = LocalMasternodeIP then
@@ -684,7 +684,7 @@ begin
       break;
     end;
   end;
-  LeaveCriticalSection(CSMNsChecks);
+  LeaveCriticalSection(MNsChecksLock);
 end;
 
 {$ENDREGION MNs check handling}
@@ -717,16 +717,16 @@ end;
 
 procedure SetMNsHash();
 begin
-  EnterCriticalSection(CS_MNsHash);
+  EnterCriticalSection(MNsHashLock);
   MyMNsHash := HashMD5File(MasterNodesFilename);
-  LeaveCriticalSection(CS_MNsHash);
+  LeaveCriticalSection(MNsHashLock);
 end;
 
 function GetMNsHash(): String;
 begin
-  EnterCriticalSection(CS_MNsHash);
+  EnterCriticalSection(MNsHashLock);
   Result := HashMD5File(MasterNodesFilename);
-  LeaveCriticalSection(CS_MNsHash);
+  LeaveCriticalSection(MNsHashLock);
 end;
 
 {$ENDREGION MNs hash}
@@ -735,16 +735,16 @@ end;
 
 function LengthReceivedMNs(): Integer;
 begin
-  EnterCriticalSection(CSReceivedMNs);
+  EnterCriticalSection(ReceivedMNsLock);
   Result := Length(ArrReceivedMNs);
-  LeaveCriticalSection(CSReceivedMNs);
+  LeaveCriticalSection(ReceivedMNsLock);
 end;
 
 procedure ClearReceivedMNs();
 begin
-  EnterCriticalSection(CSReceivedMNs);
+  EnterCriticalSection(ReceivedMNsLock);
   setlength(ArrReceivedMNs, 0);
-  LeaveCriticalSection(CSReceivedMNs);
+  LeaveCriticalSection(ReceivedMNsLock);
 end;
 
 function IsMNIPReceived(DataSource: String): Boolean;
@@ -753,7 +753,7 @@ var
 begin
   Result := False;
   DataSource := GetParameter(DataSource, 5);
-  EnterCriticalSection(CSReceivedMNs);
+  EnterCriticalSection(ReceivedMNsLock);
   for counter := 0 to length(ArrReceivedMNs) - 1 do
   begin
     if ArrReceivedMNs[counter] = DataSource then
@@ -766,7 +766,7 @@ begin
   begin
     Insert(DataSource, ArrReceivedMNs, LEngth(ArrReceivedMNs));
   end;
-  LeaveCriticalSection(CSReceivedMNs);
+  LeaveCriticalSection(ReceivedMNsLock);
 end;
 
 {$ENDREGION Received Masternodes}
@@ -775,18 +775,18 @@ end;
 
 function LengthWaitingMNs(): Integer;
 begin
-  EnterCriticalSection(CSWaitingMNs);
+  EnterCriticalSection(WaitingMNsLock);
   Result := Length(ArrWaitMNs);
-  LeaveCriticalSection(CSWaitingMNs);
+  LeaveCriticalSection(WaitingMNsLock);
 end;
 
 procedure AddWaitingMNs(Linea: String);
 begin
   if IsMNIPReceived(linea) then exit;
   ;
-  EnterCriticalSection(CSWaitingMNs);
+  EnterCriticalSection(WaitingMNsLock);
   Insert(Linea, ArrWaitMNs, Length(ArrWaitMNs));
-  LeaveCriticalSection(CSWaitingMNs);
+  LeaveCriticalSection(WaitingMNsLock);
 end;
 
 function GetWaitingMNs(): String;
@@ -794,11 +794,11 @@ begin
   Result := '';
   if LengthWaitingMNs > 0 then
   begin
-    EnterCriticalSection(CSWaitingMNs);
+    EnterCriticalSection(WaitingMNsLock);
     Result := ArrWaitMNs[0];
     Delete(ArrWaitMNs, 0, 1);
   end;
-  LeaveCriticalSection(CSWaitingMNs);
+  LeaveCriticalSection(WaitingMNsLock);
 end;
 
 {$ENDREGION Waiting Masternodes}
@@ -808,7 +808,7 @@ var
   lText: String = '';
 begin
   Result := '';
-  EnterCriticalSection(CSMNsFile);
+  EnterCriticalSection(MNsFileLock);
   try
     reset(MNFileHandler);
     Readln(MNFileHandler, Result);
@@ -819,14 +819,14 @@ begin
       ToDeepDebug('Nosomasternodes,LoadMNsFile,' + E.Message);
     end;
   end {TRY};
-  LeaveCriticalSection(CSMNsFile);
+  LeaveCriticalSection(MNsFileLock);
   SetMN_FileText(Result);
   //SetMNsHash;
 end;
 
 procedure SaveMNsFile(GotText: String);
 begin
-  EnterCriticalSection(CSMNsFile);
+  EnterCriticalSection(MNsFileLock);
   try
     rewrite(MNFileHandler);
     Write(MNFileHandler, GotText, #13#10);
@@ -839,25 +839,25 @@ begin
       SetMN_FileText('');
     end;
   end {TRY};
-  LeaveCriticalSection(CSMNsFile);
+  LeaveCriticalSection(MNsFileLock);
   SetMNsHash;
 end;
 
 procedure SetMN_FileText(lvalue: String);
 begin
-  EnterCriticalSection(CSMN_FileText);
+  EnterCriticalSection(MN_FileTextLock);
   MN_FileText := lvalue;
   FillMNsArray(lValue);
   //FillNodeList; <- Critical: needs to be redone
-  LeaveCriticalSection(CSMN_FileText);
+  LeaveCriticalSection(MN_FileTextLock);
   SetMNsHash;
 end;
 
 function GetMN_FileText(): String;
 begin
-  EnterCriticalSection(CSMN_FileText);
+  EnterCriticalSection(MN_FileTextLock);
   Result := MN_FileText;
-  LeaveCriticalSection(CSMN_FileText);
+  LeaveCriticalSection(MN_FileTextLock);
   FillMNsArray(Result);
 end;
 
@@ -938,30 +938,30 @@ initialization
   SetLength(ArrayMNsData, 0);
   Setlength(ArrWaitMNs, 0);
   Setlength(ArrReceivedMNs, 0);
-  InitCriticalSection(CSMNsIPProc);
-  InitCriticalSection(CSMNsList);
-  InitCriticalSection(CSVerNodes);
-  InitCriticalSection(CSVerifyThread);
-  InitCriticalSection(CSMNsChecks);
-  InitCriticalSection(CSMNsFile);
-  InitCriticalSection(CS_MNsHash);
-  InitCriticalSection(CSWaitingMNs);
-  InitCriticalSection(CSMN_FileText);
-  InitCriticalSection(CSMNsChecks);
-  InitCriticalSection(CSReceivedMNs);
+  InitCriticalSection(MNsIPProcLock);
+  InitCriticalSection(MNsListLock);
+  InitCriticalSection(VerifiedNodesLock);
+  InitCriticalSection(VerifyThreadLock);
+  InitCriticalSection(MNsChecksLock);
+  InitCriticalSection(MNsFileLock);
+  InitCriticalSection(MNsHashLock);
+  InitCriticalSection(WaitingMNsLock);
+  InitCriticalSection(MN_FileTextLock);
+  InitCriticalSection(MNsChecksLock);
+  InitCriticalSection(ReceivedMNsLock);
 
 
 finalization
-  DoneCriticalSection(CSMNsIPProc);
-  DoneCriticalSection(CSMNsList);
-  DoneCriticalSection(CSVerNodes);
-  DoneCriticalSection(CSVerifyThread);
-  DoneCriticalSection(CSMNsChecks);
-  DoneCriticalSection(CSMNsFile);
-  DoneCriticalSection(CS_MNsHash);
-  DoneCriticalSection(CSWaitingMNs);
-  DoneCriticalSection(CSMN_FileText);
-  DoneCriticalSection(CSMNsChecks);
-  DoneCriticalSection(CSReceivedMNs);
+  DoneCriticalSection(MNsIPProcLock);
+  DoneCriticalSection(MNsListLock);
+  DoneCriticalSection(VerifiedNodesLock);
+  DoneCriticalSection(VerifyThreadLock);
+  DoneCriticalSection(MNsChecksLock);
+  DoneCriticalSection(MNsFileLock);
+  DoneCriticalSection(MNsHashLock);
+  DoneCriticalSection(WaitingMNsLock);
+  DoneCriticalSection(MN_FileTextLock);
+  DoneCriticalSection(MNsChecksLock);
+  DoneCriticalSection(ReceivedMNsLock);
 
 end. // End unit

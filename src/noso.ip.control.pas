@@ -18,7 +18,7 @@ procedure ClearIPControls();
 
 var
   ArrCont: array of IPControl;
-  CS_ArrCont: TRTLCriticalSection;
+  ArrContLock: TRTLCriticalSection;
   LastIPsClear: Int64 = 0;
 
 implementation
@@ -28,7 +28,7 @@ var
   counter: Integer;
   Added: Boolean = False;
 begin
-  EnterCriticalSection(CS_ArrCont);
+  EnterCriticalSection(ArrContLock);
   for counter := 0 to length(ArrCont) - 1 do
   begin
     if ArrCont[Counter].IP = ThisIP then
@@ -46,22 +46,22 @@ begin
     ArrCont[length(ArrCont) - 1].Count := 1;
     Result := 1;
   end;
-  LeaveCriticalSection(CS_ArrCont);
+  LeaveCriticalSection(ArrContLock);
 end;
 
 procedure ClearIPControls();
 begin
-  EnterCriticalSection(CS_ArrCont);
+  EnterCriticalSection(ArrContLock);
   Setlength(ArrCont, 0);
-  LeaveCriticalSection(CS_ArrCont);
+  LeaveCriticalSection(ArrContLock);
   LAstIPsClear := UTCTime;
 end;
 
 initialization
   SetLength(ArrCont, 0);
-  InitCriticalSection(CS_ArrCont);
+  InitCriticalSection(ArrContLock);
 
 finalization
-  DoneCriticalSection(CS_ArrCont);
+  DoneCriticalSection(ArrContLock);
 
 end.

@@ -53,10 +53,10 @@ begin
   if Address = '' then exit;
   if GetPendingTransactionCount > 0 then
   begin
-    EnterCriticalSection(CSPendingTransactions);
+    EnterCriticalSection(PendingTransactionsLock);
     SetLength(CopyPendings, 0);
     CopyPendings := copy(PendingTransactionsPool, 0, length(PendingTransactionsPool));
-    LeaveCriticalSection(CSPendingTransactions);
+    LeaveCriticalSection(PendingTransactionsLock);
     for cont := 0 to length(CopyPendings) - 1 do
     begin
       if address = CopyPendings[cont].address then
@@ -76,10 +76,10 @@ begin
   Result := 0;
   if GetPendingTransactionCount > 0 then
   begin
-    EnterCriticalSection(CSPendingTransactions);
+    EnterCriticalSection(PendingTransactionsLock);
     SetLength(CopyPendings, 0);
     CopyPendings := copy(PendingTransactionsPool, 0, length(PendingTransactionsPool));
-    LeaveCriticalSection(CSPendingTransactions);
+    LeaveCriticalSection(PendingTransactionsLock);
     for cont := 0 to length(CopyPendings) - 1 do
     begin
       if address = PendingTransactionsPool[cont].receiver then
@@ -132,9 +132,9 @@ End;
 function GetLastPendingTime():int64;
 Begin
   result := 0;
-  EnterCriticalSection(CSPendingTransactions);
+  EnterCriticalSection(PendingTransactionsLock);
   if length(PendingTransactionsPool) > 0 then result := PendingTransactionsPool[length(PendingTransactionsPool)-1].TimeStamp;
-  LeaveCriticalSection(CSPendingTransactions);
+  LeaveCriticalSection(PendingTransactionsLock);
 End;
 }
 
@@ -153,7 +153,7 @@ if TransferExistsInLastBlock(order.TrfrID) then exit;
 if ((BlockAge>585) and (order.TimeStamp < LastBlockData.TimeStart+540) ) then exit;
 if not TransactionAlreadyPending(order.TrfrID) then
    begin
-   EnterCriticalSection(CSPendingTransactions);
+   EnterCriticalSection(PendingTransactionsLock);
    while cont < length(PendingTransactionsPool) do
      begin
      if order.TimeStamp < PendingTransactionsPool[cont].TimeStamp then
@@ -184,7 +184,7 @@ if not TransactionAlreadyPending(order.TrfrID) then
      end;
    if not insertar then resultado := length(PendingTransactionsPool);
    Insert(order,PendingTransactionsPool,resultado);
-   LeaveCriticalSection(CSPendingTransactions);
+   LeaveCriticalSection(PendingTransactionsLock);
    result := true;
    VerifyIfPendingIsMine(order);
    end;
@@ -440,10 +440,10 @@ begin
   Result := '';
   if Length(PendingTransactionsPool) > 0 then
   begin
-    EnterCriticalSection(CSPendingTransactions);
+    EnterCriticalSection(PendingTransactionsLock);
     SetLength(CopyArrayPoolTXs, 0);
     CopyArrayPoolTXs := copy(PendingTransactionsPool, 0, length(PendingTransactionsPool));
-    LeaveCriticalSection(CSPendingTransactions);
+    LeaveCriticalSection(PendingTransactionsLock);
     for counter := 0 to Length(CopyArrayPoolTXs) - 1 do
     begin
       if ForRPC then
@@ -478,17 +478,17 @@ end;
 // Returns the length of the pending transactions array safely
 Function GetPendingTransactionCount():integer;
 Begin
-EnterCriticalSection(CSPendingTransactions);
+EnterCriticalSection(PendingTransactionsLock);
 result := Length(PendingTransactionsPool);
-LeaveCriticalSection(CSPendingTransactions);
+LeaveCriticalSection(PendingTransactionsLock);
 End;
 
 // Clear the pending transactions array safely
 Procedure ClearAllPendingTransactions();
 Begin
-EnterCriticalSection(CSPendingTransactions);
+EnterCriticalSection(PendingTransactionsLock);
 SetLength(PendingTransactionsPool,0);
-LeaveCriticalSection(CSPendingTransactions);
+LeaveCriticalSection(PendingTransactionsLock);
 End;
 }
 

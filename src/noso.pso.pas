@@ -82,10 +82,10 @@ var
   MNSLockArray: array of TMNsLock;
   PSOHeader: TPSOHeader;
   PSOFileHash: String = '';
-  CS_PSOsArray: TRTLCriticalSection;
-  CS_PSOFile: TRTLCriticalSection;
-  CS_LockedMNs: TRTLCriticalSection;
-  CS_PSOHeaders: TRTLCriticalSection;
+  PSOsArrayLock: TRTLCriticalSection;
+  PSOFileLock: TRTLCriticalSection;
+  LockedMNsLock: TRTLCriticalSection;
+  PSOHeadersLock: TRTLCriticalSection;
 
 implementation
 
@@ -126,16 +126,16 @@ end;
 
 procedure InsertLockedMN(Data: TMNsLock);
 begin
-  EnterCriticalSection(CS_LockedMNs);
+  EnterCriticalSection(LockedMNsLock);
   Insert(Data, MNSLockArray, length(MNSLockArray));
-  LeaveCriticalSection(CS_LockedMNs);
+  LeaveCriticalSection(LockedMNsLock);
 end;
 
 procedure InsertPSO(Data: TPSOData);
 begin
-  EnterCriticalSection(CS_PSOsArray);
+  EnterCriticalSection(PSOsArrayLock);
   Insert(Data, PSOsArray, Length(PSOsArray));
-  LeaveCriticalSection(CS_PSOsArray);
+  LeaveCriticalSection(PSOsArrayLock);
 end;
 
 function LoadPSOFileFromDisk(): Boolean;
@@ -223,7 +223,7 @@ begin
   NewHeader.Count := Length(PSOsArray);
   NewHeader.MNsLock := GetLockedMNsCount;
   SetPSOHeaders(NewHeader);
-  EnterCriticalSection(CS_PSOsArray);
+  EnterCriticalSection(PSOsArrayLock);
   try
     MyStream.Write(NewHeader, Sizeof(PSOHeader));
     for counter := 0 to NewHeader.MNsLock - 1 do
@@ -241,7 +241,7 @@ begin
     ON E: Exception do
       ToDeepDebug('nosopsos,SavePSOFileToDisk,' + e.Message);
   end;
-  LeaveCriticalSection(CS_PSOsArray);
+  LeaveCriticalSection(PSOsArrayLock);
   SavePSOsToFile(MyStream);
   MyStream.Free;
   Result := True;
@@ -251,7 +251,7 @@ end;
 function GetPSOsAsMemStream(out LMs: TMemoryStream): Int64;
 begin
   Result := 0;
-  EnterCriticalSection(CS_PSOFile);
+  EnterCriticalSection(PSOFileLock);
   try
     LMs.LoadFromFile(PSOsFileName);
     Result := LMs.Size;
@@ -259,13 +259,13 @@ begin
   except
     ON E: Exception do
   end{Try};
-  LeaveCriticalSection(CS_PSOFile);
+  LeaveCriticalSection(PSOFileLock);
 end;
 
 function SavePSOsToFile(const LStream: TMemoryStream): Boolean;
 begin
   Result := False;
-  EnterCriticalSection(CS_PSOFile);
+  EnterCriticalSection(PSOFileLock);
   try
     LStream.SaveToFile(PSOsFileName);
     Result := True;
@@ -275,7 +275,7 @@ begin
       ToDeepDebug('nosopsos,SavePSOsToFile,' + e.Message);
     end;
   end{Try};
-  LeaveCriticalSection(CS_PSOFile);
+  LeaveCriticalSection(PSOFileLock);
 end;
 
 {$ENDREGION}
@@ -284,9 +284,9 @@ end;
 
 function GetLockedMNsCount(): Integer;
 begin
-  EnterCriticalSection(CS_LockedMNs);
+  EnterCriticalSection(LockedMNsLock);
   Result := length(MNSLockArray);
-  LeaveCriticalSection(CS_LockedMNs);
+  LeaveCriticalSection(LockedMNsLock);
 end;
 
 function GetLockedMNIndex(index: Integer): TMNsLock;
@@ -294,9 +294,9 @@ begin
   Result := Default(TMNsLock);
   if index < GetLockedMNsCount then
   begin
-    EnterCriticalSection(CS_LockedMNs);
+    EnterCriticalSection(LockedMNsLock);
     Result := MNSLockArray[index];
-    LeaveCriticalSection(CS_LockedMNs);
+    LeaveCriticalSection(LockedMNsLock);
   end;
 end;
 
@@ -307,7 +307,7 @@ var
   NewRec: TMNsLock;
 begin
   Result := False;
-  EnterCriticalSection(CS_LockedMNs);
+  EnterCriticalSection(LockedMNsLock);
   for counter := 0 to length(MNSLockArray) - 1 do
   begin
     if MNSLockArray[counter].address = Address then
@@ -323,7 +323,7 @@ begin
     Insert(NewRec, MNSLockArray, length(MNSLockArray));
     Result := True;
   end;
-  LeaveCriticalSection(CS_LockedMNs);
+  LeaveCriticalSection(LockedMNsLock);
 end;
 
 function ClearExpiredLockedMNs(BlockNumber: Integer): Integer;
@@ -332,7 +332,7 @@ var
   IsDone: Boolean = False;
 begin
   Result := 0;
-  EnterCriticalSection(CS_LockedMNs);
+  EnterCriticalSection(LockedMNsLock);
   repeat
     if Counter >= Length(MNSLockArray) then IsDOne := True
     else
@@ -346,7 +346,7 @@ begin
         Inc(Counter);
     end;
   until IsDone;
-  LeaveCriticalSection(CS_LockedMNs);
+  LeaveCriticalSection(LockedMNsLock);
 end;
 
 function IsLockedMN(Address: String): Boolean;
@@ -354,7 +354,7 @@ var
   counter: Integer;
 begin
   Result := False;
-  EnterCriticalSection(CS_LockedMNs);
+  EnterCriticalSection(LockedMNsLock);
   for counter := 0 to length(MNSLockArray) - 1 do
   begin
     if MNSLockArray[counter].address = address then
@@ -363,7 +363,7 @@ begin
       break;
     end;
   end;
-  LeaveCriticalSection(CS_LockedMNs);
+  LeaveCriticalSection(LockedMNsLock);
 end;
 
 function LockedMNsRawString(): String;
@@ -371,13 +371,13 @@ var
   counter: Integer;
 begin
   Result := '';
-  EnterCriticalSection(CS_LockedMNs);
+  EnterCriticalSection(LockedMNsLock);
   for counter := 0 to length(MNSLockArray) - 1 do
   begin
     Result := Result + MNSLockArray[counter].address + ',' +
       MNSLockArray[counter].expire.ToString() + ' ';
   end;
-  LeaveCriticalSection(CS_LockedMNs);
+  LeaveCriticalSection(LockedMNsLock);
   Trim(Result);
 end;
 
@@ -387,16 +387,16 @@ end;
 
 function GetPSOHeaders(): TPSOHeader;
 begin
-  EnterCriticalSection(CS_PSOHeaders);
+  EnterCriticalSection(PSOHeadersLock);
   Result := PSOHeader;
-  LeaveCriticalSection(CS_PSOHeaders);
+  LeaveCriticalSection(PSOHeadersLock);
 end;
 
 procedure SetPSOHeaders(NewData: TPSOHeader);
 begin
-  EnterCriticalSection(CS_PSOHeaders);
+  EnterCriticalSection(PSOHeadersLock);
   PSOHeader := NewData;
-  LeaveCriticalSection(CS_PSOHeaders);
+  LeaveCriticalSection(PSOHeadersLock);
 end;
 
 {$ENDREGION}
@@ -438,31 +438,31 @@ begin
   NewRec.Hash := HashMD5String(LOwner + LParams + IntToStr(LMode));
   NewRec.Members := '';
   NewRec.Params := LParams;
-  EnterCriticalSection(CS_PSOsArray);
+  EnterCriticalSection(PSOsArrayLock);
   Insert(NewRec, PSOsArray, Length(PSOsArray));
-  LeaveCriticalSection(CS_PSOsArray);
+  LeaveCriticalSection(PSOsArrayLock);
 end;
 
 function GetPSOsCopy(): TPSOsArray;
 begin
   SetLength(Result, 0);
-  EnterCriticalSection(CS_PSOsArray);
+  EnterCriticalSection(PSOsArrayLock);
   Result := copy(PSOsArray, 0, length(PSOsArray));
-  LeaveCriticalSection(CS_PSOsArray);
+  LeaveCriticalSection(PSOsArrayLock);
 end;
 
 {$ENDREGION}
 
 initialization
-  InitCriticalSection(CS_PSOsArray);
-  InitCriticalSection(CS_PSOFile);
-  InitCriticalSection(CS_LockedMNs);
-  InitCriticalSection(CS_PSOHeaders);
+  InitCriticalSection(PSOsArrayLock);
+  InitCriticalSection(PSOFileLock);
+  InitCriticalSection(LockedMNsLock);
+  InitCriticalSection(PSOHeadersLock);
 
 finalization
-  DoneCriticalSection(CS_PSOsArray);
-  DoneCriticalSection(CS_PSOFile);
-  DoneCriticalSection(CS_LockedMNs);
-  DoneCriticalSection(CS_PSOHeaders);
+  DoneCriticalSection(PSOsArrayLock);
+  DoneCriticalSection(PSOFileLock);
+  DoneCriticalSection(LockedMNsLock);
+  DoneCriticalSection(PSOHeadersLock);
 
 end. {END UNIT}

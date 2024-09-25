@@ -487,7 +487,7 @@ begin
   ZipFileName := BlockDirectory + 'Blocks_' + IntToStr(FirstBlock) + '_' +
     IntToStr(LastBlock) + '.zip';
   MyZipFile.FileName := ZipFileName;
-  EnterCriticalSection(CSBlocksAccess);
+  EnterCriticalSection(BlocksAccessLock);
   try
     for contador := FirstBlock to LastBlock do
     begin
@@ -509,7 +509,7 @@ begin
         ' -> ' + 'Error zipping block files: ' + E.Message);
     end;
   end;
-  LeaveCriticalSection(CSBlocksAccess);
+  LeaveCriticalSection(BlocksAccessLock);
   MyZipFile.Free;
 end;
 
@@ -668,7 +668,7 @@ var
 begin
   Result := False;
   OrderId := GetParameter(OrderText, 7);
-  EnterCriticalSection(CSIdsProcessed);
+  EnterCriticalSection(IdsProcessedLock);
   if length(ArrayOrderIDsProcessed) > 0 then
   begin
     for counter := 0 to length(ArrayOrderIDsProcessed) - 1 do
@@ -682,7 +682,7 @@ begin
   end;
   if Result = False then Insert(OrderID, ArrayOrderIDsProcessed, length(
       ArrayOrderIDsProcessed));
-  LeaveCriticalSection(CSIdsProcessed);
+  LeaveCriticalSection(IdsProcessedLock);
 end;
 
 procedure INC_PTC_Order(TextLine: String; connection: Integer);
@@ -1026,7 +1026,7 @@ begin
   NewOp.tipo := tipo;
   NewOp.Data := proceso;
   NewOp.Result := resultado;
-  EnterCriticalSection(CSCriptoThread);
+  EnterCriticalSection(CriptoThreadLock);
   try
     Insert(NewOp, ArrayCriptoOp, length(ArrayCriptoOp));
 
@@ -1035,13 +1035,13 @@ begin
       ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
         ' -> ' + 'Error adding Operation to crypto thread:' + proceso);
   end{Try};
-  LeaveCriticalSection(CSCriptoThread);
+  LeaveCriticalSection(CriptoThreadLock);
 end;
 
 // Elimina la operacion cripto
 procedure DeleteCriptoOp();
 begin
-  EnterCriticalSection(CSCriptoThread);
+  EnterCriticalSection(CriptoThreadLock);
   if Length(ArrayCriptoOp) > 0 then
   begin
     try
@@ -1054,7 +1054,7 @@ begin
       end;
     end{Try};
   end;
-  LeaveCriticalSection(CSCriptoThread);
+  LeaveCriticalSection(CriptoThreadLock);
 end;
 
 

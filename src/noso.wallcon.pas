@@ -52,8 +52,8 @@ var
   WalletArray: array of walletData; // Wallet addresses
   FileWallet: file of WalletData;
   WalletFilename: String = 'NOSODATA' + DirectorySeparator + 'wallet.pkw';
-  CS_WalletFile: TRTLCriticalSection;
-  CS_WalletArray: TRTLCriticalSection;
+  WalletFileLock: TRTLCriticalSection;
+  WalletArrayLocks: TRTLCriticalSection;
 
 implementation
 
@@ -73,9 +73,9 @@ end;
 
 procedure ClearWalletArray();
 begin
-  EnterCriticalSection(CS_WalletArray);
+  EnterCriticalSection(WalletArrayLocks);
   setlength(WalletArray, 0);
-  LeaveCriticalSection(CS_WalletArray);
+  LeaveCriticalSection(WalletArrayLocks);
 end;
 
 function InsertToWallArr(LData: WalletData): Boolean;
@@ -83,21 +83,21 @@ begin
   Result := False;
   if WallAddIndex(LData.Hash) < 0 then
   begin
-    EnterCriticalSection(CS_WalletArray);
+    EnterCriticalSection(WalletArrayLocks);
     Insert(LData, WalletArray, length(WalletArray));
-    LeaveCriticalSection(CS_WalletArray);
+    LeaveCriticalSection(WalletArrayLocks);
     Result := True;
   end;
 end;
 
 function GetWallArrIndex(Index: Integer): WalletData;
 begin
-  EnterCriticalSection(CS_WalletArray);
+  EnterCriticalSection(WalletArrayLocks);
   if Index <= Length(WalletArray) - 1 then
     Result := WalletArray[Index]
   else
     Result := Default(WalletData);
-  LeaveCriticalSection(CS_WalletArray);
+  LeaveCriticalSection(WalletArrayLocks);
 end;
 
 function WallAddIndex(Address: String): Integer;
@@ -106,7 +106,7 @@ var
 begin
   Result := -1;
   if ((Address = '') or (length(Address) < 5)) then exit;
-  EnterCriticalSection(CS_WalletArray);
+  EnterCriticalSection(WalletArrayLocks);
   for counter := 0 to high(WalletArray) do
     if ((WalletArray[counter].Hash = Address) or
       (WalletArray[counter].Custom = Address)) then
@@ -114,14 +114,14 @@ begin
       Result := counter;
       break;
     end;
-  LeaveCriticalSection(CS_WalletArray);
+  LeaveCriticalSection(WalletArrayLocks);
 end;
 
 function LenWallArr(): Integer;
 begin
-  EnterCriticalSection(CS_WalletArray);
+  EnterCriticalSection(WalletArrayLocks);
   Result := Length(WalletArray);
-  LeaveCriticalSection(CS_WalletArray);
+  LeaveCriticalSection(WalletArrayLocks);
 end;
 
 function ChangeWallArrPos(PosA, PosB: Integer): Boolean;
@@ -134,10 +134,10 @@ begin
   if posA = posB then Exit;
   OldData := GetWallArrIndex(posA);
   NewData := GetWallArrIndex(posB);
-  EnterCriticalSection(CS_WalletArray);
+  EnterCriticalSection(WalletArrayLocks);
   WalletArray[posA] := NewData;
   WalletArray[posB] := OldData;
-  LeaveCriticalSection(CS_WalletArray);
+  LeaveCriticalSection(WalletArrayLocks);
   Result := True;
 end;
 
@@ -145,18 +145,18 @@ procedure ClearWallPendings();
 var
   counter: Integer;
 begin
-  EnterCriticalSection(CS_WalletArray);
+  EnterCriticalSection(WalletArrayLocks);
   for counter := 0 to length(WalletArray) - 1 do
     WalletArray[counter].pending := 0;
-  LeaveCriticalSection(CS_WalletArray);
+  LeaveCriticalSection(WalletArrayLocks);
 end;
 
 procedure SetPendingForAddress(Index: Integer; Value: Int64);
 begin
   if Index > LenWallArr - 1 then exit;
-  EnterCriticalSection(CS_WalletArray);
+  EnterCriticalSection(WalletArrayLocks);
   WalletArray[Index].pending := Value;
-  LeaveCriticalSection(CS_WalletArray);
+  LeaveCriticalSection(WalletArrayLocks);
 end;
 
 // Import an address data from a file
@@ -270,7 +270,7 @@ end;
 function GetWalletAsStream(out LStream: TMemoryStream): Int64;
 begin
   Result := 0;
-  EnterCriticalSection(CS_WalletFile);
+  EnterCriticalSection(WalletFileLock);
   try
     LStream.LoadFromFile(WalletFilename);
     Result := LStream.Size;
@@ -281,7 +281,7 @@ begin
       ToDeepDebug('NosoWallcon,GetWalletAsStream,' + E.Message);
     end;
   end{Try};
-  LeaveCriticalSection(CS_WalletFile);
+  LeaveCriticalSection(WalletFileLock);
 end;
 
 // Save the wallet array to the file
@@ -294,8 +294,8 @@ begin
   TryCopyFile(WalletFilename, WalletFilename + '.bak');
   MyStream := TMemoryStream.Create;
   MyStream.Position := 0;
-  EnterCriticalSection(CS_WalletFile);
-  EnterCriticalSection(CS_WalletArray);
+  EnterCriticalSection(WalletFileLock);
+  EnterCriticalSection(WalletArrayLocks);
   for Counter := 0 to length(WalletArray) - 1 do
   begin
     MyStream.Write(WalletArray[counter], SizeOf(WalletData));
@@ -309,8 +309,8 @@ begin
       Result := False;
     end;
   end;
-  LeaveCriticalSection(CS_WalletArray);
-  LeaveCriticalSection(CS_WalletFile);
+  LeaveCriticalSection(WalletArrayLocks);
+  LeaveCriticalSection(WalletFileLock);
   MyStream.Free;
   if Result = True then TryCopyFile(WalletFilename, WalletFilename + '.bak')
   else
@@ -385,11 +385,11 @@ end;
 {$ENDREGION Summary related}
 
 initialization
-  InitCriticalSection(CS_WalletArray);
-  InitCriticalSection(CS_WalletFile);
+  InitCriticalSection(WalletArrayLocks);
+  InitCriticalSection(WalletFileLock);
   SetLength(WalletArray, 0);
 
 finalization
-  DoneCriticalSection(CS_WalletArray);
-  DoneCriticalSection(CS_WalletFile);
+  DoneCriticalSection(WalletArrayLocks);
+  DoneCriticalSection(WalletFileLock);
 end.

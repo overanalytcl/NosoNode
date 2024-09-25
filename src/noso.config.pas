@@ -33,9 +33,9 @@ var
   CFGFilename: String = 'nosocfg.psk';
   CFGFile: Textfile;
   MyCFGHash: String = '';
-  CS_CFGFile: TRTLCriticalSection;
-  CS_CFGData: TRTLCriticalSection;
-  CS_CFGHash: TRTLCriticalSection;
+  CFGFileLock: TRTLCriticalSection;
+  CFGDataLock: TRTLCriticalSection;
+  CFGHashLock: TRTLCriticalSection;
   NosoCFGString: String = '';
   LasTimeCFGRequest: Int64 = 0;
   DefaultNosoCFG: String = // CFG parameters
@@ -56,16 +56,16 @@ implementation
 
 procedure SetCFGHash();
 begin
-  EnterCriticalSection(CS_CFGHash);
+  EnterCriticalSection(CFGHashLock);
   MyCFGHash := HashMD5String(GetCFGDataStr);
-  LeaveCriticalSection(CS_CFGHash);
+  LeaveCriticalSection(CFGHashLock);
 end;
 
 function GetCFGHash(): String;
 begin
-  EnterCriticalSection(CS_CFGHash);
+  EnterCriticalSection(CFGHashLock);
   Result := MyCFGHash;
-  LeaveCriticalSection(CS_CFGHash);
+  LeaveCriticalSection(CFGHashLock);
 end;
 
 {$ENDREGION CFG hash}
@@ -100,17 +100,17 @@ end;
 
 function SaveCFGToFile(Content: String): Boolean;
 begin
-  EnterCriticalSection(CS_CFGFile);
+  EnterCriticalSection(CFGFileLock);
   Result := SaveTextToDisk(CFGFilename, Content);
   SetCFGDataStr(Content);
-  LeaveCriticalSection(CS_CFGFile);
+  LeaveCriticalSection(CFGFileLock);
 end;
 
 procedure GetCFGFromFile();
 begin
-  EnterCriticalSection(CS_CFGFile);
+  EnterCriticalSection(CFGFileLock);
   SetCFGDataStr(LoadTextFromDisk(CFGFilename));
-  LeaveCriticalSection(CS_CFGFile);
+  LeaveCriticalSection(CFGFileLock);
 end;
 
 {$ENDREGION File access}
@@ -119,19 +119,19 @@ end;
 
 procedure SetCFGDataStr(Content: String);
 begin
-  EnterCriticalSection(CS_CFGData);
+  EnterCriticalSection(CFGDataLock);
   NosoCFGString := Content;
-  LeaveCriticalSection(CS_CFGData);
+  LeaveCriticalSection(CFGDataLock);
   SetCFGHash;
 end;
 
 function GetCFGDataStr(LParam: Integer = -1): String;
 begin
-  EnterCriticalSection(CS_CFGData);
+  EnterCriticalSection(CFGDataLock);
   if LParam < 0 then Result := NosoCFGString
   else
     Result := GetParameter(NosoCFGString, LParam);
-  LeaveCriticalSection(CS_CFGData);
+  LeaveCriticalSection(CFGDataLock);
 end;
 
 {$ENDREGION Data access}
@@ -268,14 +268,14 @@ end;
 {$REGION Information}
 
 initialization
-  InitCriticalSection(CS_CFGFile);
-  InitCriticalSection(CS_CFGData);
-  InitCriticalSection(CS_CFGHash);
+  InitCriticalSection(CFGFileLock);
+  InitCriticalSection(CFGDataLock);
+  InitCriticalSection(CFGHashLock);
 
 
 finalization
-  DoneCriticalSection(CS_CFGFile);
-  DoneCriticalSection(CS_CFGData);
-  DoneCriticalSection(CS_CFGHash);
+  DoneCriticalSection(CFGFileLock);
+  DoneCriticalSection(CFGDataLock);
+  DoneCriticalSection(CFGHashLock);
 
 end.

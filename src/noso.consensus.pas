@@ -92,11 +92,11 @@ implementation
 
 var
   NodesArray: array of TNodeConsensus;
-  CSNodesArray: TRTLCriticalSection;
+  NodesArrayLock: TRTLCriticalSection;
   OpenThreads: Integer;
   ReachedNodes: Integer;
-  CSOpenThreads: TRTLCriticalSection;
-  CSConsensus: TRTLCriticalSection;
+  OpenThreadsLock: TRTLCriticalSection;
+  ConsensusLock: TRTLCriticalSection;
   KeepAutoCon: Boolean = False;
   RunningConsensus: Boolean = False;
   ActiveRound: Int64 = 0;
@@ -144,24 +144,24 @@ end;
 
 procedure DecOpenThreads(Reached: Boolean);
 begin
-  EnterCriticalSection(CSOpenThreads);
+  EnterCriticalSection(OpenThreadsLock);
   Dec(OpenThreads);
   if reached then Inc(ReachedNodes);
-  LeaveCriticalSection(CSOpenThreads);
+  LeaveCriticalSection(OpenThreadsLock);
 end;
 
 function OpenThreadsValue(): Integer;
 begin
-  EnterCriticalSection(CSOpenThreads);
+  EnterCriticalSection(OpenThreadsLock);
   Result := OpenThreads;
-  LeaveCriticalSection(CSOpenThreads);
+  LeaveCriticalSection(OpenThreadsLock);
 end;
 
 function GetNodeIndex(index: Integer): TNodeConsensus;
 begin
-  EnterCriticalSection(CSNodesArray);
+  EnterCriticalSection(NodesArrayLock);
   Result := NodesArray[index];
-  LeaveCriticalSection(CSNodesArray);
+  LeaveCriticalSection(NodesArrayLock);
 end;
 
 {$ENDREGION}
@@ -206,9 +206,9 @@ begin
   end;
   if MyRound = ActiveRound then
   begin
-    EnterCriticalSection(CSNodesArray);
+    EnterCriticalSection(NodesArrayLock);
     NodesArray[slot] := ThisNode;
-    LeaveCriticalSection(CSNodesArray);
+    LeaveCriticalSection(NodesArrayLock);
     DecOpenThreads(Reached);
   end;
 end;
@@ -230,10 +230,10 @@ var
   LNumber: Integer;
 begin
   Result := '';
-  EnterCriticalSection(CSNodesArray);
+  EnterCriticalSection(NodesArrayLock);
   LNumber := random(length(NodesArray));
   Result := Format('%s %d', [NodesArray[LNumber].host, NodesArray[LNumber].port]);
-  LeaveCriticalSection(CSNodesArray);
+  LeaveCriticalSection(NodesArrayLock);
 end;
 
 {Set the values for the array of nodes}
@@ -248,7 +248,7 @@ begin
   setlength(NodesArray, 0);
   NodesList := Trim(StringReplace(NodesList, ':', ' ', [rfReplaceAll, rfIgnoreCase]));
   MyArray := SplitString(NodesList, ' ');
-  EnterCriticalSection(CSNodesArray);
+  EnterCriticalSection(NodesArrayLock);
   for counter := 0 to high(MyArray) do
   begin
     MyArray[counter] := StringReplace(MyArray[counter], ';', ' ',
@@ -262,24 +262,24 @@ begin
     NodesArray[length(NodesArray) - 1].Block := 0;
     NodesArray[length(NodesArray) - 1].peers := 0;
   end;
-  LeaveCriticalSection(CSNodesArray);
+  LeaveCriticalSection(NodesArrayLock);
   LastConsensusTime := 0;
 end;
 
 function GetNodesArrayIndex(LIndex: Integer): TNodeConsensus;
 begin
   Result := default(TNodeConsensus);
-  EnterCriticalSection(CSNodesArray);
+  EnterCriticalSection(NodesArrayLock);
   if LIndex < length(NodesArray) then
     Result := NodesArray[LIndex];
-  LeaveCriticalSection(CSNodesArray);
+  LeaveCriticalSection(NodesArrayLock);
 end;
 
 function GetNodesArrayCount(): Integer;
 begin
-  EnterCriticalSection(CSNodesArray);
+  EnterCriticalSection(NodesArrayLock);
   Result := length(NodesArray);
-  LeaveCriticalSection(CSNodesArray);
+  LeaveCriticalSection(NodesArrayLock);
 end;
 
 function CalculateConsensus(NodesList: String = ''): TConsensus;
@@ -374,10 +374,10 @@ begin
     if ReachedNodes > 0 then Css_Percentage := (ValidNodes * 100) div ReachedNodes
     else
       Css_Percentage := 0;
-    EnterCriticalSection(CSConsensus);
+    EnterCriticalSection(ConsensusLock);
     setlength(consensus, 0);
     Consensus := copy(Result, 0, length(Result));
-    LeaveCriticalSection(CSConsensus);
+    LeaveCriticalSection(ConsensusLock);
     Css_Completed := False;
     RunningConsensus := False;
     Dec(LastConsensusTime, 50);
@@ -410,10 +410,10 @@ begin
     Css_Percentage := 0;
   //if StrToIntDef(result[cLastBlock],0) >= StrToIntDef(Consensus[cLastBlock],0) then
   //begin
-  EnterCriticalSection(CSConsensus);
+  EnterCriticalSection(ConsensusLock);
   setlength(consensus, 0);
   Consensus := copy(Result, 0, length(Result));
-  LeaveCriticalSection(CSConsensus);
+  LeaveCriticalSection(ConsensusLock);
   //end;
 
   Css_Completed := True;
@@ -424,7 +424,7 @@ end;
 function GetConsensus(LData: Integer = 0): String;
 begin
   Result := '';
-  EnterCriticalSection(CSConsensus);
+  EnterCriticalSection(ConsensusLock);
   try
     Result := Consensus[LData];
   except
@@ -433,20 +433,20 @@ begin
 
     end;
   end;
-  LeaveCriticalSection(CSConsensus);
+  LeaveCriticalSection(ConsensusLock);
 end;
 
 initialization
   Randomize;
   setlength(NodesArray, 0);
-  InitCriticalSection(CSNodesArray);
-  InitCriticalSection(CSOpenThreads);
-  InitCriticalSection(CSConsensus);
+  InitCriticalSection(NodesArrayLock);
+  InitCriticalSection(OpenThreadsLock);
+  InitCriticalSection(ConsensusLock);
 
 
 finalization
-  DoneCriticalSection(CSNodesArray);
-  DoneCriticalSection(CSOpenThreads);
-  DoneCriticalSection(CSConsensus);
+  DoneCriticalSection(NodesArrayLock);
+  DoneCriticalSection(OpenThreadsLock);
+  DoneCriticalSection(ConsensusLock);
 
 end. {END UNIT}

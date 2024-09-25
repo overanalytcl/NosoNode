@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, LCLType,
   Grids, ExtCtrls, Buttons, IdTCPServer, IdContext, IdGlobal, IdTCPClient,
   fileutil, Clipbrd, Menus, ExploreForm, lclintf, ComCtrls,
-  strutils, IdHTTPServer, IdCustomHTTPServer,
+  StrUtils, IdHTTPServer, IdCustomHTTPServer,
   IdHTTP, fpJSON, Types, DefaultTranslator, LCLTranslator, translation, Noso.Debug,
   IdComponent, Noso.General, Noso.Crypto, Noso.Summary, Noso.Consensus,
   Noso.Pso, Noso.WallCon,
@@ -24,7 +24,7 @@ type
     VSlot: Integer;
   public
     constructor Create;
-    property Slot: Integer read VSlot write VSlot;
+    property Slot: Integer Read VSlot Write VSlot;
   end;
 
   TThreadDirective = class(TThread)
@@ -746,28 +746,28 @@ var
   ArrayCriptoOp: array of TArrayCriptoOp;
 
   // Critical Sections
-  CSProcessLines: TRTLCriticalSection;
-  CSOutgoingMsjs: TRTLCriticalSection;
-  CSBlocksAccess: TRTLCriticalSection;
-  //CSPendingTransactions     : TRTLCriticalSection;
-  CSCriptoThread: TRTLCriticalSection;
-  CSClosingApp: TRTLCriticalSection;
-  //CSClientReadThreads : TRTLCriticalSection;
+  ProcessLinesLock: TRTLCriticalSection;
+  OutgoingMsjsLock: TRTLCriticalSection;
+  BlocksAccessLock: TRTLCriticalSection;
+  //PendingTransactionsLock     : TRTLCriticalSection;
+  CriptoThreadLock: TRTLCriticalSection;
+  ClosingAppLock: TRTLCriticalSection;
+  //ClientReadThreadsLock : TRTLCriticalSection;
   //GVTArrayLock   : TRTLCriticalSection;
-  CSNosoCFGStr: TRTLCriticalSection;
+  NosoCFGStrLock: TRTLCriticalSection;
 
   //MNs system
   //CSMNsArray    : TRTLCriticalSection;
-  //CSWaitingMNs  : TRTLCriticalSection;
-  //CSMNsChecks   : TRTLCriticalSection;
+  //WaitingMNsLock  : TRTLCriticalSection;
+  //MNsChecksLock   : TRTLCriticalSection;
 
-  CSIdsProcessed: TRTLCriticalSection;
+  IdsProcessedLock: TRTLCriticalSection;
 
 
   // Outgoing lines, needs to be initialized
-  //CSOutgoingMessages : array[1..MaxConnections] of TRTLCriticalSection;
+  //OutgoingMessagesLock : array[1..MaxConnections] of TRTLCriticalSection;
   //OutgoingMessages : array[1..MaxConnections] of array of string;
-  //CSIncomingMessages : array[1..MaxConnections] of TRTLCriticalSection;
+  //IncomingMessagesLock : array[1..MaxConnections] of TRTLCriticalSection;
 
 
 
@@ -776,8 +776,8 @@ var
     DirectorySeparator;
   GVTMarksDirectory: String = 'NOSODATA' + DirectorySeparator +
   'SUMMARKS' + DirectorySeparator + 'GVTS' + DirectorySeparator;
-  UpdatesDirectory: String = 'NOSODATA' + DirectorySeparator +
-  'UPDATES' + DirectorySeparator;
+  UpdatesDirectory: String = 'NOSODATA' + DirectorySeparator + 'UPDATES' +
+    DirectorySeparator;
   LogsDirectory: String = 'NOSODATA' + DirectorySeparator + 'LOGS' + DirectorySeparator;
   ExceptLogFilename: String = 'NOSODATA' + DirectorySeparator + 'LOGS' +
     DirectorySeparator + 'exceptlog.txt';
@@ -799,8 +799,8 @@ var
   {GVTFilename        : string= 'NOSODATA'+DirectorySeparator+'gvts.psk';}
   ClosedAppFilename: String = 'NOSODATA' + DirectorySeparator + 'LOGS' +
     DirectorySeparator + 'proclo.dat';
-  RPCBakDirectory: String = 'NOSODATA' + DirectorySeparator +
-  'SUMMARKS' + DirectorySeparator + 'RPC' + DirectorySeparator;
+  RPCBakDirectory: String = 'NOSODATA' + DirectorySeparator + 'SUMMARKS' +
+    DirectorySeparator + 'RPC' + DirectorySeparator;
 
 
 implementation
@@ -824,9 +824,9 @@ begin
   VSlot := -1;
 end;
 
- // ***************
- // *** THREADS ***
- // ***************
+// ***************
+// *** THREADS ***
+// ***************
 
 {$REGION Thread update logs}
 
@@ -859,7 +859,7 @@ begin
   AddNewOpenThread('UpdateLogs', UTCTime);
   while not terminated do
   begin
-    sleep(10);
+    Sleep(10);
     UpdateOpenThread('UpdateLogs', UTCTime);
     while GetLogLine('console', lastlogline) do Synchronize(@UpdateConsole);
     while GetLogLine('events', lastlogline) do Synchronize(@UpdateEvents);
@@ -896,7 +896,7 @@ begin
     TimeToRun := 50 + (MNsRandomWait * 20);
   while not Tfinished do
   begin
-    sleep(10);
+    Sleep(10);
     if BlockAge = TimeToRun then
     begin
       ProcesslinesAdd(Command);
@@ -931,15 +931,14 @@ begin
     UpdateOpenThread('Masternodes', UTCTime);
     if UTCTime mod 10 = 0 then
     begin
-      if ((IsNodeValidator(LocalMasternodeIP)) and (BlockAge > 500 + (MNsRandomWait div 4)) and
-        (not IsMyMNCheckDone) and (BlockAge < 575) and
-        (LastMasternodeVerificationTime <> UTCTime) and (MyConStatus = 3) and
-        (VerifyThreadsCount <= 0)) then
+      if ((IsNodeValidator(LocalMasternodeIP)) and (BlockAge > 500 +
+        (MNsRandomWait div 4)) and (not IsMyMNCheckDone) and
+        (BlockAge < 575) and (LastMasternodeVerificationTime <> UTCTime) and
+        (MyConStatus = 3) and (VerifyThreadsCount <= 0)) then
       begin
         LastMasternodeVerificationTime := UTCTime;
         TextLine := RunMNVerification(LastBlockIndex, GetSynchronizationStatus,
-          LocalMasternodeIP, GetWallArrIndex(WallAddIndex(LocalMasternodeSignature)).PublicKey,
-          GetWallArrIndex(WallAddIndex(LocalMasternodeSignature)).PrivateKey);
+          LocalMasternodeIP, GetWallArrIndex(WallAddIndex(LocalMasternodeSignature)).PublicKey, GetWallArrIndex(WallAddIndex(LocalMasternodeSignature)).PrivateKey);
         OutGoingMsjsAdd(GetProtocolLineFromCode(MNCheck) + TextLine);
         //ToLog('console','Masternodes Verification completed: '+TextLine)
       end;
@@ -949,8 +948,8 @@ begin
       LastIPVerify := NextBlockTimeStamp;
       MyIP := GetMiIP();
       //ToLog('console','Auto IP executed');
-      if ((MyIP <> '') and (MyIP <> LocalMasternodeIP) and (MyIP <> 'Closing NODE') and
-        (MyIP <> 'BANNED') and (IsValidIP(MyIP))) then
+      if ((MyIP <> '') and (MyIP <> LocalMasternodeIP) and
+        (MyIP <> 'Closing NODE') and (MyIP <> 'BANNED') and (IsValidIP(MyIP))) then
       begin
         ToLog('console', 'Auto IP: updated to ' + MyIp);
         LocalMasternodeIP := MyIP;
@@ -965,7 +964,7 @@ begin
         ReportInfo := CheckMNReport(TextLine, LastBlockIndex);
         if ReportInfo <> '' then
           outGOingMsjsAdd(GetProtocolHeader + ReportInfo);
-        sleep(1);
+        Sleep(1);
       end;
     end;
     Sleep(10);
@@ -994,7 +993,7 @@ begin
   begin
     UpdateOpenThread('Crypto', UTCTime);
     NewAddrss := 0;
-    if length(ArrayCriptoOp) > 0 then
+    if Length(ArrayCriptoOp) > 0 then
     begin
       if ArrayCriptoOp[0].tipo = 0 then
       begin
@@ -1014,8 +1013,8 @@ begin
       else if ArrayCriptoOp[0].tipo = 2 then // customizar
       begin
         posRef := pos('$', ArrayCriptoOp[0].Data);
-        cadena := copy(ArrayCriptoOp[0].Data, 1, posref - 1);
-        claveprivada := copy(ArrayCriptoOp[0].Data, posref + 1, length(
+        cadena := Copy(ArrayCriptoOp[0].Data, 1, posref - 1);
+        claveprivada := Copy(ArrayCriptoOp[0].Data, posref + 1, Length(
           ArrayCriptoOp[0].Data));
         firma := GetStringSigned(cadena, claveprivada);
         resultado := StringReplace(ArrayCriptoOp[0].Result, '[[RESULT]]',
@@ -1078,7 +1077,7 @@ begin
         ToLog('exceps', 'Invalid cryptoop: ' + ArrayCriptoOp[0].tipo.ToString);
       end;
       DeleteCriptoOp();
-      sleep(10);
+      Sleep(10);
     end;
     if NewAddrss > 0 then OutText(IntToStr(NewAddrss) + ' new addresses', False, 2);
     Sleep(10);
@@ -1171,7 +1170,7 @@ begin
         ConnectClient(GetNodeDataAtIndex(LastTrySlot).IpAddress,
           GetNodeDataAtIndex(LastTrySlot).Port);
     end;
-    sleep(3000);
+    Sleep(3000);
     if PRestartTime > 0 then
     begin
       if ((blockAge > 120) and (blockAge < 450) and (UTCTime > PRestartTime)) then
@@ -1199,28 +1198,28 @@ begin
   begin
     if not WO_BlockDB then
     begin
-      sleep(1000);
-      continue;
+      Sleep(1000);
+      Continue;
     end;
     if LastBlockIndex > GetDBLastBlock then
     begin
-      if ((blockAge > 60) and (copy(LastBlockHash, 1, 5) =
-        copy(getconsensus(10), 1, 5))) then
+      if ((blockAge > 60) and (Copy(LastBlockHash, 1, 5) =
+        Copy(getconsensus(10), 1, 5))) then
       begin
         UpdateBlockDatabase;
         ;
       end;
     end;
-    sleep(1000);
+    Sleep(1000);
   end;
   CloseOpenThread('Indexer');
 end;
 
 {$ENDREGION Thread Indexer}
 
- //***********************
- // *** FORM RELATIVES ***
- //***********************
+//***********************
+// *** FORM RELATIVES ***
+//***********************
 
 {$REGION Form1}
 
@@ -1231,21 +1230,21 @@ begin
   ProcessLines := TStringList.Create;
   OutgoingMsjs := TStringList.Create;
   Randomize;
-  InitCriticalSection(CSProcessLines);
-  InitCriticalSection(CSOutgoingMsjs);
-  InitCriticalSection(CSBlocksAccess);
-  //InitCriticalSection(CSPendingTransactions);
-  InitCriticalSection(CSCriptoThread);
+  InitCriticalSection(ProcessLinesLock);
+  InitCriticalSection(OutgoingMsjsLock);
+  InitCriticalSection(BlocksAccessLock);
+  //InitCriticalSection(PendingTransactionsLock);
+  InitCriticalSection(CriptoThreadLock);
   //InitCriticalSection(CSMNsArray);
-  //InitCriticalSection(CSWaitingMNs);
-  InitCriticalSection(CSMNsChecks);
-  InitCriticalSection(CSClosingApp);
-  //InitCriticalSection(CSNosoCFGStr);
-  InitCriticalSection(CSIdsProcessed);
+  //InitCriticalSection(WaitingMNsLock);
+  InitCriticalSection(MNsChecksLock);
+  InitCriticalSection(ClosingAppLock);
+  //InitCriticalSection(NosoCFGStrLock);
+  InitCriticalSection(IdsProcessedLock);
   for counter := 1 to MaxConnections do
   begin
-    //InitCriticalSection(CSOutgoingMessages[counter]);
-    //InitCriticalSection(CSIncomingMessages[counter]);
+    //InitCriticalSection(OutgoingMessagesLock[counter]);
+    //InitCriticalSection(IncomingMessagesLock[counter]);
     //SetLength(OutgoingMessages[counter],0);
     //SlotTextLines[counter] := TStringlist.Create;
     //ClientChannels[counter] := TIdTCPClient.Create(form1);
@@ -1261,21 +1260,21 @@ procedure TForm1.FormDestroy(Sender: TObject);
 var
   contador: Integer;
 begin
-  DoneCriticalSection(CSProcessLines);
-  DoneCriticalSection(CSOutgoingMsjs);
-  DoneCriticalSection(CSBlocksAccess);
-  //DoneCriticalSection(CSPendingTransactions);
-  DoneCriticalSection(CSCriptoThread);
+  DoneCriticalSection(ProcessLinesLock);
+  DoneCriticalSection(OutgoingMsjsLock);
+  DoneCriticalSection(BlocksAccessLock);
+  //DoneCriticalSection(PendingTransactionsLock);
+  DoneCriticalSection(CriptoThreadLock);
   //DoneCriticalSection(CSMNsArray);
-  //DoneCriticalSection(CSWaitingMNs);
-  DoneCriticalSection(CSMNsChecks);
-  DoneCriticalSection(CSClosingApp);
-  //DoneCriticalSection(CSNosoCFGStr);
-  DoneCriticalSection(CSIdsProcessed);
+  //DoneCriticalSection(WaitingMNsLock);
+  DoneCriticalSection(MNsChecksLock);
+  DoneCriticalSection(ClosingAppLock);
+  //DoneCriticalSection(NosoCFGStrLock);
+  DoneCriticalSection(IdsProcessedLock);
   for contador := 1 to MaxConnections do
   begin
-    //DoneCriticalSection(CSOutgoingMessages[contador]);
-    //DoneCriticalSection(CSIncomingMessages[contador]);
+    //DoneCriticalSection(OutgoingMessagesLock[contador]);
+    //DoneCriticalSection(IncomingMessagesLock[contador]);
   end;
   //for contador := 1 to MaxConnections do
   //If Assigned(SlotTextLines[contador]) then SlotTextLines[contador].Free;
@@ -1464,9 +1463,9 @@ begin
     if WO_autoserver then KeepServerOn := True;
     FormInicio.BorderIcons := FormInicio.BorderIcons + [bisystemmenu];
     SetLength(ArrayCriptoOp, 0);
-    Setlength(MNsArray, 0);
-    Setlength(MNsList, 0);
-    Setlength(MasternodeChecks, 0);
+    SetLength(MNsArray, 0);
+    SetLength(MNsList, 0);
+    SetLength(MasternodeChecks, 0);
     //Setlength(WaitingMNs,0);
     ThreadMNs := TUpdateMNs.Create(True);
     ThreadMNs.FreeOnTerminate := True;
@@ -1509,9 +1508,9 @@ begin
   if WO_autoserver then KeepServerOn := True;
   FormInicio.BorderIcons := FormInicio.BorderIcons + [bisystemmenu];
   SetLength(ArrayCriptoOp, 0);
-  Setlength(MNsArray, 0);
-  Setlength(MNsList, 0);
-  Setlength(MasternodeChecks, 0);
+  SetLength(MNsArray, 0);
+  SetLength(MNsList, 0);
+  SetLength(MasternodeChecks, 0);
   //Setlength(WaitingMNs,0);
   ThreadMNs := TUpdateMNs.Create(True);
   ThreadMNs.FreeOnTerminate := True;
@@ -1558,9 +1557,9 @@ end;
 
 {$ENDREGION}
 
- //*********************
- // *** GUI CONTROLS ***
- //*********************
+//*********************
+// *** GUI CONTROLS ***
+//*********************
 
 {$REGION GUI controls}
 
@@ -1826,8 +1825,8 @@ begin
   if ConnectedRotor > 6 then ConnectedRotor := 0;
   UpdateStatusBar;
   if ((UTCTime mod 60 = 0) and (LastIPsClear <> UTCTime)) then ClearIPControls;
-  if ((UTCTime mod 3600 = 3590) and (LastBotClearTime <> UTCTime) and (Form1.Server.Active))
-  then RemoveAllBots;
+  if ((UTCTime mod 3600 = 3590) and (LastBotClearTime <> UTCTime) and
+    (Form1.Server.Active)) then RemoveAllBots;
   if ((UTCTime mod 600 >= 570) and (UTCTime > NosoT_LastUpdate + 599)) then
     UpdateOffset(GetParameter(GetCFGDataStr, 2));
   Form1.Latido.Enabled := True;
@@ -1861,7 +1860,7 @@ end;
 // Updates status bar
 procedure UpdateStatusBar();
 begin
-  if WO_StopGUI then exit;
+  if WO_StopGUI then Exit;
   if Form1.Server.Active then Form1.StaSerImg.Visible := True
   else
     Form1.StaSerImg.Visible := False;
@@ -1922,13 +1921,13 @@ var
   end;
 
 begin
-  EnterCriticalSection(CSClosingApp);
+  EnterCriticalSection(ClosingAppLock);
   if not G_ClosingAPP then
   begin
     G_ClosingAPP := True;
     GoAhead := True;
   end;
-  LeaveCriticalSection(CSClosingApp);
+  LeaveCriticalSection(ClosingAppLock);
   if GoAhead then
   begin
     LogPerformanceToFile(PerformanceFilename);
@@ -1942,12 +1941,12 @@ begin
     FormInicio.BorderIcons := FormInicio.BorderIcons - [bisystemmenu];
     CloseLine(rs0030);  //   Closing wallet
     CreateADV(False);   // save advopt
-    sleep(100);
+    Sleep(100);
     CloseAllforms();
     CloseLine('Forms closed');
-    sleep(100);
+    Sleep(100);
     CloseLine(CerrarClientes(False));
-    sleep(100);
+    Sleep(100);
     if ((EarlyRestart) and (RestartNosoAfterQuit)) then RestartNoso;
     if form1.Server.Active then
     begin
@@ -1955,13 +1954,13 @@ begin
       else
         CloseLine('Error closing node server');
     end;
-    sleep(100);
+    Sleep(100);
     if Assigned(ProcessLines) then ProcessLines.Free;
     CloseLine('Componnents freed');
-    sleep(100);
-    EnterCriticalSection(CSOutgoingMsjs);
+    Sleep(100);
+    EnterCriticalSection(OutgoingMsjsLock);
     OutgoingMsjs.Clear;
-    LeaveCriticalSection(CSOutgoingMsjs);
+    LeaveCriticalSection(OutgoingMsjsLock);
     try
       if Assigned(SendOutMsgsThread) then
       begin
@@ -1970,9 +1969,9 @@ begin
         begin
           if ((Assigned(SendOutMsgsThread)) and
             (not SendOutMsgsThread.Terminated)) then
-            sleep(1000)
+            Sleep(1000)
           else
-            break;
+            Break;
         end;
       end;
       if ((Assigned(SendOutMsgsThread)) and (not SendOutMsgsThread.Terminated)) then
@@ -1983,11 +1982,11 @@ begin
       ON E: Exception do
         CloseLine('Error closing Out thread');
     end{Try};
-    sleep(100);
+    Sleep(100);
     if Assigned(OutgoingMsjs) then OutgoingMsjs.Free;
-    EnterCriticalSection(CSCriptoThread);
+    EnterCriticalSection(CriptoThreadLock);
     SetLength(ArrayCriptoOp, 0);
-    LeaveCriticalSection(CSCriptoThread);
+    LeaveCriticalSection(CriptoThreadLock);
     try
       if Assigned(CryptoThread) then
       begin
@@ -1995,9 +1994,9 @@ begin
         for counter := 1 to 10 do
         begin
           if ((Assigned(CryptoThread)) and (not CryptoThread.Terminated)) then
-            sleep(1000)
+            Sleep(1000)
           else
-            break;
+            Break;
         end;
       end;
       if ((Assigned(CryptoThread)) and (not CryptoThread.Terminated)) then
@@ -2008,7 +2007,7 @@ begin
       ON E: Exception do
         CloseLine('Error closing crypto thread');
     end{Try};
-    sleep(100);
+    Sleep(100);
     try
       if Assigned(UpdateLogsThread) then
       begin
@@ -2016,9 +2015,9 @@ begin
         for counter := 1 to 10 do
         begin
           if ((Assigned(UpdateLogsThread)) and (not UpdateLogsThread.Terminated)) then
-            sleep(1000)
+            Sleep(1000)
           else
-            break;
+            Break;
         end;
       end;
       if ((Assigned(UpdateLogsThread)) and (not UpdateLogsThread.Terminated)) then
@@ -2029,16 +2028,16 @@ begin
       ON E: Exception do
         CloseLine('Error closing Updatelogs thread');
     end{Try};
-    sleep(100);
+    Sleep(100);
     try
       if Assigned(ThreadMNs) then
       begin
         ThreadMNs.Terminate;
         for counter := 1 to 10 do
         begin
-          if ((Assigned(ThreadMNs)) and (not ThreadMNs.Terminated)) then sleep(1000)
+          if ((Assigned(ThreadMNs)) and (not ThreadMNs.Terminated)) then Sleep(1000)
           else
-            break;
+            Break;
         end;
       end;
       if ((Assigned(ThreadMNs)) and (not ThreadMNs.Terminated)) then
@@ -2049,7 +2048,7 @@ begin
       ON E: Exception do
         CloseLine('Error closing Nodes thread');
     end{Try};
-    sleep(100);
+    Sleep(100);
     if ((not EarlyRestart) and (RestartNosoAfterQuit)) then RestartNoso;
     CreateEmptyFile(ClosedAppFilename);
     form1.Close;
@@ -2098,9 +2097,9 @@ end;
 
 {$ENDREGION}
 
- // *****************************
- // *** NODE SERVER FUNCTIONS ***
- // *****************************
+// *****************************
+// *** NODE SERVER FUNCTIONS ***
+// *****************************
 
 {$REGION Node Server}
 
@@ -2195,16 +2194,16 @@ begin
       Inc(LinesSent);
     end;
   until LineToSend = '';
-  if LinesSent > 0 then exit;
+  if LinesSent > 0 then Exit;
   if slot = 0 then
   begin
     TryCloseServerConnection(AContext);
-    exit;
+    Exit;
   end;
   if ((MyConStatus < 3) and (not IsSeedNode(IPUser))) then
   begin
     TryCloseServerConnection(AContext, 'Closing NODE');
-    exit;
+    Exit;
   end;
   try
     LLine := AContext.Connection.IOHandler.ReadLn(IndyTextEncoding_UTF8);
@@ -2237,7 +2236,7 @@ begin
       if GetfileOk then
       begin
         if SaveMemoryStreamAsHeaders(MemStream) then
-          ToLog('console', Format(rs0047, [copy(HashMD5File(SummaryFilename), 1, 5)]));
+          ToLog('console', Format(rs0047, [Copy(HashMD5File(SummaryFilename), 1, 5)]));
         //'Headers file received'
       end;
       UpdateNodeData();
@@ -2469,24 +2468,24 @@ begin
   if BotExists(IPUser) then
   begin
     TryCloseServerConnection(AContext, 'BANNED');
-    exit;
+    Exit;
   end;
   if AddIPControl(IPUser) > 99 then
   begin
     TryCloseServerConnection(AContext, '');
     UpdateBotData(IPUser);
     ToLog('console', 'IP spammer: ' + IPUser);
-    exit;
+    Exit;
   end;
   if ((MyConStatus < 3) and (not IsSeedNode(IPUser))) then
   begin
     TryCloseServerConnection(AContext, 'Closing NODE');
-    exit;
+    Exit;
   end;
   if KeepServerOn = False then // Reject any new connection if we are closing the server
   begin
     TryCloseServerConnection(AContext, 'Closing NODE');
-    exit;
+    Exit;
   end;
   LLine := '';
   try
@@ -2756,7 +2755,7 @@ procedure TForm1.SBSCPasteOnClick(Sender: TObject);
 begin
   EditSCDest.SetFocus;
   EditSCDest.Text := Clipboard.AsText;
-  EditSCDest.SelStart := length(EditSCDest.Text);
+  EditSCDest.SelStart := Length(EditSCDest.Text);
 end;
 
 // Paste maximum amount on edit
@@ -2804,26 +2803,26 @@ begin
   begin
     EditSCMont.Text := '0.00000000';
     EditSCMont.SelStart := 1;
-    exit;
+    Exit;
   end;
   ultimo := Char(key);
-  if pos(ultimo, permitido) = 0 then exit;
+  if pos(ultimo, permitido) = 0 then Exit;
   Actualmente := EditSCMont.Text;
   PosicionEnElPunto := Length(Actualmente) - 9;
   currpos := EditSCMont.SelStart;
-  if EditSCMont.SelStart > length(EditSCMont.Text) - 9 then // Decimal
+  if EditSCMont.SelStart > Length(EditSCMont.Text) - 9 then // Decimal
   begin
     Actualmente[currpos + 1] := ultimo;
     EditSCMont.Text := Actualmente;
     EditSCMont.SelStart := currpos + 1;
   end;
-  if EditSCMont.SelStart <= length(EditSCMont.Text) - 9 then // Decimal
+  if EditSCMont.SelStart <= Length(EditSCMont.Text) - 9 then // Decimal
   begin
-    ParteEntera := copy(actualmente, 1, length(Actualmente) - 9);
-    ParteDecimal := copy(actualmente, length(Actualmente) - 7, 8);
+    ParteEntera := Copy(actualmente, 1, Length(Actualmente) - 9);
+    ParteDecimal := Copy(actualmente, Length(Actualmente) - 7, 8);
     if currpos = PosicionEnElPunto then // Just before point
     begin
-      if length(parteentera) > 7 then exit;
+      if Length(parteentera) > 7 then Exit;
       ParteEntera := ParteEntera + Ultimo;
       ParteEntera := IntToStr(StrToIntDef(ParteEntera, 0));
       actualmente := parteentera + '.' + partedecimal;
@@ -2833,7 +2832,7 @@ begin
     else
     begin
       Actualmente[currpos + 1] := ultimo;
-      ParteEntera := copy(actualmente, 1, length(Actualmente) - 9);
+      ParteEntera := Copy(actualmente, 1, Length(Actualmente) - 9);
       ParteEntera := IntToStr(StrToIntDef(ParteEntera, 0));
       actualmente := parteentera + '.' + partedecimal;
       EditSCMont.Text := Actualmente;
@@ -2915,9 +2914,9 @@ end;
 
 {$ENDREGION sendfunds panel }
 
- //******************************************************************************
- // MAINMENU
- //******************************************************************************
+//******************************************************************************
+// MAINMENU
+//******************************************************************************
 
 {$REGION mainmenu}
 
@@ -2948,9 +2947,9 @@ end;
 
 {$ENDREGION mainmenu}
 
- //******************************************************************************
- // ConsolePopUp
- //******************************************************************************
+//******************************************************************************
+// ConsolePopUp
+//******************************************************************************
 
 {$REGION Console popup}
 
@@ -2961,7 +2960,7 @@ begin
   if MemoConsola.Text <> '' then ConsolePopUp2.Items[0].Enabled := True
   else
     ConsolePopUp2.Items[0].Enabled := False;
-  if length(Memoconsola.SelText) > 0 then ConsolePopUp2.Items[1].Enabled := True
+  if Length(Memoconsola.SelText) > 0 then ConsolePopUp2.Items[1].Enabled := True
   else
     ConsolePopUp2.Items[1].Enabled := False;
 end;
@@ -2981,9 +2980,9 @@ end;
 
 {$ENDREGION Console popup}
 
- //******************************************************************************
- // CommandLine PopUp
- //******************************************************************************
+//******************************************************************************
+// CommandLine PopUp
+//******************************************************************************
 
 {$REGION command line popup}
 
@@ -2994,10 +2993,10 @@ begin
   if ConsoleLine.Text <> '' then ConsoLinePopUp2.Items[0].Enabled := True
   else
     ConsoLinePopUp2.Items[0].Enabled := False;
-  if length(ConsoleLine.SelText) > 0 then ConsoLinePopUp2.Items[1].Enabled := True
+  if Length(ConsoleLine.SelText) > 0 then ConsoLinePopUp2.Items[1].Enabled := True
   else
     ConsoLinePopUp2.Items[1].Enabled := False;
-  if length(Clipboard.AsText) > 0 then ConsoLinePopUp2.Items[2].Enabled := True
+  if Length(Clipboard.AsText) > 0 then ConsoLinePopUp2.Items[2].Enabled := True
   else
     ConsoLinePopUp2.Items[2].Enabled := False;
 end;
@@ -3026,15 +3025,15 @@ begin
   Currpos := ConsoleLine.SelStart;
   Insert(Clipboard.AsText, CurrText, ConsoleLine.SelStart + 1);
   ConsoleLine.Text := CurrText;
-  ConsoleLine.SelStart := currpos + length(Clipboard.AsText);
+  ConsoleLine.SelStart := currpos + Length(Clipboard.AsText);
   ConsoleLine.SetFocus;
 end;
 
 {$ENDREGION command line popup}
 
- //******************************************************************************
- // OPTIONS CONTROLS
- //******************************************************************************
+//******************************************************************************
+// OPTIONS CONTROLS
+//******************************************************************************
 
 {$REGION Options: wallet}
 
@@ -3168,22 +3167,22 @@ begin
   if WallAddIndex(LabeledEdit9.Text) < 0 then
   begin
     info(rs0081); // Invalid sign address
-    exit;
+    Exit;
   end;
   if GetAddressBalanceIndexed(LabeledEdit8.Text) < GetStackRequired(LastBlockIndex) then
   begin
     info(rs0082); // Funds address do not owns enough coins
-    exit;
+    Exit;
   end;
   if form1.Server.Active then
   begin
     info(rs0080);   //You can not test while server is active
-    exit;
+    Exit;
   end;
   if MyConStatus < 3 then
   begin
     info(rs0083);   //You need update the wallet
-    exit;
+    Exit;
   end;
   try
     form1.Server.Active := True;
@@ -3192,7 +3191,7 @@ begin
     on E: Exception do
     begin
       info('Error activating server: ' + E.Message);
-      exit;
+      Exit;
     end;
   end;{Try}
   LineResult := '';
@@ -3214,7 +3213,7 @@ begin
       info('Cant connect to ' + IPToUse);
       client.Free;
       if ServerActivated then form1.Server.Active := False;
-      exit;
+      Exit;
     end;
   end;{Try}
   if LineResult <> '' then info(IPToUse + ': OK')

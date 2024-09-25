@@ -266,7 +266,7 @@ var
   /// <summary>
   /// Array of critical sections for managing non-disk logs.
   /// </summary>
-  CSNonDisks: array of TRTLCriticalSection;
+  NonDisksLock: array of TRTLCriticalSection;
 
   /// <summary>
   /// Array of string lists associated with non-disk logs.
@@ -281,7 +281,7 @@ var
   /// <summary>
   /// Critical section for thread management.
   /// </summary>
-  CSThreadManager: TRTLCriticalSection;
+  ThreadManagerLock: TRTLCriticalSection;
 
   /// <summary>
   /// Array of file management records.
@@ -291,7 +291,7 @@ var
   /// <summary>
   /// Critical section for file management.
   /// </summary>
-  CSFileManager: TRTLCriticalSection;
+  FileManagerLock: TRTLCriticalSection;
 
   /// <summary>
   /// String list for deep debugging logs.
@@ -301,7 +301,7 @@ var
   /// <summary>
   /// Critical section for deep debugging logs.
   /// </summary>
-  CSDeepDebug: TRTLCriticalSection;
+  DeepDebugLock: TRTLCriticalSection;
 
   /// <summary>
   /// Filename for deep debug logs.
@@ -473,9 +473,9 @@ begin
   Log.Filename := FileName;
 
   // Increase the size of the critical section array and string list
-  i := Length(CSNonDisks);
-  SetLength(CSNonDisks, i + 1);
-  InitCriticalSection(CSNonDisks[i]);
+  i := Length(NonDisksLock);
+  SetLength(NonDisksLock, i + 1);
+  InitCriticalSection(NonDisksLock[i]);
 
   SetLength(NonDiskStringLists, i + 1);
   NonDiskStringLists[i] := TStringList.Create;
@@ -501,7 +501,7 @@ begin
   begin
     if NonDiskLogs[i].Tag = UpperCase(Tag) then
     begin
-      EnterCriticalSection(CSNonDisks[i]);
+      EnterCriticalSection(NonDisksLock[i]);
       try
         // Add the log line to the in-memory list
         NonDiskStringLists[i].Add(Line);
@@ -511,7 +511,7 @@ begin
         if NonDiskLogs[i].LogToDisk then
           SaveTextToDisk(Line, NonDiskLogs[i].Filename);
       finally
-        LeaveCriticalSection(CSNonDisks[i]);
+        LeaveCriticalSection(NonDisksLock[i]);
       end;
       Exit; // Exit once the matching log is found
     end;
@@ -528,7 +528,7 @@ begin
   begin
     if NonDiskLogs[i].Tag = UpperCase(Tag) then
     begin
-      EnterCriticalSection(CSNonDisks[i]);
+      EnterCriticalSection(NonDisksLock[i]);
       try
         // Check if there are any lines in the log
         if NonDiskStringLists[i].Count > 0 then
@@ -543,7 +543,7 @@ begin
             SaveTextToDisk(Line, NonDiskLogs[i].Filename);
         end;
       finally
-        LeaveCriticalSection(CSNonDisks[i]);
+        LeaveCriticalSection(NonDisksLock[i]);
       end;
       Exit; // Exit once the matching log is found
     end;
@@ -569,12 +569,12 @@ begin
     end;
 
     // Clean up the critical section associated with each log
-    DoneCriticalSection(CSNonDisks[i]);
+    DoneCriticalSection(NonDisksLock[i]);
   end;
 
   // Clear the arrays after all resources are freed
   SetLength(NonDiskLogs, 0);
-  SetLength(CSNonDisks, 0);
+  SetLength(NonDisksLock, 0);
   SetLength(NonDiskStringLists, 0);
 end;
 
@@ -587,11 +587,11 @@ begin
   NewThread.StartTime := TimeStamp;
   NewThread.LastActiveTime := TimeStamp;
 
-  EnterCriticalSection(CSThreadManager);
+  EnterCriticalSection(ThreadManagerLock);
   try
     Insert(NewThread, ProcessList, Length(ProcessList));
   finally
-    LeaveCriticalSection(CSThreadManager);
+    LeaveCriticalSection(ThreadManagerLock);
   end;
 end;
 
@@ -599,7 +599,7 @@ procedure UpdateOpenThread(const ThreadName: String; const TimeStamp: Int64);
 var
   i: Integer;
 begin
-  EnterCriticalSection(CSThreadManager);
+  EnterCriticalSection(ThreadManagerLock);
   try
     for i := 0 to High(ProcessList) do
     begin
@@ -610,7 +610,7 @@ begin
       end;
     end;
   finally
-    LeaveCriticalSection(CSThreadManager);
+    LeaveCriticalSection(ThreadManagerLock);
   end;
 end;
 
@@ -618,7 +618,7 @@ procedure CloseOpenThread(const ThreadName: String);
 var
   i: Integer;
 begin
-  EnterCriticalSection(CSThreadManager);
+  EnterCriticalSection(ThreadManagerLock);
   try
     for i := 0 to High(ProcessList) do
     begin
@@ -629,7 +629,7 @@ begin
       end;
     end;
   finally
-    LeaveCriticalSection(CSThreadManager);
+    LeaveCriticalSection(ThreadManagerLock);
   end;
 end;
 
@@ -637,11 +637,11 @@ function GetProcessCopy(): TThreadManagerArray;
 begin
   SetLength(Result, 0);
 
-  EnterCriticalSection(CSThreadManager);
+  EnterCriticalSection(ThreadManagerLock);
   try
     Result := Copy(ProcessList, 0, Length(ProcessList));
   finally
-    LeaveCriticalSection(CSThreadManager);
+    LeaveCriticalSection(ThreadManagerLock);
   end;
 end;
 
@@ -655,11 +655,11 @@ begin
   NewFile.Peer := Peer;
   NewFile.LastAccessTime := TimeStamp;
 
-  EnterCriticalSection(CSFileManager);
+  EnterCriticalSection(FileManagerLock);
   try
     Insert(NewFile, FileManagers, Length(FileManagers));
   finally
-    LeaveCriticalSection(CSFileManager);
+    LeaveCriticalSection(FileManagerLock);
   end;
 end;
 
@@ -670,7 +670,7 @@ var
 begin
   Result := 0;
 
-  EnterCriticalSection(CSFileManager);
+  EnterCriticalSection(FileManagerLock);
   try
     for i := 0 to High(FileManagers) do
     begin
@@ -684,7 +684,7 @@ begin
       end;
     end;
   finally
-    LeaveCriticalSection(CSFileManager);
+    LeaveCriticalSection(FileManagerLock);
   end;
 end;
 
@@ -692,11 +692,11 @@ function GetFileProcessCopy(): TFileManagerArray;
 begin
   SetLength(Result, 0);
 
-  EnterCriticalSection(CSFileManager);
+  EnterCriticalSection(FileManagerLock);
   try
     Result := Copy(FileManagers, 0, Length(FileManagers));
   finally
-    LeaveCriticalSection(CSFileManager);
+    LeaveCriticalSection(FileManagerLock);
   end;
 end;
 
@@ -712,11 +712,11 @@ end;
 
 procedure ToDeepDebug(const Line: String);
 begin
-  EnterCriticalSection(CSDeepDebug);
+  EnterCriticalSection(DeepDebugLock);
   try
     DeepDebugLogStringList.Add(Line);
   finally
-    LeaveCriticalSection(CSDeepDebug);
+    LeaveCriticalSection(DeepDebugLock);
   end;
 end;
 
@@ -724,7 +724,7 @@ function GetDeepDebugLine(out Line: String): Boolean;
 begin
   Result := False;
 
-  EnterCriticalSection(CSDeepDebug);
+  EnterCriticalSection(DeepDebugLock);
   try
     if DeepDebugLogStringList.Count > 0 then
     begin
@@ -736,7 +736,7 @@ begin
         SaveTextToDisk(DateTimeToStr(Now) + ' ' + Line, DeepDebugFilename);
     end;
   finally
-    LeaveCriticalSection(CSDeepDebug);
+    LeaveCriticalSection(DeepDebugLock);
   end;
 end;
 
@@ -747,21 +747,21 @@ initialization
   // Initialize dynamic arrays
   SetLength(PerformanceStats, 0);
   SetLength(NonDiskLogs, 0);
-  SetLength(CSNonDisks, 0);
+  SetLength(NonDisksLock, 0);
   SetLength(NonDiskStringLists, 0);
   SetLength(ProcessList, 0);
   SetLength(FileManagers, 0);
 
   // Initialize critical sections
-  InitCriticalSection(CSThreadManager);
-  InitCriticalSection(CSFileManager);
-  InitCriticalSection(CSDeepDebug);
+  InitCriticalSection(ThreadManagerLock);
+  InitCriticalSection(FileManagerLock);
+  InitCriticalSection(DeepDebugLock);
 
 finalization
   // Free critical sections
-  DoneCriticalSection(CSDeepDebug);
-  DoneCriticalSection(CSFileManager);
-  DoneCriticalSection(CSThreadManager);
+  DoneCriticalSection(DeepDebugLock);
+  DoneCriticalSection(FileManagerLock);
+  DoneCriticalSection(ThreadManagerLock);
 
   // Free all log-related resources
   FreeAllLogs;

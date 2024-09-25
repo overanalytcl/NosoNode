@@ -168,7 +168,7 @@ begin
     LeaveCriticalSection(GVTArrayLock);
 
     // Processs pending orders
-    EnterCriticalSection(CSPendingTransactions);
+    EnterCriticalSection(PendingTransactionsLock);
     StartPerformanceMeasurement('NewBLOCK_PENDING');
     ArrayLastBlockTrxs := Default(TBlockOrders);
     ArrayLastBlockTrxs := GetBlockTransfers(LastBlockIndex);
@@ -296,7 +296,7 @@ begin
     end; {TRY}
     SetLength(IgnoredTrxs, 0);
     StopPerformanceMeasurement('NewBLOCK_PENDING');
-    LeaveCriticalSection(CSPendingTransactions);
+    LeaveCriticalSection(PendingTransactionsLock);
 
     //PoS payment
     StartPerformanceMeasurement('NewBLOCK_PoS');

@@ -68,8 +68,8 @@ var
   DBDirectory: String = 'DB' + DirectorySeparator;
   DataBaseFilename: String = 'blocks_db.nos';
   DBFile: file of TDBRecord;
-  CSDBFile: TRTLCriticalSection;
-  CSDBIndex: TRTLCriticalSection;
+  DBFileLock: TRTLCriticalSection;
+  DBIndexLock: TRTLCriticalSection;
   OrderIDIndex: array of TindexRecord;
 
 implementation
@@ -103,7 +103,7 @@ var
   Closed: Boolean = False;
 begin
   Result := 0;
-  EnterCriticalSection(CSDBFile);
+  EnterCriticalSection(DBFileLock);
   try
     Reset(DBFile);
     opened := True;
@@ -116,7 +116,7 @@ begin
     end;
   end;
   if ((opened) and (not closed)) then Closefile(DBfile);
-  LeaveCriticalSection(CSDBFile);
+  LeaveCriticalSection(DBFileLock);
 end;
 
 // Add a new record to the File and also to the index
@@ -132,7 +132,7 @@ begin
   NewData.orderID := order;
   NewData.Source := Source;
   NewData.Target := target;
-  EnterCriticalSection(CSDBFile);
+  EnterCriticalSection(DBFileLock);
   try
     Reset(DBFile);
     opened := True;
@@ -147,7 +147,7 @@ begin
     end;
   end;
   if ((opened) and (not closed)) then Closefile(DBfile);
-  LeaveCriticalSection(CSDBFile);
+  LeaveCriticalSection(DBFileLock);
   InsertToIndex(NewData);
 end;
 
@@ -159,7 +159,7 @@ var
   Closed: Boolean = False;
 begin
   Result := -1;
-  EnterCriticalSection(CSDBFile);
+  EnterCriticalSection(DBFileLock);
   try
     Reset(DBFile);
     opened := True;
@@ -179,7 +179,7 @@ begin
     end;
   end;
   if ((opened) and (not closed)) then Closefile(DBfile);
-  LeaveCriticalSection(CSDBFile);
+  LeaveCriticalSection(DBFileLock);
 end;
 
 // Calculates the integer for the value
@@ -226,9 +226,9 @@ end;
 function InsertToIndex(LData: TDBRecord): Boolean;
 begin
   Result := True;
-  EnterCriticalSEction(CSDBIndex);
+  EnterCriticalSEction(DBIndexLock);
   Insert(LData.block, OrderIDIndex[LData.orderID], length(OrderIDIndex[LData.orderID]));
-  LeaveCriticalSEction(CSDBIndex);
+  LeaveCriticalSEction(DBIndexLock);
 end;
 
 // Creates the INDEX from the file
@@ -262,13 +262,13 @@ function GetDBArray(Value: Integer; out LArray: IntArray): Boolean;
 begin
   Result := False;
   SetLength(LArray, 0);
-  EnterCriticalSection(CSDBIndex);
+  EnterCriticalSection(DBIndexLock);
   if length(OrderIDIndex[Value]) > 0 then
   begin
     LArray := copy(OrderIDIndex[Value], 0, length(OrderIDIndex[Value]));
     Result := True;
   end;
-  LeaveCriticalSection(CSDBIndex);
+  LeaveCriticalSection(DBIndexLock);
 end;
 
 // Returns the block number where the order is found, or -1 if none
@@ -491,13 +491,13 @@ end;
 
 initialization
   Assignfile(DBFile, BlockDirectory + DBDirectory + DataBaseFilename);
-  InitCriticalSection(CSDBFile);
-  InitCriticalSection(CSDBIndex);
+  InitCriticalSection(DBFileLock);
+  InitCriticalSection(DBIndexLock);
   SetLength(OrderIDIndex, 0, 0);
   SetLength(OrderIDIndex, 100000);
 
 finalization
-  DoneCriticalSection(CSDBFile);
-  DoneCriticalSection(CSDBIndex);
+  DoneCriticalSection(DBFileLock);
+  DoneCriticalSection(DBIndexLock);
 
 end.
