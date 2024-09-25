@@ -144,7 +144,7 @@ begin
 
   if not Fileexists(SummaryFileName) then
     CreateNewSummaryFile(FileExists(BlockDirectory + '0.blk'));
-  CreateSumaryIndex();
+  CreateSummaryIndex();
   OutText('✓ Sumary file ok', False, 1);
 
 
@@ -523,7 +523,7 @@ begin
   for contador := 0 to LenWallArr - 1 do
   begin
     ThisData := GetWallArrIndex(contador);
-    SumPos := GetIndexPosition(ThisData.Hash, thisRecord);
+    SumPos := FindSummaryIndexPosition(ThisData.Hash, thisRecord);
     ThisData.Balance := thisRecord.Balance;
     ThisData.LastOP := thisRecord.LastOperation;
     ThisData.score := thisRecord.score;
@@ -552,7 +552,7 @@ begin
   end;
   UpdateSummaryChanges;
   UpdateNodeData();
-  CreateSumaryIndex;
+  CreateSummaryIndex;
   TimeDuration := StopPerformanceMeasurement('RebuildSummary');
   ToLog('console', format('Sumary rebuild time: %d ms', [TimeDuration]));
 end;
@@ -593,9 +593,9 @@ var
   StartBlock, finishblock: Integer;
   counter: Integer;
 begin
-  if copy(MySumarioHash, 0, 5) = GetConsensus(17) then exit;
+  if copy(ComputeSummaryHash, 0, 5) = GetConsensus(17) then exit;
   RebuildingSumary := True;
-  StartBlock := SummaryLastop + 1;
+  StartBlock := SummaryLastOperation + 1;
   finishblock := LastBlockIndex;
   ToLog('console', 'Complete summary');
   for counter := StartBlock to finishblock do
@@ -609,12 +609,12 @@ begin
       EngineLastUpdate := UTCTime;
     end;
   end;
-  SummaryLastop := finishblock;
+  SummaryLastOperation := finishblock;
   RebuildingSumary := False;
   UpdateNodeData();
-  ZipSumary;
+  ZipSummary;
   ToLog('console', format('Summary completed from %d to %d (%s)',
-    [StartBlock - 1, finishblock, Copy(MySumarioHash, 0, 5)]));
+    [StartBlock - 1, finishblock, Copy(ComputeSummaryHash, 0, 5)]));
   info('Sumary completed');
 end;
 
@@ -645,28 +645,28 @@ begin
   begin
     if ArrayOrders[cont].OrderType = 'CUSTOM' then
     begin
-      IsCustomizacionValid(ArrayOrders[cont].Sender, ArrayOrders[cont].Receiver,
+      IsCustomizationValid(ArrayOrders[cont].Sender, ArrayOrders[cont].Receiver,
         BlockNumber, True);
     end;
     if ArrayOrders[cont].OrderType = 'SNDGVT' then
     begin
       Inc(GVTsTrfer);
-      SummaryPay(ArrayOrders[cont].Sender, GetCustomFee(BlockNumber), BlockNumber);
+      ProcessSummaryPayment(ArrayOrders[cont].Sender, GetCustomFee(BlockNumber), BlockNumber);
       ChangeGVTOwner(StrToIntDef(ArrayOrders[cont].Reference, 100),
         ArrayOrders[cont].Sender, ArrayOrders[cont].Receiver);
     end;
     if ArrayOrders[cont].OrderType = 'TRFR' then
     begin
-      if SummaryValidPay(ArrayOrders[cont].Sender, ArrayOrders[cont].AmountFee +
+      if IsSummaryValidPayment(ArrayOrders[cont].Sender, ArrayOrders[cont].AmountFee +
         ArrayOrders[cont].AmountTransferred, blocknumber) then
         CreditTo(ArrayOrders[cont].Receiver, ArrayOrders[cont].AmountTransferred, BlockNumber)
       else
-        SummaryPay(BlockHeader.AccountMiner, ArrayOrders[cont].AmountFee, blocknumber);
+        ProcessSummaryPayment(BlockHeader.AccountMiner, ArrayOrders[cont].AmountFee, blocknumber);
     end;
     if ArrayOrders[cont].OrderType = 'PROJCT' then
     begin
       CreditTo('NpryectdevepmentfundsGE', ArrayOrders[cont].AmountTransferred, BlockNumber);
-      SummaryPay(BlockHeader.AccountMiner, ArrayOrders[cont].AmountTransferred, blocknumber);
+      ProcessSummaryPayment(BlockHeader.AccountMiner, ArrayOrders[cont].AmountTransferred, blocknumber);
     end;
   end;
   setlength(ArrayOrders, 0);
@@ -678,7 +678,7 @@ begin
     PosCount := length(ArrayPos);
     for counterpos := 0 to PosCount - 1 do
       CreditTo(ArrayPos[counterPos].address, Posreward, BlockNumber);
-    SummaryPay(BlockHeader.AccountMiner, PosCount * Posreward, blocknumber);
+    ProcessSummaryPayment(BlockHeader.AccountMiner, PosCount * Posreward, blocknumber);
     SetLength(ArrayPos, 0);
   end;
 
@@ -690,7 +690,7 @@ begin
     MNsCount := length(ArrayMNs);
     for counterMNs := 0 to MNsCount - 1 do
       CreditTo(ArrayMNs[counterMNs].address, MNsreward, BlockNumber);
-    SummaryPay(BlockHeader.AccountMiner, MNsCount * MNsreward, BlockNumber);
+    ProcessSummaryPayment(BlockHeader.AccountMiner, MNsCount * MNsreward, BlockNumber);
     SetLength(ArrayMNs, 0);
   end;
   CreditTo(AdminHash, 0, BlockNumber);

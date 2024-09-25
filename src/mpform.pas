@@ -698,7 +698,7 @@ var
 
 
   {
-  //MySumarioHash : String = '';
+  //ComputeSummaryHash : String = '';
   LastBlockIndex     : integer = 0;
   LastBlockHash : String = '';
   CurrentSummaryFileHash   : String = '';
@@ -2304,7 +2304,7 @@ begin
     begin
       AddFileProcess('Send', 'Summary', IPUser, GetTickCount64);
       MemStream := TMemoryStream.Create;
-      FTPSize := GetSummaryAsMemStream(MemStream);
+      FTPSize := GetSummaryAsMemoryStream(MemStream);
       if FTPSize > 0 then
       begin
         try
@@ -2555,14 +2555,14 @@ begin
     else if GetParameter(LLine, 0) = 'GETZIPSUMARY' then
     begin
       MemStream := TMemoryStream.Create;
-      if GetZIPSummaryAsMemStream(MemStream) > 0 then GetFileOk := True
+      if GetZipSummaryAsMemoryStream(MemStream) > 0 then GetFileOk := True
       else
         GetFileOk := False;
       if GetFileOk then
       begin
         try
           Acontext.Connection.IOHandler.WriteLn('ZIPSUMARY ' +
-            Copy(MySumarioHash, 0, 5));
+            Copy(ComputeSummaryHash, 0, 5));
           Acontext.connection.IOHandler.Write(MemStream, 0, True);
         except
           on E: Exception do

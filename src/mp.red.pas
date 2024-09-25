@@ -492,7 +492,7 @@ begin
     end;
     if ((MyConStatus = 2) and (STATUS_Connected) and
       (IntToStr(LastBlockIndex) = Getconsensus(2)) and
-      (copy(MySumarioHash, 0, 5) = GetConsensus(17)) and
+      (copy(ComputeSummaryHash, 0, 5) = GetConsensus(17)) and
       (copy(GetSummaryFileHash, 0, 5) = GetConsensus(5))) then
     begin
       GetValidSlotForSeed(ValidSlot);
@@ -652,9 +652,9 @@ begin
 
   // Update summary
   if ((copy(GetSummaryFileHash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
-    (MySumarioHash <> GetConsensus(17)) {and (SummaryLastop < LastBlockIndex)}) then
+    (ComputeSummaryHash <> GetConsensus(17)) {and (SummaryLastOperation < LastBlockIndex)}) then
   begin  // complete or download summary
-    if (SummaryLastop + (2 * SumMarkInterval) < LastBlockIndex) then
+    if (SummaryLastOperation + (2 * SumMarkInterval) < LastBlockIndex) then
     begin
       if ((LastSummaryRequestTime + 5 < UTCTime) and (not DownloadingSummary)) then
       begin
@@ -727,12 +727,12 @@ begin
 
   // Blockchain status issues starts here
   if ((copy(GetSummaryFileHash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
-    (copy(MySumarioHash, 0, 5) <> GetConsensus(17)) and
-    (SummaryLastop = LastBlockIndex) and (LastSummaryRequestTime + 5 < UTCTime)) then
+    (copy(ComputeSummaryHash, 0, 5) <> GetConsensus(17)) and
+    (SummaryLastOperation = LastBlockIndex) and (LastSummaryRequestTime + 5 < UTCTime)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
-      ToLog('console', format('%s <> %s', [copy(MySumarioHash, 0, 5),
+      ToLog('console', format('%s <> %s', [copy(ComputeSummaryHash, 0, 5),
         GetConsensus(17)]));
       PTC_SendLine(ValidSlot, GetProtocolLineFromCode(6)); // Getsumary
       ToLog('console', rs2003); //'sumary file requested'
@@ -748,7 +748,7 @@ begin
   // Update headers
   else if ((copy(GetSummaryFileHash, 0, 5) <> GetConsensus(5)) and
     (NLBV = LastBlockIndex) and (LastBlockHash = GetConsensus(10)) and
-    (copy(MySumarioHash, 0, 5) = GetConsensus(17)) and (not DownloadingHeaders)) then
+    (copy(ComputeSummaryHash, 0, 5) = GetConsensus(17)) and (not DownloadingHeaders)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
@@ -964,7 +964,7 @@ begin
     {13}LastBlockData.AccountMiner + ' ' +{14}GetMasternodeCheckCount.ToString +
     ' ' +{15}GetParameter(LastBlockData.Solution, 2) + ' ' +
     {16}GetParameter(LastBlockData.Solution, 1) + ' ' +{17}copy(
-    MySumarioHash, 0, 5) + ' ' +{18}copy(GVTHashMD5, 0, 5) + ' ' +
+    ComputeSummaryHash, 0, 5) + ' ' +{18}copy(GVTHashMD5, 0, 5) + ' ' +
     {19}Copy(GetCFGHash, 0, 5) + ' ' +{20}copy(PSOFileHash, 0, 5);
 end;
 

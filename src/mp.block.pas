@@ -159,7 +159,7 @@ begin
     SetLength(ListaOrdenes, 0);
     SetLength(IgnoredTrxs, 0);
     // Generate summary copy
-    CreateSumaryBackup();
+    CreateSummaryBackup();
 
     // Generate GVT copy
     EnterCriticalSection(GVTArrayLock);
@@ -199,7 +199,7 @@ begin
       if PendingTransactionsPool[contador].OrderType = 'CUSTOM' then
       begin
         OperationAddress := GetAddressFromPublicKey(PendingTransactionsPool[contador].Sender);
-        if IsCustomizacionValid(OperationAddress, PendingTransactionsPool[contador].Receiver,
+        if IsCustomizationValid(OperationAddress, PendingTransactionsPool[contador].Receiver,
           numero) then
         begin
           minerfee := minerfee + PendingTransactionsPool[contador].AmountFee;
@@ -212,7 +212,7 @@ begin
       if PendingTransactionsPool[contador].OrderType = 'TRFR' then
       begin
         OperationAddress := PendingTransactionsPool[contador].Address;
-        if SummaryValidPay(OperationAddress, PendingTransactionsPool[contador].AmountFee +
+        if IsSummaryValidPayment(OperationAddress, PendingTransactionsPool[contador].AmountFee +
           PendingTransactionsPool[contador].AmountTransferred, numero) then
         begin
           minerfee := minerfee + PendingTransactionsPool[contador].AmountFee;
@@ -235,7 +235,7 @@ begin
         begin
           minerfee := minerfee + PendingTransactionsPool[contador].AmountFee;
           Inc(GVTsTransfered);
-          SummaryValidPay(OperationAddress, PendingTransactionsPool[contador].AmountFee, numero);
+          IsSummaryValidPayment(OperationAddress, PendingTransactionsPool[contador].AmountFee, numero);
           PendingTransactionsPool[contador].Block := numero;
           PendingTransactionsPool[contador].Sender := OperationAddress;
           insert(PendingTransactionsPool[contador], ListaOrdenes, length(listaordenes));
@@ -258,7 +258,7 @@ begin
           NPDAmount := StrToInt64def(GetParameter(NosoPayData, 3), 0);
           if NPDAmount > 0 then
           begin
-            if SummaryValidPay(NPDSource, NPDamount, NPDBlock) then
+            if IsSummaryValidPayment(NPDSource, NPDamount, NPDBlock) then
             begin
               CreditTo(NPDTarget, NPDAmount, NPDBlock);
               NPDOrder :=
@@ -378,7 +378,7 @@ begin
     StartPerformanceMeasurement('NewBLOCK_SaveSum');
     UpdateSummaryChanges();
     StopPerformanceMeasurement('NewBLOCK_SaveSum');
-    SummaryLastop := numero;
+    SummaryLastOperation := numero;
     // Limpiar las pendientes
     ClearWallPendings;
     // Definir la cabecera del bloque *****
@@ -419,7 +419,7 @@ begin
         numero.ToString);
 
     BuildNMSBlock := 0;
-    ZipSumary;
+    ZipSummary;
 
     SetLength(ListaOrdenes, 0);
     SetLength(PoSAddressess, 0);
@@ -430,7 +430,7 @@ begin
     SetSummaryHash;
     SetMNsHash;
     // Actualizar el arvhivo de cabeceras
-    AddRecordToHeaders(Numero, LastBlockHash, MySumarioHash);
+    AddRecordToHeaders(Numero, LastBlockHash, ComputeSummaryHash);
     SetSummaryFileHash;
     if ((Numero > 0) and (form1.Server.Active)) then
     begin
@@ -696,9 +696,9 @@ begin
     ClearReceivedOrdersIDs;
   end;
   // recover summary
-  RestoreSumaryBackup();
+  RestoreSummaryBackup();
 
-  CreateSumaryIndex;
+  CreateSummaryIndex;
   // recover GVTs file
   EnterCriticalSection(GVTArrayLock);
   trydeletefile(GVTFilename);

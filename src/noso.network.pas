@@ -875,7 +875,7 @@ begin
     Port := -1;
 
   Result := Format('%d %d %s %s %d %s %d %d %s %d null %d %s %s %s',
-    [GetTotalConnections(), LastBlockIndex, LastBlockHash, MySumarioHash,
+    [GetTotalConnections(), LastBlockIndex, LastBlockHash, ComputeSummaryHash,
     GetPendingTransactionCount(), GetSummaryFileHash, MyConStatus, Port,
     Copy(GetMNsHash, 0, 5), GetMNsListLength, GetMasternodeCheckCount(),
     GVTHashMD5, Copy(HashMD5String(GetCFGDataStr), 0, 5), Copy(PSOFileHash, 0, 5)]);
@@ -1040,7 +1040,7 @@ begin
   if LastBlockHash <> GetConsensus(cLBHash) then
     Result := ssBlockHashMismatch;
 
-  if Copy(MySumarioHash, 0, 5) <> GetConsensus(cSumHash) then
+  if Copy(ComputeSummaryHash, 0, 5) <> GetConsensus(cSumHash) then
     Result := ssSummaryHashMismatch;
 
   if Copy(GetSummaryFileHash, 0, 5) <> GetConsensus(cHeaders) then
@@ -1053,7 +1053,7 @@ begin
 
   try
     Result := Format('%d%s%s%s', [LastBlockIndex, Copy(GetSummaryFileHash, 1, 3),
-      Copy(MySumarioHash, 1, 3), Copy(LastBlockHash, 1, 3)]);
+      Copy(ComputeSummaryHash, 1, 3), Copy(LastBlockHash, 1, 3)]);
   except
     on E: Exception do
       ToDeepDebug('NosoNetwork,GetSynchronizationStatus,' + e.Message);
@@ -1552,11 +1552,11 @@ begin
             Stream := TMemoryStream.Create;
             try
               IsSaved := GetStreamFromClient(FSlot, Stream) and
-                SaveSummaryToFile(Stream);
+                (SaveSummaryToFile(Stream) <> 0);
               if IsSaved then
               begin
                 UpdateNodeData();
-                CreateSumaryIndex();
+                CreateSummaryIndex();
               end
               else
                 ShouldTerminate := True;

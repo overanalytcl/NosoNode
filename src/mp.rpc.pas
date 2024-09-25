@@ -578,10 +578,10 @@ begin
       if ThisAddress <> '' then
       begin
         if IsValidHashAddress(ThisAddress) then
-          sumposition := GetIndexPosition(ThisAddress, LRecord)
+          sumposition := FindSummaryIndexPosition(ThisAddress, LRecord)
         else
         begin
-          sumposition := GetIndexPosition(ThisAddress, LRecord, True);
+          sumposition := FindSummaryIndexPosition(ThisAddress, LRecord, True);
           ThisAddress := LRecord.Hash;
         end;
         if ThisAddress <> '' then

@@ -278,7 +278,7 @@ begin
   else
     port := -1;
   Result := IntToStr(GetTotalConnections()) + ' ' + IntToStr(LastBlockIndex) + ' ' +
-    LastBlockHash + ' ' + MySumarioHash + ' ' +
+    LastBlockHash + ' ' + ComputeSummaryHash + ' ' +
     GetPendingTransactionCount.ToString + ' ' + GetSummaryFileHash + ' ' +
     IntToStr(MyConStatus) + ' ' + IntToStr(port) + ' ' +
     copy(GetMNsHash, 0, 5) + ' ' + IntToStr(GetMNsListLength) + ' ' +
@@ -339,7 +339,7 @@ begin
   if UTCtime < LastRequest + 10 then exit;
   LastRequest := UTCTime;
   MemStream := TMemoryStream.Create;
-  GetSummaryAsMemStream(MemStream);
+  GetSummaryAsMemoryStream(MemStream);
   if GetConnectionData(slot).ConnectionType = 'CLI' then
   begin
     try

@@ -15,84 +15,210 @@ uses
   Noso.Crypto, Noso.Debug, Noso.General;
 
 type
+  { Holds the data for each address' summary }
   TSummaryData = packed record
-    Hash: String[40];     // Public hash
-    CustomAlias: String[40]; // Custom alias
-    Balance: Int64;       // Noso balance
-    Score: Int64;         // Token balance
-    LastOperation: Int64; // Last operation block
+    Hash: String[40];        //< Public hash representing the address
+    CustomAlias: String[40]; //< Optional custom alias for the address
+    Balance: Int64;          //< Balance associated with the address
+    Score: Int64;            //< Token balance related to the address
+    LastOperation: Int64;    //< Block number of the last operation for the address
   end;
 
+  { Manages the details of an order within the system. }
   TOrderGroup = packed record
-    Block: Integer;
-    TimeStamp: Int64;
-    OrderID: String[64];
-    OrderType: String[6];
-    OrderLineCount: Integer;
-    Reference: String[64];
-    Sender: String;
-    Receiver: String[40];
-    AmmountFee: Int64;
-    AmountTransferred: Int64;
+    Block: Integer;           //< Block number associated with the order
+    TimeStamp: Int64;         //< Timestamp of the order
+    OrderID: String[64];      //< Unique identifier for the order
+    OrderType: String[6];     //< Type of order
+    OrderLineCount: Integer;  //< Number of lines in the order
+    Reference: String[64];    //< Reference for the order
+    Sender: String;           //< Address of the sender
+    Receiver: String[40];     //< Address of the receiver
+    AmmountFee: Int64;        //< Fee associated with the order
+    AmountTransferred: Int64; //< Amount transferred in the order
   end;
 
   TIndexRecord = array of Integer;
 
+  { Holds information about a block, including its disk position and associated summary data. }
   TBlockRecord = record
     DiskSlot: Int64;
     SummaryData: TSummaryData;
   end;
 
-{Protocol utilitys}
+{
+  Initializes a new order with the specified parameters.
+
+  @param BlockNumber The block number where the order is recorded.
+  @param OrderType Type of order.
+  @param Sender The address of the sender.
+  @param Receiver The address of the receiver.
+  @param Signature Digital signature of the order.
+  @param TimeStamp Timestamp of when the order is created.
+  @param Amount Amount related to the order.
+  @returns A TOrderData structure containing the initialized order information.
+}
 function CreateProtocolOrder(BlockNumber: Integer;
   OrderType, Sender, Receiver, Signature: String; TimeStamp, Amount: Int64): TOrderData;
 
-{Sumary management}
+{
+  Initializes a new summary file on disk.
+  @param AddBlockZero If @true, a zero block is added to the summary file and updates the summary.
+}
 procedure CreateNewSummaryFile(AddBlockZero: Boolean);
+{
+  Compresses the current summary file into a ZIP archive.
+
+  @returns @true if the zipping operation succeeds, otherwise @false.
+}
 function ZipSummary(): Boolean;
+{
+  Creates the summary index from the disk summary file.
+  @returns The time taken to create the summary index in milliseconds.
+}
 function CreateSummaryIndex(): Int64;
+{
+  Loads the summary file into a memory stream.
+
+  @param Stream The output memory stream that will contain the summary data.
+  @returns The size of the summary data loaded into the stream.
+}
 function GetSummaryAsMemoryStream(out Stream: TMemoryStream): Int64;
+
+{
+  Loads the zipped summary file into a memory stream.
+  @param Stream The output memory stream that will contain the zipped summary data.
+  @returns The size of the zipped summary data loaded into the stream.
+}
 function GetZipSummaryAsMemoryStream(out Stream: TMemoryStream): Int64;
-function SaveSummaryToFile(const Stream: TMemoryStream): Boolean;
+{
+  Saves the content of a memory stream to a specified file.
+  @param Stream The memory stream containing the data to save.
+  @returns The size of the stream.
+}
+function SaveSummaryToFile(Stream: TMemoryStream): Int64;
+{
+  Creates a backup of the current summary file.
+  @returns @true if the backup operation is successful, otherwise @false.
+}
 function CreateSummaryBackup(): Boolean;
+{
+  Restores the summary file from a backup.
+  @returns @true if the restore operation is successful, otherwise @false.
+}
 function RestoreSummaryBackup(): Boolean;
+{
+  Returns the length of the summary index.
+  @returns The length of the summary index.
+}
 function SummaryIndexLength(): Int64;
+{ Resets the block records by clearing the block records array. }
 procedure ResetBlockRecords();
+{
+  Searches for a summary record in the index based on the provided text.
+  @param Text The text (hash or alias) to search for in the index.
+  @param RecordData Output parameter that will hold the found record data.
+  @param IsAlias If true, searches for a custom alias instead of the hash.
+  @returns The index position of the found record, or -1 if not found.
+}
 function FindSummaryIndexPosition(Text: String; out RecordData: TSummaryData;
   IsAlias: Boolean = False): Int64;
+{
+  Verifies if a sender address has enough funds for a specified payment amount.
+  @param Address The address of the sender.
+  @param Amount The amount to be paid.
+  @param BlockNumber The block number in which the payment is being processed.
+  @returns @true if the payment is valid, otherwise @false.
+}
 function IsSummaryValidPayment(Address: String; Amount, BlockNumber: Int64): Boolean;
+{
+  Processes a payment for a specified address, updating its balance.
+
+  @param Address The address to process the payment for.
+  @param Amount The amount to be deducted from the address's balance.
+  @param BlockNumber The block number in which the payment is processed.
+}
 procedure ProcessSummaryPayment(Address: String; Amount, BlockNumber: Int64);
+{
+  Credits a specified amount to a specific address, updating its balance.
+  @param Address The address to which the amount will be credited.
+  @param Amount The amount to be credited.
+  @param BlockNumber The block number in which the credit is applied.
+}
 procedure CreditTo(Address: String; Amount, BlockNumber: Int64);
+{
+  Checks if an address can customize its alias based on current balance and conditions.
+  @param Address The address to verify customization for.
+  @param Custom The new custom alias to be set.
+  @param BlockNumber The block number in which the customization is processed.
+  @param ForceCustom If true, bypasses balance checks for customization.
+  @returns @true if the customization is valid, otherwise @false.
+}
 function IsCustomizationValid(Address, Custom: String; BlockNumber: Int64;
   ForceCustom: Boolean = False): Boolean;
+
+{ Processes and writes changes made to the summary in memory to the disk. }
 procedure UpdateSummaryChanges();
+
+{
+  Retrieves the balance of a specific address from the summary index.
+  @param Address The address whose balance is to be retrieved.
+  @returns The balance of the specified address, or 0 if not found.
+}
 function GetAddressBalanceIndexed(Address: String): Int64;
+{
+  Retrieves the custom alias for a specified address, if it exists.
+
+  @param Address The address to look up the alias for.
+  @returns The custom alias associated with the address, or an empty string if none exists.
+}
 function GetAddressAlias(Address: String): String;
+{
+  Retrieves the last operation block number associated with a specified address.
+
+  @param Address The address to look up.
+  @returns The block number of the last operation, or 0 if not found.
+}
 function GetAddressLastOperation(Address: String): Int64;
 
-// Summary hash related
+{ Calculates and sets the hash value for the summary file. }
 procedure SetSummaryHash();
+
+{
+  Retrieves the current hash value of the summary file.
+  @returns The hash value as a string.
+}
 function ComputeSummaryHash: String;
 
 var
-  {Overall variables}
+  { The current working directory for the application. }
   WorkingDirectory: String = '';
 
-  {Summary related}
+  { The file name for the summary data, located in the 'NOSODATA' directory. }
   SummaryFileName: String = 'NOSODATA' + DirectorySeparator + 'sumary.psk';
+  { The file name for the zipped summary data, located in the 'NOSODATA' directory. }
   ZipSummaryFileName: String = 'NOSODATA' + DirectorySeparator + 'sumary.zip';
+  { Holds the block number of the last operation performed on the summary data. }
   SummaryLastOperation: Int64;
+  { The MD5 hash value of the summary file for integrity checks. }
   SummaryHashValue: String = '';
 
 implementation
 
 var
+  { Represents the length of the summary index. }
   IndexLength: Int64 = 10;
+  { An array of TindexRecord that stores the index of the summary records. }
   SummaryIndex: array of TindexRecord;
-  SummaryDiskLock: TRTLCriticalSection;    {Disk access to summary}
-  SummaryIndexLock: TRTLCriticalSection;       {Access to index}
+  { Critical section for managing access to the summary data on disk. }
+  SummaryDiskLock: TRTLCriticalSection;
+  { Critical section for managing access to the summary index. }
+  SummaryIndexLock: TRTLCriticalSection;
+  { An array of TBlockRecord that stores block records associated with the summary. }
   BlockRecords: array of TBlockRecord;
+  { Critical section for managing access to the block records. }
   BlockRecordsLock: TRTLCriticalSection;
+  { Critical section for managing access to the summary hash value. }
   SummaryHashLock: TRTLCriticalSection;
 
   {$REGION Protocol utilitys}
@@ -121,8 +247,6 @@ end;
 {$ENDREGION}
 
 {$REGION Sumary management}
-
-{Creates a new summary file}
 procedure CreateNewSummaryFile(AddBlockZero: Boolean);
 var
   SummaryFile: file;
@@ -210,14 +334,14 @@ begin
       Stream.Position := 0;
     except
       on E: Exception do
-        LogError('Failed to load summary into memory stream: ' + E.Message);
+        WriteLn('Failed to load summary into memory stream: ' + E.Message);
     end
   finally
     LeaveCriticalSection(SummaryDiskLock);
   end;
 end;
 
-function SaveSummaryToFile(const Stream: TMemoryStream): Boolean;
+function SaveSummaryToFile(Stream: TMemoryStream): Int64;
 begin
   Result := 0;
   Stream := TMemoryStream.Create;
@@ -230,7 +354,7 @@ begin
       Stream.Position := 0;
     except
       on E: Exception do
-        LogError('Failed to load zipped summary into memory stream: ' + E.Message);
+        Writeln('Failed to load zipped summary into memory stream: ' + E.Message);
     end;
   finally
     LeaveCriticalSection(SummaryDiskLock);
@@ -257,6 +381,12 @@ begin
   end;
 end;
 
+{
+  Calculates the size of the index based on the number of records.
+  @param RecordCount The total number of records to determine the index size.
+  @returns The calculated index size.
+}
+
 function GetIndexSize(RecordCount: Integer): Integer;
 begin
   Result := 10;
@@ -266,6 +396,13 @@ begin
 
   Result := Result div 10;
 end;
+
+{
+  Computes an index based on the hash of the given address.
+  @param AddressHash The hash of the address to index.
+  @param IndexSize The maximum size for the index.
+  @returns The computed index.
+}
 
 function IndexFunction(AddressHash: String; IndexSize: Int64): Int64;
 var
@@ -277,7 +414,11 @@ begin
   Result := StrToInt64(B58ToB10(SubStr)) mod IndexSize;
 end;
 
-{Reads a specific summary record position from disk}
+{
+  Reads a specific summary record from disk based on the provided index.
+  @param Index The index position of the summary record to read.
+  @returns The summary record data read from the disk.
+}
 function ReadSummaryRecordFromDisk(Index: Integer): TSummaryData;
 var
   SummaryFile: file;
@@ -294,19 +435,23 @@ begin
         BlockRead(SummaryFile, Result, SizeOf(Result));
       except
         on E: Exception do
-          LogError('Error reading summary record from disk: ' + E.Message);
+          Writeln('Error reading summary record from disk: ' + E.Message);
       end;
       CloseFile(SummaryFile);
     except
       on E: Exception do
-        LogError('Error assigning summary file: ' + E.Message);
+        Writeln('Error assigning summary file: ' + E.Message);
     end
   finally
     LeaveCriticalSection(SummaryDiskLock);
   end;
 end;
 
-{Add a pointer to the summary index}
+{
+  Adds a pointer to the summary index for the given summary record data.
+  @param RecordData The summary record data to be indexed.
+  @param DiskPos The disk position of the record to be inserted.
+}
 procedure InsertIndexData(RecordData: TSummaryData; DiskPos: Int64);
 var
   Index: Int64;
@@ -321,7 +466,6 @@ begin
   end;
 end;
 
-{Creates the summary index from the disk}
 function CreateSummaryIndex(): Int64;
 var
   SummaryFile: file;
@@ -352,7 +496,7 @@ begin
         SummaryLastOperation := ReadSummaryRecordFromDisk(0).LastOperation;
       except
         on E: Exception do
-          LogError('Error creating summary index: ' + E.Message);
+          Writeln('Error creating summary index: ' + E.Message);
       end;
 
     finally
@@ -366,7 +510,6 @@ begin
   SetSummaryHash;
 end;
 
-{Returns the summary index length}
 function SummaryIndexLength(): Int64;
 begin
   EnterCriticalSection(SummaryIndexLock);
@@ -377,7 +520,6 @@ begin
   end;
 end;
 
-{If found, returns the record}
 function FindSummaryIndexPosition(Text: String; out RecordData: TSummaryData;
   IsAlias: Boolean = False): Int64;
 var
@@ -410,8 +552,6 @@ begin
   end;
 end;
 
-
-{Returns the balance of a specific address}
 function GetAddressBalanceIndexed(Address: String): Int64;
 var
   IndexPos: Integer;
@@ -442,7 +582,6 @@ begin
   end;
 end;
 
-{Reset the block records}
 procedure ResetBlockRecords();
 begin
   EnterCriticalSection(BlockRecordsLock);
@@ -453,20 +592,23 @@ begin
   end;
 end;
 
-{Insert a block record}
-procedure InsBlockRecord(LRecord: TSummaryData; SLot: Int64);
+{
+  Inserts a new block record with the specified summary data at the given slot.
+  @param Summary The summary data to be inserted into the block record.
+  @param Slot The disk slot where the block record will be stored.
+}
+procedure InsertBlockRecord(Summary: TSummaryData; Slot: Int64);
 begin
   EnterCriticalSection(BlockRecordsLock);
   try
     SetLength(BlockRecords, Length(BlockRecords) + 1);
-    BlockRecords[High(BlockRecords)].DiskSlot := DiskSlot;
-    BlockRecords[High(BlockRecords)].SummaryData := RecordData;
+    BlockRecords[High(BlockRecords)].DiskSlot := Slot;
+    BlockRecords[High(BlockRecords)].SummaryData := Summary;
   finally
     LeaveCriticalSection(BlockRecordsLock);
   end;
 end;
 
-{Verify if a sender address have enough funds}
 function IsSummaryValidPayment(Address: String; Amount, BlockNumber: Int64): Boolean;
 var
   i: Integer;
@@ -500,7 +642,7 @@ begin
 
   Dec(Summary.Balance, Amount);
   Summary.LastOperation := BlockNumber;
-  InsBlockRecord(Summary, SendPos);
+  InsertBlockRecord(Summary, SendPos);
 
   Exit(True);
 end;
@@ -535,11 +677,10 @@ begin
   begin
     Dec(Summary.Balance, Amount);
     Summary.LastOperation := BlockNumber;
-    InsBlockRecord(Summary, SendPos);
+    InsertBlockRecord(Summary, SendPos);
   end;
 end;
 
-{Set an ammount to be credited to an specific address}
 procedure CreditTo(Address: String; Amount, BlockNumber: Int64);
 var
   i: Integer;
@@ -568,36 +709,36 @@ begin
   if SummaryPos < 0 then
     Summary.Hash := Address;
 
-  InsBlockRecord(Summary, SummaryPos);
+  InsertBlockRecord(Summary, SummaryPos);
 end;
 
-{Process if an address customization is valid}
+
 function IsCustomizationValid(Address, Custom: String; BlockNumber: Int64;
   ForceCustom: Boolean = False): Boolean;
 const
   CustomizationCost = 25000;
 var
-  counter: Integer;
-  SumPos: Int64;
-  ThisRecord: TSummaryData;
+  i: Integer;
+  SummaryPos: Int64;
+  Summary: TSummaryData;
 begin
   Result := False;
 
   EnterCriticalSection(BlockRecordsLock);
   try
-    for counter := 0 to High(BlockRecords) do
+    for i := 0 to High(BlockRecords) do
     begin
-      if BlockRecords[counter].SummaryData.Hash = Address then
+      if BlockRecords[i].SummaryData.Hash = Address then
       begin
-        if (BlockRecords[counter].SummaryData.CustomAlias <> '') and not ForceCustom then
+        if (BlockRecords[i].SummaryData.CustomAlias <> '') and not ForceCustom then
           Exit(False);
 
-        if (BlockRecords[counter].SummaryData.Balance < CustomizationCost) and
+        if (BlockRecords[i].SummaryData.Balance < CustomizationCost) and
           not ForceCustom then
           Exit(False);
 
-        BlockRecords[counter].SummaryData.CustomAlias := Custom;
-        Dec(BlockRecords[counter].SummaryData.Balance, CustomizationCost);
+        BlockRecords[i].SummaryData.CustomAlias := Custom;
+        Dec(BlockRecords[i].SummaryData.Balance, CustomizationCost);
         Exit(True);
       end;
     end;
@@ -605,20 +746,23 @@ begin
     LeaveCriticalSection(BlockRecordsLock);
   end;
 
-  SumPos := FindSummaryIndexPosition(Address, ThisRecord);
-  if SumPos < 0 then Exit(False);
+  SummaryPos := FindSummaryIndexPosition(Address, Summary);
+  if SummaryPos < 0 then
+    Exit(False);
 
-  if (ThisRecord.Balance < CustomizationCost) and not ForceCustom then Exit(False);
-  if (ThisRecord.CustomAlias <> '') and not ForceCustom then Exit(False);
+  if (Summary.Balance < CustomizationCost) and not ForceCustom then
+    Exit(False);
 
-  ThisRecord.CustomAlias := Custom;
-  Dec(ThisRecord.Balance, CustomizationCost);
-  ThisRecord.LastOperation := BlockNumber;
-  InsBlockRecord(ThisRecord, SumPos);
+  if (Summary.CustomAlias <> '') and not ForceCustom then
+    Exit(False);
+
+  Summary.CustomAlias := Custom;
+  Dec(Summary.Balance, CustomizationCost);
+  Summary.LastOperation := BlockNumber;
+  InsertBlockRecord(Summary, SummaryPos);
   Result := True;
 end;
 
-{Process the changes of the block to the summary on disk}
 procedure UpdateSummaryChanges();
 var
   i: Integer;
@@ -643,12 +787,12 @@ begin
       end;
     except
       on E: Exception do
-        LogError('Error updating summary changes: ' + E.Message);
+        Writeln('Error updating summary changes: ' + E.Message);
     end;
     CloseFile(SummaryFile);
   except
     on E: Exception do
-      LogError('Error assigning summary file: ' + E.Message);
+      Writeln('Error assigning summary file: ' + E.Message);
   end;
 
   LeaveCriticalSection(SummaryDiskLock);
@@ -656,7 +800,6 @@ begin
   SetSummaryHash;
 end;
 
-{Returns the address alias name if exists}
 function GetAddressAlias(Address: String): String;
 var
   SummaryPos: Int64;

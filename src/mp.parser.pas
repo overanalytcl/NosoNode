@@ -273,7 +273,7 @@ begin
   else if UpperCase(Command) = 'WEBWAL' then WebWallet()
   else if UpperCase(Command) = 'EXPKEYS' then ExportKeys(LineText)
   else if UpperCase(Command) = 'CHECKUPDATES' then ToLog('console', GetLastRelease)
-  else if UpperCase(Command) = 'ZIPSUMARY' then ZipSumary()
+  else if UpperCase(Command) = 'ZIPSUMARY' then ZipSummary()
   else if UpperCase(Command) = 'GETPOS' then
     ToLog('console', GetPoSPercentage(StrToIntdef(GetParameter(linetext, 1),
       LastBlockIndex)).ToString)
@@ -322,7 +322,7 @@ begin
       lineEnding + 'NPrjectPrtcRandmJacptE5: ' + IntToCurrency(
       GetAddressAvailable('NPrjectPrtcRandmJacptE5')))
   else if UpperCase(Command) = 'SUMINDEXSIZE' then
-    ToLog('console', IntToStr(SumIndexLength))
+    ToLog('console', IntToStr(SummaryIndexLength))
   else if UpperCase(Command) = 'MNSCHECKS' then ShowMNsChecks()
   else if UpperCase(Command) = 'TESTHEAD' then Test_Headers()
 
@@ -797,7 +797,7 @@ begin
   end;
   if not IsValidHashAddress(Destination) then
   begin
-    AliasIndex := GetIndexPosition(Destination, DestinationRecord, True);
+    AliasIndex := FindSummaryIndexPosition(Destination, DestinationRecord, True);
     if AliasIndex < 0 then
     begin
       if showOutput then ToLog('console', 'Invalid destination.');
@@ -941,7 +941,7 @@ begin
   end;
   if not IsValidHashAddress(Destination) then
   begin
-    AliasIndex := GetIndexPosition(Destination, DestinationRecord, True);
+    AliasIndex := FindSummaryIndexPosition(Destination, DestinationRecord, True);
     if AliasIndex < 0 then
     begin
       if showOutput then ToLog('console', 'Invalid destination.');
@@ -1301,11 +1301,11 @@ begin
   begin
     addhash := addtoshow;
     addalias := GetAddressAlias(addtoshow);
-    sumposition := GetIndexPosition(AddToShow, LRecord, False);
+    sumposition := FindSummaryIndexPosition(AddToShow, LRecord, False);
   end
   else
   begin
-    sumposition := GetIndexPosition(AddToShow, LRecord, True);
+    sumposition := FindSummaryIndexPosition(AddToShow, LRecord, True);
     if Sumposition >= 0 then
     begin
       addhash := LRecord.Hash;
@@ -1785,7 +1785,7 @@ begin
       ThisBal := GetAddressBalanceIndexed(ThisAdd);
       Inc(Total, ThisBal);
       Inc(Count);
-      LastOP := GetAddressLastOP(ThisAdd);
+      LastOP := GetAddressLastOperation(ThisAdd);
       if AnsiContainsStr(GetMN_FileText, Thisadd) then MNMsg := '[MN]'
       else
         MNMsg := '';

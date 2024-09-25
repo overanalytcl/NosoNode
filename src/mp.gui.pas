@@ -452,7 +452,7 @@ begin
     form1.DataPanel.Cells[1, 3] :=
       Format('%s / %s', [copy(GetSummaryFileHash, 0, 5), GetConsensus(5)]);
     form1.DataPanel.Cells[1, 4] :=
-      format('%s / %s', [Copy(MySumarioHash, 0, 5), GetConsensus(17)]);
+      format('%s / %s', [Copy(ComputeSummaryHash, 0, 5), GetConsensus(17)]);
     form1.DataPanel.Cells[1, 5] :=
       format('%s / %s', [Copy(LastBlockHash, 0, 5), copy(GetConsensus(10), 0, 5)]);
     form1.DataPanel.Cells[1, 6] := format('%d / %s', [LastBlockIndex, GetConsensus(2)]);

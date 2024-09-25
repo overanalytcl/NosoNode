@@ -258,7 +258,7 @@ var
   LRecord: TSummaryData;
 begin
   Result := False;
-  if GetIndexPosition(AddAlias, LRecord, True) >= 0 then Exit(True);
+  if FindSummaryIndexPosition(AddAlias, LRecord, True) >= 0 then Exit(True);
   for cont := 0 to GetPendingTransactionCount - 1 do
     if ((PendingTransactionsPool[cont].OrderType = 'CUSTOM') and
       (PendingTransactionsPool[cont].Receiver = Addalias)) then
