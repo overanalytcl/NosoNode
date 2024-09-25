@@ -1,452 +1,496 @@
-unit Noso.Consensus;
+// Noso Unit to get a consensus
 
-{
-nosoconsensus 1.0
-January 20th, 2023
-Noso Unit to get a consensus
-Requires: nosodebug, nosotime, nosogeneral
-}
+unit Noso.Consensus;
 
 {$mode ObjFPC}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, strutils,
+  Classes, SysUtils, StrUtils,
   Noso.Debug, Noso.Time, Noso.General, Noso.Crypto;
 
 type
 
-  TThreadNodeStatus = class(TThread)
+  { This class represents a thread that communicates with a specific node to
+    obtain its status. }
+  TNodeStatusThread = class(TThread)
   private
-    Slot: Integer;
+    Slot: Integer; //< The index of the node in the node list
   protected
+    { Executes the thread's main task: requesting the node's status. }
     procedure Execute; override;
   public
+    {
+      Creates a TNodeStatusThread.
+      @param(CreatePaused Whether the thread should be created in a paused state.)
+      @param(TSlot The index of the node in the node list.)
+    }
     constructor Create(const CreatePaused: Boolean; TSlot: Integer);
   end;
 
-  TThreadAutoConsensus = class(TThread)
+  { This thread automatically computes consensus at regular intervals based on
+    block age and timestamp. }
+  TAutoConsensusThread = class(TThread)
   protected
+    { Executes the automatic consensus computation process. }
     procedure Execute; override;
   public
+    {
+      Creates a TAutoConsensusThread.
+      @param(CreateSuspended Whether the thread should be created in a suspended state.)
+    }
     constructor Create(CreateSuspended: Boolean);
   end;
 
+  { Array that stores consensus results. }
   TConsensus = array of String[32];
 
+  { Record type to store information about a node in the network. }
   TNodeConsensus = record
-    host: String;
-    port: Integer;
-    Data: String;
-    ConStr: String[32];
-    Block: Integer;
-    Peers: Integer;
+    Host: String;               //< Node's hostname or IP address
+    Port: Integer;              //< Node's port number
+    Data: String;               //< Data returned from the node
+    ConnectionHash: String[32]; //< A 32-character connection hash
+    BlockNumber: Integer;       //< The block number reported by the node
+    PeerCount: Integer;         //< The number of peers the node is connected to
   end;
 
+  { Record to store consensus values and their occurrence count. }
   TConsensusData = record
-    Value: String;
-    Count: Integer;
+    Value: String;  //< The consensus value
+    Count: Integer; //< The number of occurrences of this value
   end;
 
-function OpenThreadsValue(): Integer;
-
-function CalculateConsensus(NodesList: String = ''): TConsensus;
-function GetConsensus(LData: Integer = 0): String;
-function GetRandonNode(): String;
-function GetConHash(ILine: String): String;
-procedure SetNodesArray(NodesList: String);
-function GetNodesArrayIndex(LIndex: Integer): TNodeConsensus;
-function GetNodesArrayCount(): Integer;
-
+{
+  Returns the number of active threads.
+  @returns the number of active threads.
+}
+function GetActiveThreadCount(): Integer;
+{
+  Compute consensus data from the node list.
+  @param NodeList Optional node list as a string.
+  @returns Array of consensus results.
+}
+function ComputeConsensus(NodeList: String = ''): TConsensus;
+{
+  Returns the consensus result for the given index.
+  @param(Index The index of the consensus data.)
+  @returns(A string representing the consensus value.)
+}
+function GetConsensusData(Index: Integer = 0): String;
+{ Returns a randomly selected node from the node list as a string. }
+function GetRandomNode(): String;
+{ Computes a consensus hash based on the given status line.
+  @param(Line The status line received from the node.)
+  @returns(A string representing the computed hash.) }
+function GetConsensusHash(Line: String): String;
+{ Sets the node list based on the input string.
+  @param(NodeListString The node list as a string.) }
+procedure SetNodeList(NodeListString: String);
+{ Returns the node data for the given index.
+  @param(Index The index of the node.)
+  @returns(The consensus data for the specified node.) }
+function GetNodeDataByIndex(Index: Integer): TNodeConsensus;
+{ Returns the number of nodes in the node list. }
+function GetNodeCount(): Integer;
+{ Starts the automatic consensus thread. }
 procedure StartAutoConsensus();
+{ Stops the automatic consensus thread. }
 procedure StopAutoConsensus();
 
 const
-  cLastBlock = 2;
-  cHeaders = 5;
-  cMNsHash = 8;
-  cMNsCount = 9;
-  cLBHash = 10;
-  cLBTimeEnd = 12;
-  cSumHash = 17;
-  cGVTsHash = 18;
-  cCFGHash = 19;
+  cLastBlock = 2;    //< The index for last block in consensus results
+  cHeaders = 5;      //< The index for headers in consensus results
+  cMNsHash = 8;      //< The index for MNs hash in consensus results
+  cMNsCount = 9;     //< The index for MNs count in consensus results
+  cLBHash = 10;      //< The index for last block hash in consensus results
+  cLBTimeEnd = 12;   //< The index for last block time end in consensus results
+  cSumHash = 17;     //< The index for summary hash in consensus results
+  cGVTsHash = 18;    //< The index for GVTs hash in consensus results
+  cCFGHash = 19;     //< The index for Noso configuration hash in consensus results
 
 var
-  Consensus: TConsensus;
-  NConsensus: array[0..20] of
-  String = ({0}'Resume', 'Peers', 'LBlock', 'Pending', 'Delta',
-    {5}'Headers', 'Version', 'UTCTime', 'MNsHash', 'MNsCount',
-    {10}'LBHash', 'BestDiff', 'LBTimeEnd', 'LBMiner', 'ChecksCount',
-    {15}'LBPoW', 'LBDiff', 'Summary', 'GVTs', 'NosoCFG',
-    {20}'PSOHash');
-  Css_TotalNodes: Integer = 0;
-  Css_ReachedNodes: Integer = 0;
-  Css_ValidNodes: Integer = 0;
-  Css_Percentage: Integer = 0;
-  Css_Completed: Boolean = False;
-  LastConsensusTime: Int64 = 0;
+  // Stores the computed consensus results
+  ConsensusResults: TConsensus;
+  // Stores the consensus labels
+  ConsensusLabels: array[0..20] of
+  String = ('Resume', 'Peers', 'LBlock', 'Pending', 'Delta', 'Headers',
+    'Version', 'UTCTime', 'MNsHash', 'MNsCount', 'LBHash', 'BestDiff',
+    'LBTimeEnd', 'LBMiner', 'ChecksCount', 'LBPoW', 'LBDiff', 'Summary',
+    'GVTs', 'NosoCFG', 'PSOHash');
+  // Total number of nodes
+  TotalNodes: Integer = 0;
+  // Nodes reached during consensus
+  ReachedNodes: Integer = 0;
+  // Valid nodes in the consensus process
+  ValidNodes: Integer = 0;
+  // Percentage of nodes reached
+  ConsensusPercentage: Integer = 0;
+  // Whether consensus is completed
+  ConsensusCompleted: Boolean = False;
+  // Timestamp of last consensus
+  LastConsensusTimestamp: Int64 = 0;
 
 implementation
 
 var
-  NodesArray: array of TNodeConsensus;
-  NodesArrayLock: TRTLCriticalSection;
-  OpenThreads: Integer;
-  ReachedNodes: Integer;
-  OpenThreadsLock: TRTLCriticalSection;
+  // Internal list of nodes
+  NodeList: array of TNodeConsensus;
+  // Critical section for node list access
+  NodeListLock: TRTLCriticalSection;
+  // Number of currently active threads
+  ActiveThreadCount: Integer;
+  // Number of nodes successfully reached
+  NodesReached: Integer;
+  // Critical section for thread management
+  ThreadLock: TRTLCriticalSection;
+  // Critical section for consensus management
   ConsensusLock: TRTLCriticalSection;
-  KeepAutoCon: Boolean = False;
-  RunningConsensus: Boolean = False;
-  ActiveRound: Int64 = 0;
+  // Whether auto-consensus is enabled
+  AutoConsensusEnabled: Boolean = False;
+  // Whether a consensus process is currently running
+  IsConsensusRunning: Boolean = False;
+  // ID of the current round of consensus
+  ActiveRoundID: Int64 = 0;
 
   {$REGION Thread auto update}
 
 procedure StartAutoConsensus();
 var
-  AutoThread: TThreadAutoConsensus;
+  AutoThread: TAutoConsensusThread;
 begin
-  if KeepAutoCon then exit;
-  Keepautocon := True;
-  AutoThread := TThreadAutoConsensus.Create(True);
+  if AutoConsensusEnabled then
+    Exit;
+
+  AutoConsensusEnabled := True;
+  AutoThread := TAutoConsensusThread.Create(True);
   AutoThread.FreeOnTerminate := True;
   AutoThread.Start;
 end;
 
 procedure StopAutoConsensus();
 begin
-  Keepautocon := False;
+  AutoConsensusEnabled := False;
 end;
 
-constructor TThreadAutoConsensus.Create(CreateSuspended: Boolean);
+constructor TAutoConsensusThread.Create(CreateSuspended: Boolean);
 begin
   inherited Create(CreateSuspended);
 end;
 
-procedure TThreadAutoConsensus.Execute;
+procedure TAutoConsensusThread.Execute;
 begin
   repeat
-    if ((BlockAge >= 0) and (BlockAge < 5)) then LastConsensusTime := 0;
-    if (((BlockAge >= 5) and (BlockAge < 585)) and
-      (LastConsensusTime + 60 < UTCTime)) then
+    if (BlockAge >= 0) and (BlockAge < 5) then LastConsensusTimestamp := 0;
+    if (BlockAge >= 5) and (BlockAge < 585) and
+      (LastConsensusTimestamp + 60 < UTCTime) then
     begin
-      LastConsensusTime := UTCTime;
-      CalculateConsensus();
+      LastConsensusTimestamp := UTCTime;
+      ComputeConsensus();
     end;
     Sleep(100);
-  until ((terminated) or (not KeepAutoCon));
+  until Terminated or not AutoConsensusEnabled;
 end;
 
 {$ENDREGION}
 
 {$REGION Open threads}
 
-procedure DecOpenThreads(Reached: Boolean);
+{ Decreases the count of active threads and, if a node is successfully reached,
+  increments the count of reached nodes.
+  @param(NodeReached Whether the node was successfully reached.) }
+procedure DecreaseActiveThreads(NodeReached: Boolean);
 begin
-  EnterCriticalSection(OpenThreadsLock);
-  Dec(OpenThreads);
-  if reached then Inc(ReachedNodes);
-  LeaveCriticalSection(OpenThreadsLock);
+  EnterCriticalSection(ThreadLock);
+  try
+    Dec(ActiveThreadCount);
+    if NodeReached then
+      Inc(NodesReached);
+  finally
+    LeaveCriticalSection(ThreadLock);
+  end;
 end;
 
-function OpenThreadsValue(): Integer;
+function GetActiveThreadCount(): Integer;
 begin
-  EnterCriticalSection(OpenThreadsLock);
-  Result := OpenThreads;
-  LeaveCriticalSection(OpenThreadsLock);
+  EnterCriticalSection(ThreadLock);
+  try
+    Result := ActiveThreadCount;
+  finally
+    LeaveCriticalSection(ThreadLock);
+  end;
 end;
 
-function GetNodeIndex(index: Integer): TNodeConsensus;
+{ Returns the index of the node from the internal node list.
+  @param(Index The index of the node.)
+  @returns(The node at the given index.) }
+function GetNodeIndex(Index: Integer): TNodeConsensus;
 begin
-  EnterCriticalSection(NodesArrayLock);
-  Result := NodesArray[index];
-  LeaveCriticalSection(NodesArrayLock);
+  EnterCriticalSection(NodeListLock);
+  try
+    Result := NodeList[Index];
+  finally
+    LeaveCriticalSection(NodeListLock);
+  end;
 end;
 
 {$ENDREGION}
 
 {$REGION Thread consulting node}
 
-constructor TThreadNodeStatus.Create(const CreatePaused: Boolean; TSlot: Integer);
+constructor TNodeStatusThread.Create(const CreatePaused: Boolean; TSlot: Integer);
 begin
   inherited Create(CreatePaused);
   Slot := TSlot;
   FreeOnTerminate := True;
 end;
 
-procedure TThreadNodeStatus.Execute;
+procedure TNodeStatusThread.Execute;
 var
-  ThisNode: TNodeConsensus;
-  ReadedLine: String;
-  Reached: Boolean = False;
-  ConHash: String = '';
-  MyRound: Int64;
+  CurrentNode: TNodeConsensus;
+  ResponseLine: String;
+  NodeReached: Boolean = False;
+  ConnectionHash: String = '';
+  RoundID: Int64;
 begin
-  MyRound := ActiveRound;
-  ThisNode := GetNodeIndex(slot);
-  ReadedLine := RequestLineToPeer(ThisNode.host, ThisNode.port, 'NODESTATUS');
-  if copy(ReadedLine, 1, 10) = 'NODESTATUS' then
+  RoundID := ActiveRoundID;
+  CurrentNode := GetNodeIndex(slot);
+  ResponseLine := RequestLineToPeer(CurrentNode.Host, CurrentNode.Port, 'NODESTATUS');
+  if Copy(ResponseLine, 1, 10) = 'NODESTATUS' then
   begin
-    ConHash := GetConHash(ReadedLine);
-    ReadedLine := StringReplace(ReadedLine, 'NODESTATUS', ConHash,
-      [rfReplaceAll, rfIgnoreCase]);
-    ThisNode.Data := ReadedLine;
-    ThisNode.ConStr := ConHash;
-    ThisNode.Peers := StrToIntDef(GetParameter(ReadedLine, 1), 0);
-    ThisNode.Block := StrToIntDef(GetParameter(ReadedLine, 2), 0);
-    reached := True;
+    ConnectionHash := GetConsensusHash(ResponseLine);
+    ResponseLine := StringReplace(ResponseLine, 'NODESTATUS',
+      ConnectionHash, [rfReplaceAll, rfIgnoreCase]);
+    CurrentNode.Data := ResponseLine;
+    CurrentNode.ConnectionHash := ConnectionHash;
+    CurrentNode.PeerCount := StrToIntDef(GetParameter(ResponseLine, 1), 0);
+    CurrentNode.BlockNumber := StrToIntDef(GetParameter(ResponseLine, 2), 0);
+    NodeReached := True;
   end
   else
   begin
-    ThisNode.Data := '';
-    ThisNode.ConStr := '';
-    ThisNode.Peers := 0;
-    ThisNode.Block := 0;
+    CurrentNode.Data := '';
+    CurrentNode.ConnectionHash := '';
+    CurrentNode.PeerCount := 0;
+    CurrentNode.BlockNumber := 0;
   end;
-  if MyRound = ActiveRound then
+
+  if RoundID = ActiveRoundID then
   begin
-    EnterCriticalSection(NodesArrayLock);
-    NodesArray[slot] := ThisNode;
-    LeaveCriticalSection(NodesArrayLock);
-    DecOpenThreads(Reached);
+    EnterCriticalSection(NodeListLock);
+    try
+      NodeList[slot] := CurrentNode;
+    finally
+      LeaveCriticalSection(NodeListLock);
+      DecreaseActiveThreads(NodeReached);
+    end;
   end;
 end;
 
 {$ENDREGION}
 
-function GetConHash(ILine: String): String;
+function GetConsensusHash(Line: String): String;
 begin
-  Result := '';
-  Result := HashMD5String(GetParameter(ILine, 2) + copy(GetParameter(ILine, 5), 0, 5) +
-    copy(GetParameter(ILine, 8), 0, 5) + copy(GetParameter(ILine, 10), 0, 5) +
-    copy(GetParameter(ILine, 17), 0, 5) + copy(GetParameter(ILine, 18), 0, 5) +
-    copy(GetParameter(ILine, 19), 0, 5));
+  Result := HashMD5String(GetParameter(Line, 2) + Copy(GetParameter(Line, 5), 0, 5) +
+    Copy(GetParameter(Line, 8), 0, 5) + Copy(GetParameter(Line, 10), 0, 5) +
+    Copy(GetParameter(Line, 17), 0, 5) + Copy(GetParameter(Line, 18), 0, 5) +
+    Copy(GetParameter(Line, 19), 0, 5));
 end;
 
-{Gets a random ip and port node}
-function GetRandonNode(): String;
+function GetRandomNode(): String;
 var
-  LNumber: Integer;
+  NodeIndex: Integer;
 begin
   Result := '';
-  EnterCriticalSection(NodesArrayLock);
-  LNumber := random(length(NodesArray));
-  Result := Format('%s %d', [NodesArray[LNumber].host, NodesArray[LNumber].port]);
-  LeaveCriticalSection(NodesArrayLock);
-end;
-
-{Set the values for the array of nodes}
-procedure SetNodesArray(NodesList: String);
-var
-  counter: Integer;
-  MyArray: array of String;
-begin
-  repeat
-    sleep(5);
-  until not RunningConsensus;
-  setlength(NodesArray, 0);
-  NodesList := Trim(StringReplace(NodesList, ':', ' ', [rfReplaceAll, rfIgnoreCase]));
-  MyArray := SplitString(NodesList, ' ');
-  EnterCriticalSection(NodesArrayLock);
-  for counter := 0 to high(MyArray) do
-  begin
-    MyArray[counter] := StringReplace(MyArray[counter], ';', ' ',
-      [rfReplaceAll, rfIgnoreCase]);
-    Setlength(NodesArray, length(NodesArray) + 1);
-    NodesArray[length(NodesArray) - 1].host := GetParameter(MyArray[counter], 0);
-    NodesArray[length(NodesArray) - 1].port :=
-      StrToIntDef(GetParameter(MyArray[counter], 1), 8080);
-    NodesArray[length(NodesArray) - 1].Data := '';
-    NodesArray[length(NodesArray) - 1].ConStr := '';
-    NodesArray[length(NodesArray) - 1].Block := 0;
-    NodesArray[length(NodesArray) - 1].peers := 0;
+  EnterCriticalSection(NodeListLock);
+  try
+    NodeIndex := Random(Length(NodeList));
+    Result := Format('%s %d', [NodeList[NodeIndex].Host, NodeList[NodeIndex].Port]);
+  finally
+    LeaveCriticalSection(NodeListLock);
   end;
-  LeaveCriticalSection(NodesArrayLock);
-  LastConsensusTime := 0;
 end;
 
-function GetNodesArrayIndex(LIndex: Integer): TNodeConsensus;
-begin
-  Result := default(TNodeConsensus);
-  EnterCriticalSection(NodesArrayLock);
-  if LIndex < length(NodesArray) then
-    Result := NodesArray[LIndex];
-  LeaveCriticalSection(NodesArrayLock);
-end;
-
-function GetNodesArrayCount(): Integer;
-begin
-  EnterCriticalSection(NodesArrayLock);
-  Result := length(NodesArray);
-  LeaveCriticalSection(NodesArrayLock);
-end;
-
-function CalculateConsensus(NodesList: String = ''): TConsensus;
+procedure SetNodeList(NodeListString: String);
 var
-  counter: Integer;
-  count2: Integer;
-  ParamNumber: Integer = 1;
-  ThisThread: TThreadNodeStatus;
-  isFinished: Boolean = False;
-  ArrayCon: array of TConsensusData;
-  ThisHigh: String;
-  ConHash: String;
-  ValidNodes: Integer = 0;
-  EndTime: Int64;
+  i: Integer;
+  NodeEntries: array of String;
+begin
+  while IsConsensusRunning do Sleep(5); // ????????????
 
-  procedure AddValue(Tvalue: String);
-  var
-    counter: Integer;
-    ThisItem: TConsensusData;
-  begin
-    for counter := 0 to length(ArrayCon) - 1 do
+  SetLength(NodeList, 0);
+  NodeListString := Trim(StringReplace(NodeListString, ':', ' ',
+    [rfReplaceAll, rfIgnoreCase]));
+  NodeEntries := SplitString(NodeListString, ' ');
+
+  EnterCriticalSection(NodeListLock);
+  try
+    for i := 0 to high(NodeEntries) do
     begin
-      if Tvalue = ArrayCon[counter].Value then
+      NodeEntries[i] := StringReplace(NodeEntries[i], ';', ' ',
+        [rfReplaceAll, rfIgnoreCase]);
+      SetLength(NodeList, Length(NodeList) + 1);
+      NodeList[High(NodeList)].Host := GetParameter(NodeEntries[I], 0);
+      NodeList[High(NodeList)].Port :=
+        StrToIntDef(GetParameter(NodeEntries[I], 1), 8080);
+      NodeList[High(NodeList)].Data := '';
+      NodeList[High(NodeList)].ConnectionHash := '';
+      NodeList[High(NodeList)].BlockNumber := 0;
+      NodeList[High(NodeList)].PeerCount := 0;
+    end;
+  finally
+    LeaveCriticalSection(NodeListLock);
+    LastConsensusTimestamp := 0;
+  end;
+end;
+
+function GetNodeDataByIndex(Index: Integer): TNodeConsensus;
+begin
+  Result := Default(TNodeConsensus);
+  EnterCriticalSection(NodeListLock);
+  try
+    if Index < Length(NodeList) then
+      Result := NodeList[Index];
+  finally
+    LeaveCriticalSection(NodeListLock);
+  end;
+end;
+
+function GetNodeCount(): Integer;
+begin
+  EnterCriticalSection(NodeListLock);
+  try
+    Result := Length(NodeList);
+  finally
+    LeaveCriticalSection(NodeListLock);
+  end;
+end;
+
+function ComputeConsensus(NodeList: String = ''): TConsensus;
+var
+  I, ParamIndex: Integer;
+  NodeStatusThread: TNodeStatusThread;
+  EndTimestamp: Int64;
+  ConsensusData: array of TConsensusData;
+  NodeHash, HighestHash: String;
+  ValidNodeCount: Integer = 0;
+  Finished: Boolean = False;
+
+  procedure AddConsensusValue(Value: String);
+  var
+    J: Integer;
+  begin
+    for J := 0 to High(ConsensusData) do
+    begin
+      if ConsensusData[J].Value = Value then
       begin
-        ArrayCon[counter].Count += 1;
+        Inc(ConsensusData[J].Count);
         Exit;
       end;
     end;
-    ThisItem.Value := Tvalue;
-    ThisItem.Count := 1;
-    Insert(ThisITem, ArrayCon, length(ArrayCon));
+    SetLength(ConsensusData, Length(ConsensusData) + 1);
+    ConsensusData[High(ConsensusData)].Value := Value;
+    ConsensusData[High(ConsensusData)].Count := 1;
   end;
 
-  function GetHighest(): String;
+  function GetHighestValue(): String;
   var
-    maximum: Integer = 0;
-    counter: Integer;
-    MaxIndex: Integer = 0;
+    MaxCount, J: Integer;
   begin
     Result := '';
-    if length(ArrayCon) > 0 then
+    MaxCount := 0;
+    for J := 0 to High(ConsensusData) do
     begin
-      for counter := 0 to high(ArrayCon) do
+      if ConsensusData[J].Count > MaxCount then
       begin
-        if ArrayCon[counter].Count > maximum then
-        begin
-          maximum := ArrayCon[counter].Count;
-          MaxIndex := counter;
-        end;
+        MaxCount := ConsensusData[J].Count;
+        Result := ConsensusData[J].Value;
       end;
-      Result := ArrayCon[MaxIndex].Value;
     end;
   end;
 
 begin
-  StartPerformanceMeasurement('CalculateConsensus');
-  RunningConsensus := True;
-  SetLength(Result, 0);
-  if NodesList <> '' then SetNodesArray(NodesList);
-  OpenThreads := length(NodesArray);
-  ReachedNodes := 0;
-  ActiveRound := UTCTime;
-  for counter := 0 to high(NodesArray) do
-  begin
-    ThisThread := TThreadNodeStatus.Create(True, counter);
-    ThisThread.FreeOnTerminate := True;
-    ThisThread.Start;
-    Sleep(5);
-  end;
-  EndTime := UTCTime + 5;
-  repeat
-    sleep(5);
-  until ((OpenThreadsValue <= 0) or (UTCTime >= EndTime));
-  ActiveRound := 0;
-  // Get the consensus hash
-  SetLength(ArrayCon, 0);
-  for counter := 0 to high(NodesArray) do
-  begin
-    if GetParameter(NodesArray[counter].Data, 0) <> '' then
-      AddValue(GetParameter(NodesArray[counter].Data, 0));
-  end;
-  ConHash := GetHighest;
-  if conhash = '' then
-  begin
-    for count2 := 0 to length(NConsensus) - 1 do
-    begin
-      insert('', Result, 0);
-    end;
-    Css_TotalNodes := length(NodesArray);
-    Css_ReachedNodes := Reachednodes;
-    Css_ValidNodes := ValidNodes;
-    if ReachedNodes > 0 then Css_Percentage := (ValidNodes * 100) div ReachedNodes
-    else
-      Css_Percentage := 0;
-    EnterCriticalSection(ConsensusLock);
-    setlength(consensus, 0);
-    Consensus := copy(Result, 0, length(Result));
-    LeaveCriticalSection(ConsensusLock);
-    Css_Completed := False;
-    RunningConsensus := False;
-    Dec(LastConsensusTime, 50);
-    StopPerformanceMeasurement('CalculateConsensus');
-    exit;
-  end;
-  insert(ConHash, Result, 0);
-  // Fill the consensus
-  repeat
-    SetLength(ArrayCon, 0);
-    for counter := 0 to high(NodesArray) do
-    begin
-      if GetParameter(NodesArray[counter].Data, 0) = ConHash then
-      begin
-        AddValue(GetParameter(NodesArray[counter].Data, paramnumber));
-        if ParamNumber = 1 then Inc(ValidNodes);
-      end;
-    end;
-    ThisHigh := GetHighest;
-    if thishigh = '' then isFinished := True
-    else
-      insert(ThisHigh, Result, length(Result));
-    Inc(ParamNumber);
-  until isFinished;
-  Css_TotalNodes := length(NodesArray);
-  Css_ReachedNodes := Reachednodes;
-  Css_ValidNodes := ValidNodes;
-  if ReachedNodes > 0 then Css_Percentage := (ValidNodes * 100) div ReachedNodes
-  else
-    Css_Percentage := 0;
-  //if StrToIntDef(result[cLastBlock],0) >= StrToIntDef(Consensus[cLastBlock],0) then
-  //begin
-  EnterCriticalSection(ConsensusLock);
-  setlength(consensus, 0);
-  Consensus := copy(Result, 0, length(Result));
-  LeaveCriticalSection(ConsensusLock);
-  //end;
+  ConsensusCompleted := False;
+  if NodeList <> '' then
+    SetNodeList(NodeList);
 
-  Css_Completed := True;
-  RunningConsensus := False;
-  StopPerformanceMeasurement('CalculateConsensus');
-end;
+  if GetNodeCount() = 0 then Exit;
 
-function GetConsensus(LData: Integer = 0): String;
-begin
-  Result := '';
   EnterCriticalSection(ConsensusLock);
   try
-    Result := Consensus[LData];
-  except
-    on E: Exception do
-    begin
+    IsConsensusRunning := True;
+    SetLength(ConsensusResults, 21);
+    for I := 0 to High(ConsensusResults) do
+      ConsensusResults[I] := '';
 
+    ReachedNodes := 0;
+    ActiveThreadCount := GetNodeCount();
+    for I := 0 to High(NodeList) do
+    begin
+      NodeStatusThread := TNodeStatusThread.Create(True, I);
+      NodeStatusThread.Start;
     end;
+
+    EndTimestamp := UTCTime + 20;
+    repeat
+      Sleep(10);
+      if (GetActiveThreadCount() = 0) or (UTCTime > EndTimestamp) then
+        Finished := True;
+    until Finished;
+
+    ValidNodes := 0;
+    for ParamIndex := 0 to High(ConsensusLabels) do
+    begin
+      SetLength(ConsensusData, 0);
+      for I := 0 to High(NodeList) do
+      begin
+        if NodeList[I] <> '' then
+        begin
+          NodeHash := GetParameter(NodeList[I], ParamIndex);
+          AddConsensusValue(NodeHash);
+          Inc(ValidNodes);
+        end;
+      end;
+
+      HighestHash := GetHighestValue();
+      ConsensusResults[ParamIndex] := HighestHash;
+    end;
+
+    if ValidNodes > 0 then
+      ConsensusPercentage := (ReachedNodes * 100) div GetNodeCount()
+    else
+      ConsensusPercentage := 0;
+
+    ConsensusCompleted := True;
+    LastConsensusTimestamp := UTCTime;
+  finally
+    IsConsensusRunning := False;
+    LeaveCriticalSection(ConsensusLock);
   end;
-  LeaveCriticalSection(ConsensusLock);
+
+  Result := ConsensusResults;
+end;
+
+function GetConsensusData(Index: Integer = 0): String;
+begin
+  if (Index >= 0) and (Index <= High(ConsensusResults)) then
+    Result := ConsensusResults[Index]
+  else
+    Result := '';
 end;
 
 initialization
   Randomize;
-  setlength(NodesArray, 0);
-  InitCriticalSection(NodesArrayLock);
-  InitCriticalSection(OpenThreadsLock);
+  SetLength(NodeList, 0);
+  InitCriticalSection(NodeListLock);
+  InitCriticalSection(ThreadLock);
   InitCriticalSection(ConsensusLock);
 
 
 finalization
-  DoneCriticalSection(NodesArrayLock);
-  DoneCriticalSection(OpenThreadsLock);
+  DoneCriticalSection(NodeListLock);
+  DoneCriticalSection(ThreadLock);
   DoneCriticalSection(ConsensusLock);
 
 end. {END UNIT}

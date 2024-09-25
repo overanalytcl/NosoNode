@@ -680,9 +680,9 @@ function RPC_Mainnetinfo(NosoPParams: String): String;
 begin
   StartPerformanceMeasurement('RPC_Mainnetinfo');
   Result := format('mainnetinfo'#127'%s'#127'%s'#127'%s'#127'%s'#127'%s'#127'%d',
-    [GetConsensus(2), Copy(GetConsensus(10), 0, 5), copy(GetConsensus(15), 0, 5),
-    copy(GetConsensus(17), 0, 5), GetConsensus(3), GetCirculatingSupply(
-    StrToIntDef(GetConsensus(2), 0))]);
+    [GetConsensusData(2), Copy(GetConsensusData(10), 0, 5), copy(GetConsensusData(15), 0, 5),
+    copy(GetConsensusData(17), 0, 5), GetConsensusData(3), GetCirculatingSupply(
+    StrToIntDef(GetConsensusData(2), 0))]);
   StopPerformanceMeasurement('RPC_Mainnetinfo');
 end;
 

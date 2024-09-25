@@ -90,7 +90,7 @@ type
      ip: string[20];                    // La IP del par
      lastping: string[15];              // UTCTime del ultimo ping
      context: TIdContext;               // Informacion para los canales cliente
-     Lastblock: string[15];             // Numero del ultimo bloque
+     cLastBlock: string[15];             // Numero del ultimo bloque
      LastblockHash: string[64];         // Hash del ultimo bloque
      SumarioHash : string[64];          // Hash del sumario de cuenta
      Pending: Integer;                  // Cantidad de operaciones pendientes
@@ -1204,7 +1204,7 @@ begin
     if LastBlockIndex > GetDBLastBlock then
     begin
       if ((blockAge > 60) and (Copy(LastBlockHash, 1, 5) =
-        Copy(getconsensus(10), 1, 5))) then
+        Copy(GetConsensusData(10), 1, 5))) then
       begin
         UpdateBlockDatabase;
         ;
@@ -1455,7 +1455,7 @@ begin
   end;
   Form1.Latido.Enabled := True;
   OutText('Noso is ready', False, 1);
-  SetNodesArray(GetCFGDataStr(1));
+  SetNodeList(GetCFGDataStr(1));
   StartAutoConsensus;
   if WO_CloseStart then
   begin
@@ -1715,7 +1715,7 @@ begin
   form1.GridNodes.ColWidths[4] := thispercent(0, GridWidth, True);
 end;
 
-// Resize: consensus
+// Resize: ConsensusResults
 procedure TForm1.SGConSeedsResize(Sender: TObject);
 var
   GridWidth: Integer;
@@ -1794,7 +1794,7 @@ begin
   if EngineLastUpdate <> UTCtime then EngineLastUpdate := UTCtime;
   Form1.Latido.Enabled := False;
   if ((UTCTime >= BuildNMSBlock) and (BuildNMSBlock > 0) and
-    (MyConStatus = 3) and (LastBlockIndex = StrToIntDef(GetCOnsensus(2), -1))) then
+    (MyConStatus = 3) and (LastBlockIndex = StrToIntDef(GetConsensusData(2), -1))) then
   begin
     ToLog('events', 'Starting construction of block ' + (LastBlockIndex + 1).ToString);
     BuildNewBlock(LastBlockIndex + 1, BuildNMSBlock, LastBlockHash,

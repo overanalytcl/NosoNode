@@ -571,7 +571,7 @@ var
   { A pool of multi-order transactions awaiting processing. }
   MultiOrderTransactionsPool: specialize TArray<TMultiOrderData>;
 
-  { Indicates whether the headers are currently being downloaded. }
+  { Indicates whether the cHeaders are currently being downloaded. }
   DownloadingHeaders: Boolean = False;
 
   { Indicates whether the summary is currently being downloaded. }
@@ -622,7 +622,7 @@ var
   { Timestamp for the last time the bot list was cleared. }
   LastBotClearTime: TTimestampInteger = 0;
 
-  { Indicates whether to force a download of the headers. }
+  { Indicates whether to force a download of the cHeaders. }
   ForceHeadersDownload: Boolean = False;
 
   { Count of masternode verification processes completed. }
@@ -727,7 +727,7 @@ begin
         AddTextToSlot(Slot, Header + '$' + Line);
 
       'TRFR':
-      begin                                     \
+      begin
         if Transaction.TransferLine = 1 then
           TextOrder := Format('%s%d ', [TextOrder, Transaction.OrderLineCount]);
 
@@ -893,7 +893,7 @@ begin
     5: Specific := '$GETPENDING';                       // GetPending
     6: Specific := '$GETSUMARY';                        // GetSummary
     7: Specific := '$GETRESUMEN';                       // GetResumen
-    8: Specific := Format('$LASTBLOCK %d', [LastBlockIndex]); // LastBlock
+    8: Specific := Format('$LASTBLOCK %d', [LastBlockIndex]); // cLastBlock
     9: Specific := '$CUSTOM ';                          // Custom
     11: Specific := '$GETMNS';                          // GetMNs
     12: Specific := '$BESTHASH';                        // BestHash
@@ -1034,16 +1034,16 @@ function IsAllSynchronized(): TSyncStatus;
 begin
   Result := ssSynchronized;
 
-  if LastBlockIndex <> StrToIntDef(GetConsensus(cLastBlock), 0) then
+  if LastBlockIndex <> StrToIntDef(GetConsensusData(cLastBlock), 0) then
     Result := ssBlockHeightMismatch;
 
-  if LastBlockHash <> GetConsensus(cLBHash) then
+  if LastBlockHash <> GetConsensusData(cLBHash) then
     Result := ssBlockHashMismatch;
 
-  if Copy(ComputeSummaryHash, 0, 5) <> GetConsensus(cSumHash) then
+  if Copy(ComputeSummaryHash, 0, 5) <> GetConsensusData(cSumHash) then
     Result := ssSummaryHashMismatch;
 
-  if Copy(GetSummaryFileHash, 0, 5) <> GetConsensus(cHeaders) then
+  if Copy(GetSummaryFileHash, 0, 5) <> GetConsensusData(cHeaders) then
     Result := ssResumenHashMismatch;
 end;
 
@@ -1243,7 +1243,7 @@ begin
   LastBlockData := LoadBlockDataHeader(LastBlockIndex);
   SetSummaryFileHash;
 
-  if GetSummaryFileHash = GetConsensus(5) then
+  if GetSummaryFileHash = GetConsensusData(5) then
     ForceHeadersDownload := False;
 end;
 

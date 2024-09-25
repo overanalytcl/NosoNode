@@ -587,13 +587,13 @@ begin
   UnZipper.Free;
 end;
 
-// COmpletes the sumary from LAstUpdate to Lastblock
+// COmpletes the sumary from LAstUpdate to cLastBlock
 procedure CompleteSumary();
 var
   StartBlock, finishblock: Integer;
   counter: Integer;
 begin
-  if copy(ComputeSummaryHash, 0, 5) = GetConsensus(17) then exit;
+  if copy(ComputeSummaryHash, 0, 5) = GetConsensusData(17) then exit;
   RebuildingSumary := True;
   StartBlock := SummaryLastOperation + 1;
   finishblock := LastBlockIndex;

@@ -385,7 +385,7 @@ var
 begin
   Result := 0;
   for counter := 1 to MaxConnections do
-    if GetConnectionData(Counter).MerkleTreeHash = GetCOnsensus(0) then Result := Result + 1;
+    if GetConnectionData(Counter).MerkleTreeHash = GetConsensusData(0) then Result := Result + 1;
 end;
 
 // Close all outgoing connections
@@ -491,9 +491,9 @@ begin
       if Last_SyncWithMainnet + 4 < UTCTime then SyncWithMainnet();
     end;
     if ((MyConStatus = 2) and (STATUS_Connected) and
-      (IntToStr(LastBlockIndex) = Getconsensus(2)) and
-      (copy(ComputeSummaryHash, 0, 5) = GetConsensus(17)) and
-      (copy(GetSummaryFileHash, 0, 5) = GetConsensus(5))) then
+      (IntToStr(LastBlockIndex) = GetConsensusData(2)) and
+      (copy(ComputeSummaryHash, 0, 5) = GetConsensusData(17)) and
+      (copy(GetSummaryFileHash, 0, 5) = GetConsensusData(5))) then
     begin
       GetValidSlotForSeed(ValidSlot);
       ClearReceivedOrdersIDs;
@@ -501,7 +501,7 @@ begin
       ToLog('console', 'Updated!');   //Updated!
       //if RPCAuto then  ProcessLinesAdd('RPCON');
       if WO_AutoServer then ProcessLinesAdd('serveron');
-      if StrToIntDef(GetConsensus(3), 0) < GetPendingTransactionCount then
+      if StrToIntDef(GetConsensusData(3), 0) < GetPendingTransactionCount then
       begin
         setlength(PendingTransactionsPool, 0);
       end;
@@ -515,7 +515,7 @@ begin
       GetValidSlotForSeed(ValidSlot);
       if ((RPCAuto) and (not Form1.RPCServer.Active)) then  ProcessLinesAdd('RPCON');
       if ((not RPCAuto) and (Form1.RPCServer.Active)) then  ProcessLinesAdd('RPCOFF');
-      if ((StrToIntDef(GetConsensus(3), 0) > GetPendingTransactionCount) and
+      if ((StrToIntDef(GetConsensusData(3), 0) > GetPendingTransactionCount) and
         (LastPendingTransactionsRequestTime + 5 < UTCTime) and (length(ArrayCriptoOp) = 0)) then
       begin
         ClearReceivedOrdersIDs();
@@ -553,9 +553,9 @@ var
   Removed: Integer = 0;
 begin
   if BuildingBlock > 0 then exit;
-  if GetConsensus = '' then exit;
+  if GetConsensusData = '' then exit;
   if ((BlockAge < 10) or (blockAge > 595)) then exit;
-  ConsenLB := StrToIntDef(GetConsensus(2), -1);
+  ConsenLB := StrToIntDef(GetConsensusData(2), -1);
   if ((LastBlockIndex > ConsenLB) and (ConsenLB >= 0)) then
   begin
     Removed := RemoveBlocks(ConsenLB);
@@ -564,13 +564,13 @@ begin
     //RestartNoso;
     Exit;
   end;
-  NLBV := StrToIntDef(GetConsensus(cLastBlock), 0);
+  NLBV := StrToIntDef(GetConsensusData(LastBlock), 0);
 
   // *** New Synchronization methods
 
   // *** Update CFG file.
-  if ((GetConsensus(19) <> Copy(GetCFGHash, 0, 5)) and
-    (LasTimeCFGRequest + 5 < UTCTime) and (GetConsensus(19) <> '')) then
+  if ((GetConsensusData(19) <> Copy(GetCFGHash, 0, 5)) and
+    (LasTimeCFGRequest + 5 < UTCTime) and (GetConsensusData(19) <> '')) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
@@ -581,8 +581,8 @@ begin
   end;
 
   // *** Update MNs file
-  if ((GetConsensus(8) <> Copy(GetMNsHash, 1, 5)) and
-    (LastMasternodeHashRequestTime + 5 < UTCTime) and (GetConsensus(8) <> '')) then
+  if ((GetConsensusData(8) <> Copy(GetMNsHash, 1, 5)) and
+    (LastMasternodeHashRequestTime + 5 < UTCTime) and (GetConsensusData(8) <> '')) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
@@ -592,8 +592,8 @@ begin
     end;
   end;
 
-  // *** update headers
-  if Copy(GetSummaryFileHash, 0, 5) <> GetConsensus(cHeaders) then  // Request headers
+  // *** update cHeaders
+  if Copy(GetSummaryFileHash, 0, 5) <> GetConsensusData(cHeaders) then  // Request cHeaders
   begin
     ClearAllPendingTransactions;
     ClearMNsChecks();
@@ -610,7 +610,7 @@ begin
           LastAccountSummaryRequestTime := UTCTime;
         end;
       end
-      else // If less than 144 block just update headers
+      else // If less than 144 block just update cHeaders
       begin
         if GetValidSlotForSeed(ValidSlot) then
         begin
@@ -624,7 +624,7 @@ begin
   end;
 
   // *** Update blocks
-  if ((Copy(GetSummaryFileHash, 0, 5) = GetConsensus(5)) and (LastBlockIndex < NLBV)) then
+  if ((Copy(GetSummaryFileHash, 0, 5) = GetConsensusData(5)) and (LastBlockIndex < NLBV)) then
     // request up to 100 blocks
   begin
     ClearAllPendingTransactions;
@@ -651,8 +651,8 @@ begin
   end;
 
   // Update summary
-  if ((copy(GetSummaryFileHash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
-    (ComputeSummaryHash <> GetConsensus(17)) {and (SummaryLastOperation < LastBlockIndex)}) then
+  if ((copy(GetSummaryFileHash, 0, 5) = GetConsensusData(5)) and (LastBlockIndex = NLBV) and
+    (ComputeSummaryHash <> GetConsensusData(17)) {and (SummaryLastOperation < LastBlockIndex)}) then
   begin  // complete or download summary
     if (SummaryLastOperation + (2 * SumMarkInterval) < LastBlockIndex) then
     begin
@@ -673,8 +673,8 @@ begin
   end;
 
   // Update GVTs file
-  if ((GetConsensus(18) <> Copy(GVTHashMD5, 0, 5)) and
-    (LastGVTsRequestTime + 5 < UTCTime) and (GetConsensus(18) <> '') and
+  if ((GetConsensusData(18) <> Copy(GVTHashMD5, 0, 5)) and
+    (LastGVTsRequestTime + 5 < UTCTime) and (GetConsensusData(18) <> '') and
     (not DownloadingGVTs)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
@@ -686,8 +686,8 @@ begin
   end;
 
   // Update PSOs file
-  if ((GetConsensus(20) <> Copy(PSOFileHash, 0, 5)) and
-    (LastPSOsRequestTime + 5 < UTCTime) and (GetConsensus(20) <> '') and
+  if ((GetConsensusData(20) <> Copy(PSOFileHash, 0, 5)) and
+    (LastPSOsRequestTime + 5 < UTCTime) and (GetConsensusData(20) <> '') and
     (not DownloadingPSOs)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
@@ -699,7 +699,7 @@ begin
   end;
 
   // *** Request reported MNs
-  if ((StrToIntDef(GetConsensus(9), 0) > GetMNsListLength) and
+  if ((StrToIntDef(GetConsensusData(9), 0) > GetMNsListLength) and
     (LastMasternodeListRequestTime + 15 < UTCTime) and (LengthWaitingMNs = 0) and
     (BlockAge > 30) and (IsAllSynchronized = ssSynchronized)) then
   begin
@@ -714,7 +714,7 @@ begin
   end;
 
   // *** Request MNs verifications
-  if ((StrToIntDef(GetConsensus(14), 0) > GetMasternodeCheckCount) and
+  if ((StrToIntDef(GetConsensusData(14), 0) > GetMasternodeCheckCount) and
     (LastMasternodeCheckRequestTime + 5 < UTCTime) and (IsAllSynchronized = ssSynchronized)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
@@ -726,29 +726,29 @@ begin
   end;
 
   // Blockchain status issues starts here
-  if ((copy(GetSummaryFileHash, 0, 5) = GetConsensus(5)) and (LastBlockIndex = NLBV) and
-    (copy(ComputeSummaryHash, 0, 5) <> GetConsensus(17)) and
+  if ((copy(GetSummaryFileHash, 0, 5) = GetConsensusData(5)) and (LastBlockIndex = NLBV) and
+    (copy(ComputeSummaryHash, 0, 5) <> GetConsensusData(17)) and
     (SummaryLastOperation = LastBlockIndex) and (LastSummaryRequestTime + 5 < UTCTime)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
       ToLog('console', format('%s <> %s', [copy(ComputeSummaryHash, 0, 5),
-        GetConsensus(17)]));
+        GetConsensusData(17)]));
       PTC_SendLine(ValidSlot, GetProtocolLineFromCode(6)); // Getsumary
       ToLog('console', rs2003); //'sumary file requested'
       LastSummaryRequestTime := UTCTime;
     end;
   end
-  else if ((LastBlockIndex = NLBV) and ((copy(GetSummaryFileHash, 0, 5) <> GetConsensus(5)) or
-    (LastBlockHash <> GetConsensus(10)))) then
+  else if ((LastBlockIndex = NLBV) and ((copy(GetSummaryFileHash, 0, 5) <> GetConsensusData(5)) or
+    (LastBlockHash <> GetConsensusData(10)))) then
   begin
     ToLog('console', LastBlockHash + ' ' + LastBlockHash);
     UndoneLastBlock();
   end
-  // Update headers
-  else if ((copy(GetSummaryFileHash, 0, 5) <> GetConsensus(5)) and
-    (NLBV = LastBlockIndex) and (LastBlockHash = GetConsensus(10)) and
-    (copy(ComputeSummaryHash, 0, 5) = GetConsensus(17)) and (not DownloadingHeaders)) then
+  // Update cHeaders
+  else if ((copy(GetSummaryFileHash, 0, 5) <> GetConsensusData(5)) and
+    (NLBV = LastBlockIndex) and (LastBlockHash = GetConsensusData(10)) and
+    (copy(ComputeSummaryHash, 0, 5) = GetConsensusData(17)) and (not DownloadingHeaders)) then
   begin
     if GetValidSlotForSeed(ValidSlot) then
     begin
@@ -797,7 +797,7 @@ begin
   begin
     Inc(SlotCount);
     if SlotCount > MaxConnections then SlotCount := 1;
-    if ((GetConnectionData(SlotCount).MerkleTreeHash = GetConsensus(0))) then
+    if ((GetConnectionData(SlotCount).MerkleTreeHash = GetConsensusData(0))) then
     begin
       Result := True;
       slot := SlotCount;
@@ -950,7 +950,7 @@ end;
 function GetNodeStatusString(): String;
 begin
   if BuildingBlock > 0 then Result := '';
-  //NODESTATUS 1{Peers} 2{LastBlock} 3{Pendings} 4{Delta} 5{headers} 6{version} 7{UTCTime} 8{MNsHash}
+  //NODESTATUS 1{Peers} 2{LastBlock} 3{Pendings} 4{Delta} 5{cHeaders} 6{version} 7{UTCTime} 8{MNsHash}
   //           9{MNscount} 10{LasBlockHash} 11{BestHashDiff} 12{LastBlockTimeEnd} 13{LBMiner}
   //           14{ChecksCount} 15{LastBlockPoW} 16{LastBlockDiff} 17{summary} 18{GVTs} 19{nosoCFG}
   //           20{PSOHash}

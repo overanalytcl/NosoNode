@@ -1886,13 +1886,13 @@ var
   counter: Integer;
   LText: String;
 begin
-  ToLog('console', Format('(%d / %d) %d %%', [Css_ReachedNodes,
-    Css_TotalNodes, Css_Percentage]));
-  for counter := 0 to high(consensus) do
+  ToLog('console', Format('(%d / %d) %d %%', [ReachedNodes,
+    TotalNodes, ConsensusPercentage]));
+  for counter := 0 to high(ConsensusResults) do
   begin
-    LText := Format('%0:12s', [NConsensus[counter]]);
+    LText := Format('%0:12s', [ConsensusLabels[counter]]);
     ToLog('console', Format('%0:2s %s -> %s', [Counter.ToString,
-      LText, Consensus[counter]]));
+      LText, ConsensusResults[counter]]));
   end;
 end;
 
@@ -2075,7 +2075,7 @@ end;
 
 procedure ShowConsensusStats();
 begin
-  ToLog('Console', GetConsensus(8) + ' ' + Copy(GetMNsHash, 1, 5));
+  ToLog('Console', GetConsensusData(8) + ' ' + Copy(GetMNsHash, 1, 5));
   ImportAddressesFromBackup(RPCBakDirectory);
 end;
 

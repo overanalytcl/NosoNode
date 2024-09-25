@@ -419,20 +419,20 @@ begin
     begin
       form1.Label1.Caption :=
         Format('Last update : %d seconds (OT= %d)',
-        [UTCTime - LastConsensusTime, OpenThreadsValue]);
-      form1.Label16.Caption := Format('Block       : %s', [GetConsensus(2)]);
-      form1.Label17.Caption := Format('Merkle      : %s', [GetConsensus]);
+        [UTCTime - LastConsensusTimestamp, GetActiveThreadCount]);
+      form1.Label16.Caption := Format('Block       : %s', [GetConsensusData(2)]);
+      form1.Label17.Caption := Format('Merkle      : %s', [GetConsensusData]);
       form1.Label18.Caption :=
-        Format('Consensus   : %d %% (%d/%d)', [Css_Percentage,
-        Css_ReachedNodes, Css_TotalNodes]);
-      form1.SGConSeeds.RowCount := 1 + GetNodesArrayCount;
-      for contador := 0 to GetNodesArrayCount - 1 do
+        Format('Consensus   : %d %% (%d/%d)', [ConsensusPercentage,
+        ReachedNodes, TotalNodes]);
+      form1.SGConSeeds.RowCount := 1 + GetNodeCount;
+      for contador := 0 to GetNodeCount - 1 do
       begin
-        LConsensus := GetNodesArrayIndex(contador);
-        Form1.SGConSeeds.Cells[0, contador + 1] := LConsensus.host;
-        Form1.SGConSeeds.Cells[1, contador + 1] := LConsensus.peers.ToString;
-        Form1.SGConSeeds.Cells[2, contador + 1] := LConsensus.ConStr;
-        Form1.SGConSeeds.Cells[3, contador + 1] := LConsensus.Block.ToString;
+        LConsensus := GetNodeDataByIndex(contador);
+        Form1.SGConSeeds.Cells[0, contador + 1] := LConsensus.Host;
+        Form1.SGConSeeds.Cells[1, contador + 1] := LConsensus.PeerCount.ToString;
+        Form1.SGConSeeds.Cells[2, contador + 1] := LConsensus.ConnectionHash;
+        Form1.SGConSeeds.Cells[3, contador + 1] := LConsensus.BlockNumber.ToString;
       end;
     end;
   end;
@@ -443,24 +443,24 @@ begin
   if LastUpdateDataPanel <> UTCTime then
   begin
     form1.DataPanel.Cells[1, 0] :=
-      copy(GetConHash('NODESTATUS ' + GetNodeStatusString), 0, 5) +
-      '/' + copy(GetConsensus(0), 0, 5);
+      copy(GetConsensusHash('NODESTATUS ' + GetNodeStatusString), 0, 5) +
+      '/' + copy(GetConsensusData(0), 0, 5);
     form1.DataPanel.Cells[1, 1] := NodeServerInfo;
     form1.DataPanel.Cells[1, 2] :=
       IntToStr(GetTotalConnections) + ' (' + IntToStr(MyConStatus) +
       ') [' + IntToStr(G_TotalPings) + ']';
     form1.DataPanel.Cells[1, 3] :=
-      Format('%s / %s', [copy(GetSummaryFileHash, 0, 5), GetConsensus(5)]);
+      Format('%s / %s', [copy(GetSummaryFileHash, 0, 5), GetConsensusData(5)]);
     form1.DataPanel.Cells[1, 4] :=
-      format('%s / %s', [Copy(ComputeSummaryHash, 0, 5), GetConsensus(17)]);
+      format('%s / %s', [Copy(ComputeSummaryHash, 0, 5), GetConsensusData(17)]);
     form1.DataPanel.Cells[1, 5] :=
-      format('%s / %s', [Copy(LastBlockHash, 0, 5), copy(GetConsensus(10), 0, 5)]);
-    form1.DataPanel.Cells[1, 6] := format('%d / %s', [LastBlockIndex, GetConsensus(2)]);
+      format('%s / %s', [Copy(LastBlockHash, 0, 5), copy(GetConsensusData(10), 0, 5)]);
+    form1.DataPanel.Cells[1, 6] := format('%d / %s', [LastBlockIndex, GetConsensusData(2)]);
     form1.DataPanel.Cells[1, 7] :=
-      format('(%d)  %d/%s', [length(ArrayCriptoOp), GetPendingTransactionCount, GetConsensus(3)]);
+      format('(%d)  %d/%s', [length(ArrayCriptoOp), GetPendingTransactionCount, GetConsensusData(3)]);
     form1.DataPanel.Cells[3, 0] :=
       format('[%d - %d] %s / %s', [GEtPSOHeaders.MNsLock, GetPSOHeaders.Count,
-      Copy(PSOFileHash, 0, 5), GetConsensus(20)]);
+      Copy(PSOFileHash, 0, 5), GetConsensusData(20)]);
     form1.DataPanel.Cells[3, 1] :=
       Format('[%s] %s Noso', [BlockAge.ToString, Copy(
       IntToCurrency(GetBlockReward(LastBlockIndex + 1)), 0, 5)]);
@@ -468,14 +468,14 @@ begin
       GEtOutgoingconnections.ToString + '/' + GetActiveClientReadThreadCount.ToString;
     form1.DataPanel.Cells[3, 3] := Format('%d (%d)', [GetDBLastBlock, GetDBRecords]);
     form1.DataPanel.Cells[3, 4] :=
-      format('%s / %s', [Copy(GetCFGHash, 0, 5), GetConsensus(19)]);
+      format('%s / %s', [Copy(GetCFGHash, 0, 5), GetConsensusData(19)]);
     form1.DataPanel.Cells[3, 5] :=
-      format('%s / %s', [Copy(GVTHashMD5, 0, 5), GetConsensus(18)]);
+      format('%s / %s', [Copy(GVTHashMD5, 0, 5), GetConsensusData(18)]);
     form1.DataPanel.Cells[3, 6] :=
-      format('%s / %s', [Copy(GetMNsHash, 0, 5), GetConsensus(8)]);
+      format('%s / %s', [Copy(GetMNsHash, 0, 5), GetConsensusData(8)]);
     form1.DataPanel.Cells[3, 7] :=
       format('(%d)  %d/%s (%d)', [GetMasternodeCheckCount, GetMNsListLength,
-      GetConsensus(9), LengthWaitingMNs]);
+      GetConsensusData(9), LengthWaitingMNs]);
     LastUpdateDataPanel := UTCTime;
   end;
   // update nodes grid

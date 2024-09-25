@@ -288,7 +288,7 @@ begin
 end;
 
 
-// Send headers file to peer
+// Send cHeaders file to peer
 procedure PTC_SendResumen(Slot: Int64);
 const
   LastRequest: Int64 = 0;
@@ -443,7 +443,7 @@ begin
   MemStream.Free;
 end;
 
-// Zips the headers file. Uses deprecated methods, to be removed...
+// Zips the cHeaders file. Uses deprecated methods, to be removed...
 function ZipHeaders(): Boolean;
 var
   MyZipFile: TZipper;
@@ -894,13 +894,13 @@ begin
     begin
       AddCFGData(TParam, 1);
       PopulateNodeList;
-      SetNodesArray(GetCFGDataStr(1));
+      SetNodeList(GetCFGDataStr(1));
     end;
     if UpperCase(TCommand) = 'DELNODE' then
     begin
       RemoveCFGData(TParam, 1);
       PopulateNodeList;
-      SetNodesArray(GetCFGDataStr(1));
+      SetNodeList(GetCFGDataStr(1));
     end;
     if UpperCase(TCommand) = 'ADDNTP' then AddCFGData(TParam, 2);
     if UpperCase(TCommand) = 'DELNTP' then RemoveCFGData(TParam, 2);
@@ -927,7 +927,7 @@ var
 begin
   startpos := Pos('$', Linea);
   Content := Copy(Linea, Startpos + 1, Length(linea));
-  if Copy(HAshMD5String(Content), 0, 5) = GetCOnsensus(19) then
+  if Copy(HAshMD5String(Content), 0, 5) = GetConsensusData(19) then
   begin
     SaveCFGToFile(content);
     SetCFGDataStr(content);
@@ -936,7 +936,7 @@ begin
   end
   else
     ToLog('events', Format('Failed CFG: %s <> %s',
-      [Copy(HAshMD5String(Content), 0, 5), GetCOnsensus(19)]));
+      [Copy(HAshMD5String(Content), 0, 5), GetConsensusData(19)]));
 end;
 
 procedure PTC_SendUpdateHeaders(Slot: Integer; Linea: String);
@@ -956,7 +956,7 @@ var
   MNText: String;
 begin
   MNText := ExtractMasternodesText(LText);
-  if copy(HashMD5String(MNText + #13#10), 1, 5) = GetConsensus(8) then
+  if copy(HashMD5String(MNText + #13#10), 1, 5) = GetConsensusData(8) then
   begin
     //ToLog('console','Received MNs hash match!');
     SaveMNsFile(MNText);
@@ -981,7 +981,7 @@ var
   TotalErrors: Integer = 0;
   TotalReceived: Integer = 0;
 begin
-  if GetSummaryFileHash = GetConsensus(5) then exit;
+  if GetSummaryFileHash = GetConsensusData(5) then exit;
   startpos := Pos('$', Linea);
   Content := Copy(Linea, Startpos + 1, Length(linea));
   //ToLog('console','Content: '+Linea);
@@ -1005,11 +1005,11 @@ begin
     Inc(counter);
   until ThisHeader = '';
   SetSummaryFileHash;
-  if copy(GetSummaryFileHash, 0, 5) <> GetConsensus(5) then
+  if copy(GetSummaryFileHash, 0, 5) <> GetConsensusData(5) then
   begin
     ForceHeadersDownload := True;
     ToLog('Console', Format('Update headers failed (%d) : %s <> %s',
-      [TotalErrors, Copy(GetSummaryFileHash, 0, 5), GetConsensus(5)]));
+      [TotalErrors, Copy(GetSummaryFileHash, 0, 5), GetConsensusData(5)]));
   end
   else
   begin
