@@ -961,7 +961,7 @@ var
   MaxSend, Fee, Difference: Int64;
 begin
   if Amount < MinimumFee then
-    exit(0);
+    Exit(0);
 
   MaxSend := (Amount * ComissionTransfer) div (ComissionTransfer + 1);
   Fee := MaxSend div ComissionTransfer;

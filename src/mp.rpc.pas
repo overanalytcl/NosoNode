@@ -599,7 +599,7 @@ begin
             Balance := GetAddressBalanceIndexed(ThisAddress);
             incoming := GetAddressIncomingpays(ThisAddress);
             outgoing := GetAddressPendingPays(ThisAddress);
-            addalias := LRecord.Custom;
+            addalias := LRecord.CustomAlias;
             if addalias = '' then addalias := 'null';
             valid := 'true';
           end;
@@ -631,7 +631,7 @@ begin
       '%d'#127'%d'#127'%s'#127 + '%d'#127'%s'#127'%d'#127 +
       '%d'#127'%s'#127'%s'#127, [validid, NosoPParams,
       thisor.timestamp, thisor.block, thisor.OrderType,
-      thisor.OrderLines, thisor.Receiver, thisor.AmmountTrf,
+      thisor.OrderLineCount, thisor.Receiver, thisor.AmountTransferred,
       thisor.AmmountFee, thisor.reference, thisor.Sender]);
     exit;
   end;
@@ -641,7 +641,7 @@ begin
     '%d'#127'%d'#127'%s'#127 + '%d'#127'%s'#127'%d'#127 +
     '%d'#127'%s'#127'%s'#127, [validid, NosoPParams,
     thisor.timestamp, thisor.block, thisor.OrderType,
-    thisor.OrderLines, thisor.Receiver, thisor.AmmountTrf,
+    thisor.OrderLineCount, thisor.Receiver, thisor.AmountTransferred,
     thisor.AmmountFee, thisor.reference, thisor.Sender]);
   StopPerformanceMeasurement('RPC_OrderInfo');
 end;
@@ -738,11 +738,11 @@ var
       begin
         if arrayords[cont].OrderID = order.OrderID then
         begin
-          arrayords[cont].AmmountTrf := arrayords[cont].AmmountTrf + order.AmountTransferred;
+          arrayords[cont].AmountTransferred := arrayords[cont].AmountTransferred + order.AmountTransferred;
           arrayords[cont].AmmountFee := arrayords[cont].AmmountFee + order.AmountFee;
           arrayords[cont].Sender := arrayords[cont].Sender +
             format('[%s,%d,%d]', [order.Address, order.AmountTransferred, order.AmountFee]);
-          arrayords[cont].OrderLines += 1;
+          arrayords[cont].OrderLineCount += 1;
           existed := True;
           break;
         end;
@@ -755,9 +755,9 @@ var
       arrayords[length(arrayords) - 1].TimeStamp := order.TimeStamp;
       arrayords[length(arrayords) - 1].Block := order.Block;
       arrayords[length(arrayords) - 1].OrderType := order.OrderType;
-      arrayords[length(arrayords) - 1].OrderLines := 1;
+      arrayords[length(arrayords) - 1].OrderLineCount := 1;
       arrayords[length(arrayords) - 1].Receiver := order.Receiver;
-      arrayords[length(arrayords) - 1].AmmountTrf := order.AmountTransferred;
+      arrayords[length(arrayords) - 1].AmountTransferred := order.AmountTransferred;
       arrayords[length(arrayords) - 1].AmmountFee := order.AmountFee;
       arrayords[length(arrayords) - 1].Reference := order.Reference;
       if order.OrderLineCount = 1 then
@@ -793,8 +793,8 @@ begin
           '%s'#127'%d'#127'%d'#127'%s'#127'%d'#127'%s'#127'%d'#127'%d'#127'%s'#127'%s'#127,
           [arrayOrds[counter].OrderID, arrayOrds[counter].TimeStamp,
           arrayOrds[counter].Block, arrayOrds[counter].OrderType,
-          arrayOrds[counter].OrderLines, arrayOrds[counter].Receiver,
-          arrayOrds[counter].AmmountTrf, arrayOrds[counter].AmmountFee,
+          arrayOrds[counter].OrderLineCount, arrayOrds[counter].Receiver,
+          arrayOrds[counter].AmountTransferred, arrayOrds[counter].AmmountFee,
           arrayOrds[counter].Reference, arrayOrds[counter].Sender]);
         Result := Result + thisorderinfo;
       end;

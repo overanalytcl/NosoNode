@@ -525,9 +525,9 @@ begin
     ThisData := GetWallArrIndex(contador);
     SumPos := GetIndexPosition(ThisData.Hash, thisRecord);
     ThisData.Balance := thisRecord.Balance;
-    ThisData.LastOP := thisRecord.LastOP;
+    ThisData.LastOP := thisRecord.LastOperation;
     ThisData.score := thisRecord.score;
-    ThisData.Custom := thisRecord.Custom;
+    ThisData.Custom := thisRecord.CustomAlias;
   end;
   S_Wallet := True;
   U_Dirpanel := True;

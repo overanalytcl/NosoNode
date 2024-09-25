@@ -854,11 +854,11 @@ begin
             resultorder.Sender + format('[%s,%d,%d]',
             [CopyPendings[counter].Address, CopyPendings[counter].AmountTransferred,
             CopyPendings[counter].AmountFee]);
-        resultorder.AmmountTrf :=
-          resultorder.AmmountTrf + CopyPendings[counter].AmountTransferred;
+        resultorder.AmountTransferred :=
+          resultorder.AmountTransferred + CopyPendings[counter].AmountTransferred;
         resultorder.AmmountFee :=
           resultorder.AmmountFee + CopyPendings[counter].AmountFee;
-        resultorder.OrderLines += 1;
+        resultorder.OrderLineCount += 1;
         resultorder.OrderType := CopyPendings[counter].OrderType;
         orderfound := True;
       end;
@@ -890,11 +890,11 @@ begin
                 resultorder.Sender + format('[%s,%d,%d]',
                 [ArrTrxs[counter2].Address, ArrTrxs[counter2].AmountTransferred,
                 ArrTrxs[counter2].AmountFee]);
-            resultorder.AmmountTrf :=
-              resultorder.AmmountTrf + ArrTrxs[counter2].AmountTransferred;
+            resultorder.AmountTransferred :=
+              resultorder.AmountTransferred + ArrTrxs[counter2].AmountTransferred;
             resultorder.AmmountFee :=
               resultorder.AmmountFee + ArrTrxs[counter2].AmountFee;
-            resultorder.OrderLines += 1;
+            resultorder.OrderLineCount += 1;
             resultorder.OrderType := ArrTrxs[counter2].OrderType;
             orderfound := True;
           end;

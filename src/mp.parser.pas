@@ -1247,7 +1247,7 @@ var
 begin
   orderid := GetParameter(LineText, 1);
   ThisOrderdata := GetOrderDetails(orderid);
-  if thisorderdata.AmmountTrf <= 0 then
+  if thisorderdata.AmountTransferred <= 0 then
     ToLog('console', 'Order not found')
   else
   begin
@@ -1256,10 +1256,10 @@ begin
     else
       ToLog('console', 'Block    : ' + IntToStr(ThisOrderdata.Block));
     ToLog('console', 'Type     : ' + ThisOrderdata.OrderType);
-    ToLog('console', 'Trfrs    : ' + IntToStr(ThisOrderdata.OrderLines));
+    ToLog('console', 'Trfrs    : ' + IntToStr(ThisOrderdata.OrderLineCount));
     ToLog('console', 'sender   : ' + ThisOrderdata.Sender);
     ToLog('console', 'Receiver : ' + ThisOrderdata.receiver);
-    ToLog('console', 'Ammount  : ' + IntToCurrency(ThisOrderdata.AmmountTrf));
+    ToLog('console', 'Ammount  : ' + IntToCurrency(ThisOrderdata.AmountTransferred));
     ToLog('console', 'Fee      : ' + IntToCurrency(ThisOrderdata.AmmountFee));
     ToLog('console', 'Reference: ' + ThisOrderdata.reference);
   end;
@@ -1826,7 +1826,7 @@ begin
     while not EOF(SumFile) do
     begin
       blockread(sumfile, ThisRecord, sizeof(ThisRecord));
-      if lastrecord < 0 then LastRecord := ThisRecord.LastOP;
+      if lastrecord < 0 then LastRecord := ThisRecord.LastOperation;
       if thisrecord.Balance < 0 then Inc(NegativeCount);
       if thisrecord.Balance = 0 then Inc(EmptyCount);
       Inc(TotalCoins, ThisRecord.Balance);
@@ -1852,7 +1852,7 @@ begin
         Inc(NanoAddresses);
         Inc(NanoAmount, ThisRecord.Balance);
       end;
-      if ((ThisRecord.LastOP < 10000) and (ThisRecord.Balance > 100000000)) then
+      if ((ThisRecord.LastOperation < 10000) and (ThisRecord.Balance > 100000000)) then
       begin
         Inc(TotalOld, ThisRecord.Balance);
       end;
