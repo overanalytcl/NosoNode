@@ -280,7 +280,7 @@ begin
   Result := IntToStr(GetTotalConnections()) + ' ' + IntToStr(LastBlockIndex) + ' ' +
     LastBlockHash + ' ' + ComputeSummaryHash + ' ' +
     GetPendingTransactionCount.ToString + ' ' + GetSummaryFileHash + ' ' +
-    IntToStr(MyConStatus) + ' ' + IntToStr(port) + ' ' +
+    IntToStr(NodeConnectionStatus) + ' ' + IntToStr(port) + ' ' +
     copy(GetMNsHash, 0, 5) + ' ' + IntToStr(GetMNsListLength) + ' ' +
     'null' + ' ' + //GetNMSData.Diff
     GetMasternodeCheckCount.ToString + ' ' + GVTHashMD5 + ' ' +
@@ -451,7 +451,7 @@ var
 begin
   Result := False;
   MyZipFile := TZipper.Create;
-  MyZipFile.FileName := ZipHeadersFileName;
+  MyZipFile.FileName := BlockHeadersZipFileName;
   try
     {$IFDEF WINDOWS}
    archivename:= StringReplace(SummaryFilename,'\','/',[rfReplaceAll]);
@@ -669,19 +669,19 @@ begin
   Result := False;
   OrderId := GetParameter(OrderText, 7);
   EnterCriticalSection(IdsProcessedLock);
-  if length(ArrayOrderIDsProcessed) > 0 then
+  if length(ProcessedOrderIDs) > 0 then
   begin
-    for counter := 0 to length(ArrayOrderIDsProcessed) - 1 do
+    for counter := 0 to length(ProcessedOrderIDs) - 1 do
     begin
-      if ArrayOrderIDsProcessed[counter] = OrderID then
+      if ProcessedOrderIDs[counter] = OrderID then
       begin
         Result := True;
         break;
       end;
     end;
   end;
-  if Result = False then Insert(OrderID, ArrayOrderIDsProcessed, length(
-      ArrayOrderIDsProcessed));
+  if Result = False then Insert(OrderID, ProcessedOrderIDs, length(
+      ProcessedOrderIDs));
   LeaveCriticalSection(IdsProcessedLock);
 end;
 
@@ -787,7 +787,7 @@ begin
       for cont := 0 to NumTransfers - 1 do
         AddTransactionToPool(TrxArray[cont]);
       if form1.Server.Active then OutgoingMsjsAdd(Textbak);
-      U_DirPanel := True;
+      UpdateDirPanel := True;
       Result := GetParameter(Textbak, 7); // send order ID as result
     end
     else
@@ -831,7 +831,7 @@ begin
     OrderInfo.TimeStamp.ToString;
   if not VerifySignedString(StrToSign, OrderInfo.Signature, OrderInfo.Sender) then
     ErrorCode := 7;
-  if OrderInfo.Sender <> AdminPubKey then ErrorCode := 8;
+  if OrderInfo.Sender <> AdminPublicKey then ErrorCode := 8;
   if ErrorCode = 0 then
   begin
     OpData := GetOpData(TextLine); // remove trx header
@@ -856,10 +856,10 @@ var
 
   procedure LaunchDirectiveThread(LParameter: String);
   var
-    ThDirect: TThreadDirective;
+    ThDirect: TDirectiveThread;
   begin
-    if not WO_AutoUpdate then exit;
-    ThDirect := TThreadDirective.Create(True, LParameter);
+    if not EnableAutoUpdate then exit;
+    ThDirect := TDirectiveThread.Create(True, LParameter);
     ThDirect.FreeOnTerminate := True;
     ThDirect.Start;
     ToLog('events', TimeToStr(now) + Format('Directive: %s', [LParameter]));
@@ -872,7 +872,7 @@ begin
   hashmsg := GetParameter(TextLine, 8);
   if AnsiContainsStr(MsgsReceived, hashmsg) then errored := True;
   mensaje := StringReplace(mensaje, '_', ' ', [rfReplaceAll, rfIgnoreCase]);
-  if not VerifySignedString(msgtime + mensaje, firma, AdminPubKey) then
+  if not VerifySignedString(msgtime + mensaje, firma, AdminPublicKey) then
   begin
     ToLog('events', TimeToStr(now) + 'Directive wrong sign');
     errored := True;
@@ -1021,12 +1021,12 @@ end;
 // Añade una operacion a la espera de cripto
 procedure AddCriptoOp(tipo: Integer; proceso, resultado: String);
 var
-  NewOp: TArrayCriptoOp;
+  NewOp: TCryptoOperation;
 begin
-  NewOp.tipo := tipo;
+  NewOp.OperationType := tipo;
   NewOp.Data := proceso;
   NewOp.Result := resultado;
-  EnterCriticalSection(CriptoThreadLock);
+  EnterCriticalSection(CryptoThreadLock);
   try
     Insert(NewOp, ArrayCriptoOp, length(ArrayCriptoOp));
 
@@ -1035,13 +1035,13 @@ begin
       ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
         ' -> ' + 'Error adding Operation to crypto thread:' + proceso);
   end{Try};
-  LeaveCriticalSection(CriptoThreadLock);
+  LeaveCriticalSection(CryptoThreadLock);
 end;
 
 // Elimina la operacion cripto
 procedure DeleteCriptoOp();
 begin
-  EnterCriticalSection(CriptoThreadLock);
+  EnterCriticalSection(CryptoThreadLock);
   if Length(ArrayCriptoOp) > 0 then
   begin
     try
@@ -1054,7 +1054,7 @@ begin
       end;
     end{Try};
   end;
-  LeaveCriticalSection(CriptoThreadLock);
+  LeaveCriticalSection(CryptoThreadLock);
 end;
 
 

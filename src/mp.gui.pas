@@ -96,7 +96,7 @@ end;
 // Al cerrar el formulario de inicio
 procedure TFormInicio.closeFormInicio(Sender: TObject; var CanClose: Boolean);
 begin
-  if G_launching then
+  if AppLaunching then
   begin
     CompleteInicio;
   end
@@ -203,7 +203,7 @@ var
   CurrentUTC: Int64;
   LConex: TConnectionData;
 begin
-  if WO_StopGUI then exit;
+  if StopGUI then exit;
   StartPerformanceMeasurement('UpdateSlotsGrid');
   CurrentUTC := UTCTime;
   if CurrentUTC > SlotsLastUpdate then
@@ -345,7 +345,7 @@ var
   LConsensus: TNodeConsensus;
   LPSOs: TPSOsArray;
 begin
-  if WO_StopGUI then exit;
+  if StopGUI then exit;
   StartPerformanceMeasurement('UpdateGUITime');
   //Update Monitor Grid
   if ((form1.PCMonitor.ActivePage = Form1.TabMonitorMonitor) and
@@ -447,8 +447,8 @@ begin
       '/' + copy(GetConsensusData(0), 0, 5);
     form1.DataPanel.Cells[1, 1] := NodeServerInfo;
     form1.DataPanel.Cells[1, 2] :=
-      IntToStr(GetTotalConnections) + ' (' + IntToStr(MyConStatus) +
-      ') [' + IntToStr(G_TotalPings) + ']';
+      IntToStr(GetTotalConnections) + ' (' + IntToStr(NodeConnectionStatus) +
+      ') [' + IntToStr(TotalPingCount) + ']';
     form1.DataPanel.Cells[1, 3] :=
       Format('%s / %s', [copy(GetSummaryFileHash, 0, 5), GetConsensusData(5)]);
     form1.DataPanel.Cells[1, 4] :=
@@ -479,7 +479,7 @@ begin
     LastUpdateDataPanel := UTCTime;
   end;
   // update nodes grid
-  if ((U_MNsGrid) or (UTCTime > U_MNsGrid_Last + 59)) then
+  if ((UpdateMasternodesGrid) or (UTCTime > LastMasternodeGridUpdate + 59)) then
   begin
     //{
     form1.GridNodes.RowCount := 1;
@@ -499,18 +499,18 @@ begin
       end;
     end;
     //}
-    U_MNsGrid_Last := UTCTime;
+    LastMasternodeGridUpdate := UTCTime;
     form1.LabelNodesHash.Caption := 'Count: ' + GetMNsListLength.ToString;
-    U_MNsGrid := False;
+    UpdateMasternodesGrid := False;
   end;
-  if U_DirPanel then
+  if UpdateDirPanel then
   begin
     StartPerformanceMeasurement('UpdateDirPanel');
     form1.Direccionespanel.RowCount := 1;
     for contador := 0 to LenWallArr - 1 do
     begin
       if ((GetAddressBalanceIndexed(GetWallArrIndex(contador).hash) = 0) and
-        (WO_HideEmpty)) then continue;
+        (HideEmptyBalances)) then continue;
       form1.Direccionespanel.RowCount := form1.Direccionespanel.RowCount + 1;
       if GetWallArrIndex(contador).Custom <> '' then
         form1.Direccionespanel.Cells[0, form1.Direccionespanel.RowCount - 1] :=
@@ -522,9 +522,9 @@ begin
         IntToCurrency(GetAddressBalanceIndexed(GetWallArrIndex(contador).hash) -
         GetWallArrIndex(contador).pending);
     end;
-    form1.LabelBigBalance.Caption := IntToCurrency(GetWalletBalance) + ' ' + CoinSimbol;
+    form1.LabelBigBalance.Caption := IntToCurrency(GetWalletBalance) + ' ' + CoinSymbol;
     form1.Direccionespanel.Cells[0, 0] := format(rs0514, [LEnWallArr]);  //'Address'
-    U_DirPanel := False;
+    UpdateDirPanel := False;
     StopPerformanceMeasurement('UpdateDirPanel');
   end;
   StopPerformanceMeasurement('UpdateGUITime');
@@ -533,7 +533,7 @@ end;
 // Actualiza la informacion de la label info
 procedure Info(Text: String);
 begin
-  if WO_StopGUI then exit;
+  if StopGUI then exit;
   Form1.InfoPanel.Caption := copy(Text, 1, 40);
   InfoPanelTime := Length(Text) * 50;
   if InfoPanelTime < 1000 then InfoPanelTime := 1000;
@@ -550,11 +550,11 @@ var
 begin
   if Sender = form1.ImageInc then
   begin
-    form1.ImageInc.Hint := 'Incoming: ' + IntToCurrency(MontoIncoming);
+    form1.ImageInc.Hint := 'Incoming: ' + IntToCurrency(IncomingAmount);
   end;
   if Sender = form1.ImageOut then
   begin
-    form1.ImageOut.Hint := 'Outgoing: ' + IntToCurrency(MontoOutgoing);
+    form1.ImageOut.Hint := 'Outgoing: ' + IntToCurrency(OutgoingAmount);
   end;
 end;
 

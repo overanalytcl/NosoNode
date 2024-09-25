@@ -180,7 +180,7 @@ begin
       ToLog('console', 'Server ENABLED. Listening on port ' + PortNumber.ToString);
       //Server ENABLED. Listening on port
       ServerStartTime := UTCTime;
-      U_DataPanel := True;
+      UpdateDataPanel := True;
     except
       on E: Exception do
         ToLog('events', TimeToStr(now) + 'Unable to start Server');
@@ -200,7 +200,7 @@ begin
     ToLog('console', rs2000); //Sign address not valid
     exit;
   end;
-  if MyConStatus < 3 then // rs2001 = 'Wallet not updated';
+  if NodeConnectionStatus < 3 then // rs2001 = 'Wallet not updated';
   begin
     ToLog('console', rs2001);
     exit;
@@ -220,7 +220,7 @@ begin
       ToLog('console', 'Server ENABLED. Listening on port ' + PortNumber.ToString);
       //Server ENABLED. Listening on port
       ServerStartTime := UTCTime;
-      U_DataPanel := True;
+      UpdateDataPanel := True;
     except
       on E: Exception do
         ToLog('events', TimeToStr(now) + 'Unable to start Server: ' + e.Message);
@@ -239,7 +239,7 @@ begin
   KeepServerOn := False;
   try
     Form1.Server.Active := False;
-    U_DataPanel := True;
+    UpdateDataPanel := True;
   except
     on E: Exception do
     begin
@@ -424,7 +424,7 @@ begin
     if IsSlotConnected(contador) then
     begin
       if ((UTCTime > StrToInt64Def(GetConnectionData(contador).LastPingTime, 0) + 15) and
-        (not GetConnectionData(contador).IsBusy) and (not REbuildingSumary)) then
+        (not GetConnectionData(contador).IsBusy) and (not IsRebuildingSummary)) then
       begin
         ToLog('events', TimeToStr(now) + 'Conection closed: Time Out Auth -> ' +
           GetConnectionData(contador).IpAddress);   //Conection closed: Time Out Auth ->
@@ -445,62 +445,62 @@ begin
     NumeroConexiones := GetTotalConnections;
     if NumeroConexiones = 0 then  // Desconectado
     begin
-      EnterCriticalSection(CriptoThreadLock);
+      EnterCriticalSection(CryptoThreadLock);
       SetLength(ArrayCriptoOp, 0); // Delete operations from crypto thread
-      LeaveCriticalSection(CriptoThreadLock);
+      LeaveCriticalSection(CryptoThreadLock);
       EnterCriticalSection(IdsProcessedLock);
-      Setlength(ArrayOrderIDsProcessed, 0); // clear processed Orders
+      Setlength(ProcessedOrderIDs, 0); // clear processed Orders
       LeaveCriticalSection(IdsProcessedLock);
       ClearMNsChecks();
       ClearMNsList();
-      MyConStatus := 0;
-      if STATUS_Connected then
+      NodeConnectionStatus := 0;
+      if IsConnectedToNetwork then
       begin
-        STATUS_Connected := False;
+        IsConnectedToNetwork := False;
         ToLog('console', 'Disconnected.');       //Disconnected
-        G_TotalPings := 0;
-        U_Datapanel := True;
+        TotalPingCount := 0;
+        UpdateDataPanel := True;
         ClearAllPendingTransactions; //THREADSAFE
       end;
       // Resetear todos los valores
     end;
-    if ((NumeroConexiones > 0) and (NumeroConexiones < 3) and (MyConStatus = 0)) then
+    if ((NumeroConexiones > 0) and (NumeroConexiones < 3) and (NodeConnectionStatus = 0)) then
       // Conectando
     begin
-      MyConStatus := 1;
-      G_LastPing := UTCTime;
+      NodeConnectionStatus := 1;
+      LastPingTime := UTCTime;
       ToLog('console', 'Connecting...'); //Connecting...
     end;
-    if MyConStatus > 0 then
+    if NodeConnectionStatus > 0 then
     begin
-      if (G_LastPing + 5) < UTCTime then
+      if (LastPingTime + 5) < UTCTime then
       begin
-        G_LastPing := UTCTime;
+        LastPingTime := UTCTime;
         OutgoingMsjsAdd(GetProtocolLineFromCode(ping));
       end;
     end;
-    if ((NumeroConexiones >= 3) and (MyConStatus < 2) and (not STATUS_Connected)) then
+    if ((NumeroConexiones >= 3) and (NodeConnectionStatus < 2) and (not IsConnectedToNetwork)) then
     begin
-      STATUS_Connected := True;
-      MyConStatus := 2;
+      IsConnectedToNetwork := True;
+      NodeConnectionStatus := 2;
       ToLog('console', 'Connected.');     //Connected
     end;
-    if STATUS_Connected then
+    if IsConnectedToNetwork then
     begin
       //UpdateNetworkData();
-      if Last_SyncWithMainnet + 4 < UTCTime then SyncWithMainnet();
+      if LastMainnetSyncTime + 4 < UTCTime then SyncWithMainnet();
     end;
-    if ((MyConStatus = 2) and (STATUS_Connected) and
+    if ((NodeConnectionStatus = 2) and (IsConnectedToNetwork) and
       (IntToStr(LastBlockIndex) = GetConsensusData(2)) and
       (copy(ComputeSummaryHash, 0, 5) = GetConsensusData(17)) and
       (copy(GetSummaryFileHash, 0, 5) = GetConsensusData(5))) then
     begin
       GetValidSlotForSeed(ValidSlot);
       ClearReceivedOrdersIDs;
-      MyConStatus := 3;
+      NodeConnectionStatus := 3;
       ToLog('console', 'Updated!');   //Updated!
-      //if RPCAuto then  ProcessLinesAdd('RPCON');
-      if WO_AutoServer then ProcessLinesAdd('serveron');
+      //if EnableRPCAutoStart then  ProcessLinesAdd('RPCON');
+      if AutoServerMode then ProcessLinesAdd('serveron');
       if StrToIntDef(GetConsensusData(3), 0) < GetPendingTransactionCount then
       begin
         setlength(PendingTransactionsPool, 0);
@@ -510,11 +510,11 @@ begin
       LastMasternodeListRequestTime := UTCTime;
       OutgoingMsjsAdd(GetProtocolLineFromCode(ping));
     end;
-    if MyConStatus = 3 then
+    if NodeConnectionStatus = 3 then
     begin
       GetValidSlotForSeed(ValidSlot);
-      if ((RPCAuto) and (not Form1.RPCServer.Active)) then  ProcessLinesAdd('RPCON');
-      if ((not RPCAuto) and (Form1.RPCServer.Active)) then  ProcessLinesAdd('RPCOFF');
+      if ((EnableRPCAutoStart) and (not Form1.RPCServer.Active)) then  ProcessLinesAdd('RPCON');
+      if ((not EnableRPCAutoStart) and (Form1.RPCServer.Active)) then  ProcessLinesAdd('RPCOFF');
       if ((StrToIntDef(GetConsensusData(3), 0) > GetPendingTransactionCount) and
         (LastPendingTransactionsRequestTime + 5 < UTCTime) and (length(ArrayCriptoOp) = 0)) then
       begin
@@ -523,14 +523,14 @@ begin
         LastPendingTransactionsRequestTime := UTCTime;
       end;
       if GetAddressBalanceIndexed(LocalMasternodeFunds) < GetStackRequired(LastBlockIndex) then
-        LastTimeReportMyMN := NextBlockTimeStamp + 5;
+        LastMasterNodeReportTime := NextBlockTimeStamp + 5;
       if ((not IsMyMNListed(LocalMasternodeIP)) and (Form1.Server.Active) and
-        (UTCTime > LastTimeReportMyMN + 5) and (BlockAge > 10 + MNsRandomWait) and
+        (UTCTime > LastMasterNodeReportTime + 5) and (BlockAge > 10 + MasternodesRandomWait) and
         (BlockAge < 495) and (1 = 1)) then
       begin
         OutGoingMsjsAdd(GetProtocolLineFromCode(MNReport));
         ToLog('events', TimeToStr(now) + 'My Masternode reported');
-        LastTimeReportMyMN := UTCTime;
+        LastMasterNodeReportTime := UTCTime;
       end;
     end;
   except
@@ -635,7 +635,7 @@ begin
       if GetValidSlotForSeed(ValidSlot) then
       begin
         PTC_SendLine(ValidSlot, GetProtocolLineFromCode(8)); // lastblock
-        if WO_FullNode then
+        if FullNodeMode then
           ToLog('console', 'LastBlock requested from block ' +
             IntToStr(LastBlockIndex) + ' to ' + GetConnectionData(ValidSlot).IpAddress)
         //'LastBlock requested from block '
@@ -654,7 +654,7 @@ begin
   if ((copy(GetSummaryFileHash, 0, 5) = GetConsensusData(5)) and (LastBlockIndex = NLBV) and
     (ComputeSummaryHash <> GetConsensusData(17)) {and (SummaryLastOperation < LastBlockIndex)}) then
   begin  // complete or download summary
-    if (SummaryLastOperation + (2 * SumMarkInterval) < LastBlockIndex) then
+    if (SummaryLastOperation + (2 * BlockSummaryInterval) < LastBlockIndex) then
     begin
       if ((LastSummaryRequestTime + 5 < UTCTime) and (not DownloadingSummary)) then
       begin
@@ -759,7 +759,7 @@ begin
     end;
   end;
 
-  if IsAllSynchronized = ssSynchronized then Last_SyncWithMainnet := UTCTime;
+  if IsAllSynchronized = ssSynchronized then LastMainnetSyncTime := UTCTime;
 end;
 
 function GetOutGoingConnections(): Integer;
@@ -921,7 +921,7 @@ var
   orderfound: Boolean = False;
 begin
   Result := '';
-  if WO_FullNode then LastBlockToCheck := 1
+  if FullNodeMode then LastBlockToCheck := 1
   else
     LastBlockToCheck := LastBlockIndex - SecurityBlocks;
   if LastBlockToCheck < 1 then LastBlockToCheck := 1;
@@ -956,7 +956,7 @@ begin
   //           20{PSOHash}
   Result := {1}IntToStr(GetTotalConnections) + ' ' +{2}IntToStr(LastBlockIndex) + ' ' +
     {3}GetPendingTransactionCount.ToString + ' ' +
-    {4}IntToStr(UTCTime - EngineLastUpdate) + ' ' +{5}copy(GetSummaryFileHash, 0, 5) + ' ' +
+    {4}IntToStr(UTCTime - LastEngineUpdate) + ' ' +{5}copy(GetSummaryFileHash, 0, 5) + ' ' +
     {6}MainnetVersion + NodeRelease + ' ' +{7}UTCTimeStr + ' ' +{8}copy(
     GetMnsHash, 0, 5) + ' ' +{9}GetMNsListLength.ToString + ' ' +
     {10}LastBlockHash + ' ' +{11}{GetNMSData.Diff}'null' + ' ' +
@@ -1119,7 +1119,7 @@ end;
 procedure ClearReceivedOrdersIDs();
 begin
   EnterCriticalSection(IdsProcessedLock);
-  Setlength(ArrayOrderIDsProcessed, 0); // clear processed Orders
+  Setlength(ProcessedOrderIDs, 0); // clear processed Orders
   LeaveCriticalSection(IdsProcessedLock);
 end;
 
@@ -1132,7 +1132,7 @@ var
   WasOk: Boolean = False;
 begin
   Result := '';
-  if MyConStatus < 3 then
+  if NodeConnectionStatus < 3 then
   begin
     Result := 'ERROR 20';
     exit;
@@ -1159,7 +1159,7 @@ begin
       end{Try};
     end;
   until ((WasOk) or (TrysCount = 3));
-  if Result <> '' then U_DirPanel := True;
+  if Result <> '' then UpdateDirPanel := True;
   if Result = '' then Result := 'ERROR 21';
   if client.Connected then Client.Disconnect();
   client.Free;

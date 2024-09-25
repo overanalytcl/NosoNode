@@ -63,7 +63,7 @@ begin
         Result := Result + CopyPendings[cont].AmountFee + CopyPendings[cont].AmountTransferred;
     end;
   end;
-  if LastBlockIndex >= Update050Block then
+  if LastBlockIndex >= ProtocolUpdateBlock then
     if IsLockedMN(Address) then Inc(Result, 1050000000000);
 end;
 
@@ -204,15 +204,15 @@ begin
   begin
     SetPendingForAddress(SendIndex, GetWallArrIndex(SendIndex).Pending +
       Order.AmountFee + order.AmountTransferred);
-    montooutgoing := montooutgoing + Order.AmountFee + order.AmountTransferred;
+    OutgoingAmount := OutgoingAmount + Order.AmountFee + order.AmountTransferred;
     if not form1.ImageOut.Visible then form1.ImageOut.Visible := True;
   end;
   if WallAddIndex(Order.Receiver) >= 0 then
   begin
-    montoincoming := montoincoming + order.AmountTransferred;
+    IncomingAmount := IncomingAmount + order.AmountTransferred;
     if not form1.ImageInc.Visible then form1.ImageInc.Visible := True;
   end;
-  U_DirPanel := True;
+  UpdateDirPanel := True;
 end;
 
 // Devuelve si una direccion ya posee un alias
@@ -268,8 +268,8 @@ end;
 // Devuelve la comision por un monto
 function GetFee(monto: Int64): Int64;
 begin
-  Result := monto div Comisiontrfr;
-  if Result < MinimunFee then Result := 1000000;//MinimunFee;
+  Result := monto div TransferFee;
+  if Result < MinimumTransactionFee then Result := 1000000;//MinimumTransactionFee;
 end;
 
 // Obtiene una orden de envio de fondos desde una direccion
@@ -317,8 +317,8 @@ var
   DireccionEnvia: String;
   AddIndex: Integer;
 begin
-  MontoIncoming := 0;
-  MontoOutgoing := 0;
+  IncomingAmount := 0;
+  OutgoingAmount := 0;
   if GetPendingTransactionCount = 0 then
   begin
     form1.ImageInc.Visible := False;
@@ -332,22 +332,22 @@ begin
       AddIndex := WallAddIndex(DireccionEnvia);
       if AddIndex >= 0 then
       begin
-        MontoOutgoing := MontoOutgoing + PendingTransactionsPool[counter].AmountFee +
+        OutgoingAmount := OutgoingAmount + PendingTransactionsPool[counter].AmountFee +
           PendingTransactionsPool[counter].AmountTransferred;
         SetPendingForAddress(AddIndex, GetWallArrIndex(AdDIndex).Pending +
           PendingTransactionsPool[counter].AmountFee + PendingTransactionsPool[counter].AmountTransferred);
         //WalletArray[WallAddIndex(DireccionEnvia)].Pending:=WalletArray[WallAddIndex(DireccionEnvia)].Pending+PendingTransactionsPool[counter].AmountFee+PendingTransactionsPool[counter].AmountTransferred;
       end;
       if WallAddIndex(PendingTransactionsPool[counter].Receiver) >= 0 then
-        MontoIncoming := MontoIncoming + PendingTransactionsPool[counter].AmountTransferred;
+        IncomingAmount := IncomingAmount + PendingTransactionsPool[counter].AmountTransferred;
     end;
-    if MontoIncoming > 0 then form1.ImageInc.Visible := True
+    if IncomingAmount > 0 then form1.ImageInc.Visible := True
     else
       form1.ImageInc.Visible := False;
-    if MontoOutgoing > 0 then form1.ImageOut.Visible := True
+    if OutgoingAmount > 0 then form1.ImageOut.Visible := True
     else
       form1.ImageOut.Visible := False;
-    U_DirPanel := True;
+    UpdateDirPanel := True;
   end;
 end;
 
@@ -361,14 +361,14 @@ var
   Diferencia: Int64;
 begin
   Disponible := monto;
-  if ((disponible < 1000000{MinimunFee}) or (Disponible < 0)) then
+  if ((disponible < 1000000{MinimumTransactionFee}) or (Disponible < 0)) then
   begin
     Result := 0;
     exit;
   end;
-  maximo := (Disponible * Comisiontrfr) div (Comisiontrfr + 1);
-  comision := maximo div Comisiontrfr;
-  if Comision < 1000000{MinimunFee} then Comision := 1000000{MinimunFee};
+  maximo := (Disponible * TransferFee) div (TransferFee + 1);
+  comision := maximo div TransferFee;
+  if Comision < 1000000{MinimumTransactionFee} then Comision := 1000000{MinimumTransactionFee};
   Envio := maximo + comision;
   Diferencia := Disponible - envio;
   Result := maximo + diferencia;
@@ -383,7 +383,7 @@ begin
   begin
     resultado := resultado + 'Date        : ' + FormatDateTime('dd MMMM YYYY HH:MM:SS.zzz',
       Now) + slinebreak;
-    resultado := resultado + 'MyConStatus : ' + IntToStr(myConStatus) + slinebreak;
+    resultado := resultado + 'MyConStatus : ' + IntToStr(NodeConnectionStatus) + slinebreak;
     Resultado := resultado + 'OS          : ' + OSVersion + slinebreak;
     Resultado := resultado + 'WalletVer   : ' + MainnetVersion + NodeRelease + slinebreak;
   end;
@@ -422,7 +422,7 @@ begin
   Result := False;
   HostIP := StringReplace(hoststr, ':', ' ', [rfReplaceAll, rfIgnoreCase]);
   HostIP := GetParameter(HostIP, 0);
-  whitelisted := StringReplace(RPCWhiteList, ',', ' ', [rfReplaceAll, rfIgnoreCase]);
+  whitelisted := StringReplace(RPCAllowedIPs, ',', ' ', [rfReplaceAll, rfIgnoreCase]);
   repeat
     thiswhitelist := GetParameter(whitelisted, counter);
     if thiswhitelist = HostIP then Result := True;

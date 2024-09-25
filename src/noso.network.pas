@@ -876,7 +876,7 @@ begin
 
   Result := Format('%d %d %s %s %d %s %d %d %s %d null %d %s %s %s',
     [GetTotalConnections(), LastBlockIndex, LastBlockHash, ComputeSummaryHash,
-    GetPendingTransactionCount(), GetSummaryFileHash, MyConStatus,
+    GetPendingTransactionCount(), GetSummaryFileHash, NodeConnectionStatus,
     Port, Copy(GetMNsHash, 0, 5), GetMNsListLength, GetMasternodeCheckCount(),
     GVTHashMD5, Copy(HashMD5String(GetCFGDataStr), 0, 5), Copy(PSOFileHash, 0, 5)]);
 end;
@@ -1216,7 +1216,7 @@ begin
   StartPerformanceMeasurement('GetTotalConnections');
   Result := 0;
 
-  for Slot := 1 to MaxConnections do
+  for Slot := 1 to MaxServerConnections do
   begin
     if IsSlotConnected(Slot) then
       Inc(Result);
@@ -1895,7 +1895,7 @@ begin
   SetLength(MultiOrderTransactionsPool, 0);
   SetLength(NodeList, 0);
 
-  for ConnectionIndex := 1 to MaxConnections do
+  for ConnectionIndex := 1 to MaxServerConnections do
   begin
     InitCriticalSection(IncomingMessagesLock[ConnectionIndex]);
     InitCriticalSection(OutgoingMessagesLock[ConnectionIndex]);
@@ -1921,7 +1921,7 @@ begin
   DoneCriticalSection(MultiOrderTransactionsLock);
   DoneCriticalSection(NodeListLock);
 
-  for ConnectionIndex := 1 to MaxConnections do
+  for ConnectionIndex := 1 to MaxServerConnections do
   begin
     // Release critical sections for message handling
     DoneCriticalSection(IncomingMessagesLock[ConnectionIndex]);

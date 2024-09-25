@@ -79,8 +79,8 @@ begin
     if not CreateDir(MarksDirectory) then Inc(Result);
   if not directoryexists(GVTMarksDirectory) then
     if not CreateDir(GVTMarksDirectory) then Inc(Result);
-  if not directoryexists(RPCBakDirectory) then
-    if not CreateDir(RPCBakDirectory) then Inc(Result);
+  if not directoryexists(RPCBackupDirectory) then
+    if not CreateDir(RPCBackupDirectory) then Inc(Result);
   if not directoryexists(BlockDirectory + DBDirectory) then
     if not CreateDir(BlockDirectory + DBDirectory) then Inc(Result);
 end;
@@ -129,12 +129,12 @@ begin
 
 
   if not SetWalletFilename('NOSODATA' + DirectorySeparator + 'wallet.pkw') then
-    S_AdvOpt := True;
+    ShowAdvOptions := True;
   {
   if not FileExists (WalletFilename) then
     begin
     CreateNewWallet;
-    S_AdvOpt := true;
+    ShowAdvOptions := true;
     end
   else LoadWallet(WalletFilename);
   }
@@ -150,7 +150,7 @@ begin
 
   if not FileExists(BlockDirectory + DBDirectory + DataBaseFilename) then CreateDBFile;
   OutText('✓ Database file ok.', False, 1);
-  if WO_BlockDB then
+  if BlockDatabaseEnabled then
   begin
     OutText('✓ Loading blocks Database.', False, 1);
     CreateOrderIDIndex;
@@ -161,7 +161,7 @@ begin
 
   UpdateWalletFromSumario();
   OutText('✓ Wallet updated', False, 1);
-  ImportAddressesFromBackup(RPCBakDirectory);
+  ImportAddressesFromBackup(RPCBackupDirectory);
 
   LoadPSOFileFromDisk;
 end;
@@ -237,83 +237,83 @@ procedure CreateADV(saving: Boolean);
 begin
   StartPerformanceMeasurement('CreateADV');
   try
-    Assignfile(FileAdvOptions, AdvOptionsFilename);
-    rewrite(FileAdvOptions);
-    writeln(FileAdvOptions, '---NosoNode config file.---');
-    writeln(FileAdvOptions, '');
+    Assignfile(AdvOptionsFile, AdvOptionsFilename);
+    rewrite(AdvOptionsFile);
+    writeln(AdvOptionsFile, '---NosoNode config file.---');
+    writeln(AdvOptionsFile, '');
 
-    writeln(FileAdvOptions, '---Wallet related.---');
-    writeln(FileAdvOptions, '//Hide empty addresses');
-    writeln(FileAdvOptions, 'HideEmpty ' + BoolToStr(WO_HideEmpty, True));
-    writeln(FileAdvOptions, '//Use all addresses to send funds');
-    writeln(FileAdvOptions, 'MultiSend ' + BoolToStr(WO_MultiSend, True));
-    writeln(FileAdvOptions, '//Po files language code');
-    writeln(FileAdvOptions, 'Language ' + (WO_Language));
-    writeln(FileAdvOptions, '//No GUI refresh');
-    writeln(FileAdvOptions, 'NoGUI ' + BoolToStr(WO_StopGUI, True));
-    writeln(FileAdvOptions, '//Po files last update');
-    writeln(FileAdvOptions, 'PoUpdate ' + (WO_LastPoUpdate));
-    writeln(FileAdvOptions, '//Close the launch form automatically');
-    writeln(FileAdvOptions, 'Closestart ' + BoolToStr(WO_CloseStart, True));
-    writeln(FileAdvOptions, '//Send anonymous report to developers');
-    writeln(FileAdvOptions, 'SendReport ' + BoolToStr(WO_SendReport, True));
-    writeln(FileAdvOptions, '//Keep a blocks database');
-    writeln(FileAdvOptions, 'BlocksDB ' + BoolToStr(WO_BlockDB, True));
-    writeln(FileAdvOptions, '//Restart periodically the node');
-    writeln(FileAdvOptions, 'PRestart ' + IntToStr(WO_PRestart));
-    writeln(FileAdvOptions, '//Skip new blocks creation');
-    writeln(FileAdvOptions, 'SkipBlocks ' + BoolToStr(WO_skipBlocks, True));
+    writeln(AdvOptionsFile, '---Wallet related.---');
+    writeln(AdvOptionsFile, '//Hide empty addresses');
+    writeln(AdvOptionsFile, 'HideEmpty ' + BoolToStr(HideEmptyBalances, True));
+    writeln(AdvOptionsFile, '//Use all addresses to send funds');
+    writeln(AdvOptionsFile, 'MultiSend ' + BoolToStr(EnableMultiSend, True));
+    writeln(AdvOptionsFile, '//Po files language code');
+    writeln(AdvOptionsFile, 'Language ' + (LanguageSetting));
+    writeln(AdvOptionsFile, '//No GUI refresh');
+    writeln(AdvOptionsFile, 'NoGUI ' + BoolToStr(StopGUI, True));
+    writeln(AdvOptionsFile, '//Po files last update');
+    writeln(AdvOptionsFile, 'PoUpdate ' + (LastPoUpdate));
+    writeln(AdvOptionsFile, '//Close the launch form automatically');
+    writeln(AdvOptionsFile, 'Closestart ' + BoolToStr(CloseOnStart, True));
+    writeln(AdvOptionsFile, '//Send anonymous report to developers');
+    writeln(AdvOptionsFile, 'SendReport ' + BoolToStr(SendErrorReports, True));
+    writeln(AdvOptionsFile, '//Keep a blocks database');
+    writeln(AdvOptionsFile, 'BlocksDB ' + BoolToStr(BlockDatabaseEnabled, True));
+    writeln(AdvOptionsFile, '//Restart periodically the node');
+    writeln(AdvOptionsFile, 'PRestart ' + IntToStr(PendingRestart));
+    writeln(AdvOptionsFile, '//Skip new blocks creation');
+    writeln(AdvOptionsFile, 'SkipBlocks ' + BoolToStr(SkipBlockSync, True));
 
-    writeln(FileAdvOptions,
+    writeln(AdvOptionsFile,
       '//Mainform coordinates. Do not manually change this values');
-    writeln(FileAdvOptions, Format('FormState %d %d %d %d %d',
+    writeln(AdvOptionsFile, Format('FormState %d %d %d %d %d',
       [Form1.Top, form1.Left, form1.Width, form1.Height, form1.WindowState]));
-    writeln(FileAdvOptions, '');
+    writeln(AdvOptionsFile, '');
 
-    writeln(FileAdvOptions, '---Masternode---');
-    writeln(FileAdvOptions, '//Enable node server at start');
-    writeln(FileAdvOptions, 'Autoserver ' + BoolToStr(WO_AutoServer, True));
-    writeln(FileAdvOptions, '//Run autoupdate directives');
-    writeln(FileAdvOptions, 'Autoupdate ' + BoolToStr(WO_AutoUpdate, True));
-    writeln(FileAdvOptions, '//Download the complete blockchain');
-    writeln(FileAdvOptions, 'WO_FullNode ' + BoolToStr(WO_FullNode, True));
-    writeln(FileAdvOptions, '//Masternode static IP');
-    writeln(FileAdvOptions, 'MNIP ' + (LocalMasternodeIP));
-    writeln(FileAdvOptions, '//Masternode port');
-    writeln(FileAdvOptions, 'MNPort ' + (LocalMasternodePort));
-    writeln(FileAdvOptions, '//Masternode funds address');
-    writeln(FileAdvOptions, 'MNFunds ' + (LocalMasternodeFunds));
+    writeln(AdvOptionsFile, '---Masternode---');
+    writeln(AdvOptionsFile, '//Enable node server at start');
+    writeln(AdvOptionsFile, 'Autoserver ' + BoolToStr(AutoServerMode, True));
+    writeln(AdvOptionsFile, '//Run autoupdate directives');
+    writeln(AdvOptionsFile, 'Autoupdate ' + BoolToStr(EnableAutoUpdate, True));
+    writeln(AdvOptionsFile, '//Download the complete blockchain');
+    writeln(AdvOptionsFile, 'WO_FullNode ' + BoolToStr(FullNodeMode, True));
+    writeln(AdvOptionsFile, '//Masternode static IP');
+    writeln(AdvOptionsFile, 'MNIP ' + (LocalMasternodeIP));
+    writeln(AdvOptionsFile, '//Masternode port');
+    writeln(AdvOptionsFile, 'MNPort ' + (LocalMasternodePort));
+    writeln(AdvOptionsFile, '//Masternode funds address');
+    writeln(AdvOptionsFile, 'MNFunds ' + (LocalMasternodeFunds));
     if LocalMasternodeSignature = '' then LocalMasternodeSignature := GetWallArrIndex(0).Hash;
-    writeln(FileAdvOptions, '//Masternode sign address');
-    writeln(FileAdvOptions, 'MNSign ' + LocalMasternodeSignature);
-    writeln(FileAdvOptions, '//Use automatic IP detection for masternode');
-    writeln(FileAdvOptions, 'MNAutoIp ' + BoolToStr(MN_AutoIP, True));
-    writeln(FileAdvOptions, '');
+    writeln(AdvOptionsFile, '//Masternode sign address');
+    writeln(AdvOptionsFile, 'MNSign ' + LocalMasternodeSignature);
+    writeln(AdvOptionsFile, '//Use automatic IP detection for masternode');
+    writeln(AdvOptionsFile, 'MNAutoIp ' + BoolToStr(AutoDetectMasterNodeIP, True));
+    writeln(AdvOptionsFile, '');
 
-    writeln(FileAdvOptions, '---RPC server---');
-    writeln(FileAdvOptions, '//RPC server port');
-    writeln(FileAdvOptions, 'RPCPort ' + IntToStr(RPCPort));
-    writeln(FileAdvOptions, '//RPC server password');
-    writeln(FileAdvOptions, 'RPCPass ' + RPCPass);
-    writeln(FileAdvOptions, '//RPC IP filter active/inactive');
-    writeln(FileAdvOptions, 'RPCFilter ' + BoolToStr(RPCFilter, True));
-    writeln(FileAdvOptions, '//RPC whitelisted IPs');
-    writeln(FileAdvOptions, 'RPCWhiteList ' + RPCWhitelist);
-    writeln(FileAdvOptions, '//Enable RPC server at start');
-    writeln(FileAdvOptions, 'RPCAuto ' + BoolToStr(RPCAuto, True));
-    writeln(FileAdvOptions, '//Save addresses keys created on a BAK folder');
-    writeln(FileAdvOptions, 'RPCSaveNew ' + BoolToStr(RPCSaveNew, True));
-    writeln(FileAdvOptions, '//Banned methods for RPC requests');
-    writeln(FileAdvOptions, 'RPCBanned ' + RPCBanned);
-    writeln(FileAdvOptions, '');
+    writeln(AdvOptionsFile, '---RPC server---');
+    writeln(AdvOptionsFile, '//RPC server port');
+    writeln(AdvOptionsFile, 'RPCPort ' + IntToStr(RPCPort));
+    writeln(AdvOptionsFile, '//RPC server password');
+    writeln(AdvOptionsFile, 'RPCPass ' + RPCPassword);
+    writeln(AdvOptionsFile, '//RPC IP filter active/inactive');
+    writeln(AdvOptionsFile, 'RPCFilter ' + BoolToStr(UseRPCFilter, True));
+    writeln(AdvOptionsFile, '//RPC whitelisted IPs');
+    writeln(AdvOptionsFile, 'RPCWhiteList ' + RPCAllowedIPs);
+    writeln(AdvOptionsFile, '//Enable RPC server at start');
+    writeln(AdvOptionsFile, 'RPCAuto ' + BoolToStr(EnableRPCAutoStart, True));
+    writeln(AdvOptionsFile, '//Save addresses keys created on a BAK folder');
+    writeln(AdvOptionsFile, 'RPCSaveNew ' + BoolToStr(SaveNewRPCConnections, True));
+    writeln(AdvOptionsFile, '//Banned methods for RPC requests');
+    writeln(AdvOptionsFile, 'RPCBanned ' + RPCBannedIPs);
+    writeln(AdvOptionsFile, '');
 
-    writeln(FileAdvOptions, '---Deprecated. To be removed.---');
-    writeln(FileAdvOptions, 'MaxPeers ' + IntToStr(MaxPeersAllow));
-    writeln(FileAdvOptions, 'PosWarning ' + IntToStr(WO_PosWarning));
+    writeln(AdvOptionsFile, '---Deprecated. To be removed.---');
+    writeln(AdvOptionsFile, 'MaxPeers ' + IntToStr(MaxAllowedPeers));
+    writeln(AdvOptionsFile, 'PosWarning ' + IntToStr(PosWarningThreshold));
 
-    Closefile(FileAdvOptions);
+    Closefile(AdvOptionsFile);
     if saving then ToLog('events', TimeToStr(now) + 'Options file saved');
-    S_AdvOpt := False;
+    ShowAdvOptions := False;
   except
     on E: Exception do
       ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
@@ -328,49 +328,49 @@ var
   linea: String;
 begin
   try
-    Assignfile(FileAdvOptions, AdvOptionsFilename);
-    reset(FileAdvOptions);
-    while not EOF(FileAdvOptions) do
+    Assignfile(AdvOptionsFile, AdvOptionsFilename);
+    reset(AdvOptionsFile);
+    while not EOF(AdvOptionsFile) do
     begin
-      readln(FileAdvOptions, linea);
+      readln(AdvOptionsFile, linea);
       if GetParameter(linea, 0) = 'RPCPort' then
         RPCPort := StrToIntDef(GetParameter(linea, 1), RPCPort);
-      if GetParameter(linea, 0) = 'RPCPass' then RPCPass := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'RPCPass' then RPCPassword := GetParameter(linea, 1);
       if GetParameter(linea, 0) = 'MaxPeers' then
-        MaxPeersAllow := StrToIntDef(GetParameter(linea, 1), MaxPeersAllow);
+        MaxAllowedPeers := StrToIntDef(GetParameter(linea, 1), MaxAllowedPeers);
       if GetParameter(linea, 0) = 'PosWarning' then
-        WO_PosWarning := StrToIntDef(GetParameter(linea, 1), WO_PosWarning);
+        PosWarningThreshold := StrToIntDef(GetParameter(linea, 1), PosWarningThreshold);
       if GetParameter(linea, 0) = 'SendReport' then
-        WO_SendReport := StrToBool(GetParameter(linea, 1));
+        SendErrorReports := StrToBool(GetParameter(linea, 1));
       if GetParameter(linea, 0) = 'BlocksDB' then
-        WO_BlockDB := StrToBool(GetParameter(linea, 1));
+        BlockDatabaseEnabled := StrToBool(GetParameter(linea, 1));
       if GetParameter(linea, 0) = 'PRestart' then
-        WO_PRestart := StrToIntDef(GetParameter(linea, 1), 0);
+        PendingRestart := StrToIntDef(GetParameter(linea, 1), 0);
       if GetParameter(linea, 0) = 'SkipBlocks' then
-        WO_skipBlocks := StrToBool(GetParameter(linea, 1));
+        SkipBlockSync := StrToBool(GetParameter(linea, 1));
 
 
 
       if GetParameter(linea, 0) = 'MultiSend' then
-        WO_MultiSend := StrToBool(GetParameter(linea, 1));
+        EnableMultiSend := StrToBool(GetParameter(linea, 1));
       if GetParameter(linea, 0) = 'HideEmpty' then
-        WO_HideEmpty := StrToBool(GetParameter(linea, 1));
+        HideEmptyBalances := StrToBool(GetParameter(linea, 1));
       if GetParameter(linea, 0) = 'RPCFilter' then
-        RPCFilter := StrToBool(GetParameter(linea, 1));
-      if GetParameter(linea, 0) = 'RPCWhiteList' then RPCWhiteList := GetParameter(linea, 1);
-      if GetParameter(linea, 0) = 'RPCBanned' then RPCBanned := GetParameter(linea, 1);
-      if GetParameter(linea, 0) = 'RPCAuto' then RPCAuto := StrToBool(GetParameter(linea, 1));
+        UseRPCFilter := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'RPCWhiteList' then RPCAllowedIPs := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'RPCBanned' then RPCBannedIPs := GetParameter(linea, 1);
+      if GetParameter(linea, 0) = 'RPCAuto' then EnableRPCAutoStart := StrToBool(GetParameter(linea, 1));
       if GetParameter(linea, 0) = 'RPCSaveNew' then
-        RPCSaveNew := StrToBool(GetParameter(linea, 1));
-      if GetParameter(linea, 0) = 'Language' then WO_Language := GetParameter(linea, 1);
+        SaveNewRPCConnections := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'Language' then LanguageSetting := GetParameter(linea, 1);
       if GetParameter(linea, 0) = 'Autoserver' then
-        WO_AutoServer := StrToBool(GetParameter(linea, 1));
-      if GetParameter(linea, 0) = 'PoUpdate' then WO_LastPoUpdate := GetParameter(linea, 1);
+        AutoServerMode := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'PoUpdate' then LastPoUpdate := GetParameter(linea, 1);
       if GetParameter(linea, 0) = 'Closestart' then
-        WO_CloseStart := StrToBool(GetParameter(linea, 1));
+        CloseOnStart := StrToBool(GetParameter(linea, 1));
       if GetParameter(linea, 0) = 'Autoupdate' then
-        WO_AutoUpdate := StrToBool(GetParameter(linea, 1));
-      if GetParameter(linea, 0) = 'NoGUI' then WO_StopGUI := StrToBool(GetParameter(linea, 1));
+        EnableAutoUpdate := StrToBool(GetParameter(linea, 1));
+      if GetParameter(linea, 0) = 'NoGUI' then StopGUI := StrToBool(GetParameter(linea, 1));
       if GetParameter(linea, 0) = 'FormState' then
       begin
         FormState_Top := StrToIntDef(GetParameter(linea, 1), 0);
@@ -398,12 +398,12 @@ begin
       if GetParameter(linea, 0) = 'MNFunds' then LocalMasternodeFunds := GetParameter(linea, 1);
       if GetParameter(linea, 0) = 'MNSign' then LocalMasternodeSignature := GetParameter(linea, 1);
       if GetParameter(linea, 0) = 'MNAutoIp' then
-        MN_AutoIP := StrToBool(GetParameter(linea, 1));
+        AutoDetectMasterNodeIP := StrToBool(GetParameter(linea, 1));
       if GetParameter(linea, 0) = 'WO_FullNode' then
-        WO_FullNode := StrToBool(GetParameter(linea, 1));
+        FullNodeMode := StrToBool(GetParameter(linea, 1));
 
     end;
-    Closefile(FileAdvOptions);
+    Closefile(AdvOptionsFile);
   except
     on E: Exception do
       ToLog('events', TimeToStr(now) + 'Error loading AdvOpt file');
@@ -424,11 +424,11 @@ var
   archivo : textfile;
 Begin
 result := 'en';
-WO_LastPoUpdate := '';
+LastPoUpdate := '';
 if not fileexists('NOSODATA'+DirectorySeparator+'advopt.txt') then
   begin
   result := 'en';
-  WO_LastPoUpdate := '';
+  LastPoUpdate := '';
   end
 else
    begin
@@ -438,7 +438,7 @@ else
       begin
       readln(archivo,linea);
       if GetParameter(linea,0) ='Language' then result:=GetParameter(linea,1);
-      if GetParameter(linea,0) ='PoUpdate' then WO_LastPoUpdate:=GetParameter(linea,1);
+      if GetParameter(linea,0) ='PoUpdate' then LastPoUpdate:=GetParameter(linea,1);
       end;
    Closefile(archivo);
    end;
@@ -502,12 +502,12 @@ End;
 // Saves updates files to disk
 procedure SaveUpdatedFiles();
 begin
-  if S_Wallet then
+  if ShowWalletForm then
   begin
     SaveWalletToFile();
-    S_Wallet := False;
+    ShowWalletForm := False;
   end;
-  if S_AdvOpt then CreateADV(True);
+  if ShowAdvOptions then CreateADV(True);
 end;
 
 // Updates wallet addresses balance from sumary
@@ -529,8 +529,8 @@ begin
     ThisData.score := thisRecord.score;
     ThisData.Custom := thisRecord.CustomAlias;
   end;
-  S_Wallet := True;
-  U_Dirpanel := True;
+  ShowWalletForm := True;
+  UpdateDirPanel := True;
 end;
 
 procedure RebuildSummary();
@@ -594,7 +594,7 @@ var
   counter: Integer;
 begin
   if copy(ComputeSummaryHash, 0, 5) = GetConsensusData(17) then exit;
-  RebuildingSumary := True;
+  IsRebuildingSummary := True;
   StartBlock := SummaryLastOperation + 1;
   finishblock := LastBlockIndex;
   ToLog('console', 'Complete summary');
@@ -606,11 +606,11 @@ begin
       info('Rebuilding summary block: ' + IntToStr(counter));
       //'Rebuilding sumary block: '
       application.ProcessMessages;
-      EngineLastUpdate := UTCTime;
+      LastEngineUpdate := UTCTime;
     end;
   end;
   SummaryLastOperation := finishblock;
-  RebuildingSumary := False;
+  IsRebuildingSummary := False;
   UpdateNodeData();
   ZipSummary;
   ToLog('console', format('Summary completed from %d to %d (%s)',
@@ -624,8 +624,8 @@ var
   cont: Integer;
   BlockHeader: BlockHeaderData;
   ArrayOrders: TBlockOrders;
-  ArrayPos: BlockArraysPos;
-  ArrayMNs: BlockArraysPos;
+  ArrayPos: TBlockAddresses;
+  ArrayMNs: TBlockAddresses;
   PosReward: Int64 = 0;
   PosCount: Integer = 0;
   CounterPos: Integer;
@@ -670,30 +670,30 @@ begin
     end;
   end;
   setlength(ArrayOrders, 0);
-  if ((blocknumber >= PoSBlockStart) and (blocknumber <= PoSBlockEnd)) then
+  if ((blocknumber >= PoSStartBlock) and (blocknumber <= PoSEndBlock)) then
   begin
     ArrayPos := GetBlockPoSes(BlockNumber);
-    PosReward := StrToIntDef(Arraypos[length(Arraypos) - 1].address, 0);
+    PosReward := StrToIntDef(Arraypos[length(Arraypos) - 1].Address, 0);
     SetLength(ArrayPos, length(ArrayPos) - 1);
     PosCount := length(ArrayPos);
     for counterpos := 0 to PosCount - 1 do
-      CreditTo(ArrayPos[counterPos].address, Posreward, BlockNumber);
+      CreditTo(ArrayPos[counterPos].Address, Posreward, BlockNumber);
     ProcessSummaryPayment(BlockHeader.AccountMiner, PosCount * Posreward, blocknumber);
     SetLength(ArrayPos, 0);
   end;
 
-  if blocknumber >= MNBlockStart then
+  if blocknumber >= MasterNodeStartBlock then
   begin
     ArrayMNs := GetBlockMNs(BlockNumber);
-    MNsReward := StrToIntDef(ArrayMNs[length(ArrayMNs) - 1].address, 0);
+    MNsReward := StrToIntDef(ArrayMNs[length(ArrayMNs) - 1].Address, 0);
     SetLength(ArrayMNs, length(ArrayMNs) - 1);
     MNsCount := length(ArrayMNs);
     for counterMNs := 0 to MNsCount - 1 do
-      CreditTo(ArrayMNs[counterMNs].address, MNsreward, BlockNumber);
+      CreditTo(ArrayMNs[counterMNs].Address, MNsreward, BlockNumber);
     ProcessSummaryPayment(BlockHeader.AccountMiner, MNsCount * MNsreward, BlockNumber);
     SetLength(ArrayMNs, 0);
   end;
-  CreditTo(AdminHash, 0, BlockNumber);
+  CreditTo(AdminHashAddress, 0, BlockNumber);
   if SaveAndUpdate then UpdateSummaryChanges;
   if BlockNumber mod 1000 = 0 then
     TryCopyFile(SummaryFileName, MarksDirectory + BlockNumber.tostring + '.bak');
@@ -702,7 +702,7 @@ begin
     SaveGVTsAsData;
     UpdateMyGVTsList;
   end;
-  U_DirPanel := True;
+  UpdateDirPanel := True;
 end;
 
 // Creates a bat file for restart
@@ -710,7 +710,7 @@ procedure CreateLauncherFile(IncludeUpdate: Boolean = False);
 var
   archivo: textfile;
 begin
-  Assignfile(archivo, RestartFilename);
+  Assignfile(archivo, RestartScriptName);
   rewrite(archivo);
   try
     {$IFDEF WINDOWS}
@@ -748,7 +748,7 @@ else
     {$ENDIF}
   except
     on E: Exception do
-      if not G_ClosingAPP then
+      if not AppClosing then
         ToLog('events', TimeToStr(now) + 'Error creating restart file: ' + E.Message);
   end{Try};
   Closefile(archivo);
@@ -758,7 +758,7 @@ end;
 procedure RestartNoso();
 begin
   CreateLauncherFile();
-  RunExternalProgram(RestartFilename);
+  RunExternalProgram(RestartScriptName);
 end;
 
 // Executes the required steps to restore the blockchain
@@ -781,7 +781,7 @@ var
   startmark: Integer = 0;
 begin
   if fromblock = 0 then StartMark :=
-      ((GetMyLastUpdatedBlock div SumMarkInterval) - 1) * SumMarkInterval
+      ((GetMyLastUpdatedBlock div BlockSummaryInterval) - 1) * BlockSummaryInterval
   else
     StartMark := Fromblock;
   //LoadSummaryFromDisk(MarksDirectory+StartMark.ToString+'.bak');

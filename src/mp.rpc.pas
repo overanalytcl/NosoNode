@@ -70,7 +70,7 @@ begin
   begin
     RPCPort := Value;
     ToLog('console', 'RPC port set to: ' + IntToStr(Value));
-    S_AdvOpt := True;
+    ShowAdvOptions := True;
   end;
 end;
 
@@ -79,9 +79,9 @@ var
   counter: Integer;
   oldpassword: String;
 begin
-  oldpassword := RPCPass;
+  oldpassword := RPCPassword;
   trim(newpassword);
-  RPCPass := newpassword;
+  RPCPassword := newpassword;
 end;
 
 // Turn on RPC server
@@ -93,15 +93,15 @@ begin
       Form1.RPCServer.Bindings.Clear;
       Form1.RPCServer.DefaultPort := RPCPort;
       Form1.RPCServer.Active := True;
-      G_Launching := True;
-      G_Launching := False;
+      AppLaunching := True;
+      AppLaunching := False;
       ToLog('console', 'RPC server ENABLED');
     except
       on E: Exception do
       begin
         ToLog('console', 'Unable to start RPC port');
-        G_Launching := True;
-        G_Launching := False;
+        AppLaunching := True;
+        AppLaunching := False;
       end;
     end; {TRY}
   end
@@ -116,8 +116,8 @@ begin
   begin
     Form1.RPCServer.Active := False;
     ToLog('console', 'RPC server DISABLED');
-    G_Launching := True;
-    G_Launching := False;
+    AppLaunching := True;
+    AppLaunching := False;
   end
   else
     ToLog('console', 'RPC server already DISABLED');
@@ -485,7 +485,7 @@ begin
       NosoPParams := Trim(NosoPParams);
       //ToLog('console',jsonreceived);
       //ToLog('console','NosoPParams: '+NosoPParams);
-      if AnsiContainsStr(RPCBanned, Method) then method := 'banned';
+      if AnsiContainsStr(RPCBannedIPs, Method) then method := 'banned';
       if method = 'test' then Result := GetJSONResponse('test', jsonid)
       else if method = 'banned' then
         Result := GetJSONResponse(RPC_Banned(NosoPParams), jsonid)
@@ -546,9 +546,9 @@ end;
 
 function RPC_Restart(NosoPParams: String): String;
 var
-  ThDirect: TThreadDirective;
+  ThDirect: TDirectiveThread;
 begin
-  ThDirect := TThreadDirective.Create(True, 'rpcrestart');
+  ThDirect := TDirectiveThread.Create(True, 'rpcrestart');
   ThDirect.FreeOnTerminate := True;
   ThDirect.Start;
   Result := 'restart';
@@ -844,7 +844,7 @@ end;
 function RPC_Blockmns(NosoPParams: String): String;
 var
   blocknumber: Integer;
-  ArrayMNs: BlockArraysPos;
+  ArrayMNs: TBlockAddresses;
   MNsReward: Int64;
   MNsCount, Totalpaid: Int64;
   counter: Integer;
@@ -858,12 +858,12 @@ begin
   else
   begin
     ArrayMNs := GetBlockMNs(blocknumber);
-    MNsReward := StrToInt64Def(ArrayMNs[length(ArrayMNs) - 1].address, 0);
+    MNsReward := StrToInt64Def(ArrayMNs[length(ArrayMNs) - 1].Address, 0);
     SetLength(ArrayMNs, length(ArrayMNs) - 1);
     MNSCount := length(ArrayMNs);
     TotalPAid := MNSCount * MNsReward;
     for counter := 0 to MNsCount - 1 do
-      AddressesString := AddressesString + ArrayMNs[counter].address + ' ';
+      AddressesString := AddressesString + ArrayMNs[counter].Address + ' ';
     AddressesString := Trim(AddressesString);
     AddressesString := StringReplace(AddressesString, ' ', ',', [rfReplaceAll,
       rfIgnoreCase]);
@@ -901,13 +901,13 @@ begin
     NewAddress.PublicKey := pubkey;
     NewAddress.PrivateKey := PriKey;
     InsertToWallArr(NewAddress);
-    if RPCSaveNew then SaveAddresstoFile(RPCBakDirectory + NewAddress.Hash +
+    if SaveNewRPCConnections then SaveAddresstoFile(RPCBackupDirectory + NewAddress.Hash +
         '.pkw', NewAddress);
     Result := Result + NewAddress.Hash + #127;
   end;
   trim(Result);
-  S_Wallet := True;
-  U_DirPanel := True;
+  ShowWalletForm := True;
+  UpdateDirPanel := True;
   StopPerformanceMeasurement('RPC_NewAddress');
 end;
 
@@ -924,12 +924,12 @@ begin
   NewAddress.PublicKey := pubkey;
   NewAddress.PrivateKey := PriKey;
   InsertToWallArr(NewAddress);
-  if RPCSaveNew then SaveAddresstoFile(RPCBakDirectory + NewAddress.Hash +
+  if SaveNewRPCConnections then SaveAddresstoFile(RPCBackupDirectory + NewAddress.Hash +
       '.pkw', NewAddress);
   Result := Result + NewAddress.Hash + #127 + NewAddress.PublicKey + #127 + NewAddress.PrivateKey;
   trim(Result);
-  S_Wallet := True;
-  U_DirPanel := True;
+  ShowWalletForm := True;
+  UpdateDirPanel := True;
   StopPerformanceMeasurement('RPC_NewAddressFull');
 end;
 

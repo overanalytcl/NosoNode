@@ -249,7 +249,7 @@ begin
   end;
   FResult := FActiveDir + DirectorySeparator + FEditFilename.Text;
   FResult := StringReplace(FResult, ' ', '*', [rfReplaceAll, rfIgnoreCase]);
-  ProcessLines.Add(StringReplace(LineaEjecutar, '(-resultado-)', FResult,
+  ProcessedCommandLines.Add(StringReplace(LineaEjecutar, '(-resultado-)', FResult,
     [rfReplaceAll, rfIgnoreCase]));
   explorer.Visible := False;
 end;

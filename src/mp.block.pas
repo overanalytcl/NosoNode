@@ -19,13 +19,13 @@ procedure BuildNewBlock(Numero, TimeStamp: Int64; TargetHash, Minero, Solucion: 
 function GetBlockReward(BlNumber: Int64): Int64;
 function GuardarBloque(NombreArchivo: String; Cabezera: BlockHeaderData;
   Ordenes: array of TOrderData; PosPay: Int64; PoSnumber: Integer;
-  PosAddresses: array of TArrayPos; MNsPay: Int64; MNsNumber: Integer;
-  MNsAddresses: array of TArrayPos): Boolean;
+  PosAddresses: array of TAddress; MNsPay: Int64; MNsNumber: Integer;
+  MNsAddresses: array of TAddress): Boolean;
  {function LoadBlockDataHeader(BlockNumber:integer):BlockHeaderData;}
  {function GetBlockTrxs(BlockNumber:integer):TBlockOrdersArray;}
 procedure UndoneLastBlock();
-function GetBlockPoSes(BlockNumber: Integer): BlockArraysPos;
-function GetBlockMNs(BlockNumber: Integer): BlockArraysPos;
+function GetBlockPoSes(BlockNumber: Integer): TBlockAddresses;
+function GetBlockMNs(BlockNumber: Integer): TBlockAddresses;
 function RemoveBlocks(UpToBlock: Int64): Integer;
 function GEtNSLBlkOrdInfo(LineText: String): String;
 
@@ -79,10 +79,10 @@ end;
 // Build the default block 0
 procedure CrearBloqueCero();
 begin
-  BuildNewBlock(0, GenesysTimeStamp, '', adminhash, '');
-  if G_Launching then ToLog('console', 'Block GENESYS (0) created.');
+  BuildNewBlock(0, GenesisTimestamp, '', AdminHashAddress, '');
+  if AppLaunching then ToLog('console', 'Block GENESYS (0) created.');
   //'Block 0 created.'
-  if G_Launching then OutText('✓ Block 0 created', False, 1);
+  if AppLaunching then OutText('✓ Block 0 created', False, 1);
 end;
 
 // Crea un bloque nuevo con la informacion suministrada
@@ -109,12 +109,12 @@ var
   PoScount: Integer = 0;
   PosRequired, PosReward: Int64;
   PoSTotalReward: Int64 = 0;
-  PoSAddressess: array of TArrayPos;
+  PoSAddressess: array of TAddress;
 
   MNsCount: Integer;
   MNsReward: Int64;
   MNsTotalReward: Int64 = 0;
-  MNsAddressess: array of TArrayPos;
+  MNsAddressess: array of TAddress;
   ThisParam: String;
 
   MNsFileText: String = '';
@@ -127,7 +127,7 @@ var
   NPDAmount: Int64;
   BlockTrfrs: Integer = 0;
 begin
-  if WO_skipBlocks then exit;
+  if SkipBlockSync then exit;
   if GetCFGDataStr(0) = 'STOP' then
   begin
     ClearAllPendingTransactions;
@@ -140,7 +140,7 @@ begin
   begin
     ToLog('console', 'New block ' + IntToStr(numero) + ' : Invalid timestamp');
     ToLog('console', 'Blocks can not be added until ' +
-      TimestampToDate(GenesysTimeStamp));
+      TimestampToDate(GenesisTimestamp));
     errored := True;
   end;
   if TimeStamp > UTCTime + 5 then
@@ -225,7 +225,7 @@ begin
         end;
       end;
       if ((PendingTransactionsPool[contador].OrderType = 'SNDGVT') and
-        (PendingTransactionsPool[contador].Sender = AdminPubKey)) then
+        (PendingTransactionsPool[contador].Sender = AdminPublicKey)) then
       begin
         OperationAddress := GetAddressFromPublicKey(PendingTransactionsPool[contador].Sender);
         if GetAddressBalanceIndexed(OperationAddress) <
@@ -271,7 +271,7 @@ begin
       end;
     end;
     // Project funds payment
-    if numero >= PoSBlockEnd then
+    if numero >= PoSEndBlock then
     begin
       DevsTotalReward := ((GetBlockReward(Numero) + MinerFee) *
         GetDevPercentage(Numero)) div 10000;
@@ -300,15 +300,15 @@ begin
 
     //PoS payment
     StartPerformanceMeasurement('NewBLOCK_PoS');
-    if numero >= PoSBlockStart then
+    if numero >= PoSStartBlock then
     begin
       SetLength(PoSAddressess, 0);
       PoSReward := 0;
       PosCount := 0;
       PosTotalReward := 0;
-      if numero < PosBlockEnd then
+      if numero < PoSEndBlock then
       begin
-        PosRequired := (GetCirculatingSupply(numero) * PosStackCoins) div 10000;
+        PosRequired := (GetCirculatingSupply(numero) * PoSStackCoins) div 10000;
         PoScount := length(PoSAddressess);
         PosTotalReward := ((GetBlockReward(Numero) + MinerFee) *
           GetPoSPercentage(Numero)) div 10000;
@@ -316,7 +316,7 @@ begin
         PosTotalReward := PoSCount * PosReward;
         //pay POS
         for contador := 0 to length(PoSAddressess) - 1 do
-          CreditTo(PoSAddressess[contador].address, PosReward, numero);
+          CreditTo(PoSAddressess[contador].Address, PosReward, numero);
       end;
     end;
     StopPerformanceMeasurement('NewBLOCK_PoS');
@@ -329,7 +329,7 @@ begin
     ClearMNsChecks();
     ClearMNsList();
     ClearReceivedMNs();
-    if numero >= MNBlockStart then
+    if numero >= MasterNodeStartBlock then
     begin
       SetLength(MNsAddressess, 0);
       Contador := 1;
@@ -341,7 +341,7 @@ begin
             ThisParam := StringReplace(ThisParam, ':', ' ', [rfReplaceAll]);
             ThisParam := GetParameter(ThisParam, 1);
             SetLength(MNsAddressess, length(MNsAddressess) + 1);
-            MNsAddressess[length(MNsAddressess) - 1].address := ThisParam;
+            MNsAddressess[length(MNsAddressess) - 1].Address := ThisParam;
           end;
           Inc(contador);
         end;
@@ -357,8 +357,8 @@ begin
       NewMNs := 0;
       for contador := 0 to length(MNsAddressess) - 1 do
       begin
-        CreditTo(MNsAddressess[contador].address, MNsReward, numero);
-        if AddLockedMM(MNsAddressess[contador].address, numero) then Inc(NewMNs);
+        CreditTo(MNsAddressess[contador].Address, MNsReward, numero);
+        if AddLockedMM(MNsAddressess[contador].Address, numero) then Inc(NewMNs);
       end;
       StopPerformanceMeasurement('NewBLOCK_MNs');
     end;// End of MNS payment procecessing
@@ -373,7 +373,7 @@ begin
       MNsTotalReward - DevsTotalReward;
     CreditTo(Minero, PoWTotalReward, numero);
     // Update summary lastblock
-    CreditTo(AdminHash, 0, numero);
+    CreditTo(AdminHashAddress, 0, numero);
     // Save summary file
     StartPerformanceMeasurement('NewBLOCK_SaveSum');
     UpdateSummaryChanges();
@@ -389,7 +389,7 @@ begin
     BlockHeader.TimeTotal := TimeStamp - StartBlockTime;
     BlockHeader.TimeLast20 := 0;//GetLast20Time(BlockHeader.TimeTotal);
     BlockHeader.TrxTotales := length(ListaOrdenes);
-    if numero = 0 then BlockHeader.Difficult := InitialBlockDiff
+    if numero = 0 then BlockHeader.Difficult := InitialDifficulty
     else if ((numero > 0) and (numero < 53000)) then BlockHeader.Difficult := 0
     else
       BlockHeader.Difficult := PoSCount;
@@ -438,7 +438,7 @@ begin
     end;
     CheckForMyPending;
 
-    U_DirPanel := True;
+    UpdateDirPanel := True;
     ExpiredMNs := ClearExpiredLockedMNs(numero);
     SavePSOFileToDisk(Numero);
     OutText(format('Block built: %d (%d ms) MNs: + %d / - %d',
@@ -449,7 +449,7 @@ begin
     OutText('Failed to build the block', True);
   end;
   BuildingBlock := 0;
-  U_DataPanel := True;
+  UpdateDataPanel := True;
 end;
 
 {
@@ -486,16 +486,16 @@ End;
 function GetDiffForNextBlock(UltimoBloque,Last20Average, lastblocktime,previous:integer):integer;
 Begin
 result := previous;
-if UltimoBloque < 21 then result := InitialBlockDiff
+if UltimoBloque < 21 then result := InitialDifficulty
 else
    begin
-   if Last20Average < SecondsPerBlock then
+   if Last20Average < BlockGenerationIntervalSeconds then
       begin
-      if lastblocktime<SecondsPerBlock then result := Previous+1
+      if lastblocktime<BlockGenerationIntervalSeconds then result := Previous+1
       end
-   else if Last20Average > SecondsPerBlock then
+   else if Last20Average > BlockGenerationIntervalSeconds then
       begin
-      if lastblocktime>SecondsPerBlock then result := Previous-1
+      if lastblocktime>BlockGenerationIntervalSeconds then result := Previous-1
       end
    else result := previous;
    end;
@@ -507,7 +507,7 @@ function GetLast20Time(LastBlTime:integer):integer;
 var
   Part1, Part2 : integer;
 Begin
-if LastBlockData.Number<21 then result := SecondsPerBlock
+if LastBlockData.Number<21 then result := BlockGenerationIntervalSeconds
 else
    begin
    Part1 := LastBlockData.TimeLast20 * 19 div 20;
@@ -521,12 +521,12 @@ function GetBlockReward(BlNumber: Int64): Int64;
 var
   NumHalvings: Int64;
 begin
-  if BlNumber = 0 then Result := PremineAmount
-  else if ((BlNumber > 0) and (blnumber < BlockHalvingInterval *
-    (HalvingSteps + 1))) then
+  if BlNumber = 0 then Result := PremineTotal
+  else if ((BlNumber > 0) and (blnumber < BlockRewardHalvingInterval *
+    (TotalHalvingSteps + 1))) then
   begin
-    numHalvings := BlNumber div BlockHalvingInterval;
-    Result := InitialReward div (2 ** NumHalvings);
+    numHalvings := BlNumber div BlockRewardHalvingInterval;
+    Result := InitialBlockReward div (2 ** NumHalvings);
   end
   else
     Result := 0;
@@ -535,8 +535,8 @@ end;
 // Guarda el archivo de bloque en disco
 function GuardarBloque(NombreArchivo: String; Cabezera: BlockHeaderData;
   Ordenes: array of TOrderData; PosPay: Int64; PoSnumber: Integer;
-  PosAddresses: array of TArrayPos; MNsPay: Int64; MNsNumber: Integer;
-  MNsAddresses: array of TArrayPos): Boolean;
+  PosAddresses: array of TAddress; MNsPay: Int64; MNsNumber: Integer;
+  MNsAddresses: array of TAddress): Boolean;
 var
   MemStream: TMemoryStream;
   NumeroOrdenes: Int64;
@@ -550,14 +550,14 @@ begin
     MemStream.Write(Cabezera, Sizeof(Cabezera));
     for counter := 0 to NumeroOrdenes - 1 do
       MemStream.Write(Ordenes[counter], Sizeof(Ordenes[Counter]));
-    if Cabezera.Number >= PoSBlockStart then
+    if Cabezera.Number >= PoSStartBlock then
     begin
       MemStream.Write(PosPay, Sizeof(PosPay));
       MemStream.Write(PoSnumber, Sizeof(PoSnumber));
       for counter := 0 to PoSnumber - 1 do
         MemStream.Write(PosAddresses[counter], Sizeof(PosAddresses[Counter]));
     end;
-    if Cabezera.Number >= MNBlockStart then
+    if Cabezera.Number >= MasterNodeStartBlock then
     begin
       MemStream.Write(MNsPay, Sizeof(MNsPay));
       MemStream.Write(MNsnumber, Sizeof(MNsnumber));
@@ -578,9 +578,9 @@ begin
   StopPerformanceMeasurement('GuardarBloque');
 end;
 
-function GetBlockPoSes(BlockNumber: Integer): BlockArraysPos;
+function GetBlockPoSes(BlockNumber: Integer): TBlockAddresses;
 var
-  resultado: BlockArraysPos;
+  resultado: TBlockAddresses;
   ArrTrxs: TBlockOrders;
   ArchData: String;
   MemStr: TMemoryStream;
@@ -604,9 +604,9 @@ begin
     MemStr.Read(totalposes, SizeOf(Integer));
     SetLength(resultado, totalposes);
     for Counter := 0 to totalposes - 1 do
-      MemStr.Read(resultado[Counter].address, Sizeof(resultado[Counter]));
+      MemStr.Read(resultado[Counter].Address, Sizeof(resultado[Counter]));
     SetLength(resultado, totalposes + 1);
-    resultado[length(resultado) - 1].address := IntToStr(posreward);
+    resultado[length(resultado) - 1].Address := IntToStr(posreward);
   except
     on E: Exception do // nothing, the block is not found
   end;
@@ -614,10 +614,10 @@ begin
   Result := resultado;
 end;
 
-function GetBlockMNs(BlockNumber: Integer): BlockArraysPos;
+function GetBlockMNs(BlockNumber: Integer): TBlockAddresses;
 var
-  resultado: BlockArraysPos;
-  ArrayPos: BlockArraysPos;
+  resultado: TBlockAddresses;
+  ArrayPos: TBlockAddresses;
   ArrTrxs: TBlockOrders;
   ArchData: String;
   MemStr: TMemoryStream;
@@ -628,7 +628,7 @@ var
 begin
   Setlength(resultado, 0);
   Setlength(ArrayPos, 0);
-  if blocknumber < MNBlockStart then
+  if blocknumber < MasterNodeStartBlock then
   begin
     Result := resultado;
     exit;
@@ -650,17 +650,17 @@ begin
     MemStr.Read(totalposes, SizeOf(Integer));
     SetLength(ArrayPos, totalposes);
     for Counter := 0 to totalposes - 1 do
-      MemStr.Read(ArrayPos[Counter].address, Sizeof(ArrayPos[Counter]));
+      MemStr.Read(ArrayPos[Counter].Address, Sizeof(ArrayPos[Counter]));
     // MNS INFO
     MemStr.Read(MNReward, SizeOf(MNReward));
     MemStr.Read(totalMNs, SizeOf(totalMNs));
     SetLength(resultado, totalMNs);
     for Counter := 0 to totalMNs - 1 do
     begin
-      MemStr.Read(resultado[Counter].address, Sizeof(resultado[Counter]));
+      MemStr.Read(resultado[Counter].Address, Sizeof(resultado[Counter]));
     end;
     SetLength(resultado, totalMNs + 1);
-    resultado[length(resultado) - 1].address := IntToStr(MNReward);
+    resultado[length(resultado) - 1].Address := IntToStr(MNReward);
   except
     on E: Exception do // nothing, the block is not founded
       ToLog('exceps', FormatDateTime('dd mm YYYY HH:MM:SS.zzz', Now) +
@@ -686,9 +686,9 @@ begin
   else
     Highest := BlockNumber;
   if BlockNumber = 0 then exit;
-  if MyConStatus = 3 then
+  if NodeConnectionStatus = 3 then
   begin
-    MyConStatus := 2;
+    NodeConnectionStatus := 2;
     //if Form1.Server.Active then Form1.Server.Active := false;
     ClearMNsChecks();
     ClearMNsList();
@@ -723,7 +723,7 @@ begin
   ToLog('console', '****************************');
   ToLog('events', TimeToStr(now) + 'Block Undone: ' + IntToStr(blocknumber));
   ToDeepDebug('Block undone: ' + Blocknumber.ToString);
-  U_DataPanel := True;
+  UpdateDataPanel := True;
 end;
 
 function RemoveBlocks(UpToBlock: Int64): Integer;
